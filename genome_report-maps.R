@@ -18,7 +18,7 @@ if (file.exists(".Rprofile")) source(".Rprofile")
 
 
 save_plot <- function(n, p, w, h, ...) {
-    cairo_pdf(sprintf("~/Box Sync/midgenomics/genome-report/%s.pdf", n),
+    cairo_pdf(sprintf("./_plots/%s.pdf", n),
               width = w, height = h, bg = NA, ...)
     plot(p)
     dev.off()
@@ -38,13 +38,13 @@ to_utm <- function(.df, .lat = "lat", .lon = "lon") {
 # -------------`
 # Mapping data
 # -------------`
-myvatn_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
+myvatn_df <- readOGR(dsn = paste0("~/Stanford_Drive/UW/tany_time/location_data/",
                                   "shapefiles/myvatn"),
                   layer = "Myvatn_WSGUTM28") %>%
     tidy() %>%
     rename(lon = long)
 # Iceland outline is from GADM data (version 3.6; https://gadm.org/)
-iceland_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
+iceland_df <- readOGR(dsn = paste0("~/Stanford_Drive/UW/tany_time/location_data/",
                                    "shapefiles/iceland"),
                  layer = "gadm36_ISL_0") %>%
     tidy() %>%
@@ -54,8 +54,8 @@ iceland_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
     # Shown below are two ways to filter this dataset, to avoid
     # plotting islands far from shore:
     # -----------`
-    # 1. You can filter out islands that are very far from shore:
-    # filter(!piece %in% c(90, 133, 143, 157, 215, 244, 257, 258, 260, 262))
+    # # 1. You can filter out islands that are very far from shore:
+    # filter(!piece %in% c(90, 133, 143, 157, 215, 244, 257, 258, 260, 262)) %>%
     # 2. Filter for just the mainland:
     filter(piece == 1) %>%
     identity()
@@ -65,7 +65,7 @@ iceland_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
 # -------------`
 # Sample location data
 # -------------`
-samp_df <- read_csv("~/Box Sync/midgenomics/full-DNA-info.csv",
+samp_df <- read_csv("~/Stanford_Drive/UW/tany_time/full-DNA-info.csv",
                     col_types = "cfcddidcccddidiDccldd") %>%
     filter(to_use == 1) %>%
     filter(!is.na(site)) %>%

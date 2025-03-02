@@ -16,6 +16,12 @@ library(viridis)
 # This sets plotting device on my computer:
 if (file.exists(".Rprofile")) source(".Rprofile")
 
+save_plot <- function(n, p, w, h, ...) {
+    cairo_pdf(sprintf("./_plots/%s.pdf", n),
+              width = w, height = h, bg = NA, ...)
+    plot(p)
+    dev.off()
+}
 
 # From decimal degrees to UTM, assuming it's Iceland and using WGS84
 to_utm <- function(.df, .lat = "lat", .lon = "lon") {
@@ -31,13 +37,13 @@ to_utm <- function(.df, .lat = "lat", .lon = "lon") {
 # -------------`
 # Mapping data
 # -------------`
-myvatn_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
+myvatn_df <- readOGR(dsn = paste0("~/Stanford_Drive/UW/tany_time/location_data/",
                                   "shapefiles/myvatn"),
                   layer = "Myvatn_WSGUTM28") %>%
     tidy() %>%
     rename(lon = long)
 # Iceland outline is from GADM data (version 3.6; https://gadm.org/)
-iceland_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
+iceland_df <- readOGR(dsn = paste0("~/Stanford_Drive/UW/tany_time/location_data/",
                                    "shapefiles/iceland"),
                  layer = "gadm36_ISL_0") %>%
     tidy() %>%
@@ -59,7 +65,7 @@ iceland_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
 # Sequenced sample data
 # -------------`
 # This is for all sequenced samples (archived and spatial)
-samp_df <- read_csv("~/Box Sync/midgenomics/full-DNA-info.csv",
+samp_df <- read_csv("~/Stanford_Drive/UW/tany_time/full-DNA-info.csv",
                     col_types = "cfcddidcccddidiDccldd") %>%
     filter(to_use == 1) %>%
     group_by(biotech_id, date, lake, site, n_adults, lat, lon) %>%
@@ -264,9 +270,8 @@ lakes_iceland_p <- iceland_df %>%
     NULL
 
 
-# cairo_pdf("~/Desktop/iceland_map.pdf", width = 4, height = 3, bg = NA)
-# lakes_iceland_p
-# dev.off()
+save_plot("iceland_samples_map", lakes_iceland_p, 4, 3)
+
 
 
 # Plot just of Myvatn, Miklavatn, and Vikingavatn - for talk

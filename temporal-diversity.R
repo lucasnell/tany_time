@@ -14,7 +14,7 @@ source("helpers.R")
 if (file.exists(".Rprofile")) source(".Rprofile")
 
 
-samp_df <- read_csv("~/Box Sync/midgenomics/full-DNA-info.csv",
+samp_df <- read_csv("~/Stanford_Drive/UW/tany_time/full-DNA-info.csv",
                     col_types = "cfcddidcccddidiDccldd") %>%
     # Convert to more accurate site names:
     mutate(site = case_when(site == "SN" ~ "Syðri Neslönd",
@@ -30,7 +30,7 @@ samp_df <- read_csv("~/Box Sync/midgenomics/full-DNA-info.csv",
     select(biotech_id, n_adults, date, site, lat, lon) %>%
     to_utm()
 
-tany_pop_df <- read_excel(paste0("~/Box Sync/zzz-archive/2020/funding/",
+tany_pop_df <- read_excel(paste0("~/Stanford_Drive/UW/zzz-archive/2020/funding/",
                                  "ASN/Chirisl_Tany_analysis.xlsx"),
                           skip = 1,  col_names = c("year", "chir_a", "chir_b",
                                                    "chir_ab", "tany_a", "tany_b")) %>%
@@ -196,7 +196,7 @@ ggsave("_plots/time_div.pdf", time_p, width = 6, height = 6, units = "in")
 
 
 
-myvatn_df <- readOGR(dsn = paste0("~/Box Sync/midgenomics/location_data/",
+myvatn_df <- readOGR(dsn = paste0("~/Stanford_Drive/UW/tany_time/location_data/",
                                   "shapefiles/myvatn"),
                      layer = "Myvatn_WSGUTM28") %>%
     tidy() %>%

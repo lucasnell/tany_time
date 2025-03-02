@@ -1,41 +1,45 @@
-library(tidyverse)
-
-theme_set(theme_classic())
-theme_update(axis.text = element_blank(),
-             axis.title = element_blank(),
-             axis.ticks = element_blank(),
-             axis.line = element_line(size = 1.5))
-
-f <- function(.x) {
-    x_sin <- sin((.x / diff(range(.x)) - 0.5/3) * 3 * pi) + 1
-    x <- .x / 10
-    flr <- (x %/% 2) * 2
-    x <- x - flr
-    nc <- x * pi
-    z <- sin(nc)
-    z <- z + x_sin * 0.5
-    return(z)
-}
-
-# curve(f(x), 0, 100)
-
-pred_prey_df <- tibble(x = seq(0, 100, length.out = 1001),
-                       y = f(x),
-                       y2 = f(x - 5))
-bal_sel_df <- tibble(x = seq(0, 100, length.out = 1001),
-       y = f(x - 10))
-
-pred_prey_p <- pred_prey_df %>%
-    ggplot(aes(x, y)) +
-    geom_line(size = 1, color = "dodgerblue3") +
-    geom_line(aes(y = y2), size = 1, color = "gold")
-
-bal_sel_p <- bal_sel_df %>%
-    ggplot(aes(x, y)) +
-    geom_line(size = 1, color = "firebrick")
-
-ggsave("~/Desktop/pred_prey.pdf", pred_prey_p, width = 5, height = 2.5)
-ggsave("~/Desktop/bal_sel.pdf", bal_sel_p, width = 5, height = 2.5)
+# # ------------------------------------*
+# # Pretty curves for presentations
+# # ------------------------------------*
+#
+# library(tidyverse)
+#
+# theme_set(theme_classic())
+# theme_update(axis.text = element_blank(),
+#              axis.title = element_blank(),
+#              axis.ticks = element_blank(),
+#              axis.line = element_line(size = 1.5))
+#
+# f <- function(.x) {
+#     x_sin <- sin((.x / diff(range(.x)) - 0.5/3) * 3 * pi) + 1
+#     x <- .x / 10
+#     flr <- (x %/% 2) * 2
+#     x <- x - flr
+#     nc <- x * pi
+#     z <- sin(nc)
+#     z <- z + x_sin * 0.5
+#     return(z)
+# }
+#
+# # curve(f(x), 0, 100)
+#
+# pred_prey_df <- tibble(x = seq(0, 100, length.out = 1001),
+#                        y = f(x),
+#                        y2 = f(x - 5))
+# bal_sel_df <- tibble(x = seq(0, 100, length.out = 1001),
+#        y = f(x - 10))
+#
+# pred_prey_p <- pred_prey_df %>%
+#     ggplot(aes(x, y)) +
+#     geom_line(size = 1, color = "dodgerblue3") +
+#     geom_line(aes(y = y2), size = 1, color = "gold")
+#
+# bal_sel_p <- bal_sel_df %>%
+#     ggplot(aes(x, y)) +
+#     geom_line(size = 1, color = "firebrick")
+#
+# # ggsave("~/Desktop/pred_prey.pdf", pred_prey_p, width = 5, height = 2.5)
+# # ggsave("~/Desktop/bal_sel.pdf", bal_sel_p, width = 5, height = 2.5)
 
 
 
@@ -66,7 +70,7 @@ to_utm <- function(.df, .lat = "lat", .lon = "lon") {
     return(.df)
 }
 
-samp_df <- read_csv("~/Box Sync/midgenomics/full-DNA-info.csv",
+samp_df <- read_csv("~/Stanford_Drive/UW/tany_time/full-DNA-info.csv",
                     col_types = "cfcddidcccddidiDccldd") %>%
     # Convert to more accurate site names:
     mutate(site = case_when(site == "SN" ~ "Syðri Neslönd",

@@ -16,7 +16,7 @@ source("helpers.R")
 if (file.exists(".Rprofile")) source(".Rprofile")
 
 
-samp_df <- read_csv("~/Box Sync/midges/full-DNA-info.csv",
+samp_df <- read_csv("~/Cornell_Drive/UW/tany_time/full-DNA-info.csv",
                     col_types = "cfcddidcccddidiDccldd") %>%
     # Convert to more accurate site names:
     mutate(site = case_when(site == "SN" ~ "Syðri Neslönd",
