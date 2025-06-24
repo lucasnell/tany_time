@@ -17,7 +17,7 @@ batch_name = "combine-snapes"
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-requirements = (Target.HasCHTCStaging == true)
+requirements = (HasCHTCStaging == true)
 
 request_cpus = 2
 request_memory = 4GB

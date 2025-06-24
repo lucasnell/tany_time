@@ -17,7 +17,7 @@ batch_name =    "npstat"
 should_transfer_files =     YES
 when_to_transfer_output =   ON_EXIT
 transfer_input_files =      sync2pileup.py
-requirements =              (Target.HasCHTCStaging == true)
+requirements =              (HasCHTCStaging == true)
 
 request_cpus =      16
 request_memory =    16GB
