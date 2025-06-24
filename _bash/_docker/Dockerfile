@@ -3,7 +3,7 @@
 ############################################################
 
 
-FROM condaforge/mambaforge:24.9.2-0
+FROM condaforge/miniforge3:25.3.0-3
 MAINTAINER Lucas Nell <lucnell@gmail.com>
 WORKDIR /app
 ENV HOME /app
@@ -18,7 +18,8 @@ SHELL ["/bin/bash", "--login", "-c"]
 # --------------------------------
 # I want to always be able to access these:
 RUN chmod -R 777 /opt/conda && \
-    chmod -R 777 /app
+    chmod -R 777 /app && \
+    chmod -R 777 /tmp
 
 
 # Basic requirements
@@ -49,10 +50,10 @@ RUN chmod +x window-mpileup.py && \
 
 # Make primary and quality-control conda environments
 COPY main-env.yml .
+COPY qc-env.yml .
 RUN mamba env create -q -f main-env.yml && \
     rm main-env.yml && \
     conda clean --all -y
-COPY qc-env.yml .
 RUN mamba env create -q -f qc-env.yml && \
     rm qc-env.yml && \
     conda clean --all -y
