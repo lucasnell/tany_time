@@ -1,0 +1,70 @@
+
+Bootstrap: docker
+From: condaforge/miniforge3:25.3.0-3
+
+%files
+    helpers.sh /app/helpers.sh
+    main-env.yml /app/main-env.yml
+    qc-env.yml /app/qc-env.yml
+    window-mpileup.py /usr/local/bin/window-mpileup.py
+
+%post -c /bin/bash
+    export HOME=/app
+    chmod -R 777 /opt/conda && \
+        chmod -R 777 /app && \
+        chmod -R 777 /tmp
+    apt-get clean
+    apt-get update -y
+    apt-get install -y build-essential
+    apt-get install -y locales wget rsync unzip nano sudo ocaml-nox zlib1g-dev \
+        libbz2-dev liblzma-dev gsl-bin libgsl0-dev libboost-all-dev
+    rm -rf /var/lib/apt/lists/*
+    locale-gen en_US.UTF-8
+    chmod +x /usr/local/bin/window-mpileup.py
+    echo "" >> /app/.bashrc && \
+        cat /app/helpers.sh >> /app/.bashrc && \
+        echo "" >> /app/.bashrc && \
+        rm /app/helpers.sh
+    mamba env create -q -f /app/main-env.yml && \
+        rm /app/main-env.yml && \
+        conda clean --all -y
+    mamba env create -q -f /app/qc-env.yml && \
+        rm /app/qc-env.yml && \
+        conda clean --all -y
+    conda init bash
+    cd /opt && \
+    	sha="284bfe054da37232d3e23dfbfa6f67bcaa9cf89a" && \
+        wget -q https://github.com/EmanueleRaineri/snape-pooled/archive/${sha}.zip && \
+    	unzip -q ${sha}.zip && \
+        rm ${sha}.zip && \
+    	mv snape-pooled-${sha} snape-pooled && \
+    	cd snape-pooled && \
+    	make && \
+    	mv snape-pooled /usr/local/bin/ && \
+    	cd .. && \
+    	rm -r snape-pooled
+    cd /opt && \
+    	sha="dc230fba3ac434ed6526ab7cd63a67d69d34b7d6" && \
+        wget -q https://github.com/lucaferretti/npstat/archive/${sha}.zip && \
+    	unzip -q ${sha}.zip && \
+        rm ${sha}.zip && \
+    	mv npstat-${sha} npstat && \
+    	cd npstat && \
+    	make && \
+    	mv npstat /usr/local/bin/ && \
+    	cd .. && \
+    	rm -r npstat
+
+%environment
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US:en
+    export LC_ALL=en_US.UTF-8
+    export TZ=America/New_York
+    export HOME=/app
+    export SINGULARITY_SHELL=/bin/bash
+
+%labels
+    Author Lucas Nell
+    ContactEmail lucnell@gmail.com
+    Name tany_time
+    Version v1.0.0
