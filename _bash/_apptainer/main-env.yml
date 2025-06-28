@@ -4,22 +4,19 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - bamtools=2.5.2
-  - bbmap=39.17
-  - bcftools=1.21
-  - bwa=0.7.18
-  - fastp=0.24.0
-  - gatk=3.6
-  - gatk4=4.6.1.0
+  - bamtools=2.5.3
+  - bbmap=39.28
+  - bcftools=1.22
+  - bwa=0.7.19
+  - fastp=1.0.1
   - hisat2=2.2.1
-  - htslib=1.21
-  - matplotlib=3.10.0
-  - minimap2=2.28
-  - numpy=2.2.3
-  - pandas=2.2.3
-  - picard=3.3.0
-  - python=3.13.2
-  - samtools=1.21
-  - seqtk=1.4
+  - htslib=1.22
+  - matplotlib=3.10.3
+  - minimap2=2.30
+  - numpy=2.3.0
+  - pandas=2.3.0
+  - python=3.13.5
+  - samtools=1.22
+  - seqtk=1.5
   - vcftools=0.1.16
 prefix: /opt/conda/envs/main-env

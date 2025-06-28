@@ -5,6 +5,7 @@ From: condaforge/miniforge3:25.3.0-3
 %files
     helpers.sh /app/helpers.sh
     main-env.yml /app/main-env.yml
+    gatk-env.yml /app/gatk-env.yml
     qc-env.yml /app/qc-env.yml
     window-mpileup.py /usr/local/bin/window-mpileup.py
 
@@ -17,7 +18,7 @@ From: condaforge/miniforge3:25.3.0-3
     apt-get update -y
     apt-get install -y build-essential
     apt-get install -y locales wget rsync unzip nano sudo ocaml-nox zlib1g-dev \
-        libbz2-dev liblzma-dev gsl-bin libgsl0-dev libboost-all-dev
+        libbz2-dev liblzma-dev gsl-bin libgsl0-dev libboost-all-dev pv
     rm -rf /var/lib/apt/lists/*
     locale-gen en_US.UTF-8
     chmod +x /usr/local/bin/window-mpileup.py
@@ -25,13 +26,18 @@ From: condaforge/miniforge3:25.3.0-3
         cat /app/helpers.sh >> /app/.bashrc && \
         echo "" >> /app/.bashrc && \
         rm /app/helpers.sh
-    mamba env create -q -f /app/main-env.yml && \
+    conda init bash
+    conda config --set solver libmamba
+    conda config --set auto_update_conda false
+    conda env create -q -f /app/main-env.yml && \
         rm /app/main-env.yml && \
         conda clean --all -y
-    mamba env create -q -f /app/qc-env.yml && \
+    conda env create -q -f /app/gatk-env.yml && \
+        rm /app/gatk-env.yml && \
+        conda clean --all -y
+    conda env create -q -f /app/qc-env.yml && \
         rm /app/qc-env.yml && \
         conda clean --all -y
-    conda init bash
     cd /opt && \
     	sha="284bfe054da37232d3e23dfbfa6f67bcaa9cf89a" && \
         wget -q https://github.com/EmanueleRaineri/snape-pooled/archive/${sha}.zip && \
@@ -54,6 +60,7 @@ From: condaforge/miniforge3:25.3.0-3
     	mv npstat /usr/local/bin/ && \
     	cd .. && \
     	rm -r npstat
+
 
 %environment
     export LANG=en_US.UTF-8
