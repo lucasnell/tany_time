@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# export READ_BASE=KS-1-11_S45
-
-
 #' Align Pool-seq reads to genome assembly using `bwa mem`.
 #'
 #' It first merges paired-end reads, then separately aligns both merged reads
@@ -10,19 +7,20 @@
 #' It then combines these alignments into a single sorted BAM file
 #' that also contains read group info.
 
-# Check previous command's exit status.
-# If != 0, then archive working dir and exit.
-check_exit_status () {
-  if [ ! "$2" -eq "0" ]; then
-    echo "Step $1 failed with exit status $2" 1>&2
-    cd ..
-    tar -czf ERROR_${OUT_DIR}.tar.gz ${OUT_DIR}
-    mv ERROR_${OUT_DIR}.tar.gz /staging/lnell/dna/bwa/
-    rm -r ${OUT_DIR}
-    exit $2
-  fi
-  echo "Checked step $1"
-}
+
+. /app/.bashrc
+conda activate main-env
+
+export THREADS=$(count_threads)
+
+# Edit these for your system:
+export PARENT_DIR_IN="/staging/lnell/dna/trimmed"
+export PARENT_DIR_OUT="/staging/lnell/dna/bwa"
+export PARENT_DIR_GENOME="/staging/lnell"
+export GENOME="Tgraci_assembly.fasta"
+
+
+
 
 # Check on BAM file with `bamtools stats`, check status of this call,
 # then output the file name
@@ -36,60 +34,63 @@ call_bam_stats () {
 
 
 
-export THREADS=8
-
-. /app/.bashrc
-conda activate main-env
 
 
-# Argument from submit file gives you the base of the read FASTQ file name.
-# Here, I assume that FASTQ file names are of the form
-# <sample name>_S<sample number>_L002_R<read number>_001.fastq.gz
-# where everything not in brackets is constant.
-# This is true for both my RNA and DNA sequencing reads.
-# For the file `Ash-19_S5_L002_R2_001.fastq.gz`, the base of the read name
-# would be "Ash-19_S5" because everything else can be inferred.
-
-export READ_BASE=$1
 
 
 #' ========================================================================
 #' Inputs
 #' ========================================================================
 
-export IN_READS1=trimmed_${READ_BASE}_L002_R1_001.fastq
-export IN_READS2=trimmed_${READ_BASE}_L002_R2_001.fastq
-export IN_READS_TAR=trimmed_${READ_BASE}.tar
-export GENOME=tany_scaffolds.fasta
+export READ_BASE=$1
 
-if [ ! -f /staging/lnell/dna/trimmed/${IN_READS_TAR} ]; then
-    echo "/staging/lnell/dna/trimmed/${IN_READS_TAR} does not exist! " 1>&2
-    exit 111
+if [ ! -f ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ]; then
+    echo "${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar does not exist! " 1>&2
+    # Don't actually exit if it's an interactive job:
+    if [[ $- != *i* ]]; then exit 111; fi
 fi
-if [ ! -f /staging/lnell/${GENOME}.gz ]; then
-    echo "/staging/lnell/${GENOME}.gz does not exist! " 1>&2
-    exit 222
+if [ ! -f ${PARENT_DIR_GENOME}/${GENOME}.gz ]; then
+    echo "${PARENT_DIR_GENOME}/${GENOME}.gz does not exist! " 1>&2
+    if [[ $- != *i* ]]; then exit 222; fi
 fi
+
+
+export READS1=$(read_tar_name ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar 1)
+check_exit_status "reads file name 1" $?
+export READS2=$(read_tar_name ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar 2)
+check_exit_status "reads file name 2" $?
+READS1=${READS1%.gz}
+READS2=${READS2%.gz}
+
+
+
 
 
 #' ========================================================================
 #' Outputs
 #' ========================================================================
 
-# Where to send everything when done:
-export TARGET=/staging/lnell/dna/bwa
 # Final files / directories
 export OUT_DIR=${READ_BASE}_bwa
 export OUT_BAM=${READ_BASE}_bwa.bam
 export UNMAPPED_BAM=${READ_BASE}_unmapped.bam
 # Intermediates:
 export MERGED_READS=merged_trimmed_${READ_BASE}.fastq
-export UN_READS1=unmerged_${IN_READS1}
-export UN_READS2=unmerged_${IN_READS2}
+export UN_READS1=unmerged_${READS1}
+export UN_READS2=unmerged_${READS2}
 export MERGED_BAM=${OUT_BAM/.bam/_merged.bam}
 export UNMAPPED_MERGED_BAM=${UNMAPPED_BAM/.bam/_merged.bam}
 export UN_BAM=${OUT_BAM/.bam/_unmerged.bam}
 export UNMAPPED_UN_BAM=${UNMAPPED_BAM/.bam/_unmerged.bam}
+
+
+if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_BAM} ]; then
+    echo "Output files already exist" 1>&2
+    if [[ $- != *i* ]]; then
+        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+        exit 0
+    fi
+fi
 
 
 
@@ -100,18 +101,23 @@ export UNMAPPED_UN_BAM=${UNMAPPED_BAM/.bam/_unmerged.bam}
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
-cp /staging/lnell/dna/trimmed/${IN_READS_TAR} ./ \
-    && tar -xf ${IN_READS_TAR} \
-    && rm ${IN_READS_TAR}
+tar -xf ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar -C ./
+check_exit_status "extract reads tar file" $?
 
-gunzip ${IN_READS1}.gz && gunzip ${IN_READS2}.gz
-cp /staging/lnell/${GENOME}.gz ./ && gunzip ${GENOME}.gz
+gunzip ${READS1}.gz && \
+    gunzip ${READS2}.gz
+check_exit_status "gunzip reads" $?
+
+cp ${PARENT_DIR_GENOME}/${GENOME}.gz ./ && \
+    gunzip ${GENOME}.gz
+check_exit_status "move, gunzip genome" $?
 
 bwa index ${GENOME}
 check_exit_status "bwa-index" $?
 
 # For use later in creating read group info:
-export READ_ID=$(head -n 1 ${IN_READS1} | grep -Eo "[ATGCN]+$")
+export READ_ID=$(head -n 1 ${READS1} | grep -Eo "[ATGCN]+$")
+
 
 #' ========================================================================
 #' Merge paired-end reads.
@@ -119,11 +125,22 @@ export READ_ID=$(head -n 1 ${IN_READS1} | grep -Eo "[ATGCN]+$")
 #'
 #' Creating 3 FASTQ files here, for merged reads, unmerged reads # 1,
 #' and unmerged reads # 2
-bbmerge.sh in1=${IN_READS1} in2=${IN_READS2} out=${MERGED_READS} \
+bbmerge.sh in1=${READS1} in2=${READS2} out=${MERGED_READS} \
     outu1=${UN_READS1} outu2=${UN_READS2}
 check_exit_status "bbmerge" $?
 
-rm ${IN_READS1} ${IN_READS2}
+rm ${READS1} ${READS2}
+
+##> # For staged testing (bc of interactive job time limits):
+##>  cd .. && \
+##>      tar -czf ${OUT_DIR}_bbmerge.tar.gz ${OUT_DIR} && \
+##>      mv ${OUT_DIR}_bbmerge.tar.gz ${PARENT_DIR_OUT}/ && \
+##>      cd ${OUT_DIR}
+##>
+##> # The next time, after running through section "Prep for downstream steps.",
+##> # run ...
+##>  tar -xzf ${PARENT_DIR_OUT}/${OUT_DIR}_bbmerge.tar.gz -C ./
+
 
 
 #' ========================================================================
@@ -131,19 +148,22 @@ rm ${IN_READS1} ${IN_READS2}
 #' ========================================================================
 bwa mem -v 1  -M -t ${THREADS} \
     -R "@RG\tID:${READ_BASE}\tSM:${READ_BASE}_${READ_ID}\tPL:illumina\tLB:lib1" \
-    ${GENOME} ${UN_READS1} ${UN_READS2} | \
-    samtools view -@ ${THREADS} -bh - > \
-    all_${UN_BAM}
+    ${GENOME} ${UN_READS1} ${UN_READS2} \
+    2> all_${UN_BAM%.bam}.log \
+    | samtools view -@ ${THREADS} -bh - \
+    > all_${UN_BAM}
 check_exit_status "bwa mem (unmerged)" $?
 call_bam_stats all_${UN_BAM} "(unmerged, unfiltered)"
 
 rm ${UN_READS1} ${UN_READS2}
 
-samtools view -@ ${THREADS} -bh -f 0x4 all_${UN_BAM} > ${UNMAPPED_UN_BAM}
+samtools view -@ ${THREADS} -bh -f 0x4 all_${UN_BAM} \
+    > ${UNMAPPED_UN_BAM}
 check_exit_status "samtools view (unmerged, unmapped)" $?
 call_bam_stats ${UNMAPPED_UN_BAM} "(unmerged, unmapped)"
 
-samtools view -@ ${THREADS} -bh -q 20 -F 0x100 all_${UN_BAM} > ${UN_BAM}
+samtools view -@ ${THREADS} -bh -q 20 -F 0x100 all_${UN_BAM} \
+    > ${UN_BAM}
 check_exit_status "samtools view (unmerged, filtered)" $?
 call_bam_stats ${UN_BAM} "(unmerged, filtered)"
 
@@ -155,48 +175,59 @@ rm all_${UN_BAM}
 #' ========================================================================
 bwa mem -v 1 -M -t ${THREADS} \
     -R "@RG\tID:${READ_BASE}\tSM:${READ_BASE}_${READ_ID}\tPL:illumina\tLB:lib1" \
-    ${GENOME} ${MERGED_READS} | \
-    samtools view -@ ${THREADS} -bh - > \
-    all_${MERGED_BAM}
+    ${GENOME} ${MERGED_READS} \
+    2> all_${MERGED_BAM%.bam}.log \
+    | samtools view -@ ${THREADS} -bh - \
+    > all_${MERGED_BAM}
 check_exit_status "bwa mem (merged)" $?
 call_bam_stats all_${MERGED_BAM} "(merged, unfiltered)"
 
 rm ${MERGED_READS}
 rm ${GENOME}*
 
-samtools view -@ ${THREADS} -bh -f 0x4 all_${MERGED_BAM} > \
-    ${UNMAPPED_MERGED_BAM}
+samtools view -@ ${THREADS} -bh -f 0x4 all_${MERGED_BAM} \
+    > ${UNMAPPED_MERGED_BAM}
 check_exit_status "samtools view (merged, unmapped)" $?
 call_bam_stats ${UNMAPPED_MERGED_BAM} "(merged, unmapped)"
 
-samtools view -@ ${THREADS} -bh -q 20 -F 0x100 all_${MERGED_BAM} > ${MERGED_BAM}
+samtools view -@ ${THREADS} -bh -q 20 -F 0x100 all_${MERGED_BAM} \
+    > ${MERGED_BAM}
 check_exit_status "samtools view (merged, filtered)" $?
 call_bam_stats ${MERGED_BAM} "(merged, filtered)"
 
 rm all_${MERGED_BAM}
 
 
+##> # For staged testing (bc of interactive job time limits):
+##> cd .. && \
+##>     tar -czf ${OUT_DIR}_mapping.tar.gz ${OUT_DIR} && \
+##>     mv ${OUT_DIR}_mapping.tar.gz ${PARENT_DIR_OUT}/ && \
+##>     cd ${OUT_DIR}
+##>
+##> # The next time, after running through section "Prep for downstream steps.",
+##> # run ...
+##> tar -xzf ${PARENT_DIR_OUT}/${OUT_DIR}_mapping.tar.gz -C ./
 
 
 
 #' ========================================================================
 #' Combine BAM files from mappings of merged and unmerged reads.
 #' ========================================================================
-picard MergeSamFiles \
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+conda activate gatk-env
+
+gatk MergeSamFiles \
     I=${MERGED_BAM} \
     I=${UN_BAM} \
     SO=coordinate \
     USE_THREADING=true \
     O=${OUT_BAM} \
     VERBOSITY=WARNING
-check_exit_status "Picard_MergeSamFiles" $?
+check_exit_status "gatk MergeSamFiles" $?
 
-call_bam_stats ${OUT_BAM} "(final)"
-
-rm ${MERGED_BAM} ${UN_BAM}
-
-
-picard MergeSamFiles \
+gatk MergeSamFiles \
     I=${UNMAPPED_MERGED_BAM} \
     I=${UNMAPPED_UN_BAM} \
     SO=coordinate \
@@ -205,9 +236,15 @@ picard MergeSamFiles \
     VERBOSITY=WARNING
 check_exit_status "Picard_MergeSamFiles (unmapped)" $?
 
+conda deactivate
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+rm ${MERGED_BAM} ${UN_BAM} ${UNMAPPED_MERGED_BAM} ${UNMAPPED_UN_BAM}
+
+call_bam_stats ${OUT_BAM} "(final)"
 call_bam_stats ${UNMAPPED_BAM} "(final, unmapped)"
 
-rm ${UNMAPPED_MERGED_BAM} ${UNMAPPED_UN_BAM}
 
 
 
@@ -215,11 +252,17 @@ rm ${UNMAPPED_MERGED_BAM} ${UNMAPPED_UN_BAM}
 #' Handle output files
 #' ========================================================================
 
-mv ${OUT_BAM} ${TARGET}/
+mv ${OUT_BAM} ${PARENT_DIR_OUT}/
 
 cd ..
 
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
-mv ${OUT_DIR}.tar.gz ${TARGET}/
+mv ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
 
 rm -r ${OUT_DIR}
+
+
+
+if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+
+

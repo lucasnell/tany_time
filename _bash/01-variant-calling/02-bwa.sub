@@ -2,14 +2,13 @@
 
 # align Pool-seq DNA reads
 
-universe = docker
-docker_image = lucasnell/tany_genomics:v0.5
+container_image = file:///staging/lnell/tany_time.sif
 
-log = bwa_$(readbase).log
-error = bwa_$(readbase).err
-output = bwa_$(readbase).out
+log = logs/02-bwa/$(readbase).log
+error = logs/02-bwa/$(readbase).err
+output = logs/02-bwa/$(readbase).out
 
-executable = bwa.sh
+executable = 02-bwa.sh
 arguments = $(readbase)
 
 batch_name = "bwa"
