@@ -52,9 +52,12 @@ fi
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
+## If you want a progress bar for an interactive job:
+# pv ${PARENT_DIR_IN}/${READ_BASE}.tar | tar -x -C ./
 
 tar -xf ${PARENT_DIR_IN}/${READ_BASE}.tar -C ./
 check_exit_status "extract reads tar file" $?
+
 
 
 
@@ -78,10 +81,12 @@ rm ${READS1} ${READS2}
 
 mkdir ${READ_BASE}_fastqc
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 conda activate qc-env
 fastqc ${TRIM_READS1} ${TRIM_READS2} -o ${READ_BASE}_fastqc
 check_exit_status "fastqc" $?
 conda deactivate
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 tar -cf ${TRIM_READS_TAR} ${TRIM_READS1} ${TRIM_READS2} && \

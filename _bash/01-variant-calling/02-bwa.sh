@@ -16,8 +16,7 @@ export THREADS=$(count_threads)
 # Edit these for your system:
 export PARENT_DIR_IN="/staging/lnell/dna/trimmed"
 export PARENT_DIR_OUT="/staging/lnell/dna/bwa"
-export PARENT_DIR_GENOME="/staging/lnell"
-export GENOME="Tgraci_assembly.fasta"
+export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 
 
@@ -49,11 +48,12 @@ if [ ! -f ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ]; then
     # Don't actually exit if it's an interactive job:
     if [[ $- != *i* ]]; then exit 111; fi
 fi
-if [ ! -f ${PARENT_DIR_GENOME}/${GENOME}.gz ]; then
-    echo "${PARENT_DIR_GENOME}/${GENOME}.gz does not exist! " 1>&2
+if [ ! -f ${GENOME_FULL_PATH} ]; then
+    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
     if [[ $- != *i* ]]; then exit 222; fi
 fi
 
+export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 export READS1=$(read_tar_name ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar 1)
 check_exit_status "reads file name 1" $?
@@ -108,7 +108,7 @@ gunzip ${READS1}.gz && \
     gunzip ${READS2}.gz
 check_exit_status "gunzip reads" $?
 
-cp ${PARENT_DIR_GENOME}/${GENOME}.gz ./ && \
+cp ${GENOME_FULL_PATH} ./ && \
     gunzip ${GENOME}.gz
 check_exit_status "move, gunzip genome" $?
 
@@ -130,16 +130,6 @@ bbmerge.sh in1=${READS1} in2=${READS2} out=${MERGED_READS} \
 check_exit_status "bbmerge" $?
 
 rm ${READS1} ${READS2}
-
-##> # For staged testing (bc of interactive job time limits):
-##>  cd .. && \
-##>      tar -czf ${OUT_DIR}_bbmerge.tar.gz ${OUT_DIR} && \
-##>      mv ${OUT_DIR}_bbmerge.tar.gz ${PARENT_DIR_OUT}/ && \
-##>      cd ${OUT_DIR}
-##>
-##> # The next time, after running through section "Prep for downstream steps.",
-##> # run ...
-##>  tar -xzf ${PARENT_DIR_OUT}/${OUT_DIR}_bbmerge.tar.gz -C ./
 
 
 
@@ -196,17 +186,6 @@ check_exit_status "samtools view (merged, filtered)" $?
 call_bam_stats ${MERGED_BAM} "(merged, filtered)"
 
 rm all_${MERGED_BAM}
-
-
-##> # For staged testing (bc of interactive job time limits):
-##> cd .. && \
-##>     tar -czf ${OUT_DIR}_mapping.tar.gz ${OUT_DIR} && \
-##>     mv ${OUT_DIR}_mapping.tar.gz ${PARENT_DIR_OUT}/ && \
-##>     cd ${OUT_DIR}
-##>
-##> # The next time, after running through section "Prep for downstream steps.",
-##> # run ...
-##> tar -xzf ${PARENT_DIR_OUT}/${OUT_DIR}_mapping.tar.gz -C ./
 
 
 
