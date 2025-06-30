@@ -6,6 +6,7 @@ From: condaforge/miniforge3:25.3.0-3
     helpers.sh /app/helpers.sh
     main-env.yml /app/main-env.yml
     gatk-env.yml /app/gatk-env.yml
+    gatk3-env.yml /app/gatk3-env.yml
     qc-env.yml /app/qc-env.yml
     window-mpileup.py /usr/local/bin/window-mpileup.py
 
@@ -34,6 +35,9 @@ From: condaforge/miniforge3:25.3.0-3
         conda clean --all -y
     conda env create -q -f /app/gatk-env.yml && \
         rm /app/gatk-env.yml && \
+        conda clean --all -y
+    conda env create -q -f /app/gatk3-env.yml && \
+        rm /app/gatk3-env.yml && \
         conda clean --all -y
     conda env create -q -f /app/qc-env.yml && \
         rm /app/qc-env.yml && \
