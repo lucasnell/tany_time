@@ -2,7 +2,7 @@
 """
 From 
 https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/MaskSYNC_snape_complete.py
-with edits by Lucas A. Nell (lines 127 and 135, plus comments above each)
+with edits by Lucas A. Nell (lines 129 and 137, plus comments above each)
 """
 
 import sys
@@ -115,8 +115,10 @@ if options.te!="NA":
 Start=""
 RR=0
 CR=""
-BED=gzip.open(options.out+".bed.gz","wt")
-SO=gzip.open(options.out+"_masked.sync.gz","wt")
+# BED=gzip.open(options.out+".bed.gz","wt")
+# SO=gzip.open(options.out+"_masked.sync.gz","wt")
+BED=open(options.out+".bed","wt")
+SO=open(options.out+"_masked.sync","wt")
 
 if options.snape:
     for l in load_data(options.sync):
@@ -133,40 +135,40 @@ if options.snape:
         https://github.com/GonzalezLab/SNP_caller_benchmarking/blob/ccfe4135b79b2d24bde48de46189bd790cd15ddb/simulations/snape2_simulations.sh#L83).
         """
         if int(P) in exclude[C] or COV < int(options.mincov) or COV > maximumcov[C] or p_n0 < float(options.maxsnape):
-            SO.write("\t".join([C,P,R,".:.:.:.:.:."])+"\n")
+            b = SO.write("\t".join([C,P,R,".:.:.:.:.:."])+"\n")
             if Start=="":
                 Start=int(P)
                 RR=int(P)
                 CR=C
             elif RR < int(P)-1 or CR!=C:
-                BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
+                b = BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
                 Start=int(P)
                 RR=int(P)
                 CR=C
             else:
                 RR=int(P)
         else:
-            SO.write("\t".join([C,P,R,S,I])+"\n")
+            b = SO.write("\t".join([C,P,R,S,I])+"\n")
     if Start!=RR:
-        BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
+        b = BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
 else:
     for l in load_data(options.sync):
         C,P,R,S=l.split()
         COV=len(sync2string(S))
         if int(P) in exclude[C] or COV < int(options.mincov) or COV > maximumcov[C]:
-            SO.write("\t".join([C,P,R,".:.:.:.:.:."])+"\n")
+            b = SO.write("\t".join([C,P,R,".:.:.:.:.:."])+"\n")
             if Start=="":
                 Start=int(P)
                 RR=int(P)
                 CR=C
             elif RR < int(P)-1 or CR!=C:
-                BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
+                b = BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
                 Start=int(P)
                 RR=int(P)
                 CR=C
             else:
                 RR=int(P)
         else:
-            SO.write("\t".join([C,P,R,S])+"\n")
+            b = SO.write("\t".join([C,P,R,S])+"\n")
     if Start!=RR:
-        BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")
+        b = BED.write("\t".join([CR,str(Start-1),str(RR)])+"\n")

@@ -78,7 +78,6 @@ From Kapun et al. (2021):
         - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/Mpileup2Snape.sh
         - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/SNAPE2SYNC.py
         - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/MaskSYNC_snape.py
-        - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/Snape_to_VCF.py
 
 
 

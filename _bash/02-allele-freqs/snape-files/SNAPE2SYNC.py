@@ -14,6 +14,7 @@ import pickle
 
 # Based on Martin Kapun work
 # Modified by Maria Bogaerts
+# file output changed to uncompressed (Lucas Nell)
 
 #########################################################   HELP   #########################################################################
 usage = """
@@ -134,7 +135,8 @@ print("****** READING REF DONE ******")
 ############################ parse SNAPE FILE ###########################################
 print(" ")
 # parse SNAPE file and store alternative alleles:
-syncout=gzip.open(options.OUT+".sync.gz","wt")
+# syncout=gzip.open(options.OUT+".sync.gz","wt")
+syncout = open(options.OUT+".sync","wt")
 FL=0
 NUM=""
 print("****** PARSING INPUT ******")
@@ -182,7 +184,7 @@ for l in load_data(options.IN):
     ## test if POS = INDEX+1, i.e. the next position, otherwise fill the gaps
     if int(POS)>INDEX:
         while(INDEX<int(POS)):
-            syncout.write("\t".join([CHR,str(INDEX),REFID[CHR][INDEX-1],"\t".join(["0:0:0:0:0:0"]*NUM)])+"\n")
+            b = syncout.write("\t".join([CHR,str(INDEX),REFID[CHR][INDEX-1],"\t".join(["0:0:0:0:0:0"]*NUM)])+"\n")
             INDEX+=1
 
     # loop through libraries
@@ -190,7 +192,7 @@ for l in load_data(options.IN):
     syncL = process_line(a)
 
     ## write output
-    syncout.write(CHR+"\t"+POS+"\t"+REFID[CHR][INDEX-1]+"\t"+ syncL +"\n")
+    b = syncout.write(CHR+"\t"+POS+"\t"+REFID[CHR][INDEX-1]+"\t"+ syncL +"\n")
     INDEX+=1
 
 ## finish last chromosome
@@ -198,6 +200,6 @@ if int(POS)<ChrLen[CHR]:
     INDEX=int(POS)+1
     while(INDEX<=ChrLen[CHR]):
         print
-        syncout.write("\t".join([CHR,str(INDEX),REFID[CHR][INDEX-1],"\t".join(["0:0:0:0:0:0"]*NUM)])+"\n")
+        b = syncout.write("\t".join([CHR,str(INDEX),REFID[CHR][INDEX-1],"\t".join(["0:0:0:0:0:0"]*NUM)])+"\n")
         INDEX+=1
 
