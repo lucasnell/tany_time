@@ -8,6 +8,7 @@ dependencies:
   - bbmap=39.28
   - bcftools=1.22
   - bwa=0.7.19
+  - dask=2025.5.1
   - fastp=1.0.1
   - hisat2=2.2.1
   - htslib=1.22
@@ -15,6 +16,7 @@ dependencies:
   - minimap2=2.30
   - numpy=2.3.0
   - pandas=2.3.0
+  - pathos=0.3.4
   - python=3.13.5
   - samtools=1.22
   - seqtk=1.5

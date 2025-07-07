@@ -21,20 +21,6 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 
 
-# Check on BAM file with `bamtools stats`, check status of this call,
-# then output the file name
-call_bam_stats () {
-    local B=$1
-    local S=${B/.bam/.stats}
-    bamtools stats -in $B | tee $S
-    check_exit_status "bamtools stats $2" $?
-    echo -e "FILE:" $B "\n**********************************************"
-}
-
-
-
-
-
 
 
 #' ========================================================================

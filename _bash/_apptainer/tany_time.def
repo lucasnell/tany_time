@@ -49,6 +49,8 @@ From: condaforge/miniforge3:25.3.0-3
         rm ${sha}.zip && \
     	mv snape-pooled-${sha} snape-pooled && \
     	cd snape-pooled && \
+    	sed -i 's/Array.create/Array.make/g' pooled.ml && \
+    	sed -i 's/String.uppercase/String.uppercase_ascii/g' pooled.ml && \
     	make && \
     	mv snape-pooled /usr/local/bin/ && \
     	cd .. && \

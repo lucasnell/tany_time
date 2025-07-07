@@ -118,3 +118,21 @@ read_tar_name () {
     echo ${SORTED_READS[$(( $2 - 1 ))]}
     return 0
 }
+
+
+
+
+#' Check on BAM file with `bamtools stats`, check status of this call,
+#' then output the file name.
+#' THIS MUST BE RUN INSIDE `main-env`!
+#'
+#' Usage:
+#' call_bam_stats ${BAM_FILE} "Label for file"
+#'
+call_bam_stats () {
+    local B=$1
+    local S=${B/.bam/.stats}
+    bamtools stats -in $B | tee $S
+    check_exit_status "bamtools stats $2" $?
+    echo -e "FILE:" $B "\n**********************************************"
+}
