@@ -7,71 +7,51 @@
 #' - `samtools mpileup`
 
 
-# Check previous command's exit status.
-# If != 0, then archive working dir and exit.
-check_exit_status () {
-  if [ ! "$2" -eq "0" ]; then
-    echo "Step $1 failed with exit status $2" 1>&2
-    cd ..
-    tar -czf ERROR_${OUT_DIR}.tar.gz ${OUT_DIR}
-    mv ERROR_${OUT_DIR}.tar.gz /staging/lnell/dna/mpileup/
-    rm -r ${OUT_DIR}
-    exit $2
-  fi
-  echo "Checked step $1"
-}
-
-# Check on BAM file with `bamtools stats`, check status of this call,
-# then output the file name
-call_bam_stats () {
-    local B=$1
-    local S=${B/.bam/.stats}
-    bamtools stats -in $B | tee $S
-    check_exit_status "bamtools stats $2" $?
-    echo -e "FILE:" $B "\n**********************************************"
-}
-
-
-
-export THREADS=4
 
 . /app/.bashrc
 conda activate main-env
 
+export THREADS=$(count_threads)
 
-# Argument from submit file gives you the base of the read FASTQ file name.
-# Here, I assume that FASTQ file names are of the form
-# <sample name>_S<sample number>_L002_R<read number>_001.fastq.gz
-# where everything not in brackets is constant.
-# This is true for both my RNA and DNA sequencing reads.
-# For the file `Ash-19_S5_L002_R2_001.fastq.gz`, the base of the read name
-# would be "Ash-19_S5" because everything else can be inferred.
+# Edit these for your system:
+export PARENT_DIR_IN="/staging/lnell/dna/bwa"
+export PARENT_DIR_OUT="/staging/lnell/dna/mpileup"
+export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
-export READ_BASE=$1
+
+
+# export READ_BASE=Ash-19_S5
+# export READ_BASE=Hrisatjorn_S11
+
 
 
 #' ========================================================================
 #' Inputs
 #' ========================================================================
 
+export READ_BASE=$1
+
 export IN_BAM=${READ_BASE}_bwa.bam
-export GENOME=tany_scaffolds.fasta
-if [ ! -f /staging/lnell/dna/bwa/${IN_BAM} ]; then
-    echo "/staging/lnell/dna/bwa/${IN_BAM} does not exist! " 1>&2
-    exit 111
+export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
+
+if [ ! -f ${PARENT_DIR_IN}/${IN_BAM} ]; then
+    echo "${PARENT_DIR_IN}/${IN_BAM} does not exist! " 1>&2
+    # Don't actually exit if it's an interactive job:
+    if [[ $- != *i* ]]; then exit 111; fi
 fi
-if [ ! -f /staging/lnell/${GENOME}.gz ]; then
-    echo "/staging/lnell/${GENOME}.gz does not exist! " 1>&2
-    exit 222
+if [ ! -f ${GENOME_FULL_PATH} ]; then
+    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
+    if [[ $- != *i* ]]; then exit 222; fi
 fi
+
+
 
 
 #' ========================================================================
 #' Outputs
 #' ========================================================================
 
-# Where to send everything when done:
-export TARGET=/staging/lnell/dna/mpileup
+
 # Final files / directories
 export OUT_DIR=${READ_BASE}_mpileup
 export OUT_FILE=${READ_BASE}_mpileup.txt.gz
@@ -79,6 +59,13 @@ export OUT_FILE=${READ_BASE}_mpileup.txt.gz
 export MARKDUP_OUT=${IN_BAM/.bam/_nodups.bam}
 export REALIGNED_OUT=${MARKDUP_OUT/.bam/_realigned.bam}
 
+if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_FILE} ]; then
+    echo "Output files already exist" 1>&2
+    if [[ $- != *i* ]]; then
+        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+        exit 0
+    fi
+fi
 
 
 #' ========================================================================
@@ -88,18 +75,30 @@ export REALIGNED_OUT=${MARKDUP_OUT/.bam/_realigned.bam}
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
-cp /staging/lnell/dna/bwa/${IN_BAM} ./
-cp /staging/lnell/${GENOME}.gz ./ && gunzip ${GENOME}.gz
+cp ${PARENT_DIR_IN}/${IN_BAM} ./
+check_exit_status "move BAM" $?
 
-# Indices needed downstream
+cp ${GENOME_FULL_PATH} ./ && \
+    gunzip ${GENOME}.gz
+check_exit_status "move, gunzip genome" $?
+
+
+# Needed downstream
 samtools faidx --length 80 ${GENOME}
-picard CreateSequenceDictionary R=${GENOME}
+
 
 
 #' ========================================================================
 #' Mark and remove duplicates
 #' ========================================================================
-picard MarkDuplicates \
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+conda activate gatk-env
+
+gatk CreateSequenceDictionary R=${GENOME}
+check_exit_status "Picard_CreateSequenceDictionary" $?
+
+gatk MarkDuplicates \
     REMOVE_DUPLICATES=true \
     I=${IN_BAM} \
     O=${MARKDUP_OUT} \
@@ -107,6 +106,9 @@ picard MarkDuplicates \
     VALIDATION_STRINGENCY=SILENT \
     VERBOSITY=WARNING
 check_exit_status "Picard_MarkDuplicates" $?
+
+conda deactivate
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 rm ${IN_BAM}
 
@@ -119,6 +121,9 @@ check_exit_status "samtools index (nodups)" $?
 #' ========================================================================
 #' Realign around indels
 #' ========================================================================
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+conda activate gatk3-env
 
 GenomeAnalysisTK \
     -T RealignerTargetCreator \
@@ -138,6 +143,9 @@ GenomeAnalysisTK \
     -o ${REALIGNED_OUT}
 check_exit_status "IndelRealigner" $?
 
+conda deactivate
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 rm ${MARKDUP_OUT}*
 
 call_bam_stats ${REALIGNED_OUT} "(realigned)"
@@ -146,10 +154,10 @@ call_bam_stats ${REALIGNED_OUT} "(realigned)"
 #' ========================================================================
 #' mpileup
 #' ========================================================================
-samtools mpileup -B -f ${GENOME} ${REALIGNED_OUT} > ${OUT_FILE/.gz/}
+samtools mpileup -B -f ${GENOME} ${REALIGNED_OUT} > ${OUT_FILE%.gz}
 check_exit_status "samtools mpileup" $?
 
-gzip ${OUT_FILE/.gz/}
+gzip ${OUT_FILE%.gz}
 
 # Sliding window (500bp with step size of 250bp) of coverage for plotting
 window-mpileup.py -r ${GENOME} -s 250 -w 500 ${OUT_FILE}
@@ -168,11 +176,14 @@ rm ${GENOME/.fasta/}*
 #' ========================================================================
 
 
-mv ${OUT_FILE} ${TARGET}/
+mv ${OUT_FILE} ${PARENT_DIR_OUT}/
 
 cd ..
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
-mv ${OUT_DIR}.tar.gz ${TARGET}/
+mv ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
 
 rm -r ${OUT_DIR}
+
+
+if [ -f tany_time.sif ]; then rm tany_time.sif; fi
 
