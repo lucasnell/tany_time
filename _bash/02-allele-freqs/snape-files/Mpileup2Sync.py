@@ -139,7 +139,8 @@ print("****** READING REF DONE ******")
 ############################ parse MPILEUP ###########################################
 print(" ")
 # parse mpileup and store alternative alleles:
-syncout=gzip.open(options.OUT+".sync.gz","wt")
+# syncout=gzip.open(options.OUT+".sync.gz","wt")
+syncout=open(options.OUT+".sync","wt")
 FL=0
 NUM=""
 print("****** PARSING MPILEUP ******")
