@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Use fastp to trim paired-end, Poolseq (DNA) Illumina reads.
+#'
+#' Use fastp to trim paired-end, Poolseq (DNA) Illumina reads.
+#'
 
 
 
@@ -13,24 +15,21 @@ export THREADS=$(count_threads)
 export PARENT_DIR_IN="/staging/lnell/dna/raw_fq"
 export PARENT_DIR_OUT="/staging/lnell/dna/trimmed"
 
-
-
 export READ_BASE=$1
 
+export READS1=${READ_BASE}_L002_R1_001.fastq.gz
+export READS2=${READ_BASE}_L002_R2_001.fastq.gz
 
-if [ ! -f ${PARENT_DIR_IN}/${READ_BASE}.tar ]; then
-    echo "${PARENT_DIR_IN}/${READ_BASE}.tar does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then
-        exit 111
-    fi
+status=0
+if [ ! -f ${PARENT_DIR_IN}/${READS1} ]; then
+    echo "${PARENT_DIR_IN}/${READS1} does not exist! " 1>&2
+    status=111
 fi
-
-
-export READS1=$(read_tar_name ${PARENT_DIR_IN}/${READ_BASE}.tar 1)
-check_exit_status "reads file name 1" $?
-export READS2=$(read_tar_name ${PARENT_DIR_IN}/${READ_BASE}.tar 2)
-check_exit_status "reads file name 2" $?
+if [ ! -f ${PARENT_DIR_IN}/${READS2} ]; then
+    echo "${PARENT_DIR_IN}/${READS2} does not exist! " 1>&2
+    status=111
+fi
+if (( $status != 0 )); then safe_exit $status; fi
 
 
 # Outputs:
@@ -39,24 +38,17 @@ export TRIM_READS2=trimmed_${READS2}
 export TRIM_READS_TAR=trimmed_${READ_BASE}.tar
 export OUT_DIR=trimmed_${READ_BASE}
 
-if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${TRIM_READS_TAR} ]; then
-    echo "Output files already exist" 1>&2
-    if [[ $- != *i* ]]; then
-        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
-        exit 0
-    fi
-fi
-
-
 
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
 ## If you want a progress bar for an interactive job:
-# pv ${PARENT_DIR_IN}/${READ_BASE}.tar | tar -x -C ./
+# rsync --progress ${PARENT_DIR_IN}/${READS1} ./ &&
+#     rsync --progress ${PARENT_DIR_IN}/${READS2} ./
 
-tar -xf ${PARENT_DIR_IN}/${READ_BASE}.tar -C ./
-check_exit_status "extract reads tar file" $?
+cp ${PARENT_DIR_IN}/${READS1} ./ &&
+    cp ${PARENT_DIR_IN}/${READS2} ./
+check_exit_status "copy reads files" $?
 
 
 
@@ -106,4 +98,6 @@ rm -r ${OUT_DIR}
 
 
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+safe_exit 0
+
+
