@@ -4,14 +4,12 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = 01-snape.log
+log = logs/01-snape/$(readbase).log
+error = logs/01-snape/$(readbase).err
+output = logs/01-snape/$(readbase).out
 
-##> log = logs/01-snape/$(readbase).log
-##> error = logs/01-snape/$(readbase).err
-##> output = logs/01-snape/$(readbase).out
-##>
-##> executable = 01-snape.sh
-##> arguments = $(readbase) $(n_adults)
+executable = 01-snape.sh
+arguments = $(readbase) $(n_adults)
 
 batch_name = "snape"
 
@@ -23,5 +21,4 @@ request_cpus = 15
 request_memory = 20GB
 request_disk = 80GB
 
-queue
-##> queue readbase,n_adults from readbases.txt
+queue readbase,n_adults from readbases.txt

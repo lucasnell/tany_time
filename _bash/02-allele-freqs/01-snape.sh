@@ -3,12 +3,18 @@
 #' This script calls snape-pooled to estimate allele frequencies for
 #' Pool-seq data.
 
-
-#' Note that for many of the scripts inside `snape-files`, the `output`
+#' Note #1:
+#' For many of the scripts inside `snape-files`, the `output`
 #' argument is supposed to be a prefix only.
 #' Hence, there are multiple instances below where I remove the extension
 #' to the final file names for input to this argument.
 
+#' Note #2:
+#' To compress the `snape-files` folder into a tar file that doesn't generate
+#' warnings on linux, run the following:
+#'
+#' tar -cz --no-xattrs --exclude ".*" -f snape-files.tar.gz snape-files
+#'
 
 
 . /app/.bashrc
@@ -130,7 +136,7 @@ export CONTIG_NAMES=($(grep "^>" ${GENOME} | sed 's/>//g' | sed 's/\s.*$//'))
 #' ========================================================================
 #' Summarize some mpileup file info for use later
 #' Produces the following files:
-#' - ${MP_INFO_PREFIX}.sync.gz
+#' - ${MP_INFO_PREFIX}.sync
 #' - ${MP_INFO_PREFIX}.cov
 #' - ${MP_INFO_PREFIX}.indel
 #'
@@ -146,21 +152,8 @@ python3 ./snape-files/Mpileup2Sync.py \
 check_exit_status "Mpileup2Sync" $?
 
 # Not needed hereafter:
-rm ${MP_INFO_PREFIX}.sync.gz
+rm ${MP_INFO_PREFIX}.sync
 
-
-##> # For staged testing (bc of interactive job time limits):
-##> cd .. && \
-##>     tar -czf ${OUT_DIR}_2sync.tar.gz ${OUT_DIR} && \
-##>     mv ${OUT_DIR}_2sync.tar.gz ${PARENT_DIR_OUT}/ && \
-##>     echo "FINISHED MOVING" && \
-##>     cd ${OUT_DIR}
-##>
-##> # The next time, after running through section "Output names...",
-##> # run ...
-##> pv ${PARENT_DIR_OUT}/${OUT_DIR}_2sync.tar.gz | tar -xz -C ./ && \
-##>     cd ${OUT_DIR} && \
-##>     export CONTIG_NAMES=($(grep "^>" ${GENOME} | sed 's/>//g' | sed 's/\s.*$//'))
 
 
 
@@ -319,21 +312,6 @@ done
 
 
 
-##> # For staged testing (bc of interactive job time limits):
-##> cd .. && \
-##>     tar -czf ${OUT_DIR}_snapes.tar.gz ${OUT_DIR} && \
-##>     mv ${OUT_DIR}_snapes.tar.gz ${PARENT_DIR_OUT}/ && \
-##>     echo "FINISHED MOVING" && \
-##>     cd ${OUT_DIR}
-##>
-##> # The next time, after running through section "Output names...",
-##> # run ...
-##> pv ${PARENT_DIR_OUT}/${OUT_DIR}_snapes.tar.gz | tar -xz -C ./ && \
-##>     cd ${OUT_DIR} && \
-##>     export CONTIG_NAMES=($(grep "^>" ${GENOME} | sed 's/>//g' | sed 's/\s.*$//'))
-
-
-
 
 
 #' ========================================================================
@@ -358,8 +336,14 @@ rm ${UNMASKED_PREFIX}_2SYNC.out
 #' ========================================================================
 #' Create masked gSYNC file
 #' Creates two files:
-#' - ${MASKED_FULL_PREFIX}.bed.gz
-#' - ${MASKED_FULL_PREFIX}_masked.sync.gz
+#' - ${MASKED_FULL_PREFIX}.bed
+#' - ${MASKED_FULL_PREFIX}_masked.sync
+#'
+#' The mask removes frequences that meet any of these:
+#' - Pr(polymorphic) < 0.9
+#' - read depth – too low/high
+#' - within repetitive elements
+#' - within 5 bp of indel
 #'
 #' Takes ~6 min
 python3 ./snape-files/MaskSYNC_snape.py \
