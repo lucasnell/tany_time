@@ -32,12 +32,11 @@ export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 if [ ! -f ${PARENT_DIR_IN}/${ONT_FASTQ}.gz ]; then
     echo "${PARENT_DIR_IN}/${ONT_FASTQ}.gz does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then exit 111; fi
+    safe_exit 111
 fi
 if [ ! -f ${GENOME_FULL_PATH} ]; then
     echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 
 
@@ -129,4 +128,4 @@ rm -r ${OUT_DIR}
 
 
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+safe_exit 0

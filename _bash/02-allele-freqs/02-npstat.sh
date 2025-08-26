@@ -22,10 +22,6 @@ export PARENT_DIR_OUT="/staging/lnell/dna/npstat"
 export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 
-# export READ_BASE=Ash-19_S5
-# export N_ADULTS=30
-# export WIN_KB=10
-
 
 
 
@@ -51,12 +47,11 @@ export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 if [ ! -f ${PARENT_DIR_IN}/${IN_SNAPE_PREFIX}.tar ]; then
     echo "${PARENT_DIR_IN}/${IN_SNAPE_PREFIX}.tar does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then exit 111; fi
+    safe_exit 111
 fi
 if [ ! -f ${GENOME_FULL_PATH} ]; then
     echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 # Contig names in the same order as the reference.
 # Used to organize output files since SNAPE analyzes by contig.
@@ -259,10 +254,6 @@ done
 rm ../${SNP}
 
 
-# t0=$(date +%s)
-# t1=$(date +%s)
-# python3 -c "print($(( t1 - t0 )) / 60)"
-
 
 # Now go back to main directory
 cd ..
@@ -428,4 +419,4 @@ mv ${OUT_FILE}.gz ${PARENT_DIR_OUT}/
 cd ..
 rm -r ${OUT_DIR}
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+safe_exit 0

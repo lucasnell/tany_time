@@ -29,9 +29,6 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 export REPEATS_FULL_PATH="/staging/lnell/Tgraci_repeats_locs.gff3.gz"
 
 
-# export READ_BASE=Ash-19_S5
-# export N_ADULTS=30
-
 
 
 #' ========================================================================
@@ -48,17 +45,16 @@ export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 export REPEATS=$(basename ${REPEATS_FULL_PATH%.gz})
 
 if [ ! -f ${PARENT_DIR_IN}/${IN_PILEUP}.gz ]; then
-    echo "${PARENT_DIR_IN}/${IN_PILEUP} does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then exit 111; fi
+    echo "${PARENT_DIR_IN}/${IN_PILEUP}.gz does not exist! " 1>&2
+    safe_exit 111
 fi
 if [ ! -f ${GENOME_FULL_PATH} ]; then
     echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 if [ ! -f ${REPEATS_FULL_PATH} ]; then
     echo "${REPEATS_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 
 
@@ -419,4 +415,4 @@ mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
 rm -r ${OUT_DIR}
 
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+safe_exit 0

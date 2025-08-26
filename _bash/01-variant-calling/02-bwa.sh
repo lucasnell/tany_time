@@ -31,12 +31,11 @@ export READ_BASE=$1
 
 if [ ! -f ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ]; then
     echo "${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then exit 111; fi
+    safe_exit 111
 fi
 if [ ! -f ${GENOME_FULL_PATH} ]; then
     echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
@@ -70,14 +69,11 @@ export UN_BAM=${OUT_BAM/.bam/_unmerged.bam}
 export UNMAPPED_UN_BAM=${UNMAPPED_BAM/.bam/_unmerged.bam}
 
 
-if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_BAM} ]; then
-    echo "Output files already exist" 1>&2
-    if [[ $- != *i* ]]; then
-        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
-        exit 0
-    fi
-fi
 
+# if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_BAM} ]; then
+#     echo "Output files already exist" 1>&2
+#     safe_exit 0
+# fi
 
 
 #' ========================================================================
@@ -228,6 +224,6 @@ rm -r ${OUT_DIR}
 
 
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+safe_exit 0
 
 

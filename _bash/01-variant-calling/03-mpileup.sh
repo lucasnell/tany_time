@@ -20,9 +20,6 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 
 
-# export READ_BASE=Ash-19_S5
-# export READ_BASE=Hrisatjorn_S11
-
 
 
 #' ========================================================================
@@ -36,12 +33,11 @@ export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 if [ ! -f ${PARENT_DIR_IN}/${IN_BAM} ]; then
     echo "${PARENT_DIR_IN}/${IN_BAM} does not exist! " 1>&2
-    # Don't actually exit if it's an interactive job:
-    if [[ $- != *i* ]]; then exit 111; fi
+    safe_exit 111
 fi
 if [ ! -f ${GENOME_FULL_PATH} ]; then
     echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    if [[ $- != *i* ]]; then exit 222; fi
+    safe_exit 222
 fi
 
 
@@ -59,13 +55,10 @@ export OUT_FILE=${READ_BASE}_mpileup.txt.gz
 export MARKDUP_OUT=${IN_BAM/.bam/_nodups.bam}
 export REALIGNED_OUT=${MARKDUP_OUT/.bam/_realigned.bam}
 
-if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_FILE} ]; then
-    echo "Output files already exist" 1>&2
-    if [[ $- != *i* ]]; then
-        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
-        exit 0
-    fi
-fi
+# if [ -f ${PARENT_DIR_OUT}/${OUT_DIR}.tar.gz ] && [ -f ${PARENT_DIR_OUT}/${OUT_FILE} ]; then
+#     echo "Output files already exist" 1>&2
+#     safe_exit 0
+# fi
 
 
 #' ========================================================================
@@ -185,5 +178,4 @@ mv ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
 rm -r ${OUT_DIR}
 
 
-if [ -f tany_time.sif ]; then rm tany_time.sif; fi
-
+safe_exit 0
