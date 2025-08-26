@@ -1,0 +1,44 @@
+# combine-reads.sub
+
+# combine each pair of Pool-seq DNA reads into one tar file and add to staging
+
+universe = vanilla
+
+##> log = logs/00-combine-reads/$(readbase).log
+##> error = logs/00-combine-reads/$(readbase).err
+##> output = logs/00-combine-reads/$(readbase).out
+##>
+##> executable = 00-combine-reads.sh
+##> arguments = $(readbase)
+
+batch_name = "combine-reads"
+
+## Specify that HTCondor should transfer files to and from the
+##  computer where each job runs.
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+## IMPORTANT! Require execute servers that have access to staging
+requirements = (HasCHTCStaging == true)
+
+## Tell HTCondor what amount of compute resources
+##  each job will need on the computer where it runs.
+request_cpus = 2
+request_memory = 16GB
+request_disk = 60GB
+
+
+##>
+readbase=Hrisatjorn_S11
+##<
+
+ResearchDrive = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/ill/dna/raw_fq
+transfer_input_files = $(ResearchDrive)/$(readbase)_L002_R1_001.fastq.gz, $(ResearchDrive)/$(readbase)_L002_R2_001.fastq.gz
+
+
+queue 1
+
+##> # Run one instance of this job per line in `readbases.txt`
+##> queue readbase from readbases.txt
+
+
