@@ -44,6 +44,42 @@ count_threads () {
 
 
 
+#' Exit with given status but only in non-interactive job.
+#'
+#' Usage:
+#' # for error:
+#' safe_exit 1
+#' # for normal exit:
+#' safe_exit 0
+#'
+safe_exit () {
+
+    out_loc=$(readlink -f /proc/self/fd/0)
+    if [ "$out_loc" != "/dev/null" ]; then
+        # (interactive shell)
+        break 2> /dev/null
+    else
+        # (non-interactive shell)
+        if [ -z "$_CONDOR_SCRATCH_DIR" ]; then
+            echo -n "No condor scratch directory detected. " 1>&2
+            echo "No files removed." 1>&2
+        else
+            cd $_CONDOR_SCRATCH_DIR
+            # Remove everything except for the files / folders you start with:
+            ## shopt -s extglob
+            ## TO_RM=$(ls -d !(*condor*|tmp|var|*docker*) 2> /dev/null)
+            TO_RM=$(find . \! \( -name \*condor\* -o -name tmp -o -name var -o -name \*docker\* \))
+            rm -rf ${TO_RM} 2> /dev/null
+            ## shopt -u extglob
+        fi
+        if [ -f tany_time.sif ]; then rm tany_time.sif; fi
+        exit $1
+    fi
+
+    return 0
+}
+
+
 
 #' Check previous command's exit status.
 #' If != 0, then...
@@ -64,26 +100,7 @@ check_exit_status () {
             echo -e "\n\nFILE: " ${f} "\n\n" 1>&2
             cat ${f} 1>&2
         done
-        out_loc=$(readlink -f /proc/self/fd/0)
-        if [ "$out_loc" != "/dev/null" ]; then
-            # (interactive shell)
-            break 2> /dev/null
-        else
-            # (non-interactive shell)
-            if [ -z "$_CONDOR_SCRATCH_DIR" ]; then
-                echo -n "No condor scratch directory detected. " 1>&2
-                echo "No files removed." 1>&2
-            else
-                cd $_CONDOR_SCRATCH_DIR
-                # Remove everything except for the files / folders you start with:
-                ## shopt -s extglob
-                ## TO_RM=$(ls -d !(*condor*|tmp|var|*docker*) 2> /dev/null)
-                TO_RM=$(find . \! \( -name \*condor\* -o -name tmp -o -name var -o -name \*docker\* \))
-                rm -rf ${TO_RM} 2> /dev/null
-                ## shopt -u extglob
-            fi
-            exit $2
-        fi
+        safe_exit $2
         return 0
     fi
     if [[ "$1" != "null" ]]; then
@@ -92,6 +109,8 @@ check_exit_status () {
     return 0
 
 }
+
+
 
 
 
