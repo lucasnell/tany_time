@@ -2,27 +2,26 @@
 
 # calculate population-genetic parameters for Pool-seq samples
 
+# Window length in kb:
+win_kb = 10
+
 container_image = file:///staging/lnell/tany_time.sif
 
-log = 02-npstat.log
+log =           logs/02-npstat/$(readbase)_$(win_kb)kb.log
+error =         logs/02-npstat/$(readbase)_$(win_kb)kb.err
+output =        logs/02-npstat/$(readbase)_$(win_kb)kb.out
 
-##> log =           logs/02-npstat/$(readbase)_$(win_kb)kb.log
-##> error =         logs/02-npstat/$(readbase)_$(win_kb)kb.err
-##> output =        logs/02-npstat/$(readbase)_$(win_kb)kb.out
-##>
-##> executable = 02-npstat.sh
-##> arguments = $(readbase) $(n_adults) $(win_kb)
+executable = 02-npstat.sh
+arguments = $(readbase) $(n_adults) $(win_kb)
 
 batch_name =    "npstat"
 
 should_transfer_files =     YES
 when_to_transfer_output =   ON_EXIT
-##> transfer_input_files =      sync2pileup.py
 requirements =              (HasCHTCStaging == true)
 
 request_cpus =      16
 request_memory =    16GB
 request_disk =      50GB
 
-queue
-##> queue readbase,n_adults,win_kb from readbases.txt
+queue readbase,n_adults from readbases.txt
