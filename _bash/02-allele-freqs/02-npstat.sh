@@ -414,9 +414,15 @@ done
 
 
 gzip ${OUT_FILE}
-mv ${OUT_FILE}.gz ${PARENT_DIR_OUT}/
 
+
+mv ${OUT_FILE}.gz ../
 cd ..
+# Copying, not moving so that they will be moved to ResearchDrive after exit
+cp ${OUT_FILE}.gz ${PARENT_DIR_OUT}/
+
 rm -r ${OUT_DIR}
 
-safe_exit 0
+#' Do NOT use `safe_exit` because that'll remove the files before they
+#' can be moved to ResearchDrive.
+exit 0

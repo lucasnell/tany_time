@@ -168,14 +168,21 @@ rm ${GENOME/.fasta/}*
 #' Handle output files
 #' ========================================================================
 
-
-mv ${OUT_FILE} ${PARENT_DIR_OUT}/
-
+#'
+#' Main mpileup file is separated from directory containing logs.
+#' Both the mpileup file and the archived directory will be copied to
+#' both staging and (upon exit) ResearchDrive.
+#'
+mv ${OUT_FILE} ../
 cd ..
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
-mv ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+
+# Copying, not moving so that they will be moved to ResearchDrive after exit
+cp ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+cp ${OUT_FILE} ${PARENT_DIR_OUT}/
 
 rm -r ${OUT_DIR}
 
-
-safe_exit 0
+#' Do NOT use `safe_exit` because that'll remove the files before they
+#' can be moved to ResearchDrive.
+exit 0
