@@ -4,20 +4,23 @@
 # objects into three:
 # one for temporal samples, one for spatial samples, and one for all.
 
-
-universe = vanilla
+container_image = file:///staging/lnell/tany_time.sif
 
 log = combine-snapes.log
 error = combine-snapes.err
 output = combine-snapes.out
 
-executable = combine-snapes.sh
+executable = 03-combine-snapes.sh
 
 batch_name = "combine-snapes"
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = snape_masked_time.tar, snape_masked_space.tar, snape_masked_all.tar
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/snape
 
 request_cpus = 2
 request_memory = 4GB
