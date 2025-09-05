@@ -31,6 +31,7 @@ export REPEATS_FULL_PATH="/staging/lnell/Tgraci_repeats_locs.gff3.gz"
 
 
 
+
 #' ========================================================================
 #' Inputs
 #' ========================================================================
@@ -119,8 +120,13 @@ check_exit_status "cp, extract snape-files.tar.gz" $?
 
 # "Pickle" the reference
 python3 ./snape-files/PickleRef.py --ref ${GENOME} \
-    --output ${GENOME_PICKLE%.ref}
-check_exit_status "PickleRef" $?
+    --output ${GENOME_PICKLE%.ref} \
+    1> pickle.stdout \
+    2> pickle.stderr
+status=$?
+if [ "$status" != "0" ]; then cat pickle.stderr; fi
+check_exit_status "PickleRef" $status
+rm pickle.std*
 
 # Scaffold names in the same order as the reference.
 # Used to organize output files since SNAPE analyzes by contig.
@@ -144,8 +150,13 @@ python3 ./snape-files/Mpileup2Sync.py \
   --output ${MP_INFO_PREFIX} \
   --base-quality-threshold 25 \
   --coding 1.8 \
-  --minIndel 5
-check_exit_status "Mpileup2Sync" $?
+  --minIndel 5 \
+  1> Mpileup2Sync.stdout \
+  2> Mpileup2Sync.stderr
+status=$?
+if [ "$status" != "0" ]; then cat Mpileup2Sync.stderr; fi
+check_exit_status "Mpileup2Sync" $status
+rm Mpileup2Sync.std*
 
 # Not needed hereafter:
 rm ${MP_INFO_PREFIX}.sync
@@ -168,7 +179,7 @@ for contig in *; do
     if [[ ! " ${CONTIG_NAMES[*]} " =~ " ${contig} " ]]; then
         echo "Scaffold ${contig} does not exist in reference! " 1>&2
         if [[ $- != *i* ]]; then
-            exit 1
+            safe_exit 1
         else
             break
         fi
@@ -287,6 +298,7 @@ EOF
 
 chmod +x all_snapes.py
 
+
 # If it's an interactive job, uncomment lines for progress bar:
 if [[ $- == *i* ]]; then sed -i 's/##> //g' all_snapes.py; fi
 
@@ -351,8 +363,10 @@ python3 ./snape-files/MaskSYNC_snape.py \
     --mincov ${MIN_COV} \
     --maxcov ${MAX_COV} \
     --maxsnape ${MAX_SNAPE} \
-    --SNAPE
+    --SNAPE \
+    1> MaskSYNC_snape.stdout
 check_exit_status "MaskSYNC_snape" $?
+rm MaskSYNC_snape.stdout
 
 
 # This removes redundant _masked ending to this file:
@@ -383,8 +397,10 @@ python3 ./snape-files/MaskSYNC_snape.py \
     --mincov ${MIN_COV} \
     --maxcov ${MAX_COV} \
     --maxsnape 0 \
-    --SNAPE
+    --SNAPE \
+    1> MaskSYNC_snape.stdout
 check_exit_status "MaskSYNC_snape (partial)" $?
+rm MaskSYNC_snape.stdout
 
 
 # This removes redundant _masked ending to this file:
