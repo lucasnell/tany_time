@@ -1,0 +1,30 @@
+# bam-cov.sub
+
+# Calculate coverage in BAM files using `bedtools genomecov`
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = logs/05-bam-cov/$(readbase).log
+error = logs/05-bam-cov/$(readbase).err
+output = logs/05-bam-cov/$(readbase).out
+
+executable = 05-bam-cov.sh
+arguments = $(readbase)
+
+batch_name = "bam-cov"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = $(readbase)_bwa_cov.bed.gz
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/bwa
+
+
+request_cpus = 2
+request_memory = 8GB
+request_disk = 20GB
+
+queue readbase from readbases.txt
