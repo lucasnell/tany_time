@@ -1,0 +1,55 @@
+﻿ID,stored,lake,sample,col_month,col_day,sep_year,sep_month,sep_day,n_tany,contam_pilot,extract_row,extract_col,biotech_id,sequenced,other_spp,notes
+1,C1,Ólafsfjarðarvatn,,6,8,2020,12,6,40,TRUE,,,,FALSE,"Micropsectra lindrothi, Eukiefferiella minor, Orthocladius obtexens, Orthocladius frigidis, Psectrocladius limbatellus",
+2,C2,Elliðavatn,,6,9,2020,12,6,21,TRUE,,,Ellid-19,TRUE,"Cricotopus sylvestris, Macropelopia nebulosa, Arctopelopia griseipennis, Paracladopelma laminata, 2 unknown species (A and B)",
+3,C3,Tjörnin,,6,14,2020,12,8,10,TRUE,,,Tjornin,TRUE,"Unknown species B, Procladius islandicus, Cricotopus sylvestris, Psectrocladius limbatellus, Psectrocladius barbimanus, unknown species C",
+4,,Stapavatn,,6,9,2020,12,8,0,,,,,FALSE,"Tanytarsus gracilentus (just 1), unknown species B, unknown species A, Orthocladius consobrinus, Psectrocladius limbatellus, E. minor, C. sylvestris,",
+5,,Vatnshlidarvatn,,6,9,2020,12,9,0,,,,,FALSE,"Pogonocladius consobrinus, Cricotopus sylvestris, Paracladopelma laminata",
+6,,Hnausavatn,,6,9,2020,12,9,0,,,,,FALSE,"Metriocnemus hygropetricus, Ablabesmyia monilis, Tanytarsus gracilentus, unknown species D, Paracladopelma laminata",
+7,C4,Hrisatjorn,,6,8,2020,12,9,25,TRUE,,,Hrisatjorn,TRUE,"Unknown species A, unknown species B, Psectrocladius barbimanus, Eukiefferciella minor",
+8,C5,Blonduos,,6,9,2020,12,9,40,TRUE,,,,FALSE,"Paracladopelma laminata, Micropsectra lindrothi, Cricotopus sylvestris",
+9,C6,Miklavatn,1,5,31,2020,12,10,40,TRUE,,,,FALSE,Cricotopus sylvestris,almost entirely Tanytarsus gracilentus; 12 identified in 2019 and verified IDs in 2020
+10,C7,Svartárvatn,L,6,7,2020,12,10,40,TRUE,,,,FALSE,Chironomus thummi,almost entirely Tanytarsus gracilentus; 5 identified in 2019 and verified IDs in 2020
+11,C8,Víkingavatn,2,7,9,2020,12,13,40,TRUE,,,,FALSE,"Paracladopelma laminata, Abhbesmyia monilis, Micropsectra lindrothi, Psectrocladius limbatellus",29 identified in 2019 and verified IDs in 2020
+12,C9,Skjálftavatn,2,5,31,2020,12,13,40,TRUE,,,,FALSE,,"just Tanytarsus, 15 identified in 2019 and verified IDs in 2020"
+13,C10,Mývatn - SN,3,6,21,2020,12,13,17,TRUE,,,,FALSE,"Cricotopus sylvestris, Chironomus thummi, Psectrocladius limbatellus",Tanytarsus combined with sample 4 separated on 2020-12-13
+14,C10,Mývatn - SN,4,6,21,2020,12,13,23,TRUE,,,,FALSE,"Cricotopus sylvestris, Chironomus thummi, Psectrocladius limbatellus",Tanytarsus combined with sample 3 separated on 2020-12-13
+15,C11,Mývatn,1,5,31,2020,12,13,40,TRUE,,,,FALSE,"Psectrocladius barbimanus, Chironomus thummi","site is boat ramp, mostly Tanytarsus"
+16,C12,Mývatn - KS,,6,21,2020,12,13,40,TRUE,,,,FALSE,,39 identified in 2019 and verified IDs in 2020
+17,,Hredhavatn,,6,9,2020,12,13,0,,,,,FALSE,"Paracladopelma laminata, Ablabesmyia monilis, Psectrocladius limbatellus, Heterotrissocladius grimshawi",
+18,,Hopið,,6,9,2020,12,13,0,,,,,FALSE,"Heterotrissocladius grimshawi, Chronomus thummi, Cricotopus sylvestris, Paracladopelma laminata, unknown species C, Tanytarsus gracilentus",T. gracilentus is rare
+19,,Laugabolsvatn,,6,25,2020,12,17,0,,,,,FALSE,"Orthocladius obtexens, Cricotopus sylvestris, Ablabesmyia monilis, Micropsectra lindrothi, Paracladopelma laminata",
+20,C13,Lýsuvatn,,6,29,2020,12,17,40,TRUE,,,,FALSE,"Psectrocladius barbimanus, Eukiefferiella minor, Micropsectra lindrothi, Cricotopus sylvestris, Paracladopelma laminata",
+21,,Eiðisvatn,,7,5,2020,12,18,0,,,,,FALSE,"Pogonocladius consobrinus, Pracladopelma laminata, Eukiefferiella minor, Heterotrissocladius grimshawi, Tanytarsus gracilentus",just 1 T. gracilentus
+22,,Sigurðarstaðavatn,,7,5,2020,12,18,0,,,,,FALSE,"Heterotrissocladius grimshawi, Cricotopus sylvestris, Paracladopelma laminata, Micropsectra lindrothi, Tanytarsus gracilentus",Very few T. gracilentus
+23,C14,Leirhafnarvatn,,7,5,2020,12,18,40,TRUE,,,,FALSE,"Cricotopus sylvestris, Eukiefferecella minor, Procladius islandicus, Paracladopelma laminata",
+24,,Deildarvatn,,7,5,2020,12,18,0,,,,,FALSE,"Unknown species E, Psectocladius barbimanus, Cricotopus sylvestris, Arctopelopia griseipennis, Micropsectra lindrothi, Tanytarsus gracilentus",T. gracilentus is rare
+25,,Hraunhafnarvatn,,7,5,2020,12,18,0,,,,,FALSE,"Unknown species E, Paracladopelma laminata, Psectocladius barbimanus, Tanytarsus gracilentus",T. gracilentus is rare
+26,C15,Blikalón,,7,5,2020,12,19,40,TRUE,,,,FALSE,"Cricotopus sylvestris, Micropsectra lindrothi",Mostly T. gracilentus
+27,,Æðarvotn,,7,5,2020,12,19,0,,,,,FALSE,"Unknown species F, unknown species E, Paracladopelma laminata",
+28,C16,Þernuvatn,,7,5,2020,12,19,20,TRUE,,,Pernuvatn,TRUE,"Unknown species E, Paracladopelma laminata, Eukiefferiella minor, Micropsectra lindrothi",
+29,C17,Áshildarholtsvatn,,6,8,2020,12,19,40,TRUE,,,,FALSE,"Cricotopus sylvestris, Chironomus thummi",
+30,,Stifluvatn,,6,8,2020,12,19,0,,,,,FALSE,"Psectrocladius limbatellus, Chronomus thummi, Cricotopus sylvestris",
+31,C18,Miklavatn-W,2,6,8,2020,12,19,40,TRUE,,,,FALSE,"Pogocladius consobrinus, Micropsectra recurvata, Micropsectra lindrothi, Eukiefferiella minor",
+32,,Vestmannsvatn,3,7,9,2020,12,19,0,,,,,FALSE,"Micropsectra lindrothi, Cricotopus sylvestris",Mostly M. lindrothi
+33,,Ljósavatn,2,7,9,2020,12,19,0,,,,,FALSE,,didn't check for other non-Tanytarsus species
+34,,Vestmannsvatn,2,5,30,2020,12,19,0,,,,,FALSE,,didn't check for other non-Tanytarsus species
+35,,Brunavatn,2,7,5,2020,12,19,0,,,,,FALSE,Psectrocladius limbatellus,
+36,,Lýsuvatn,,6,29,2021,4,16,40,,1,1,Lys-19,TRUE,,
+37,,Ólafsfjarðarvatn,,6,8,2021,4,17,40,,2,1,Ola-19,TRUE,,
+38,,Blonduos,,6,9,2021,4,17,40,,3,1,Blo-19,TRUE,,
+39,,Miklavatn,1,5,31,2021,4,17,40,,4,1,Mik-19,TRUE,,
+40,,Svartárvatn,L,6,7,2021,4,17,40,,5,1,Sva-19,TRUE,,
+41,,Víkingavatn,2,7,9,2021,5,29,40,,6,1,Vik-19,TRUE,,
+42,,Skjálftavatn,2,5,31,2021,5,29,40,,7,1,Skj-19,TRUE,,
+43,,Mývatn - SN,4,6,21,2021,5,29,12,,,,,FALSE,,
+44,,Mývatn,1,5,31,2021,5,29,40,,9,1,MyBR-19,TRUE,,
+45,,Mývatn - KS,,6,22,2021,5,31,23,,1,2,MyKS-19,FALSE,,Tanytarsus combined with the KS sample collected on 2019-6-21 and separated on 2021-5-31
+46,,Leirhafnarvatn,,7,5,2021,5,31,40,,2,2,Lei-19,TRUE,,
+47,,Blikalón,,7,5,2021,6,3,40,,3,2,Blik-19,TRUE,,
+48,,Áshildarholtsvatn,,6,8,2021,6,7,30,,4,2,Ash-19,TRUE,,
+49,,Miklavatn-W,2,6,8,2021,6,7,40,,5,2,MikW-19,TRUE,,
+50,,Mývatn - SN,3,6,21,2021,5,29,0,,,,,FALSE,,
+51,,Mývatn - SN,2,6,21,2021,5,29,40,,8,1,MySN-19,TRUE,,
+52,,Mývatn - KS,,6,21,2021,5,31,17,,,,,FALSE,,Tanytarsus combined with the KS sample collected on 2019-6-22 and separated on 2021-5-31
+,,Mývatn - KS,,6,21,2021,8,8,7,,,,MyKS-19-B,TRUE,,No Tanytarsus left
+,,Mývatn - KS,,6,22,2021,8,8,0,,,,,FALSE,,No Tanytarsus left
