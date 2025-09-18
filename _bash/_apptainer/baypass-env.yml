@@ -1,0 +1,10 @@
+name: baypass-env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - baypass=2.31
+  - r-poolfstat=3.0.0
+  - r-tidyverse=2.0.0
+prefix: /opt/conda/envs/baypass-env

@@ -4,6 +4,7 @@ From: condaforge/miniforge3:25.3.0-3
 
 %files
     helpers.sh /app/helpers.sh
+    baypass-env.yml /app/baypass-env.yml
     main-env.yml /app/main-env.yml
     gatk-env.yml /app/gatk-env.yml
     gatk3-env.yml /app/gatk3-env.yml
@@ -28,6 +29,9 @@ From: condaforge/miniforge3:25.3.0-3
     conda init bash
     conda config --set solver libmamba
     conda config --set auto_update_conda false
+    conda env create -q -f /app/baypass-env.yml && \
+        rm /app/baypass-env.yml && \
+        conda clean --all -y
     conda env create -q -f /app/main-env.yml && \
         rm /app/main-env.yml && \
         conda clean --all -y
