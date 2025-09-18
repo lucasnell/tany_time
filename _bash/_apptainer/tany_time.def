@@ -8,7 +8,6 @@ From: condaforge/miniforge3:25.3.0-3
     gatk-env.yml /app/gatk-env.yml
     gatk3-env.yml /app/gatk3-env.yml
     qc-env.yml /app/qc-env.yml
-    window-mpileup.py /usr/local/bin/window-mpileup.py
 
 %post -c /bin/bash
     export HOME=/app
@@ -22,7 +21,6 @@ From: condaforge/miniforge3:25.3.0-3
         libbz2-dev liblzma-dev gsl-bin libgsl0-dev libboost-all-dev pv
     rm -rf /var/lib/apt/lists/*
     locale-gen en_US.UTF-8
-    chmod +x /usr/local/bin/window-mpileup.py
     echo "" >> /app/.bashrc && \
         cat /app/helpers.sh >> /app/.bashrc && \
         echo "" >> /app/.bashrc && \
