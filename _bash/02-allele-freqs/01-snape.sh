@@ -2,18 +2,58 @@
 
 #' This script calls snape-pooled to estimate allele frequencies for
 #' Pool-seq data.
-
+#'
+#'
 #' Note #1:
 #' For many of the scripts inside `snape-files`, the `output`
 #' argument is supposed to be a prefix only.
 #' Hence, there are multiple instances below where I remove the extension
 #' to the final file names for input to this argument.
-
+#'
+#'
 #' Note #2:
 #' To compress the `snape-files` folder into a tar file that doesn't generate
 #' warnings on linux, run the following:
 #'
 #' tar -cz --no-xattrs --exclude ".*" -f snape-files.tar.gz snape-files
+#'
+#'
+#' Note #3:
+#' The columns in the *_snape.txt.gz file are as follows:
+#'
+#' 1.  chromosome
+#' 2.  position along the chromosome
+#' 3.  reference
+#' 4.  number of reference nucleotides
+#' 5.  number of minor (alternative) nucleotides
+#' 6.  average quality of the reference nucleotides
+#' 7.  average quality of the alternative nucleotides
+#' 8.  first and second most frequent nucleotides in the pileup
+#' 9.  Probability that minor allele frequency is greater than zero ($1 - p (0)$ where
+#'     $p (f)$ is the probability distribution function for the minor allele
+#'     freqeuncy)
+#' 10. Probability that minor allele is at fixation ($p (1)$)
+#' 11. Mean minor allele frequency estimate ($E (f)$ mean value of $f$)
+#'
+#' Numbers 4-7 & 9-11 match the last column (of the form `X:X:X:...`) in the gSYNC files.
+#'
+#'
+#' Note #4:
+#'
+#' If you split the second-to-last column in the gSYNC files by the character
+#' ":", you'd get the following:
+#'
+#' 1. Counts for nucleotide "A"
+#' 2. Counts for nucleotide "T"
+#' 3. Counts for nucleotide "C"
+#' 4. Counts for nucleotide "G"
+#' 5. Counts for unknown nucleotide "N"
+#' 6. Counts for deleted nucleotide "del"
+#'
+#'
+#' Note #5:
+#' Filtering for biallelic (within this sample) is already done!
+#'
 #'
 
 
@@ -28,6 +68,9 @@ export PARENT_DIR_OUT="/staging/lnell/dna/snape"
 export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 export REPEATS_FULL_PATH="/staging/lnell/Tgraci_repeats_locs.gff3.gz"
 
+
+# export READ_BASE=Ash-19_S5
+# export N_ADULTS=30
 
 
 
@@ -96,17 +139,25 @@ export MIN_COV=10
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
+# Second line below (using `awk`) converts all softmasked sequences to
+# uppercase because this interferes with downstream analyses:
 gunzip -c ${PARENT_DIR_IN}/${IN_PILEUP}.gz \
+    | awk 'BEGIN { FS=OFS="\t" } { $3 = toupper($3) } 1' \
     > ${IN_PILEUP}
 check_exit_status "gunzip ${IN_PILEUP}.gz" $?
 
 # For progress bar in interactive jobs:
 # pv ${PARENT_DIR_IN}/${IN_PILEUP}.gz \
 #     | gunzip \
+#     | awk 'BEGIN { FS=OFS="\t" } { $3 = toupper($3) } 1' \
 #     > ${IN_PILEUP}
 # check_exit_status "gunzip ${IN_PILEUP}.gz" $?
 
+
+# Second line below (using `awk`) converts all softmasked sequences to
+# uppercase because this interferes with downstream analyses:
 gunzip -c ${GENOME_FULL_PATH} \
+    | awk 'BEGIN{FS=" "}{if(!/>/){print toupper($0)}else{print $1}}' \
     > ${GENOME}
 check_exit_status "gunzip ${GENOME}.gz" $?
 
@@ -154,7 +205,11 @@ python3 ./snape-files/Mpileup2Sync.py \
   1> Mpileup2Sync.stdout \
   2> Mpileup2Sync.stderr
 status=$?
-if [ "$status" != "0" ]; then cat Mpileup2Sync.stderr; fi
+if [ "$status" != "0" ] || [ ! -f ${MP_INFO_PREFIX}.cov ] || [ ! -f ${MP_INFO_PREFIX}.indel ]
+then
+    cat Mpileup2Sync.std*
+    status=1
+fi
 check_exit_status "Mpileup2Sync" $status
 rm Mpileup2Sync.std*
 
@@ -435,3 +490,4 @@ rm -r ${OUT_DIR}
 #' Do NOT use `safe_exit` because that'll remove the files before they
 #' can be moved to ResearchDrive.
 exit 0
+

@@ -55,7 +55,7 @@ done
 #' usage:
 #' ./combine-snapes.py \
 #'     -o <output file name> \
-#'     <input sync file prefixes (should end in *.sync or *.sync.gz)>
+#'     <input sync files as *.sync or *.sync.gz>
 #'
 cat << EOF > combine-snapes.py
 #!/usr/bin/env python3
@@ -159,11 +159,11 @@ EOF
 chmod +x combine-snapes.py
 
 
+
+
 #' ========================================================================
 #' Combine files
 #' ========================================================================
-
-
 
 
 for type in TIME SPACE ALL; do
