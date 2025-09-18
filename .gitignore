@@ -13,5 +13,10 @@ summ_scaffs
 *.pdf
 
 *.rds
+*.xz
+*.gz
+*.bz2
 
 _bash/zzz-old
+_data/tany-sample-info
+_data/baypass-inputs
