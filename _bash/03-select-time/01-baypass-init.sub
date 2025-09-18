@@ -1,0 +1,34 @@
+# baypass-init.sub
+
+# baypass for selection analysis on time samples
+
+container_image = file:///staging/lnell/tany_time.sif
+
+# Because naming starts at 1 (not 0):
+plusone = $(Process) + 1
+NewProcess = $INT(plusone,%d)
+
+log = logs/01-baypass-init/sub$(NewProcess).log
+error = logs/01-baypass-init/sub$(NewProcess).err
+output = logs/01-baypass-init/sub$(NewProcess).out
+
+executable = 01-baypass-init.sh
+arguments = $(NewProcess)
+
+batch_name = "baypass-init"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = baypass-init-sub$(NewProcess).tar.gz
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass
+
+request_cpus = 8
+request_memory = 24GB
+request_disk = 50GB
+
+queue 5
+

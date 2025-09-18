@@ -1,0 +1,30 @@
+# baypass-inputs.sub
+
+# prep files for baypass
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = 00-baypass-inputs.log
+error = 00-baypass-inputs.err
+output = 00-baypass-inputs.out
+
+executable = 00-baypass-inputs.sh
+
+batch_name = "baypass-inputs"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = baypass-inputs.tar.gz
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass
+
+request_cpus = 4
+request_memory = 8GB
+request_disk = 20GB
+
+queue 1
+
+
