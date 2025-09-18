@@ -226,7 +226,8 @@ vector2d<std::string> maketree_format(const vector3d<unsigned>& allele_counts) {
 //[[Rcpp::export]]
 std::vector<double> get_snape_af(const std::vector<std::string>& strings) {
 
-    std::vector<double> out(strings.size());
+    std::vector<double> out;
+    out.reserve(strings.size());
 
     // Calculate number of sub-strings separated by ':':
     size_t nc = 0;
@@ -244,7 +245,7 @@ std::vector<double> get_snape_af(const std::vector<std::string>& strings) {
             tmp1[j] = tmp0;
             j++;
         }
-        out[i] = std::stod(tmp1.back());
+        out.push_back(std::stod(tmp1.back()));
     }
 
     return out;
