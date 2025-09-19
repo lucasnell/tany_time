@@ -2,16 +2,21 @@
 #'
 #' Check consistency of Omega matrices across runs.
 #'
+#' First download, extract baypass-init runs into directory `baypass_init_dir`.
+#'
 
 library(tidyverse)
 library(geigen) # geigen function inside fmd.dist
 
 
-n_omegas <- list.dirs("~/_data/_baypass/baypass-init") |>
+baypass_init_dir <- "~/_data/_baypass/init"
+
+
+n_omegas <- list.dirs(baypass_init_dir) |>
     keep(\(x) str_detect(x, "-sub")) |>
     length()
 
-omegas <- sprintf(paste0("~/_data/_baypass/baypass-init/baypass-init-sub%i/",
+omegas <- sprintf(paste0(baypass_init_dir, "/baypass-init-sub%i/",
                          "tany-init-sub%i_mat_omega.out"), 1:n_omegas, 1:n_omegas) |>
     map(\(fn) {
         fn |>

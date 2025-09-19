@@ -35,23 +35,15 @@ pool_dat <- count_file("count_masked_time_noblanks.sync.gz") |>
 # Create a logical vector for which SNPs aren't near fixation:
 avg_ref_probs <- apply(pool_dat@refallele.readcount / pool_dat@readcoverage,
                        1, mean)
-avg_ref_probs2 <- rowSums(pool_dat@refallele.readcount) /
-    rowSums(pool_dat@readcoverage)
-
-
 poly_snps <- avg_ref_probs > 0.1 & avg_ref_probs < 0.9
-poly_snps2 <- avg_ref_probs2 > 0.1 & avg_ref_probs2 < 0.9
-
-sum(poly_snps)
-sum(poly_snps2)
-
 
 # Now updating fields:
 pool_dat@nsnp <- sum(poly_snps)
 pool_dat@refallele.readcount <- pool_dat@refallele.readcount[poly_snps,]
 pool_dat@readcoverage <- pool_dat@readcoverage[poly_snps,]
 pool_dat@snp.info <- pool_dat@snp.info[poly_snps,]
-
+print(pool_dat@nsnp)
+# [1] 433360
 
 #' Now convert to format for baypass:
 pooldata2genobaypass(pool_dat, "~/_data/_baypass", "THINNED__tany_time",

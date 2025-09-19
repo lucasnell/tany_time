@@ -21,7 +21,10 @@ if (( SUBSAMPLE < 1 )) || (( SUBSAMPLE > 5 )); then
     echo safe_exit 1
 fi
 
-ALL_SEEDS=($(python3 -c "import random; random.seed(1310488804); print(' '.join([str(random.randint(1, 2147483647)) for x in range(5)]))"))
+# ALL_SEEDS=($(python3 -c "import random; random.seed(1310488804); print(' '.join([str(random.randint(1, 2147483647)) for x in range(5)]))"))
+# Using line below instead of one above in case of differences among systems.
+# This is what was output on my computer:
+ALL_SEEDS=(115044731 1141272491 1488962297 93102805 1099835052)
 export SEED=${ALL_SEEDS[$(( $SUBSAMPLE - 1 ))]}
 
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
@@ -64,12 +67,12 @@ check_exit_status "cp, extract inputs" $?
 
 
 
-export GFILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
-export SFILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
+export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
+export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
 
 # Initial run to calculate Omega (population covariance matrix)
-g_baypass -gfile ${GFILE} \
-    -poolsizefile ${SFILE} \
+g_baypass -gfile ${G_FILE} \
+    -poolsizefile ${S_FILE} \
     -outprefix ${OUT_FILE_PREFIX} \
     -nthreads ${THREADS} \
     -seed ${SEED}

@@ -14,7 +14,7 @@ export THREADS=$(count_threads)
 
 # Edit these for your system:
 export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
-export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
+export PARENT_DIR_OUT="/staging/lnell/dna/baypass/beta"
 
 #'
 #' Note: After checking that the Omega matrices approximately matched
@@ -23,7 +23,7 @@ export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
 #'   1. Olazcuaga et al., 2020 (doi: 10.1093/molbev/msaa098)
 #'   2. Camus et al., 2025 (doi: 10.1101/2024.10.11.617812)
 #'
-export BP_INIT_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-init-sub3.tar.gz"
+export BP_INIT_TAR_FULL_PATH="/staging/lnell/dna/baypass/init/baypass-init-sub3.tar.gz"
 export OMEGA_FILE="tany-init-sub3_mat_omega.out"
 
 
@@ -34,11 +34,13 @@ export OMEGA_FILE="tany-init-sub3_mat_omega.out"
 # export ISING_BETA=1.0
 # export RUN_NUM=1
 # export SUBSAMPLE=1
+# export SEED=38815974
 
 
 export ISING_BETA=$1
 export RUN_NUM=$2
 export SUBSAMPLE=$3
+export SEED=$4
 
 
 if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
@@ -46,32 +48,16 @@ if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
     echo "ISING_BETA outside allowable range: [0,1]" 1>&2
     safe_exit 1
 fi
-# Only allow two decimals in `ISING_BETA` bc of how `ALL_SEEDS` is generated below
-count_decimals () {
-    # https://stackoverflow.com/a/61462906/5016095
-    decimals=${1#*.}
-    echo ${#decimals}
-}
-if (( $(count_decimals $ISING_BETA) > 2 )); then
-    echo "ISING_BETA can have max of 2 decimals." 1>&2
-    safe_exit 11
-fi
-
-if (( RUN_NUM < 1 )) || (( RUN_NUM > 3 )); then
-    echo "RUN_NUM must be >= 1 and <= 3." 1>&2
+if (( RUN_NUM < 1 )) || (( RUN_NUM > 100 )); then
+    echo "RUN_NUM must be >= 1 and <= 100." 1>&2
     echo safe_exit 2
 fi
 if (( SUBSAMPLE < 1 )) || (( SUBSAMPLE > 5 )); then
     echo "SUBSAMPLE must be >= 1 and <= 5." 1>&2
     echo safe_exit 3
 fi
-
-# Seeds for all runs and subsamples (list will vary by `ISING_BETA`):
-ALL_SEEDS=($(python3 -c "import random; random.seed(1703756794 + int(100*${ISING_BETA})); print(' '.join([str(random.randint(1, 2147483647)) for x in range(15)]))"))
-# Seed for just this run and subsample:
-export SEED=${ALL_SEEDS[$(( ($SUBSAMPLE - 1) * 3 + $RUN_NUM - 1 ))]}
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
-    echo "SEED too big or small" 1>&2
+    echo "SEED must be >= 1 and <= 2147483647" 1>&2
     safe_exit 4
 fi
 
@@ -121,14 +107,14 @@ check_exit_status "cp, extract omega" $?
 #' ========================================================================
 
 
-export GFILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
-export SFILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
-export EFILE=$(find ${INPUTS_DIR} -type f -name '*-log_n.txt')
+export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
+export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
+export E_FILE=$(find ${INPUTS_DIR} -type f -name '*-log_n.txt')
 
 
-g_baypass -gfile ${GFILE} \
-    -poolsizefile ${SFILE} \
-    -efile ${EFILE} \
+g_baypass -gfile ${G_FILE} \
+    -poolsizefile ${S_FILE} \
+    -efile ${E_FILE} \
     -omegafile ${OMEGA_FILE} \
     -auxmodel \
     -isingbeta ${ISING_BETA} \

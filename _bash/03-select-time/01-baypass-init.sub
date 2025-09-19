@@ -24,7 +24,7 @@ requirements = (HasCHTCStaging == true)
 
 ## Copying outputs to ResearchDrive:
 transfer_output_files = baypass-init-sub$(NewProcess).tar.gz
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/init
 
 request_cpus = 8
 request_memory = 24GB

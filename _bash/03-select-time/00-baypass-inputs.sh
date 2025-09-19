@@ -182,6 +182,9 @@ EOF
 #' Deal with outputs
 #' ========================================================================
 
+# No longer needed:
+rm ${SAMPLE_INFO} ${ABUNDANCES} ${COUNTS_IN} ${NAMES_IN}
+
 
 cd ..
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
@@ -194,10 +197,6 @@ rm -r ${OUT_DIR}
 exit 0
 
 
-# count_masked_time.names.gz
-# count_masked_time_noblanks.sync.gz
-# full-sample-info.csv
-# tany-abundances.csv
 # tany.genobaypass.sub1
 # tany.genobaypass.sub2
 # tany.genobaypass.sub3
