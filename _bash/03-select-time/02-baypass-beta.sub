@@ -4,12 +4,12 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = logs/02-baypass-beta/beta_$(IsingBeta)-run$(RunNumber)-sub$(SubSample).log
-error = logs/02-baypass-beta/beta_$(IsingBeta)-run$(RunNumber)-sub$(SubSample).err
-output = logs/02-baypass-beta/beta_$(IsingBeta)-run$(RunNumber)-sub$(SubSample).out
+log = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).log
+error = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).err
+output = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).out
 
 executable = 02-baypass-beta.sh
-arguments = $(IsingBeta) $(RunNumber) $(SubSample) $(RNGSeed)
+arguments = $(IsingBeta) $(RunNumber) $(RNGSeed)
 
 batch_name = "baypass-beta"
 
@@ -19,7 +19,7 @@ requirements = (HasCHTCStaging == true)
 
 
 ## Copying outputs to ResearchDrive:
-transfer_output_files = baypass-beta_$(IsingBeta)-run$(RunNumber)-sub$(SubSample).tar.gz
+transfer_output_files = baypass-beta$(IsingBeta)-run$(RunNumber).tar.gz
 output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/beta
 
 
@@ -33,7 +33,7 @@ request_disk = 50GB
 #' ```r
 #' library(clipr)
 #' set.seed(1323829402)
-#' x <- expand.grid(beta = 0:1, run = 1:10, sub = 1:5)
+#' x <- expand.grid(beta = 0:1, run = 1:10)
 #' x[["seed"]] <- sample.int(2^31-1, nrow(x))
 #' write_clip(x, sep = ",", col.names = FALSE)
 #' ```
@@ -41,5 +41,5 @@ request_disk = 50GB
 #' Then I pasted the contents into `baypass_beta_info.txt` using
 #' `nano baypass_beta_info.txt` on the cluster.
 
-queue IsingBeta,RunNumber,SubSample,RNGSeed from baypass_beta_info.txt
+queue IsingBeta,RunNumber,RNGSeed from baypass_beta_info.txt
 

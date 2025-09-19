@@ -29,12 +29,14 @@ export OMEGA_FILE="tany-init-sub0_mat_omega.out"
 #' Arguments
 #' ========================================================================
 
-# export ISING_BETA=1.0
+# export ISING_BETA=1
 # export RUN_NUM=1
+# export SEED=1040710191
 
 
 export ISING_BETA=$1
 export RUN_NUM=$2
+export SEED=$3
 
 
 if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
@@ -42,13 +44,10 @@ if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
     echo "ISING_BETA outside allowable range: [0,1]" 1>&2
     safe_exit 1
 fi
-if (( RUN_NUM < 1 )) || (( RUN_NUM > 10 )); then
-    echo "RUN_NUM must be >= 1 and <= 10." 1>&2
+if (( RUN_NUM < 1 )) || (( RUN_NUM > 100 )); then
+    echo "RUN_NUM must be >= 1 and <= 100." 1>&2
     echo safe_exit 2
 fi
-
-
-
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
     echo "SEED must be >= 1 and <= 2147483647" 1>&2
     safe_exit 3
@@ -75,8 +74,8 @@ fi
 
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})
 
-export OUT_DIR="baypass-beta_${ISING_BETA}-run${RUN_NUM}-sub${SUBSAMPLE}"
-export OUT_FILE_PREFIX="tany-beta_${ISING_BETA}-run${RUN_NUM}-sub${SUBSAMPLE}"
+export OUT_DIR="baypass-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_FILE_PREFIX="tany-beta${ISING_BETA}-run${RUN_NUM}"
 
 
 mkdir ${OUT_DIR}
@@ -100,7 +99,7 @@ check_exit_status "cp, extract omega" $?
 #' ========================================================================
 
 
-export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
+export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass')
 export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
 export E_FILE=$(find ${INPUTS_DIR} -type f -name '*-log_n.txt')
 
