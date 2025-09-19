@@ -13,19 +13,24 @@ export THREADS=$(count_threads)
 export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass/init"
 
+# export SUBSAMPLE=0
 
 export SUBSAMPLE=$1
 
-if (( SUBSAMPLE < 1 )) || (( SUBSAMPLE > 5 )); then
-    echo "First arg to 01-baypass-init.sh must be >= 1 and <= 5." 1>&2
+if (( SUBSAMPLE < 0 )) || (( SUBSAMPLE > 3 )); then
+    echo "First arg to 01-baypass-init.sh must be >= 0 and <= 3." 1>&2
     echo safe_exit 1
 fi
 
-# ALL_SEEDS=($(python3 -c "import random; random.seed(1310488804); print(' '.join([str(random.randint(1, 2147483647)) for x in range(5)]))"))
+if (( SUBSAMPLE > 0 )); then
+    INPUTS_TAR_FULL_PATH=${INPUTS_TAR_FULL_PATH%.tar.gz}_3.tar.gz
+fi
+
+# ALL_SEEDS=($(python3 -c "import random; random.seed(1310488804); print(' '.join([str(random.randint(1, 2147483647)) for x in range(4)]))"))
 # Using line below instead of one above in case of differences among systems.
 # This is what was output on my computer:
-ALL_SEEDS=(115044731 1141272491 1488962297 93102805 1099835052)
-export SEED=${ALL_SEEDS[$(( $SUBSAMPLE - 1 ))]}
+ALL_SEEDS=(115044731 1141272491 1488962297 93102805)
+export SEED=${ALL_SEEDS[${SUBSAMPLE}]}
 
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
     echo "SEED too big or small" 1>&2
@@ -45,6 +50,9 @@ fi
 
 
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})
+if (( SUBSAMPLE > 0 )); then
+    INPUTS_DIR=${INPUTS_DIR%_3}
+fi
 
 export OUT_DIR="baypass-init-sub${SUBSAMPLE}"
 export OUT_FILE_PREFIX="tany-init-sub${SUBSAMPLE}"
@@ -66,9 +74,15 @@ check_exit_status "cp, extract inputs" $?
 #' ========================================================================
 
 
-
-export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
+if (( SUBSAMPLE > 0 )); then
+    G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
+else
+    G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass')
+fi
+export G_FILE
 export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
+
+
 
 # Initial run to calculate Omega (population covariance matrix)
 g_baypass -gfile ${G_FILE} \

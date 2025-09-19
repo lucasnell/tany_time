@@ -17,14 +17,12 @@ export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass/beta"
 
 #'
-#' Note: After checking that the Omega matrices approximately matched
-#' between subsamples, I randomly chose to use the third one.
-#' This matches the approach from the following papers:
-#'   1. Olazcuaga et al., 2020 (doi: 10.1093/molbev/msaa098)
-#'   2. Camus et al., 2025 (doi: 10.1101/2024.10.11.617812)
+#' Note: Because the Omega matrices based on sub-sampling did not match
+#' between subsamples, I am using the one based on all SNPs, despite
+#' this not being as computationally efficient.
 #'
-export BP_INIT_TAR_FULL_PATH="/staging/lnell/dna/baypass/init/baypass-init-sub3.tar.gz"
-export OMEGA_FILE="tany-init-sub3_mat_omega.out"
+export BP_INIT_TAR_FULL_PATH="/staging/lnell/dna/baypass/init/baypass-init-sub0.tar.gz"
+export OMEGA_FILE="tany-init-sub0_mat_omega.out"
 
 
 #' ========================================================================
@@ -33,14 +31,10 @@ export OMEGA_FILE="tany-init-sub3_mat_omega.out"
 
 # export ISING_BETA=1.0
 # export RUN_NUM=1
-# export SUBSAMPLE=1
-# export SEED=38815974
 
 
 export ISING_BETA=$1
 export RUN_NUM=$2
-export SUBSAMPLE=$3
-export SEED=$4
 
 
 if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
@@ -48,17 +42,16 @@ if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
     echo "ISING_BETA outside allowable range: [0,1]" 1>&2
     safe_exit 1
 fi
-if (( RUN_NUM < 1 )) || (( RUN_NUM > 100 )); then
-    echo "RUN_NUM must be >= 1 and <= 100." 1>&2
+if (( RUN_NUM < 1 )) || (( RUN_NUM > 10 )); then
+    echo "RUN_NUM must be >= 1 and <= 10." 1>&2
     echo safe_exit 2
 fi
-if (( SUBSAMPLE < 1 )) || (( SUBSAMPLE > 5 )); then
-    echo "SUBSAMPLE must be >= 1 and <= 5." 1>&2
-    echo safe_exit 3
-fi
+
+
+
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
     echo "SEED must be >= 1 and <= 2147483647" 1>&2
-    safe_exit 4
+    safe_exit 3
 fi
 
 

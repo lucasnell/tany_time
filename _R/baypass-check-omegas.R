@@ -14,6 +14,7 @@ baypass_init_dir <- "~/_data/_baypass/init"
 
 n_omegas <- list.dirs(baypass_init_dir) |>
     keep(\(x) str_detect(x, "-sub")) |>
+    discard(\(x) str_detect(x, "-sub0")) |>
     length()
 
 omegas <- sprintf(paste0(baypass_init_dir, "/baypass-init-sub%i/",
@@ -51,24 +52,34 @@ range(fmd_df$fmd)
 
 fmd_df
 
-# # A tibble: 10 × 3
-#        a     b   fmd
-#    <int> <int> <dbl>
-#  1     5     2 0.383
-#  2     3     2 0.367
-#  3     2     1 0.356
-#  4     5     3 0.340
-#  5     4     2 0.339
-#  6     5     1 0.329
-#  7     4     3 0.325
-#  8     3     1 0.321
-#  9     4     1 0.320
-# 10     5     4 0.302
+# # A tibble: 3 × 3
+#       a     b   fmd
+#   <int> <int> <dbl>
+# 1     3     1 3.78
+# 2     3     2 3.77
+# 3     2     1 0.272
 
 
 #'
-#' Because all are quite similar (all pairwise FMD < 0.4), then we randomly
-#' choose an Omega matrix to use:
+#' Because sub-sample 3 is quite dissimilar to the other ones (FMD > 3.7),
+#' then we have to use the single covariance matrix
 #'
-set.seed(1991347408); sample.int(n_omegas, 1)
-# [1] 3
+
+
+#'
+#' I'm going to use the one based on all SNPs, but out of curiosity,
+#' let's check for how similar these sub-samples are
+#' to the omega matrix calculated using all SNPs.
+#'
+omega0 <- paste0(baypass_init_dir,
+                 "/baypass-init-sub0/tany-init-sub0_mat_omega.out") |>
+    read_table(col_names = paste0("samp_", 1:17), col_types = cols()) |>
+    as.matrix() |>
+    unname()
+
+map_dbl(1:3, \(i) fmd.dist(omega0, omegas[[i]]))
+# [1] 0.5697506 0.6034402 4.1120763
+
+#'
+#' Looks like it's #3 that's the problem. < shrug >
+#'
