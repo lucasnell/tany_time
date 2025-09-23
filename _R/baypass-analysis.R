@@ -1,8 +1,11 @@
 
 
-library(tidyverse)
 library(poolfstat)
 library(seqinr)
+library(clusterProfiler)
+library(rrvgo)
+library(treemap)
+library(tidyverse)
 
 if (file.exists(".Rprofile")) source(".Rprofile")
 
@@ -61,7 +64,7 @@ snp_df <- paste0(baypass_dir, "/baypass-inputs/tany.snpdet") |>
     select(contig, pos)
 
 
-beta_df <- crossing(b = 1, r = 1:10) |>
+beta_df <- crossing(b = 0L, r = 1:10) |>
     pmap(\(b, r) {
         fn <- sprintf(paste0("%s/beta/baypass-beta%i-run%i/tany-beta%i-",
                              "run%i_summary_betai.out.gz"),
@@ -81,7 +84,7 @@ bf_df <- beta_df |>
     summarize(bf_db = median(bf_db),
               bf = 10^(bf_db / 10)) |>
     (\(x) {
-        # CHecks to make sure it's okay to bind with `snp_df`:
+        # Checks to make sure it's okay to bind with `snp_df`:
         stopifnot(identical(x$mrk, 1:nrow(x)))
         stopifnot(identical(nrow(x), nrow(snp_df)))
         return(x)
@@ -323,12 +326,12 @@ candi_funcs_faa <- candi_funcs_df |>
     set_names() |>
     map_chr(\(x) faa[[x]])
 
-# Now write to fasta file:
-candi_funcs_faa |>
-    imap(\(x, i) c(paste0(">", i), x)) |>
-    unname() |>
-    do.call(what = c) |>
-    write_lines("~/Desktop/Tgraci-funct.faa")
+# # Now write to fasta file:
+# candi_funcs_faa |>
+#     imap(\(x, i) c(paste0(">", i), x)) |>
+#     unname() |>
+#     do.call(what = c) |>
+#     write_lines("~/Desktop/Tgraci-funct.faa")
 
 
 
@@ -360,83 +363,256 @@ candi_funcs_faa |>
 #'
 #'
 
-"~/Desktop/Tgraci-funct-Dmel.csv" |>
+blast_df <- "~/Desktop/Tgraci-funct-Dmel.csv" |>
     read_csv(col_types = cols()) |>
     group_by(qaccver) |>
     filter(evalue == min(evalue)) |>
+    filter(saccver == saccver[[1]]) |>
     ungroup() |>
-    select(1:2, evalue) |>
-    print(n = 30)
+    filter(evalue < 1e-4) |>
+    mutate(uniprot = str_split(saccver, "\\|") |> map_chr(\(x) x[[2]]))
+
+filt_blast_df <- blast_df |>
+    select(1:2, evalue, uniprot) |>
+    mutate(bf_db = map_dbl(qaccver, \(g) max(candi_funcs_df$bf_db[which(candi_funcs_df$gene == g)]))) |>
+    group_by(uniprot) |>
+    summarize(evalue = min(evalue), bf_db = max(bf_db), .groups = "drop") |>
+    arrange(desc(bf_db), evalue)
+
+# filt_blast_df |>
+#     print(n = 100)
 
 
-# # A tibble: 21 × 3
-#    qaccver                saccver                   evalue
-#    <chr>                  <chr>                      <dbl>
-#  1 CONTIG18-_anno1.g4081  tr|Q9V3N4|Q9V3N4_DROME 4.1 e+  0
-#  2 CONTIG37-_anno2.g6296  tr|Q8MLQ7|Q8MLQ7_DROME 1.67e-134
-#  3 CONTIG37-_anno2.g6297  sp|Q9VZ64|6PGL_DROME   2.8 e+  0
-#  4 CONTIG37+_anno1.g1347  tr|A8JNT4|A8JNT4_DROME 1.02e-170
-#  5 CONTIG37+_anno1.g1348  tr|A8JNT6|A8JNT6_DROME 7.34e- 44
-#  6 CONTIG44+_anno1.g3075  sp|Q9VL06|UFD4_DROME   0
-#  7 CONTIG44+_anno1.g3078  tr|M9PFM5|M9PFM5_DROME 0
-#  8 CONTIG44+_anno1.g3078  sp|P25439|BRM_DROME    0
-#  9 CONTIG44+_anno1.g3078  tr|M9PFS6|M9PFS6_DROME 0
-# 10 CONTIG44-_anno1.g3076  tr|M9PCA6|M9PCA6_DROME 0
-# 11 CONTIG44-_anno1.g3076  tr|Q9VMJ5|Q9VMJ5_DROME 0
-# 12 CONTIG44-_anno1.g3076  tr|Q9VGE7|Q9VGE7_DROME 0
-# 13 CONTIG44-_anno2.g13176 tr|M9PCA6|M9PCA6_DROME 0
-# 14 CONTIG44-_anno2.g13176 tr|Q9VMJ5|Q9VMJ5_DROME 0
-# 15 CONTIG44-_anno2.g13176 tr|Q9VGE7|Q9VGE7_DROME 0
-# 16 CONTIG45-_anno1.g9743  tr|Q9VH82|Q9VH82_DROME 2.03e- 21
-# 17 CONTIG45-_anno1.g9744  tr|Q9VH81|Q9VH81_DROME 0
-# 18 CONTIG45-_anno1.g9745  tr|O46050|O46050_DROME 0
-# 19 CONTIG45-_anno1.g9746  tr|M9PC41|M9PC41_DROME 8.52e-  4
-# 20 CONTIG45-_anno1.g9747  tr|A4V1P2|A4V1P2_DROME 2.1 e+  0
-# 21 CONTIG45-_anno1.g9747  sp|Q9VSR3|ORB2_DROME   2.1 e+  0
 
 
-#'
-#' Most of these are pretty good matches, except for genes
-#' `CONTIG18-_anno1.g4081`, `CONTIG37-_anno2.g6297`, and `CONTIG45-_anno1.g9747`
-#'
-#' Below are functions for each of the rest:
-#'
-#' CONTIG37-_anno2.g6296  Q8MLQ7
-#'     - Enables D-glucose transmembrane transporter activity and trehalose
-#'       transmembrane transporter activity.
-#'       (https://www.alliancegenome.org/gene/FB:FBgn0034909)
-#' CONTIG37+_anno1.g1347  A8JNT4
-#'     - Regulates myosin phosphatase activity. Augments Ca2+ sensitivity of the contractile apparatus.
-#'       (https://www.uniprot.org/uniprotkb/A8JNT4/entry)
-#' CONTIG37+_anno1.g1348  A8JNT6
-#'     - Regulates myosin phosphatase activity. Augments Ca2+ sensitivity of the contractile apparatus.
-#'       (https://www.uniprot.org/uniprotkb/A8JNT4/entry)
-#' CONTIG44+_anno1.g3075  Q9VL06
-#'     -
-#' CONTIG44+_anno1.g3078  M9PFM5
-#'     -
-#' CONTIG44+_anno1.g3078  P25439
-#'     -
-#' CONTIG44+_anno1.g3078  M9PFS6
-#'     -
-#' CONTIG44-_anno1.g3076  M9PCA6
-#'     -
-#' CONTIG44-_anno1.g3076  Q9VMJ5
-#'     -
-#' CONTIG44-_anno1.g3076  Q9VGE7
-#'     -
-#' CONTIG44-_anno2.g13176 M9PCA6
-#'     -
-#' CONTIG44-_anno2.g13176 Q9VMJ5
-#'     -
-#' CONTIG44-_anno2.g13176 Q9VGE7
-#'     -
-#' CONTIG45-_anno1.g9743  Q9VH82
-#'     -
-#' CONTIG45-_anno1.g9744  Q9VH81
-#'     -
-#' CONTIG45-_anno1.g9745  O46050
-#'     -
-#' CONTIG45-_anno1.g9746  M9PC41
-#'     -
+
+# # A tibble: 43 × 3
+#    uniprot       evalue bf_db
+#    <chr>          <dbl> <dbl>
+#  1 M9PCM8     0          53.0
+#  2 O46100     0          53.0
+#  3 Q9VYK6     0          53.0
+#  4 B4F7L9     6.06e-146  53.0
+#  5 Q8MLQ7     1.67e-134  53.0
+#  6 P48613     1.09e-123  53.0
+#  7 Q9NI63     1.89e-118  53.0
+#  8 A4V4D2     1.31e-113  53.0
+#  9 P40792     2.29e-106  53.0
+# 10 Q9VUD3     3.07e- 91  53.0
+# 11 Q9VBU4     6.60e- 69  53.0
+# 12 Q9VDD2     8.04e- 61  53.0
+# 13 A0A0B4KGY5 6.21e- 20  53.0
+# 14 P25724     1.80e- 12  53.0
+# 15 Q9VFP2     5.10e- 11  53.0
+# 16 B7Z0X5     7.20e-  8  53.0
+# 17 M9PC41     2.23e-  6  53.0
+# 18 Q7KUL1     2.51e-170  48.4
+# 19 Q8MRC9     3.88e-101  45.5
+# 20 Q9VQK4     3.22e- 49  45.5
+# 21 D0Z756     0          42.9
+# 22 Q9V4U7     2.04e-153  42.9
+# 23 Q9V4U9     7.66e-126  42.9
+# 24 P33270     1.99e- 11  42.9
+# 25 A8JNT4     1.02e-170  39.7
+# 26 A8JNT6     7.34e- 44  39.7
+# 27 M9PGJ0     0          39.4
+# 28 Q9VKD5     2.57e-106  39.4
+# 29 A8DZ28     7.86e- 67  39.4
+# 30 Q7JV61     1.07e- 37  39.4
+# 31 P07207     3.63e- 50  37.9
+# 32 Q9VPQ8     5.15e- 25  37.9
+# 33 P17886     0          37.5
+# 34 Q9VBV4     3.04e- 52  37.5
+# 35 A0A0B4LHM9 5.96e- 44  37.5
+# 36 Q9VQ47     0          37.0
+# 37 B5RIV0     4.39e- 97  36.5
+# 38 X2JKS9     3.51e- 50  36.5
+# 39 Q9VHA5     1.72e- 26  36.5
+# 40 Q9VBX4     6.40e- 18  36.5
+# 41 Q9VK29     2.25e- 46  33.9
+# 42 Q9VJA9     3.10e-155  32.4
+# 43 A1ZAB3     4.6 e- 95  32.4
+
+
+#'  1 M9PCM8     0          53.0
+#'     - flight, larval visceral muscle development, and locomotion
+#'     - https://www.uniprot.org/uniprotkb/M9PCM8/entry
+#'  2 O46100     0          53.0
+#'     - amino acid transmembrane transport, cell volume homeostasis,
+#'       chloride ion homeostasis, chloride transmembrane transport,
+#'       potassium ion homeostasis, potassium ion import across plasma membrane
+#'     - https://www.uniprot.org/uniprotkb/O46100/entry
+#'  3 Q9VYK6     0          53.0
+#'     - long term (odor) memory
+#'     - https://www.uniprot.org/uniprotkb/Q9VYK6/entry
+#'  4 B4F7L9     6.06e-146  53.0
+#'     - Chromosome mapping suggests that WDY is fully contained in the kl-1
+#'       region, and WDY may correspond to this fertility factor.
+#'     - https://www.uniprot.org/uniprotkb/B4F7L9/entry
+#'  5 Q8MLQ7     1.67e-134  53.0
+#'     - D-glucose transmembrane transport and trehalose transport
+#'     - https://www.uniprot.org/uniprotkb/Q8MLQ7/entry
+#'  6 P48613     1.09e-123  53.0
+#'     - Enhances para sodium channel function. Required during pupal
+#'       development to rescue adult paralysis and also protects adult flies
+#'       against heat-induced lethality.
+#'     - https://www.uniprot.org/uniprotkb/P48613/entry
+#'  7 Q9NI63     1.89e-118  53.0
+#'     - female and male meiotic nuclear division, spermatocyte division,
+#'       spermatogonial cell division
+#'     - https://www.uniprot.org/uniprotkb/Q9NI63/entry
+#'  8 A4V4D2     1.31e-113  53.0
+#'     - long-term (odor) memory
+#'     - https://www.uniprot.org/uniprotkb/A4V4D2/entry
+#'  9 P40792     2.29e-106  53.0
+#'     - melanotic encapsulation of foreign target, memory,
+#'       motor neuron axon guidance, muscle attachment,
+#'       muscle cell development, myoblast fusion,
+#'       myoblast proliferation, nephrocyte filtration,
+#'       neuron projection development
+#'     - https://www.uniprot.org/uniprotkb/P40792/entry
+#' 10 Q9VUD3     3.07e- 91  53.0
+#'     - brain development, neuron differentiation
+#'     - https://www.uniprot.org/uniprotkb/Q9VUD3/entry
+
+
+
+
+
+# =============================================================================*
+# =============================================================================*
+# Over-representation test ----
+# =============================================================================*
+# =============================================================================*
+
+
+
+# Doing this instead of loading `org.Dm.eg.db` bc that overrides dplyr::select
+columns <- AnnotationDbi::columns
+keys <- AnnotationDbi::keys
+db_select <- AnnotationDbi::select
+Dm_db <- org.Dm.eg.db::org.Dm.eg.db
+Ontology <- BiocGenerics::Ontology
+
+
+# ### NO LONGER USED
+# # Create map to quickly pull out `goall` column for each `entrezid`:
+# if (!file.exists("_data/goall_map.rds")) {
+#     GO2ALLEGS <- as.list(org.Dm.eg.db::org.Dm.egGO2ALLEGS)
+#     # Takes ~ 8 min:
+#     goall_map <- keys(Dm_db) |>
+#         set_names() |>
+#         map(\(e) {
+#             lgl <- map_lgl(GO2ALLEGS, \(x) e %in% x)
+#             return(unique(names(GO2ALLEGS)[lgl]))
+#         })
+#     write_rds(goall_map, "_data/goall_map.rds")
+#     rm(GO2ALLEGS)
+# } else {
+#     goall_map <- read_rds("_data/goall_map.rds")
+# }
+
+
+
+
+# columns(Dm_db)
+
+all_prots <- db_select(Dm_db, keys = keys(Dm_db),
+                       columns = c("ENTREZID", "UNIPROT", "GENENAME", "GO")) |>
+    as_tibble() |>
+    rename_with(tolower) |>
+    filter(!is.na(uniprot)) |>
+    # group_by(entrezid, uniprot, genename) |>
+    # summarize(go = list(go), .groups = "drop") |>
+    # mutate(goall = map(entrezid, \(e) goall_map[[e]]),
+    #        go = map2(go, goall, \(x, y) {
+    #            unique(c(x, y))
+    #        })) |>
+    # select(-goall, -entrezid) |>
+    # unnest(go) |>
+    filter(!is.na(go)) |>
+    distinct(uniprot, go) |>
+    mutate(term = suppressMessages(db_select(GO.db::GO.db, go, "TERM")[,"TERM"]))
+
+
+
+term2gene <- all_prots |>
+    select(go, uniprot)
+term2name <- all_prots |>
+    select(go, term)
+
+genes <- filt_blast_df$uniprot[filt_blast_df$uniprot %in% all_prots$uniprot]
+
+
+overrep <- enricher(genes,
+                    pvalueCutoff = 0.05,
+                    pAdjustMethod = "BH",
+                    # minGSSize = 1,
+                    # maxGSSize = 5,
+                    TERM2GENE=term2gene, TERM2NAME=term2name) |>
+    as_tibble()
+overrep
+
+
+or_df <- overrep |>
+    #' Ontology:
+    #'   * MF - molecular function
+    #'   * BP - biological process
+    #'   * CC - cellular component
+    mutate(ont = Ontology(ID))
+
+or_df |>
+    filter(ont == "BP") |>
+    select(Description, p.adjust)
+
+# # A tibble: 9 × 2
+#   Description                                          p.adjust
+#   <chr>                                                   <dbl>
+# 1 regulation of locomotor rhythm                         0.0137
+# 2 neuron projection morphogenesis                        0.0201
+# 3 regulation of glycolytic process                       0.0201
+# 4 behavioral response to starvation                      0.0251
+# 5 Golgi to plasma membrane transport                     0.0302
+# 6 germline ring canal formation                          0.0305
+# 7 glial cell migration                                   0.0469
+# 8 epidermis development                                  0.0469
+# 9 regulation of compound eye photoreceptor development   0.0469
+
+
+# Treemap figure (not necessary, probably)
+
+
+or_bp_scores <- or_df |>
+    filter(ont == "BP") |>
+    mutate(geneID = geneID |> str_split("/")) |>
+    unnest(geneID) |>
+    mutate(bf_db = map_dbl(geneID, \(x) filt_blast_df$bf_db[filt_blast_df$uniprot == x][[1]])) |>
+    group_by(ID) |>
+    summarize(bf_db = max(bf_db)) |>
+    (\(x) {z <- (x$bf_db); names(z) <- x$ID; return(z)})()
+
+#' `org.Dm.eg.db` is the genome wide annotation for *Drosophila melanogaster*
+sem_data <- GOSemSim::godata(annoDb = "org.Dm.eg.db",
+                             ont = "BP", keytype = "ENTREZID")
+or_bp_sim_mat <- calculateSimMatrix(names(or_bp_scores),
+                                    semdata = sem_data,
+                                    "org.Dm.eg.db", ont = "BP")
+
+or_bp_red <- reduceSimMatrix(or_bp_sim_mat,
+                             scores = or_bp_scores,
+                             orgdb = "org.Dm.eg.db") |>
+    as_tibble()
+or_bp_red
+
+treemap_p <- function() {
+    .pal <- viridisLite::turbo(length(unique(or_bp_red$parent)), begin = 0.2)
+    treemap(or_bp_red, index = c("parentTerm", "term"),
+            vSize = "score", type = "index", title = "",
+            lowerbound.cex.labels = 0.1,
+            palette = .pal,
+            fontcolor.labels = c("#FFFFFFDD", "#00000080"), bg.labels = 0,
+            border.col = "#00000080")
+}
+treemap_p()
+
 
