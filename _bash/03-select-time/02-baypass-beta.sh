@@ -95,7 +95,7 @@ check_exit_status "cp, extract omega" $?
 
 
 #' ========================================================================
-#' Run baypass (3 independent runs)
+#' Run baypass
 #' ========================================================================
 
 
@@ -128,12 +128,19 @@ check_exit_status "baypass" $?
 # These aren't necessary to keep for downstream:
 rm -r ${INPUTS_DIR} ${OMEGA_FILE}
 
-cd ..
-tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
+# These are the largest output files by far:
+gzip ${OUT_FILE_PREFIX}_summary_yij_pij.out \
+    && gzip ${OUT_FILE_PREFIX}_summary_pi_xtx.out \
+    && gzip ${OUT_FILE_PREFIX}_summary_betai.out
+check_exit_status "baypass" $?
 
-cp ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+cd ..
+tar -cf ${OUT_DIR}.tar ${OUT_DIR}
+
+cp ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
 
 rm -r ${OUT_DIR}
 
 
 exit 0
+

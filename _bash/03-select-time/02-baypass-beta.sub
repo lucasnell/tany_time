@@ -19,7 +19,7 @@ requirements = (HasCHTCStaging == true)
 
 
 ## Copying outputs to ResearchDrive:
-transfer_output_files = baypass-beta$(IsingBeta)-run$(RunNumber).tar.gz
+transfer_output_files = baypass-beta$(IsingBeta)-run$(RunNumber).tar
 output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/beta
 
 
