@@ -1,17 +1,12 @@
 
 
 library(poolfstat)
-library(seqinr)
-library(clusterProfiler)
-library(rrvgo)
-library(treemap)
+library(seqinr) # read.fasta
+library(clusterProfiler) # enricher
 library(tidyverse)
 
 if (file.exists(".Rprofile")) source(".Rprofile")
 
-# source("_R/baypass-utils.R")
-# # These functions not necessary:
-# rm(compute_genetic_offset, compute.local.scores, fmd.dist, geno2YN, plot.omega, simulate.baypass, simulate.PCcorrelated.covariate)
 
 
 #'
@@ -58,7 +53,8 @@ baypass_dir <- "/Volumes/Lucas512/__to-transfer/baypass"
 
 
 snp_df <- paste0(baypass_dir, "/baypass-inputs/tany.snpdet") |>
-    read_table(col_types = "cdcc", col_names = c("contig", "pos", "ref", "alt")) |>
+    read_table(col_types = "cdcc", col_names = c("contig", "pos", "ref", "alt"),
+               progress = FALSE) |>
     # Have to do it this way bc some are in scientific notation in file:
     mutate(pos = as.integer(pos)) |>
     select(contig, pos)
@@ -72,7 +68,8 @@ beta_df <- crossing(b = 0L, r = 1:10) |>
         fn |>
             read_table(col_types = "iidddd", skip = 1,
                        col_names = c("cov", "mrk", "m_beta", "sd_beta",
-                                     "pip", "bf_db")) |>
+                                     "pip", "bf_db"),
+                       progress = FALSE) |>
             mutate(run = r)
 
     }) |>
@@ -97,6 +94,10 @@ bf_df <- beta_df |>
 # SNPs exceeding 30 deciban threshold
 # (Gautier et al. 2018, doi: 10.1016/j.cub.2018.08.023)
 candi_df <- bf_df |> filter(bf_db >= 30)
+
+
+# For use in other analyses:
+if (!file.exists("_data/candi_df.rds")) write_rds(candi_df, "_data/candi_df.rds")
 
 
 
@@ -261,6 +262,8 @@ gene_matcher <- function(contig, pos, threshold = 5e3) {
                                      (ps_d$strand == "-" & ps_d$location == "downstream"),
                                  ps_d$start - ps, ps - ps_d$end)
         ps_d[["dist"]][inside[lgl]] <- -1
+        out_idx <- which(ps_d[["dist"]] == min(ps_d[["dist"]]))[[1]]
+        ps_d <- ps_d[out_idx,]
         return(ps_d[,c("gene", "location", "dist")])
     })
 }
@@ -279,10 +282,6 @@ candi_genes_df <- candi_df |>
     arrange(desc(bf_db), mrk)
 
 
-candi_genes_df
-
-
-
 candi_funcs_df <- candi_genes_df |>
     mutate(desc = map(gene, \(g) {
         if (is.na(g)) return(NA_character_)
@@ -297,7 +296,8 @@ candi_funcs_df <- candi_genes_df |>
 
 candi_funcs_df |>
     select(contig, pos, bf_db, gene:go) |>
-    mutate(across(desc:go, \(x) map_chr(x, \(xx) paste(xx, collapse = ";")))) |>
+    mutate(across(desc:go, \(x) map_chr(x, \(xx) ifelse(isTRUE(is.na(xx)), xx,
+                                                        paste(xx, collapse = ";"))))) |>
     select(-desc)
 
 
@@ -379,101 +379,60 @@ filt_blast_df <- blast_df |>
     summarize(evalue = min(evalue), bf_db = max(bf_db), .groups = "drop") |>
     arrange(desc(bf_db), evalue)
 
-# filt_blast_df |>
-#     print(n = 100)
+filt_blast_df
+
+# # A tibble: 8 × 3
+#   uniprot    evalue bf_db
+#   <chr>       <dbl> <dbl>
+# 1 M9PCM8  0          53.0
+# 2 Q9VYK6  0          53.0
+# 3 B4F7L9  6.06e-146  53.0
+# 4 Q9VUD3  3.07e- 91  53.0
+# 5 Q9VBU4  6.60e- 69  53.0
+# 6 Q9VDD2  8.04e- 61  53.0
+# 7 P25724  1.80e- 12  53.0
+# 8 Q9VFP2  5.10e- 11  53.0
 
 
-
-
-
-# # A tibble: 43 × 3
-#    uniprot       evalue bf_db
-#    <chr>          <dbl> <dbl>
-#  1 M9PCM8     0          53.0
-#  2 O46100     0          53.0
-#  3 Q9VYK6     0          53.0
-#  4 B4F7L9     6.06e-146  53.0
-#  5 Q8MLQ7     1.67e-134  53.0
-#  6 P48613     1.09e-123  53.0
-#  7 Q9NI63     1.89e-118  53.0
-#  8 A4V4D2     1.31e-113  53.0
-#  9 P40792     2.29e-106  53.0
-# 10 Q9VUD3     3.07e- 91  53.0
-# 11 Q9VBU4     6.60e- 69  53.0
-# 12 Q9VDD2     8.04e- 61  53.0
-# 13 A0A0B4KGY5 6.21e- 20  53.0
-# 14 P25724     1.80e- 12  53.0
-# 15 Q9VFP2     5.10e- 11  53.0
-# 16 B7Z0X5     7.20e-  8  53.0
-# 17 M9PC41     2.23e-  6  53.0
-# 18 Q7KUL1     2.51e-170  48.4
-# 19 Q8MRC9     3.88e-101  45.5
-# 20 Q9VQK4     3.22e- 49  45.5
-# 21 D0Z756     0          42.9
-# 22 Q9V4U7     2.04e-153  42.9
-# 23 Q9V4U9     7.66e-126  42.9
-# 24 P33270     1.99e- 11  42.9
-# 25 A8JNT4     1.02e-170  39.7
-# 26 A8JNT6     7.34e- 44  39.7
-# 27 M9PGJ0     0          39.4
-# 28 Q9VKD5     2.57e-106  39.4
-# 29 A8DZ28     7.86e- 67  39.4
-# 30 Q7JV61     1.07e- 37  39.4
-# 31 P07207     3.63e- 50  37.9
-# 32 Q9VPQ8     5.15e- 25  37.9
-# 33 P17886     0          37.5
-# 34 Q9VBV4     3.04e- 52  37.5
-# 35 A0A0B4LHM9 5.96e- 44  37.5
-# 36 Q9VQ47     0          37.0
-# 37 B5RIV0     4.39e- 97  36.5
-# 38 X2JKS9     3.51e- 50  36.5
-# 39 Q9VHA5     1.72e- 26  36.5
-# 40 Q9VBX4     6.40e- 18  36.5
-# 41 Q9VK29     2.25e- 46  33.9
-# 42 Q9VJA9     3.10e-155  32.4
-# 43 A1ZAB3     4.6 e- 95  32.4
-
-
-#'  1 M9PCM8     0          53.0
+#' 1 M9PCM8  0          53.0
 #'     - flight, larval visceral muscle development, and locomotion
 #'     - https://www.uniprot.org/uniprotkb/M9PCM8/entry
-#'  2 O46100     0          53.0
-#'     - amino acid transmembrane transport, cell volume homeostasis,
-#'       chloride ion homeostasis, chloride transmembrane transport,
-#'       potassium ion homeostasis, potassium ion import across plasma membrane
-#'     - https://www.uniprot.org/uniprotkb/O46100/entry
-#'  3 Q9VYK6     0          53.0
+#' 2 Q9VYK6  0          53.0
 #'     - long term (odor) memory
 #'     - https://www.uniprot.org/uniprotkb/Q9VYK6/entry
-#'  4 B4F7L9     6.06e-146  53.0
+#' 3 B4F7L9  6.06e-146  53.0
 #'     - Chromosome mapping suggests that WDY is fully contained in the kl-1
 #'       region, and WDY may correspond to this fertility factor.
 #'     - https://www.uniprot.org/uniprotkb/B4F7L9/entry
-#'  5 Q8MLQ7     1.67e-134  53.0
-#'     - D-glucose transmembrane transport and trehalose transport
-#'     - https://www.uniprot.org/uniprotkb/Q8MLQ7/entry
-#'  6 P48613     1.09e-123  53.0
-#'     - Enhances para sodium channel function. Required during pupal
-#'       development to rescue adult paralysis and also protects adult flies
-#'       against heat-induced lethality.
-#'     - https://www.uniprot.org/uniprotkb/P48613/entry
-#'  7 Q9NI63     1.89e-118  53.0
-#'     - female and male meiotic nuclear division, spermatocyte division,
-#'       spermatogonial cell division
-#'     - https://www.uniprot.org/uniprotkb/Q9NI63/entry
-#'  8 A4V4D2     1.31e-113  53.0
-#'     - long-term (odor) memory
-#'     - https://www.uniprot.org/uniprotkb/A4V4D2/entry
-#'  9 P40792     2.29e-106  53.0
-#'     - melanotic encapsulation of foreign target, memory,
-#'       motor neuron axon guidance, muscle attachment,
-#'       muscle cell development, myoblast fusion,
-#'       myoblast proliferation, nephrocyte filtration,
-#'       neuron projection development
-#'     - https://www.uniprot.org/uniprotkb/P40792/entry
-#' 10 Q9VUD3     3.07e- 91  53.0
+#' 4 Q9VUD3  3.07e- 91  53.0
 #'     - brain development, neuron differentiation
 #'     - https://www.uniprot.org/uniprotkb/Q9VUD3/entry
+#' 5 Q9VBU4  6.60e- 69  53.0
+#'     - rRNA processing
+#'     - https://www.uniprot.org/uniprotkb/Q9VBU4/entry
+#' 6 Q9VDD2  8.04e- 61  53.0
+#'     - behavioral response to starvation, cellular response to glucose
+#'       starvation, cellular response to starvation, cholesterol homeostasis,
+#'       lipid metabolic process, positive regulation of autophagy
+#'     - https://www.uniprot.org/uniprotkb/Q9VDD2/entry
+#' 7 P25724  1.80e- 12  53.0
+#'     - dendrite morphogenesis, germ-line stem cell population maintenance,
+#'       negative regulation of apoptotic process, negative regulation of
+#'       synaptic assembly at neuromuscular junction, oogenesis,
+#'       spermatogenesis
+#'     - https://www.uniprot.org/uniprotkb/P25724/entry
+#' 8 Q9VFP2  5.10e- 11  53.0
+#'     - eye development, negative regulation of protein import into nucleus,
+#'       positive regulation of apoptotic process, positive regulation of JNK
+#'       cascade, positive regulation of protein catabolic process,
+#'       proteasome-mediated ubiquitin-dependent protein catabolic process,
+#'       protein destabilization, regulation of proteolysis
+#'     - https://www.uniprot.org/uniprotkb/Q9VFP2/entry
+
+
+
+
+
 
 
 
@@ -495,23 +454,6 @@ Dm_db <- org.Dm.eg.db::org.Dm.eg.db
 Ontology <- BiocGenerics::Ontology
 
 
-# ### NO LONGER USED
-# # Create map to quickly pull out `goall` column for each `entrezid`:
-# if (!file.exists("_data/goall_map.rds")) {
-#     GO2ALLEGS <- as.list(org.Dm.eg.db::org.Dm.egGO2ALLEGS)
-#     # Takes ~ 8 min:
-#     goall_map <- keys(Dm_db) |>
-#         set_names() |>
-#         map(\(e) {
-#             lgl <- map_lgl(GO2ALLEGS, \(x) e %in% x)
-#             return(unique(names(GO2ALLEGS)[lgl]))
-#         })
-#     write_rds(goall_map, "_data/goall_map.rds")
-#     rm(GO2ALLEGS)
-# } else {
-#     goall_map <- read_rds("_data/goall_map.rds")
-# }
-
 
 
 
@@ -521,16 +463,7 @@ all_prots <- db_select(Dm_db, keys = keys(Dm_db),
                        columns = c("ENTREZID", "UNIPROT", "GENENAME", "GO")) |>
     as_tibble() |>
     rename_with(tolower) |>
-    filter(!is.na(uniprot)) |>
-    # group_by(entrezid, uniprot, genename) |>
-    # summarize(go = list(go), .groups = "drop") |>
-    # mutate(goall = map(entrezid, \(e) goall_map[[e]]),
-    #        go = map2(go, goall, \(x, y) {
-    #            unique(c(x, y))
-    #        })) |>
-    # select(-goall, -entrezid) |>
-    # unnest(go) |>
-    filter(!is.na(go)) |>
+    filter(!is.na(uniprot), !is.na(go)) |>
     distinct(uniprot, go) |>
     mutate(term = suppressMessages(db_select(GO.db::GO.db, go, "TERM")[,"TERM"]))
 
@@ -539,7 +472,7 @@ all_prots <- db_select(Dm_db, keys = keys(Dm_db),
 term2gene <- all_prots |>
     select(go, uniprot)
 term2name <- all_prots |>
-    select(go, term)
+    distinct(go, term)
 
 genes <- filt_blast_df$uniprot[filt_blast_df$uniprot %in% all_prots$uniprot]
 
@@ -547,8 +480,6 @@ genes <- filt_blast_df$uniprot[filt_blast_df$uniprot %in% all_prots$uniprot]
 overrep <- enricher(genes,
                     pvalueCutoff = 0.05,
                     pAdjustMethod = "BH",
-                    # minGSSize = 1,
-                    # maxGSSize = 5,
                     TERM2GENE=term2gene, TERM2NAME=term2name) |>
     as_tibble()
 overrep
@@ -563,56 +494,48 @@ or_df <- overrep |>
 
 or_df |>
     filter(ont == "BP") |>
-    select(Description, p.adjust)
-
-# # A tibble: 9 × 2
-#   Description                                          p.adjust
-#   <chr>                                                   <dbl>
-# 1 regulation of locomotor rhythm                         0.0137
-# 2 neuron projection morphogenesis                        0.0201
-# 3 regulation of glycolytic process                       0.0201
-# 4 behavioral response to starvation                      0.0251
-# 5 Golgi to plasma membrane transport                     0.0302
-# 6 germline ring canal formation                          0.0305
-# 7 glial cell migration                                   0.0469
-# 8 epidermis development                                  0.0469
-# 9 regulation of compound eye photoreceptor development   0.0469
+    select(Description, p.adjust) |>
+    print(n = 40)
 
 
-# Treemap figure (not necessary, probably)
 
-
-or_bp_scores <- or_df |>
-    filter(ont == "BP") |>
-    mutate(geneID = geneID |> str_split("/")) |>
-    unnest(geneID) |>
-    mutate(bf_db = map_dbl(geneID, \(x) filt_blast_df$bf_db[filt_blast_df$uniprot == x][[1]])) |>
-    group_by(ID) |>
-    summarize(bf_db = max(bf_db)) |>
-    (\(x) {z <- (x$bf_db); names(z) <- x$ID; return(z)})()
-
-#' `org.Dm.eg.db` is the genome wide annotation for *Drosophila melanogaster*
-sem_data <- GOSemSim::godata(annoDb = "org.Dm.eg.db",
-                             ont = "BP", keytype = "ENTREZID")
-or_bp_sim_mat <- calculateSimMatrix(names(or_bp_scores),
-                                    semdata = sem_data,
-                                    "org.Dm.eg.db", ont = "BP")
-
-or_bp_red <- reduceSimMatrix(or_bp_sim_mat,
-                             scores = or_bp_scores,
-                             orgdb = "org.Dm.eg.db") |>
-    as_tibble()
-or_bp_red
-
-treemap_p <- function() {
-    .pal <- viridisLite::turbo(length(unique(or_bp_red$parent)), begin = 0.2)
-    treemap(or_bp_red, index = c("parentTerm", "term"),
-            vSize = "score", type = "index", title = "",
-            lowerbound.cex.labels = 0.1,
-            palette = .pal,
-            fontcolor.labels = c("#FFFFFFDD", "#00000080"), bg.labels = 0,
-            border.col = "#00000080")
-}
-treemap_p()
+# # A tibble: 35 × 2
+#    Description                                        p.adjust
+#    <chr>                                                 <dbl>
+#  1 regulation of carbon utilization                     0.0241
+#  2 negative regulation of protein import into nucleus   0.0241
+#  3 positive regulation of gluconeogenesis               0.0241
+#  4 endoplasmic reticulum localization                   0.0241
+#  5 cellular response to glucose starvation              0.0241
+#  6 protein destabilization                              0.0241
+#  7 regulation of glycolytic process                     0.0241
+#  8 triglyceride storage                                 0.0241
+#  9 positive regulation of cell cycle                    0.0263
+# 10 behavioral response to starvation                    0.0263
+# 11 female germline ring canal stabilization             0.0263
+# 12 mitochondrion localization                           0.0263
+# 13 Golgi to plasma membrane transport                   0.0263
+# 14 microtubule anchoring                                0.0263
+# 15 protein K48-linked ubiquitination                    0.0280
+# 16 regulation of proteolysis                            0.0280
+# 17 nucleus localization                                 0.0280
+# 18 nucleus organization                                 0.0280
+# 19 larval visceral muscle development                   0.0280
+# 20 cholesterol homeostasis                              0.0311
+# 21 segmentation                                         0.0340
+# 22 positive regulation of protein catabolic process     0.0340
+# 23 flight                                               0.0354
+# 24 anterior/posterior axis specification, embryo        0.0371
+# 25 regulation of neuromuscular synaptic transmission    0.0375
+# 26 rRNA processing                                      0.0417
+# 27 nuclear migration                                    0.0417
+# 28 eye development                                      0.0432
+# 29 oocyte anterior/posterior axis specification         0.0432
+# 30 ovarian nurse cell to oocyte transport               0.0433
+# 31 autophagy                                            0.0452
+# 32 positive regulation of JNK cascade                   0.0465
+# 33 positive regulation of apoptotic process             0.0467
+# 34 exocytosis                                           0.0500
+# 35 somatic muscle development                           0.0500
 
 
