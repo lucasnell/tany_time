@@ -9,47 +9,12 @@ if (file.exists(".Rprofile")) source(".Rprofile")
 
 
 
-#'
-#' # also move everything into a single folder:
-#' for ((r=1; r<=3; r++)); do
-#'     cd run${r}
-#'     for ((i=1; i<=5; i++)); do
-#'         cd baypass-beta_1.0-run${r}-sub${i}
-#'         mv *.log *.out ../
-#'         cd ..
-#'         rm -r baypass-beta_1.0-run${r}-sub${i}
-#'     done
-#'     cd ..
-#' done
-#' ```
-#'
-
-
-
-# bp_runs <- map(1:3, \(r) {
-#     concatenate_res(dir = sprintf("~/_data/_baypass/beta/run%i", r),
-#                     anaprefix = sprintf("tany-beta_1.0-run%i-sub", r),
-#                     anasep = "",
-#                     extension = "",
-#                     nsubsets = 5,
-#                     snpdet_prefix = "~/_data/_baypass/beta/tany.snpdet.sub",
-#                     retrieve_pi_xtx = FALSE,
-#                     retrieve_bfis = TRUE,
-#                     retrieve_c2 = FALSE) |>
-#         set_names(c("contig", "pos", "bf_db")) |>
-#         as_tibble() |>
-#         mutate(bf = 10^(bf_db / 10),
-#                run = factor(r, levels = 1:3)) |>
-#         select(run, everything())
-# }) |>
-#     list_rbind()
-
 
 # =============================================================================*
 # Reading baypass output ----
 # =============================================================================*
 
-baypass_dir <- "/Volumes/Lucas512/__to-transfer/baypass"
+baypass_dir <- "~/_data/_baypass"
 
 
 snp_df <- paste0(baypass_dir, "/baypass-inputs/tany.snpdet") |>
@@ -301,6 +266,8 @@ candi_funcs_df |>
     select(-desc)
 
 
+if (!file.exists("_data/candi_funcs_df.rds")) write_rds(candi_funcs_df, "_data/candi_funcs_df.rds")
+
 
 
 # =============================================================================*
@@ -407,6 +374,18 @@ filt_blast_df
 #' 4 Q9VUD3  3.07e- 91  53.0
 #'     - brain development, neuron differentiation
 #'     - https://www.uniprot.org/uniprotkb/Q9VUD3/entry
+#'     - Also called sox21b
+#'     - Sox21b underlies the rapid diversification of a novel male genital
+#'       structure between Drosophila species
+#'       (https://doi.org/10.1016/j.cub.2024.01.022)
+#'     - Unraveling the Genetic Basis for the Rapid Diversification of Male
+#'       Genitalia between Drosophila Species
+#'       (https://doi.org/10.1093/molbev/msaa232)
+#'     - Drosophila melanogaster tPlus3a and tPlus3b ensure full male fertility
+#'       by regulating transcription of Y-chromosomal, seminal fluid, and heat
+#'       shock genes
+#'       (https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0213177)
+#'     -
 #' 5 Q9VBU4  6.60e- 69  53.0
 #'     - rRNA processing
 #'     - https://www.uniprot.org/uniprotkb/Q9VBU4/entry
@@ -414,6 +393,7 @@ filt_blast_df
 #'     - behavioral response to starvation, cellular response to glucose
 #'       starvation, cellular response to starvation, cholesterol homeostasis,
 #'       lipid metabolic process, positive regulation of autophagy
+#'     - Also called SNF4Agamma
 #'     - https://www.uniprot.org/uniprotkb/Q9VDD2/entry
 #' 7 P25724  1.80e- 12  53.0
 #'     - dendrite morphogenesis, germ-line stem cell population maintenance,

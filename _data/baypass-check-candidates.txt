@@ -1,0 +1,8 @@
+SNPs tested: 433360
+Max bf_db in any run: 52.96
+Candidates (median bf_db >= 30): 33
+Identical to _data/candi_df.rds: TRUE
+Number of runs (of 10) with bf_db >= 30, per candidate:
+
+ 5  6  7 
+12 15  6 
