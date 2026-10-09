@@ -34,6 +34,11 @@ On hold until the owner says to run them. Listed in dependency order.
         error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).
       - Competitive mapping against other genomes (DESTv3 "hologenome") as a
         diagnostic of non-target reads per pool, if useful for review step 2.
+        Cheaper first look: `02-bwa.sh` already saves unmapped reads
+        (`*_unmapped_{merged,unmerged}.bam`) and `bamtools stats` output, so
+        per-pool mapping rates vs. logN need no remapping. Other chironomid
+        assemblies for a combined reference are in
+        `~/_data/midgenomes/assemblies/`.
 
 ## Review steps
 
