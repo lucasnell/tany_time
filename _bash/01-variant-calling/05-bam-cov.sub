@@ -27,4 +27,4 @@ request_cpus = 2
 request_memory = 8GB
 request_disk = 20GB
 
-queue readbase from readbases.txt
+queue readbase from ../samples/all-pools.txt

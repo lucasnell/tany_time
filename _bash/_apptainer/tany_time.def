@@ -4,6 +4,7 @@ From: condaforge/miniforge3:26.7.2-0
 
 %files
     helpers.sh /app/helpers.sh
+    bin /app/bin
     baypass-env.yml /app/baypass-env.yml
     main-env.yml /app/main-env.yml
     gatk-env.yml /app/gatk-env.yml
@@ -26,6 +27,8 @@ From: condaforge/miniforge3:26.7.2-0
         cat /app/helpers.sh >> /app/.bashrc && \
         echo "" >> /app/.bashrc && \
         rm /app/helpers.sh
+    # Project scripts (see _bash/_apptainer/README.md):
+    chmod 755 /app/bin/*
     conda init bash
     conda config --set solver libmamba
     conda config --set auto_update_conda false
@@ -78,6 +81,7 @@ From: condaforge/miniforge3:26.7.2-0
     export LC_ALL=en_US.UTF-8
     export TZ=America/New_York
     export HOME=/app
+    export PATH=/app/bin:$PATH
     export SINGULARITY_SHELL=/bin/bash
 
 %labels

@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """
 Combine multiple gSYNC files (optionally gzipped) into one.
-It assumes they're all in the same order, as they should be because this
-format should include a line per bp in the reference.
-It also removes any instances of a 5th column in the output, which 
-can happen when converting from SNAPE-pooled output to gSYNC.
 
-For use in `poolfstat`, you should also run this to remove any missing data:
-gunzip -c POOLS.sync.gz | grep -v ".:.:.:.:.:." | gzip > POOLS_noblanks.sync.gz
+It assumes they're all in the same order, as they should be because this
+format includes a line per bp in the reference.
+
+By default, the output contains allele *counts* (4th column of each input),
+and any 5th column in the inputs is dropped. With `--snape`, the output
+instead contains the SNAPE-pooled info (5th column of each input);
+inputs lacking a 5th column at a site get ".:.:.:.:.:.:." there.
+
+To remove sites with missing data in any pool:
+gunzip -c POOLS.sync.gz | grep -Fv ".:.:.:.:.:." | gzip > POOLS_noblanks.sync.gz
+(This pattern also matches the 7-field SNAPE placeholder.)
 
 usage:
-./combine-syncs.py \
-    -o <output file name> \
-    <input sync files as *.sync or *.sync.gz>
+combine-syncs.py [--snape] -o <output file name> <input sync files>
 
 """
+
 import sys
 import os.path
 import gzip
@@ -23,26 +27,26 @@ import itertools as it
 from datetime import datetime
 
 
-
-
 def make_error(err_msg):
     sys.stderr.write("ERROR: " + err_msg + "\n")
     sys.exit(1)
 
 
-
-
 if __name__ == "__main__":
-    
+
     parser = argparse.ArgumentParser(description = "Combine sync files")
-    parser.add_argument("-o", "--out", required = True, 
+    parser.add_argument("-o", "--out", required = True,
                         help = "Output file name")
+    parser.add_argument("--snape", action = "store_true",
+                        help = "Combine SNAPE info (5th column) instead " +
+                        "of allele counts (4th column)")
     parser.add_argument("inputs", nargs = "+", help="input sync files")
-    
+
     args = parser.parse_args()
     out = args.out
     inputs = args.inputs
-    
+    snape = args.snape
+
     if not out.endswith((".sync", ".sync.gz")):
         make_error("Strange suffix to output file name. Exiting.")
     out_dir_file = os.path.split(out)
@@ -53,55 +57,61 @@ if __name__ == "__main__":
 
     if len(inputs) < 2:
         make_error("At least 2 input files required")
-    
+
     gzipped = all(x.endswith(".sync.gz") for x in inputs)
     if not (gzipped or all(x.endswith(".sync") for x in inputs)):
         make_error("All inputs must have the same extension, and it must " +
                    "be *.sync.gz or *.sync")
-    
+
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    print("Combining sync files into " + out)
-    
+    print("Combining sync files (" + ("SNAPE info" if snape else "counts") +
+          ") into " + out)
+
     time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print("started reading/writing (" + time_str + ")")
-    
+
     if gzipped:
         files = [gzip.open(x, "rt") for x in inputs]
     else:
         files = [open(x, "r") for x in inputs]
-    
+
     if out.endswith(".gz"):
         out_file = gzip.open(out, "wt")
     else:
         out_file = open(out, "w")
-    
+
+    def get_field(l_split):
+        """Column to keep from one input line (already split by tab)"""
+        if not snape:
+            return l_split[3].rstrip()
+        if len(l_split) < 5:
+            return ".:.:.:.:.:.:."
+        return l_split[4].rstrip()
+
     j = 0
     for line in it.zip_longest(*files, fillvalue=""):
-        l_split = line[0].rstrip().split("\t")
-        if len(l_split) < 4:
-            make_error("only " + str(len(l_split)) + " columns in file " + 
-                       inputs[0] + " line " + str(j))
-        zline = l_split[:4]
-        for i in range(1, len(line)):
-            l_split = line[i].split("\t")
+        zline = []
+        for i in range(len(line)):
+            l_split = line[i].rstrip().split("\t")
             if len(l_split) < 4:
-                make_error("only " + str(len(l_split)) + " columns in file " + 
-                           inputs[0] + " line " + str(j))
-            zline.append(l_split[3].rstrip())
+                make_error("only " + str(len(l_split)) + " columns in file " +
+                           inputs[i] + " line " + str(j))
+            if i == 0:
+                zline = l_split[:3]
+            zline.append(get_field(l_split))
         new_line = "\t".join(zline) + "\n"
         b = out_file.write(new_line)
         j += 1
-    
+
     for x in files:
         x.close()
     out_file.close()
-    
+
     time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print("... finished (" + time_str + ")")
-    
+
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-    
-    sys.exit(0)
 
+    sys.exit(0)

@@ -4,7 +4,6 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = ont-pi.log
 log = logs/04-ont-pi/ont-pi.log
 error = logs/04-ont-pi/ont-pi.err
 output = logs/04-ont-pi/ont-pi.out

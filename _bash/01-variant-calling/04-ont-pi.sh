@@ -30,23 +30,14 @@ cd ${OUT_DIR}
 export ONT_FASTQ=basecalls_guppy-5.0.11.fastq
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
-if [ ! -f ${PARENT_DIR_IN}/${ONT_FASTQ}.gz ]; then
-    echo "${PARENT_DIR_IN}/${ONT_FASTQ}.gz does not exist! " 1>&2
-    safe_exit 111
-fi
-if [ ! -f ${GENOME_FULL_PATH} ]; then
-    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    safe_exit 222
-fi
+require_files ${PARENT_DIR_IN}/${ONT_FASTQ}.gz ${GENOME_FULL_PATH}
 
 
 
 cp ${PARENT_DIR_IN}/${ONT_FASTQ}.gz ./ &&
     gunzip ${ONT_FASTQ}.gz
 check_exit_status "move, gunzip ONT reads" $?
-cp ${GENOME_FULL_PATH} ./ &&
-    gunzip ${GENOME}.gz
-check_exit_status "move, gunzip genome" $?
+stage_genome ${GENOME_FULL_PATH}
 
 samtools faidx --length 80 ${GENOME}
 check_exit_status "index genome" $?

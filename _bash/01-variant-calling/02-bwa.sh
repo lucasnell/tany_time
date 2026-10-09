@@ -29,14 +29,7 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 export READ_BASE=$1
 
-if [ ! -f ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ]; then
-    echo "${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar does not exist! " 1>&2
-    safe_exit 111
-fi
-if [ ! -f ${GENOME_FULL_PATH} ]; then
-    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    safe_exit 222
-fi
+require_files ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ${GENOME_FULL_PATH}
 
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
@@ -90,9 +83,7 @@ gunzip ${READS1}.gz && \
     gunzip ${READS2}.gz
 check_exit_status "gunzip reads" $?
 
-cp ${GENOME_FULL_PATH} ./ && \
-    gunzip ${GENOME}.gz
-check_exit_status "move, gunzip genome" $?
+stage_genome ${GENOME_FULL_PATH}
 
 bwa index ${GENOME}
 check_exit_status "bwa-index" $?

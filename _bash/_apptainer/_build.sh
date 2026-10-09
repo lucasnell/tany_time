@@ -9,7 +9,7 @@
 #' If necessary, to send all these scripts to the cluster from your machine:
 #'
 #' cd ~/GitHub/Wisconsin/tany_time/_bash/_apptainer
-#' scp *.yml helpers.sh *.def lnell@ap2001.chtc.wisc.edu:/home/lnell/_apptainer/
+#' scp -r *.yml helpers.sh *.def bin lnell@ap2001.chtc.wisc.edu:/home/lnell/_apptainer/
 #'
 
 
@@ -19,7 +19,7 @@ export OUT_SIF=tany_time.sif
 
 mkdir working
 
-mv *.sh *.yml *.py *.def ./working/
+mv *.sh *.yml *.def bin ./working/
 
 cd working
 

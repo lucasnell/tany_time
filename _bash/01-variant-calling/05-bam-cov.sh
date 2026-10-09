@@ -23,7 +23,6 @@ export PARENT_DIR_OUT="/staging/lnell/dna/bwa"
 
 
 
-# export READ_BASE=Ash-19_S5
 
 
 
@@ -35,10 +34,7 @@ export READ_BASE=$1
 
 export IN_BAM=${READ_BASE}_bwa.bam
 
-if [ ! -f ${PARENT_DIR_IN}/${IN_BAM} ]; then
-    echo "${PARENT_DIR_IN}/${IN_BAM} does not exist! " 1>&2
-    safe_exit 111
-fi
+require_files ${PARENT_DIR_IN}/${IN_BAM}
 
 
 

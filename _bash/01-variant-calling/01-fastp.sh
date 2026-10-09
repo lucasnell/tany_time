@@ -20,16 +20,7 @@ export READ_BASE=$1
 export READS1=${READ_BASE}_L002_R1_001.fastq.gz
 export READS2=${READ_BASE}_L002_R2_001.fastq.gz
 
-status=0
-if [ ! -f ${PARENT_DIR_IN}/${READS1} ]; then
-    echo "${PARENT_DIR_IN}/${READS1} does not exist! " 1>&2
-    status=111
-fi
-if [ ! -f ${PARENT_DIR_IN}/${READS2} ]; then
-    echo "${PARENT_DIR_IN}/${READS2} does not exist! " 1>&2
-    status=111
-fi
-if (( $status != 0 )); then safe_exit $status; fi
+require_files ${PARENT_DIR_IN}/${READS1} ${PARENT_DIR_IN}/${READS2}
 
 
 # Outputs:

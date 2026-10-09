@@ -2,23 +2,28 @@
 
 ## Pipeline order
 
+Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`.
+Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
+are written by `_R/make-job-lists.R`.
+
 1. `_bash/01-variant-calling/` (cluster): `01-fastp` trim → `02-bwa` merge
    overlapping pairs with bbmerge, align with `bwa mem` → `03-mpileup` mark
-   duplicates, GATK indel realignment, `samtools mpileup` → `04-ont-pi`
-   (priors for SNAPE) → `05-bam-cov` (coverage `.bed.gz`).
+   duplicates, GATK indel realignment, `samtools mpileup`; `05-bam-cov`
+   (coverage `.bed.gz`); `04-ont-pi` (SNAPE prior θ, independent).
 2. `_R/tidy-sample-data.R` → `_data/full-sample-info.csv` (pool ID, date,
    lake, site, number of adults, lat/lon).
 3. `_R/sample-qc.R`: picks pools with median coverage ≥ 30 (17 of 30 SN time
    pools, 18 spatial pools; lists are in the script). Reason for the cutoff
    is not recorded. The script's report path (`~/_data/trimmed_reports`) is
    stale; reports are now in `~/_data/_tany-time/trimmed/trimmed_reports/`.
-4. `_bash/02-allele-freqs/` (cluster; SNAPE helper scripts in
-   `snape-files/` come from DEST freeze1 and match DESTv3 except for
-   uncompressed output and the P(polymorphic) filter in `MaskSYNC_snape.py`,
-   which keeps only sites with P ≥ 0.9; DESTv3 masks only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked
-   gSYNC; undoes softmasking) → `02-npstat` → `03-combine-snapes` and
-   `04-combine-counts` (combine passing pools into `time`, `space`, and `all`
-   sets).
+4. `_bash/02-allele-freqs/` (cluster; SNAPE helper scripts, now in
+   `_bash/_apptainer/bin/`, come from DEST freeze1 and match DESTv3 except
+   for uncompressed output and the P(polymorphic) filter in
+   `MaskSYNC_snape.py`, which keeps only sites with P ≥ 0.9; DESTv3 masks
+   only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked gSYNC; undoes
+   softmasking) → `02-npstat`; `03-combine-syncs` (combines QC-passing pools
+   into `snape_masked_*` and `count_masked_*` for `time`, `space`, and `all`;
+   was `03-combine-snapes` + `04-combine-counts` before 2026-10-09).
 5. `_R/tidy-pop-abunds.R` → `_data/tany-abundances.csv` (year, generation,
    N, logN = log1p(N)).
 6. `_bash/03-select-time/` (cluster):
@@ -63,6 +68,7 @@
 | `baypass-check-candidates.R` | Confirms `candi_df.rds` matches local BayPass output; per-candidate run consistency → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
+| `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
 ## `_data/`
@@ -132,4 +138,5 @@ runnable as-is (see `CLAUDE.md`). Includes sample summaries, spatial FST and
 connectivity (`fst-dist.stan`), admixture, temporal diversity, diversity
 simulations (`sim_midges.cpp` with the `pcg/` RNG headers), and genome-report
 maps. Git-ignored outputs `fst-dist.rds` and `sample_summary.pdf` moved with
-them.
+them. `cpg-islands.sh` (local TaJoCGI run on the assembly; unfinished, found
+only 7 CpG islands) moved here from `_bash/` on 2026-10-09.

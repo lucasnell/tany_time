@@ -30,9 +30,14 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 
 ## Layout
 
-- `_bash/` — cluster pipeline (UW–Madison CHTC, HTCondor). Each step is a
-  `.sh` + `.sub` pair, numbered in run order. Runs inside the Apptainer image
-  built from `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
+- `_bash/` — cluster pipeline (UW–Madison CHTC, HTCondor); see
+  `_bash/README.md`. Each step is a `.sh` + `.sub` pair, numbered in run
+  order. Runs inside the Apptainer image built from
+  `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
+  Shared shell functions are in `_bash/_apptainer/helpers.sh`; shared
+  scripts are in `_bash/_apptainer/bin/` (installed on the container's
+  `PATH`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`.
+  `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`.
   Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools
   1.24, …); all existing outputs were made with v1.0.0 (BayPass 2.31).

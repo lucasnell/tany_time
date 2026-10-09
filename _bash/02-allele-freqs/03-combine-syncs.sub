@@ -1,0 +1,30 @@
+# combine-syncs.sub
+
+# combine masked gSYNC files (SNAPE info and counts) across pools
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = logs/03-combine-syncs/combine-syncs.log
+error = logs/03-combine-syncs/combine-syncs.err
+output = logs/03-combine-syncs/combine-syncs.out
+
+executable = 03-combine-syncs.sh
+
+batch_name = "combine-syncs"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+## Pool lists (written by `_R/make-job-lists.R`):
+transfer_input_files = ../samples/time-pools.txt, ../samples/space-pools.txt
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = snape_masked_time.tar, snape_masked_space.tar, snape_masked_all.tar, count_masked_time.tar, count_masked_space.tar, count_masked_all.tar
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/snape
+
+request_cpus = 2
+request_memory = 4GB
+request_disk = 120GB
+
+queue 1

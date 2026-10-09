@@ -28,5 +28,5 @@ request_memory = 16GB
 request_disk = 60GB
 
 
-# Run one instance of this job per line in `readbases.txt`
-queue readbase from readbases.txt
+# Run one instance of this job per line in `../samples/all-pools.txt`
+queue readbase from ../samples/all-pools.txt

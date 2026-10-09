@@ -1,117 +1,23 @@
+# `01-variant-calling/`
 
-# Major steps in variant calling:
+Pool-seq reads → filtered, realigned BAMs → mpileup files.
+One job per pool (`../samples/all-pools.txt`) except `04-ont-pi`.
 
-1. fastp for read trimming
-2. bwa for aligning reads
-3. samtools for creating pileup file
+| Step | Does | Input (`/staging/lnell/`) | Output (`/staging/lnell/dna/`) |
+|---|---|---|---|
+| `01-fastp` | Adapter and polyG trimming, overlap base correction (`--correction`), no quality filtering (bwa soft-clips low-quality ends); FastQC on trimmed reads | `dna/raw_fq/` | `trimmed/trimmed_<pool>.tar` (reads), `trimmed/trimmed_<pool>.tar.gz` (reports) |
+| `02-bwa` | Merge overlapping pairs (`bbmerge.sh`); align merged and unmerged reads separately (`bwa mem -M`); keep MAPQ ≥ 20 and primary alignments (`-q 20 -F 0x100`); merge (`gatk MergeSamFiles`) | `trimmed/`, `Tgraci_assembly.fasta.gz` | `bwa/<pool>_bwa.bam`; logs, `bamtools stats`, and unmapped reads in `bwa/<pool>_bwa.tar.gz` |
+| `03-mpileup` | Remove duplicates (`gatk MarkDuplicates`); realign around indels (GATK 3 `RealignerTargetCreator` + `IndelRealigner`, 9+ h); `samtools mpileup -B`; coverage in 500-bp windows (step 250) | `bwa/`, assembly | `mpileup/<pool>_mpileup.txt.gz`, `mpileup/<pool>_mpileup.tar.gz` |
+| `04-ont-pi` | Map Nanopore reads from one individual (minimap2), call variants (bcftools), mean π in 1-kb windows (vcftools). Result (0.0088) is the SNAPE prior θ | `dna/ont/basecalls_guppy-5.0.11.fastq.gz`, assembly | `ont/ont_variants.bcf`, `ont/ont_variants.windowed.pi.gz` |
+| `05-bam-cov` | Per-base coverage (`bedtools genomecov -bga`), used in `_R/sample-qc.R` | `bwa/` | `bwa/<pool>_bwa_cov.bed.gz` |
 
+## Notes
 
---> ont-pi for snape priors
-
-
-
-
-
-
-
-## bwa.sh
-
-- Merge overlapping paired reads using `bbmerge.sh`
-- Separately align merged and unmerged reads using `bwa mem`
-- Combine alignments using `picard MergeSamFiles`
-
-
-## mpileup.sh
-
-- Mark and remove duplicates using `picard MarkDuplicates`
-- Re-align sequences in the proximity of indels with `IndelRealigner` and
-  `RealignerTargetCreator` in `GATK`
-- Produce pileup text files from BAMs using `samtools mpileup`
-
-
-## snape.sh
-
-- Estimate allele frequencies using `snape-pooled`
-- Produce gSYNC files from the snape output
-- Filter gSYNC files based on coverage, indels, and repetitive elements
-
-
-From Kapun et al. (2021):
-"Sites were filtered from gSYNC files if they had: 
-1) minimum read depth <10; 
-2) maximum read depth >the 95% coverage percentile of a given chromosomal 
-   arm and sample; 
-3) located within repetitive elements as defined by RepeatMasker;
-4) within 5-bp distance up-and downstream of indel polymorphisms identified 
-   by the GATK IndelRealigner."
-
-
-
-
-
-
-
-
-# OLD DESCRIPTION:
-
-
-- trim and filter reads using
-    [`fastp`](https://bioconda.github.io/recipes/fastp/README.html)
-    - quality trimming not necessary:
-        https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-13-S8-S8
-- map reads to genome using 
-    [`bwa mem`](https://bioconda.github.io/recipes/bwa/README.html)
-- duplicates marked using `samtools markdup`
-- filter reads (Q >= 20, no secondary alignment) using `samtools view`
-- add group information using `AddOrReplaceReadGroups` in `picard`
-- re-align sequences in the proximity of indels with `IndelRealigner` and
-    `RealignerTargetCreator` in
-    [`GATK`](https://bioconda.github.io/recipes/gatk/README.html)
-- use `samtools mpileup` to generate pileup file
-- estimate allele frequencies using SNAPE-pool
-    - [This paper](https://doi.org/10.1111/1755-0998.13343) 
-      indicates it works really well
-    - [This paper](https://doi.org/10.1093/molbev/msab259)
-      created a bunch of tools to deal with output
-    - See...
-        - https://github.com/EmanueleRaineri/snape-pooled
-        - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/Mpileup2Snape.sh
-        - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/SNAPE2SYNC.py
-        - https://github.com/DEST-bio/DEST_freeze1/blob/main/mappingPipeline/scripts/MaskSYNC_snape.py
-
-
-
-
-
-
-
-- damage profiling using
-    [`DamageProfiler`](https://bioconda.github.io/recipes/damageprofiler/README.html)
-- for population genomics analyses:
-    [`poolfstat`](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13557)
-
-
-## Variant calling from pileup:
-
-[MAPGD](https://github.com/LynchLab/MAPGD)
-- performs well via https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13343
-- no indels
-- I'm going with this one
-
-[snape](https://github.com/EmanueleRaineri/snape-pooled)
-- performs well via https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13343
-- what should priors be??
-- no indels
-
-[PoPoolation2](https://sourceforge.net/p/popoolation2/wiki/Manual/)
-- documentation doesn't look good
-- any papers on its performance??
-- it only hard-filters from mpileup, not a great method
-
-[CRISP](https://github.com/vibansal/crisp/)
-- used a lot, but is it actually good?
-- indels!
-
-
-
-see this for more info: `https://evodify.com/gatk-in-non-model-organism/`
+- `samtools mpileup` uses its default minimum base quality (13), while the
+  allele counts made from this file in `02-allele-freqs/01-snape`
+  (`Mpileup2Sync.py`) use ≥ 25. DESTv3 uses `-Q 25` in mpileup. Undecided
+  (see `TODO.md`).
+- The window-coverage script in `03-mpileup` assigns each position only to
+  the first window containing it, so with overlapping windows (step 250 <
+  window 500) every other window undercounts. Its output
+  (`*_mpileup_win500.txt.gz`) isn't used downstream.

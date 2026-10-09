@@ -31,21 +31,14 @@ export READ_BASE=$1
 export IN_BAM=${READ_BASE}_bwa.bam
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
-if [ ! -f ${PARENT_DIR_IN}/${IN_BAM} ]; then
-    echo "${PARENT_DIR_IN}/${IN_BAM} does not exist! " 1>&2
-    safe_exit 111
-fi
-if [ ! -f ${GENOME_FULL_PATH} ]; then
-    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    safe_exit 222
-fi
+require_files ${PARENT_DIR_IN}/${IN_BAM} ${GENOME_FULL_PATH}
 
 
 #' ========================================================================
 #' Window pileup script
 #' ========================================================================
 
-cat << EOF > window-pileup.py
+cat << 'EOF' > window-mpileup.py
 #!/usr/bin/env python3
 """
 Summarize coverage from mpileup using a sliding window.
@@ -379,7 +372,7 @@ if __name__ == "__main__":
 
 EOF
 
-chmod +x window-pileup.py
+chmod +x window-mpileup.py
 
 
 
@@ -408,14 +401,12 @@ export REALIGNED_OUT=${MARKDUP_OUT/.bam/_realigned.bam}
 
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
-mv ../window-pileup.py ./
+mv ../window-mpileup.py ./
 
 cp ${PARENT_DIR_IN}/${IN_BAM} ./
 check_exit_status "move BAM" $?
 
-cp ${GENOME_FULL_PATH} ./ && \
-    gunzip ${GENOME}.gz
-check_exit_status "move, gunzip genome" $?
+stage_genome ${GENOME_FULL_PATH}
 
 
 # Needed downstream
@@ -497,7 +488,7 @@ gzip ${OUT_FILE%.gz}
 # Sliding window (500bp with step size of 250bp) of coverage for plotting
 ./window-mpileup.py -r ${GENOME} -s 250 -w 500 ${OUT_FILE}
 check_exit_status "window-mpileup.py" $?
-rm window-pileup.py
+rm window-mpileup.py
 
 # Change default naming to specify window size:
 mv ${OUT_FILE/.txt/_window.txt} ${OUT_FILE/.txt/_win500.txt}

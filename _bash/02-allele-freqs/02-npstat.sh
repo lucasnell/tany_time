@@ -45,19 +45,10 @@ export SYNC=${IN_SNAPE_PREFIX}_part_masked.sync.gz
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 
-if [ ! -f ${PARENT_DIR_IN}/${IN_SNAPE_PREFIX}.tar ]; then
-    echo "${PARENT_DIR_IN}/${IN_SNAPE_PREFIX}.tar does not exist! " 1>&2
-    safe_exit 111
-fi
-if [ ! -f ${GENOME_FULL_PATH} ]; then
-    echo "${GENOME_FULL_PATH} does not exist! " 1>&2
-    safe_exit 222
-fi
+require_files ${PARENT_DIR_IN}/${IN_SNAPE_PREFIX}.tar ${GENOME_FULL_PATH}
 # Contig names in the same order as the reference.
-# Used to organize output files since SNAPE analyzes by contig.
-# Make sure contig names don't have spaces in them!
-export CONTIG_NAMES=($(gunzip -c ${GENOME_FULL_PATH} | grep "^>" | sed 's/>//g' | sed 's/\s.*$//'))
-check_exit_status "get contig names" $?
+# Used to organize output files since npstat analyzes by contig.
+CONTIG_NAMES=($(contig_names ${GENOME_FULL_PATH}))
 
 
 
@@ -216,48 +207,13 @@ rm ${SYNC}
 #' ========================================================================
 #' Split pileup and SNP files by contig
 #' ========================================================================
-mkdir tmp
-cd tmp
+# Pileup file first (takes ~1 min on a 23G pileup):
+split_by_contig ${PILEUP} .pileup
+rm ${PILEUP}
 
-# Pileup file first:
-# This does the splitting:
-# Takes ~1 min on a 23G pileup
-awk '{if (last != $1) close(last); print >> $1; last = $1}' ../${PILEUP}
-# Rename contig files and verify they exist in the reference
-for contig in *; do
-    if [[ ! " ${CONTIG_NAMES[*]} " =~ " ${contig} " ]]; then
-        echo "Contig ${contig} does not exist in reference! " 1>&2
-        if [[ $- != *i* ]]; then
-            exit 1
-        else
-            break
-        fi
-    fi
-    mv $contig ../${contig}.pileup
-done
-rm ../${PILEUP}
-
-
-# Now same for SNP file
-awk '{if (last != $1) close(last); print $2 >> $1; last = $1}' ../${SNP}
-for contig in *; do
-    if [[ ! " ${CONTIG_NAMES[*]} " =~ " ${contig} " ]]; then
-        echo "Contig ${contig} does not exist in reference! " 1>&2
-        if [[ $- != *i* ]]; then
-            exit 1
-        else
-            break
-        fi
-    fi
-    mv $contig ../${contig}.snp
-done
-rm ../${SNP}
-
-
-
-# Now go back to main directory
-cd ..
-rm -r tmp
+# Now SNP file, keeping only positions:
+split_by_contig ${SNP} .snp '$2'
+rm ${SNP}
 
 # # If you want to check which files are present
 # for contig in ${CONTIG_NAMES[@]}; do
@@ -303,66 +259,12 @@ EOF
 chmod +x one_npstat.sh
 
 
-cat << EOF > all_npstats.py
-#!/usr/bin/env python3
-import subprocess as sp
-import sys
+# Takes ~1 hr with 16 threads.
+# Return codes from `one_npstat.sh`: 1 = contig not found, 2 = npstat failed
+# (see <contig>_npstat.out). Failures are reported but don't stop the job.
+run-parallel.py -t ${THREADS} -c './one_npstat.sh {}' ${CONTIG_NAMES[@]}
 
-def work(contig):
-    """Defines the work unit on an input file"""
-    cmd = "./one_npstat.sh " + contig
-    ret = sp.run(cmd, shell = True)
-    return ret
-
-if __name__ == "__main__":
-    #
-    from dask.distributed import Client, LocalCluster
-    from dask import config as dc
-    dc.set({"distributed.admin.system-monitor.gil.enabled": False})
-    ##> # for interactive job where you want progress bar:
-    ##> from dask.distributed import progress
-    #
-    tasks = "${CONTIG_NAMES[@]}".split(" ")
-    n_tasks = len(tasks)
-    #
-    print("Starting npstat...")
-    with LocalCluster(processes=True,
-        n_workers=${THREADS},
-        threads_per_worker=1) as cluster, Client(cluster) as client:
-        futures = []
-        for task in tasks:
-            future = client.submit(work, task)
-            futures.append(future)
-        ##> # for interactive job where you want progress bar:
-        ##> progress(futures)
-        #
-        # Wait until futures done, then collect output:
-        results = client.gather(futures)
-    #
-    print("... Ended npstat")
-    # Now just get the return codes:
-    return_codes = [x.returncode for x in results]
-    #
-    for i in range(n_tasks):
-        if return_codes[i] == 1:
-            print("contig " + tasks[i] + " not found!", file=sys.stderr)
-        elif return_codes[i] == 2:
-            print("npstat failed on contig " + tasks[i] + "!", file=sys.stderr)
-            print("See " + tasks[i] + "_npstat.out", file=sys.stderr)
-    sys.exit(0)
-    #
-EOF
-
-chmod +x all_npstats.py
-
-# If it's an interactive job, uncomment lines for progress bar:
-if [[ $- == *i* ]]; then sed -i 's/##> //g' all_npstats.py; fi
-
-# Takes ~1 hr with 16 threads
-./all_npstats.py
-status=$?
-
-rm all_npstats.py one_npstat.sh
+rm one_npstat.sh
 
 
 

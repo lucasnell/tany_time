@@ -27,4 +27,4 @@ request_cpus = 15
 request_memory = 20GB
 request_disk = 80GB
 
-queue readbase,n_adults from readbases.txt
+queue readbase,n_adults from ../samples/all-pools-n-adults.txt

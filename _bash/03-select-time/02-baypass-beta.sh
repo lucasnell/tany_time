@@ -29,24 +29,18 @@ export OMEGA_FILE="tany-init-sub0_mat_omega.out"
 #' Arguments
 #' ========================================================================
 
-# export ISING_BETA=1
-# export RUN_NUM=1
-# export SEED=1040710191
-
-
 export ISING_BETA=$1
 export RUN_NUM=$2
 export SEED=$3
 
 
-if (( $(python -c "print(int($ISING_BETA < 0))") )) ||
-    (( $(python -c "print(int($ISING_BETA > 1))") )); then
+if ! awk -v b="${ISING_BETA}" 'BEGIN { exit !(b ~ /^[0-9.]+$/ && b >= 0 && b <= 1) }'; then
     echo "ISING_BETA outside allowable range: [0,1]" 1>&2
     safe_exit 1
 fi
 if (( RUN_NUM < 1 )) || (( RUN_NUM > 100 )); then
     echo "RUN_NUM must be >= 1 and <= 100." 1>&2
-    echo safe_exit 2
+    safe_exit 2
 fi
 if (( SEED < 1 )) || (( SEED > 2147483647 )); then
     echo "SEED must be >= 1 and <= 2147483647" 1>&2
@@ -62,14 +56,7 @@ fi
 #' ========================================================================
 
 
-if [ ! -f ${INPUTS_TAR_FULL_PATH} ]; then
-    echo "${INPUTS_TAR_FULL_PATH} does not exist! " 1>&2
-    safe_exit 5
-fi
-if [ ! -f ${BP_INIT_TAR_FULL_PATH} ]; then
-    echo "${BP_INIT_TAR_FULL_PATH} does not exist! " 1>&2
-    safe_exit 6
-fi
+require_files ${INPUTS_TAR_FULL_PATH} ${BP_INIT_TAR_FULL_PATH}
 
 
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})

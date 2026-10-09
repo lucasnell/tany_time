@@ -22,6 +22,20 @@ On hold until the owner says to run them. Listed in dependency order.
       turns it off); this settles the `-scalecov` item below for new runs.
 - [ ] Replace `_R/baypass-utils.R` (copied from 2.31) with the 3.1 `utils/`
       version.
+- [ ] **Decide the BayPass SNP set's ascertainment.** `count_masked_time_noblanks`
+      keeps only sites SNAPE calls polymorphic (P ≥ 0.9) in *every* pool
+      (fully masked inputs + no-blanks filter). Sites that drifted to
+      fixation or near-loss in any pool, e.g. in crash years, are excluded,
+      which matters for a crash-focused question. An alternative is to
+      combine partially masked syncs (coverage/repeat/indel masks only) and
+      filter on pooled frequency afterwards. Decide before re-running
+      `02-allele-freqs/03-combine-syncs`.
+- [ ] `03-mpileup` window coverage (`*_win500.txt.gz`) assigns each
+      position only to the first overlapping window, so alternate windows
+      undercount. Not used downstream; fix or drop.
+- [ ] The staging file `/staging/lnell/dna/snape/snape-files.tar.gz` and the
+      local `_bash/02-allele-freqs/snape-files.tar.gz` are no longer used
+      (scripts are now in the container); delete when convenient.
 
 - [ ] **Pipeline options from DESTv3** (compared 2026-10-09; undecided):
       - `03-mpileup.sh` runs `samtools mpileup -B` with the default minimum

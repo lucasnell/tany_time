@@ -4,9 +4,9 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = 00-baypass-inputs.log
-error = 00-baypass-inputs.err
-output = 00-baypass-inputs.out
+log = logs/00-baypass-inputs/baypass-inputs.log
+error = logs/00-baypass-inputs/baypass-inputs.err
+output = logs/00-baypass-inputs/baypass-inputs.out
 
 executable = 00-baypass-inputs.sh
 

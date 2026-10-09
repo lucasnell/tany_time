@@ -39,14 +39,7 @@ export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
 #' ========================================================================
 
 
-if [ ! -f ${DATA_TAR_FULL_PATH} ]; then
-    echo "${DATA_TAR_FULL_PATH} does not exist! " 1>&2
-    safe_exit 111
-fi
-if [ ! -f ${COUNTS_TAR_FULL_PATH} ]; then
-    echo "${COUNTS_TAR_FULL_PATH} does not exist! " 1>&2
-    safe_exit 222
-fi
+require_files ${DATA_TAR_FULL_PATH} ${COUNTS_TAR_FULL_PATH}
 
 
 export OUT_DIR="baypass-inputs"

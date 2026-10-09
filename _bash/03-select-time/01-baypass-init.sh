@@ -13,13 +13,11 @@ export THREADS=$(count_threads)
 export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass/init"
 
-# export SUBSAMPLE=0
-
 export SUBSAMPLE=$1
 
 if (( SUBSAMPLE < 0 )) || (( SUBSAMPLE > 3 )); then
     echo "First arg to 01-baypass-init.sh must be >= 0 and <= 3." 1>&2
-    echo safe_exit 1
+    safe_exit 1
 fi
 
 if (( SUBSAMPLE > 0 )); then
@@ -43,10 +41,7 @@ fi
 #' ========================================================================
 
 
-if [ ! -f ${INPUTS_TAR_FULL_PATH} ]; then
-    echo "${INPUTS_TAR_FULL_PATH} does not exist! " 1>&2
-    safe_exit 3
-fi
+require_files ${INPUTS_TAR_FULL_PATH}
 
 
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})
