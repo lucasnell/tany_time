@@ -12,7 +12,10 @@
    pools, 18 spatial pools; lists are in the script). Reason for the cutoff
    is not recorded. The script's report path (`~/_data/trimmed_reports`) is
    stale; reports are now in `~/_data/_tany-time/trimmed/trimmed_reports/`.
-4. `_bash/02-allele-freqs/` (cluster): `01-snape` (SNAPE-pooled → masked
+4. `_bash/02-allele-freqs/` (cluster; SNAPE helper scripts in
+   `snape-files/` come from DEST freeze1 and match DESTv3 except for
+   uncompressed output and the P(polymorphic) filter in `MaskSYNC_snape.py`,
+   which keeps only sites with P ≥ 0.9; DESTv3 masks only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked
    gSYNC; undoes softmasking) → `02-npstat` → `03-combine-snapes` and
    `04-combine-counts` (combine passing pools into `time`, `space`, and `all`
    sets).
@@ -23,7 +26,8 @@
      reference-allele read proportion outside (0.1, 0.9), writes genotype,
      pool-size, and logN covariate files. 433,360 SNPs.
    - `01-baypass-init`: Ω (population covariance matrix) from all SNPs
-     (`sub0`) and 3 subsamples.
+     (`sub0`) and 3 subsamples. Existing Ω is from BayPass 2.31 with 8
+     threads, affected by an Ω-update bug fixed in 2.4 (see `TODO.md`).
    - `02-baypass-beta`: covariate model with Ω from all SNPs; 10 runs with
      different seeds; Ising β given as an argument. Current runs use
      `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),
@@ -117,7 +121,9 @@ at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
 
 ## `_refs/`
 
-`BayPass_manual_v2.31.pdf` (local copy; PDFs are git-ignored).
+`BayPass_manual_v2.31.pdf` (version used for existing results) and
+`BayPass_manual_v3.1.pdf` (version in the v2.0.0 container). Local copies;
+PDFs are git-ignored.
 
 ## `_legacy/`
 

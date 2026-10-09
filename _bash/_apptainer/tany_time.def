@@ -1,6 +1,6 @@
 
 Bootstrap: docker
-From: condaforge/miniforge3:25.3.0-3
+From: condaforge/miniforge3:26.7.2-0
 
 %files
     helpers.sh /app/helpers.sh
@@ -44,9 +44,11 @@ From: condaforge/miniforge3:25.3.0-3
     conda env create -q -f /app/qc-env.yml && \
         rm /app/qc-env.yml && \
         conda clean --all -y
+    # snape-pooled: original repo (EmanueleRaineri/snape-pooled) was deleted;
+    # the DEST-bio fork has the same commit.
     cd /opt && \
     	sha="284bfe054da37232d3e23dfbfa6f67bcaa9cf89a" && \
-        wget -q https://github.com/EmanueleRaineri/snape-pooled/archive/${sha}.zip && \
+        wget -q https://github.com/DEST-bio/snape-pooled/archive/${sha}.zip && \
     	unzip -q ${sha}.zip && \
         rm ${sha}.zip && \
     	mv snape-pooled-${sha} snape-pooled && \
@@ -82,4 +84,4 @@ From: condaforge/miniforge3:25.3.0-3
     Author Lucas Nell
     ContactEmail lucnell@gmail.com
     Name tany_time
-    Version v1.0.0
+    Version v2.0.0

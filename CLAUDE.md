@@ -33,11 +33,16 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 - `_bash/` — cluster pipeline (UW–Madison CHTC, HTCondor). Each step is a
   `.sh` + `.sub` pair, numbered in run order. Runs inside the Apptainer image
   built from `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
+  Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`.
+  Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools
+  1.24, …); all existing outputs were made with v1.0.0 (BayPass 2.31).
+  snape-pooled is built from the DEST-bio fork (original repo deleted).
 - `_R/` — current (2025) local R analysis. Run from the repo root.
 - `_data/` — small inputs and derived datasets. `*.rds`, `*.gz`, and `*.pdf`
   are git-ignored, so derived `.rds` files exist only locally.
 - `_plots/` — figures (git-ignored PDFs).
-- `_refs/` — reference documents (BayPass v2.31 manual; git-ignored PDF).
+- `_refs/` — reference documents (BayPass v2.31 and v3.1 manuals; git-ignored
+  PDFs).
 - `_legacy/` — older analyses (mostly 2020–2022) formerly at the repo root (previous
   MAPGD/SNAPE pipeline, spatial FST, admixture, simulations). They read from
   old paths (`~/Box Sync`, `~/Stanford_Drive`, `~/Cornell_Drive`,

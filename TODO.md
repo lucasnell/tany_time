@@ -4,6 +4,37 @@ Items 1–6 come from the 2026-10-09 code review (three independent reviewers;
 key claims checked in `_R/review-checks.R` → `_data/review-checks.txt`).
 On hold until the owner says to run them. Listed in dependency order.
 
+## Before rerunning anything on the cluster
+
+- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.0.0). Pins
+      were updated 2026-10-09 and dry-run solved for linux-64, but the image
+      has not been built or tested. Outputs from the new image will differ
+      from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
+- [ ] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
+      `-nthreads 8`; BayPass 2.4 fixed a bug in the Ω update "introduced with
+      parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but
+      all current candidates rest on this Ω. Rerun `01-baypass-init` with 3.1
+      before any new covariate runs.
+- [ ] **Set `-nval` explicitly** in `02-baypass-beta.sh`. BayPass 3.1 lowered
+      the default from 1,000 to 250 (lower BF ceiling) and changed the
+      adaptive MCMC defaults.
+- [ ] Covariate scaling is the default since BayPass 2.4 (`-nocovscaling`
+      turns it off); this settles the `-scalecov` item below for new runs.
+- [ ] Replace `_R/baypass-utils.R` (copied from 2.31) with the 3.1 `utils/`
+      version.
+
+- [ ] **Pipeline options from DESTv3** (compared 2026-10-09; undecided):
+      - `03-mpileup.sh` runs `samtools mpileup -B` with the default minimum
+        base quality (13), so SNAPE frequencies use bases with BQ ≥ 13
+        while the count files (`Mpileup2Sync.py`) use BQ ≥ 25. DESTv3 sets
+        `-Q 25` in mpileup. Matching them would require rerunning from
+        `03-mpileup` onward.
+      - DESTv3's `MaskSYNC_snape_monomorphic_filter.py` reassigns all reads
+        to one allele at sites SNAPE calls confidently monomorphic (removes
+        error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).
+      - Competitive mapping against other genomes (DESTv3 "hologenome") as a
+        diagnostic of non-target reads per pool, if useful for review step 2.
+
 ## Review steps
 
 1. [ ] **Rebuild `timeseries-data.csv` from counts** (`tany.genobaypass` +
@@ -30,8 +61,9 @@ On hold until the owner says to run them. Listed in dependency order.
        - longer chains (`-nval`); single runs currently give 178–235 SNPs
          ≥ 30 dB and 1,304 distinct across 10 runs; 52.96 dB is a PIP = 1
          ceiling at 1,000 samples;
-       - `-scalecov` (manual §2.3.3 strongly recommends scaling; current
-         runs use raw logN, mean 8.67, SD 1.59);
+       - covariate scaling (manual §2.3.3 strongly recommends it; current
+         2.31 runs used raw logN, mean 8.67, SD 1.59; scaled by default in
+         3.1);
        - Ising β = 0 and 1 (β = 1 only links SNPs adjacent in the input file;
          ~44 contig junctions);
        - covariates: logN, lagged logN, and a crash-specific covariate

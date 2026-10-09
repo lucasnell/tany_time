@@ -1,8 +1,7 @@
 name: gatk3-env
 channels:
-  - bioconda
   - conda-forge
-  - defaults
+  - bioconda
 dependencies:
   - gatk=3.8
 prefix: /opt/conda/envs/gatk3-env

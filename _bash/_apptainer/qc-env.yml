@@ -1,10 +1,9 @@
 name: qc-env
 channels:
-  - bioconda
   - conda-forge
-  - defaults
+  - bioconda
 dependencies:
-  - fastqc=0.12.1
+  - fastqc=0.13.0
   - kat=2.4.2
-  - mapdamage2=2.2.1
+  - mapdamage2=2.2.3
 prefix: /opt/conda/envs/qc-env
