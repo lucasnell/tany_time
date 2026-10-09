@@ -4,7 +4,6 @@
 
 - [ ] `_R/make-time-series-plot.R` saves its main figure to
       `~/Desktop/freq-abund-time.pdf`; point it at `_plots/`.
-- [ ] Decide whether to move legacy root-level scripts into a subfolder.
 - [ ] Move BLAST inputs/outputs off `~/Desktop` (`Tgraci_proteins.faa`,
       `Tgraci-funct-Dmel.csv`) to a stable path.
 - [ ] `baypass-check-omegas.R`: the comment `range(fmd_df$fmd)` → 0.30–0.38

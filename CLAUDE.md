@@ -24,11 +24,13 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 - `_data/` — small inputs and derived datasets. `*.rds`, `*.gz`, and `*.pdf`
   are git-ignored, so derived `.rds` files exist only locally.
 - `_plots/` — figures (git-ignored PDFs).
-- Root-level `*.R`, `*.cpp`, `*.stan`, `*.Rmd` — legacy 2020–2022 analyses
-  (previous MAPGD/SNAPE pipeline, spatial FST, admixture). They read from old
-  paths (`~/Box Sync`, `~/Stanford_Drive`, `~/Cornell_Drive`,
-  `full-DNA-info.csv`) and will not run as-is. Do not edit unless asked.
-  `_R/crash-test.R` is also legacy (superseded by BayPass).
+- `_legacy/` — older analyses (mostly 2020–2022) formerly at the repo root (previous
+  MAPGD/SNAPE pipeline, spatial FST, admixture, simulations). They read from
+  old paths (`~/Box Sync`, `~/Stanford_Drive`, `~/Cornell_Drive`,
+  `full-DNA-info.csv`), and their relative paths (`sourceCpp("helpers.cpp")`,
+  `_plots/`, `.Rprofile`) assumed the repo root, so they will not run as-is.
+  Do not edit unless asked. `_R/crash-test.R` is also legacy (superseded by
+  BayPass).
 
 ## Data outside the repo
 

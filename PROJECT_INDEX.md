@@ -91,3 +91,12 @@ From `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`
 From `_data/candi_funcs_df.rds`: 26 of 33 candidates fall inside or within
 5 kb of a gene (24 unique genes); 8 unique *D. melanogaster* UniProt best hits
 at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
+
+## `_legacy/`
+
+Older analyses moved from the repo root (2026-10-09); not maintained and not
+runnable as-is (see `CLAUDE.md`). Includes sample summaries, spatial FST and
+connectivity (`fst-dist.stan`), admixture, temporal diversity, diversity
+simulations (`sim_midges.cpp` with the `pcg/` RNG headers), and genome-report
+maps. Git-ignored outputs `fst-dist.rds` and `sample_summary.pdf` moved with
+them.
