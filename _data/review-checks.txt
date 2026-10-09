@@ -1,0 +1,21 @@
+A. Candidates: 33
+A. freq tracks BayPass ref allele (r > 0.9): 17; alt allele (r < -0.9): 16; neither: 0
+B. freq vs logN negative: 32 of 33
+B. ref-allele freq vs logN negative: 16 of 33
+B. BayPass median m_beta negative: 16 of 33
+B. sign(m_beta) == sign(r_ref_logN) for all: TRUE
+B. Mean-minor allele vs logN negative (candidates): 33 of 33
+C. Random SNPs: 100000
+C. P(|r| > 0.7), observed: 0.0035; expected under independence: 0.0018
+C. Mean-minor allele vs logN negative (random SNPs): 0.523; mean r = -0.014
+C. Binomial P(>= 33 of 33 negative | p = 0.523): 5.21e-10
+D. 1997 pools: SN-1-97_S61, SN-2-97_S37; logN = 6.75, 5.51
+D. logN rank of 1997 pools (1 = lowest): 3, 1
+D. Candidates, median |Pearson r| with logN: all pools 0.58; without 1997 0.27
+D. Candidates with |r| > 0.51 (nominal P < 0.05, n = 15) without 1997: 6 of 33
+E. SNPs >= 30 dB per run: 204, 191, 184, 199, 224, 193, 178, 194, 235, 181
+E. SNPs >= 30 dB in at least one run: 1304
+F. SN pools sequenced: 30; used: 17
+F. Not used: 1982a (N=21941), 1988a (N=76), 1991b (N=44806), 1995a (N=14496), 1996a (N=50876), 1996b (N=13068), 1998b (N=450), 2000a (N=180819), 2001a (N=53690), 2001b (N=16235), 2009b (N=633), 2010b (N=3082), 2013b (N=540)
+F. Min N among used pools: 246
+F. Generations 1977-2015 with N < 100: 1983b (98), 1984a (26), 1984b (57), 1988a (76), 1988b (13), 1989a (33), 1989b (99), 1998a (21), 2003a (18), 2003b (3), 2004a (1), 2004b (0), 2005a (24), 2005b (27), 2011a (6), 2011b (6), 2012a (36)

@@ -8,8 +8,10 @@
    (priors for SNAPE) → `05-bam-cov` (coverage `.bed.gz`).
 2. `_R/tidy-sample-data.R` → `_data/full-sample-info.csv` (pool ID, date,
    lake, site, number of adults, lat/lon).
-3. `_R/sample-qc.R`: picks pools with median coverage ≥ 30 (17 SN time pools,
-   18 spatial pools; lists are in the script).
+3. `_R/sample-qc.R`: picks pools with median coverage ≥ 30 (17 of 30 SN time
+   pools, 18 spatial pools; lists are in the script). Reason for the cutoff
+   is not recorded. The script's report path (`~/_data/trimmed_reports`) is
+   stale; reports are now in `~/_data/_tany-time/trimmed/trimmed_reports/`.
 4. `_bash/02-allele-freqs/` (cluster): `01-snape` (SNAPE-pooled → masked
    gSYNC; undoes softmasking) → `02-npstat` → `03-combine-snapes` and
    `04-combine-counts` (combine passing pools into `time`, `space`, and `all`
@@ -26,7 +28,9 @@
      different seeds; Ising β given as an argument. Current runs use
      `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),
      because the assembly is not chromosome-level (contig-to-contig
-     linkage is unknown). 1,000 retained MCMC samples per run.
+     linkage is unknown). 1,000 retained MCMC samples per run. The covariate
+     is raw logN (not `-scalecov`), though the BayPass manual (§2.3.3)
+     strongly recommends scaling.
 7. `_R/baypass-check-omegas.R`: subsample Ω matrices disagree (FMD
    distance > 3.7 for subsample 3), so the all-SNP Ω is used.
 8. `_R/baypass-analysis.R`: median Bayes factor (dB) across 10 `beta0` runs;
@@ -55,6 +59,7 @@
 | `baypass-check-candidates.R` | Confirms `candi_df.rds` matches local BayPass output; per-candidate run consistency → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
+| `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
 ## `_data/`
 
@@ -88,9 +93,31 @@ From `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`
   probability is 1.0 in all 1,000 retained MCMC samples
   (`tany-beta0-run1_summary_betai.out.gz`).
 
+From `_R/review-checks.R` → `_data/review-checks.txt` (run 2026-10-09):
+
+- `freq` in `timeseries-data.csv` tracks the BayPass reference allele at 17
+  candidates and the alternative allele at 16; it is not a consistent allele.
+- Coded by the allele rarer on average across pools, 33 of 33 candidates have
+  that allele more common at low abundance; 52.3% of 100,000 random SNPs do
+  (binomial P = 5e-10).
+- Without the two 1997 pools (lowest and third-lowest logN), median
+  |Pearson r| of candidates with logN drops from 0.58 to 0.27; 6 of 33 stay
+  nominally significant (n = 15).
+- Single runs give 178–235 SNPs ≥ 30 dB; 1,304 distinct SNPs pass in at
+  least one run.
+- 0.35% of random SNPs have |r| > 0.7 with logN vs. 0.18% expected for
+  independent tests.
+- 13 of 30 sequenced SN pools fail the coverage cutoff, including 1988a
+  (N = 76). Minimum N among used pools is 246; 17 generations in 1977–2015
+  had N < 100.
+
 From `_data/candi_funcs_df.rds`: 26 of 33 candidates fall inside or within
 5 kb of a gene (24 unique genes); 8 unique *D. melanogaster* UniProt best hits
 at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
+
+## `_refs/`
+
+`BayPass_manual_v2.31.pdf` (local copy; PDFs are git-ignored).
 
 ## `_legacy/`
 
