@@ -21,11 +21,13 @@ are written by `_R/make-job-lists.R`.
    for uncompressed output and the P(polymorphic) filter in
    `MaskSYNC_snape.py`, which keeps only sites with P ≥ 0.9; DESTv3 masks
    only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked gSYNC; undoes
-   softmasking) → `02-npstat`; `03-combine-syncs` (combines QC-passing pools
+   softmasking) → `02-npstat`; `03-pool-qc` (per-pool QC metrics) →
+   `_R/pool-qc.R` (locally; chooses pools) → `04-combine-syncs` (combines included pools
    into `snape_masked_*` and `count_masked_*` for `time`, `space`, and `all`;
    was `03-combine-snapes` + `04-combine-counts` before 2026-10-09). Since
    2026-10-10 it uses partially masked syncs and keeps sites polymorphic in
    at least one pool; existing outputs required polymorphism in every pool.
+   BayPass inputs now allow missing data per pool (masked pools → 0 counts).
 5. `_R/tidy-pop-abunds.R` → `_data/tany-abundances.csv` (year, generation,
    N, logN = log1p(N)).
 6. `_bash/03-select-time/` (cluster):
@@ -70,7 +72,9 @@ are written by `_R/make-job-lists.R`.
 | `baypass-check-candidates.R` | Confirms `candi_df.rds` matches local BayPass output; per-candidate run consistency → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
-| `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
+| `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
+| `pool-qc.R` | Chooses pools from `03-pool-qc` metrics using bounds set in the script (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; not yet run |
+| `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
 ## `_data/`

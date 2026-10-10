@@ -24,7 +24,12 @@ not yet interpretable (see `TODO.md`).
 - Samples are males only; species identity was checked by male genitalia.
   No other *Tanytarsus* species live in Mývatn.
 - Deep-crash generations (e.g. 1984, 2003–2005, 2011) had too few adults to
-  sequence; no further pools can be added.
+  sequence; no further pools can be added, and existing pools can't be
+  re-sequenced (no material left).
+- Archived samples were stored in plastic containers in a basement for
+  years; some were stored poorly (some dried out), which likely degraded
+  DNA. Older samples were probably more affected, but quality doesn't track
+  year reliably.
 
 See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 
@@ -36,7 +41,9 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
   Shared shell functions are in `_bash/_apptainer/helpers.sh`; shared
   scripts are in `_bash/_apptainer/bin/` (installed on the container's
-  `PATH`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`.
+  `PATH`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`,
+  except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
+  which come from `_R/pool-qc.R`.
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`.
   Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools

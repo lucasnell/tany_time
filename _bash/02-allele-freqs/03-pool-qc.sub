@@ -1,0 +1,30 @@
+# pool-qc.sub
+
+# per-pool QC metrics for deciding which pools to include
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = logs/03-pool-qc/pool-qc.log
+error = logs/03-pool-qc/pool-qc.err
+output = logs/03-pool-qc/pool-qc.out
+
+executable = 03-pool-qc.sh
+
+batch_name = "pool-qc"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+## Candidate pool lists (written by `_R/make-job-lists.R`):
+transfer_input_files = ../samples/time-pools-candidates.txt, ../samples/space-pools-candidates.txt
+
+## Copying outputs to ResearchDrive:
+transfer_output_files = pool-qc.tar
+output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/pool-qc
+
+request_cpus = 2
+request_memory = 4GB
+request_disk = 120GB
+
+queue 1

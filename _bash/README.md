@@ -19,7 +19,9 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 3. `01-variant-calling/`: `01-fastp` → `02-bwa` → `03-mpileup`;
    `05-bam-cov` after `02-bwa`. `04-ont-pi` is independent (one job on
    Nanopore reads) and only sets the SNAPE prior θ used in `02-allele-freqs/01-snape`.
-4. `02-allele-freqs/`: `01-snape` → `03-combine-syncs`; `02-npstat` after `01-snape`.
+4. `02-allele-freqs/`: `01-snape` → `03-pool-qc` → locally, `_R/pool-qc.R`
+   (choose pools from QC metrics; writes `samples/{time,space}-pools.txt`)
+   → `04-combine-syncs`. `02-npstat` runs any time after `01-snape`.
 5. `03-select-time/`: `00-baypass-inputs` → `01-baypass-init` → `02-baypass-beta`.
 
 Each folder's `README.md` lists inputs, outputs, and parameters.

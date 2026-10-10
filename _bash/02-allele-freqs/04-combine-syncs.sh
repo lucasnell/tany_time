@@ -19,7 +19,8 @@
 #' sites that drifted to fixation in any pool (e.g., in crash years).
 #'
 #' Pools in each set come from `time-pools.txt` and `space-pools.txt`
-#' (transferred from `_bash/samples/`; written by `_R/make-job-lists.R`).
+#' (transferred from `_bash/samples/`; written by `_R/pool-qc.R` from the
+#' QC metrics of `03-pool-qc`).
 #'
 
 

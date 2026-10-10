@@ -25,9 +25,16 @@ export DATA_TAR_FULL_PATH="/staging/lnell/tany-sample-info.tar.gz"
 export SAMPLE_INFO="full-sample-info.csv"
 export ABUNDANCES="tany-abundances.csv"
 export COUNTS_TAR_FULL_PATH="/staging/lnell/dna/snape/count_masked_time.tar"
-export COUNTS_IN="count_masked_time_noblanks.sync.gz"
+# All sites passing `04-combine-syncs` (masked pools allowed; see below):
+export COUNTS_IN="count_masked_time.sync.gz"
 export NAMES_IN="count_masked_time.names.gz"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
+
+#' Minimum proportion of pools with data (coverage > 0 after masking) for a
+#' SNP to be kept. BayPass treats a pool with 0 reads at a SNP as missing
+#' data (manual v3.1, section 2.2.1).
+#' PROVISIONAL value; see TODO.md.
+export MIN_PROP_POOLS=0.75
 
 
 
@@ -68,6 +75,15 @@ mv ${COUNTS_IN} ${NAMES_IN} ../
 cd ..
 rm -r $(basename ${COUNTS_TAR_FULL_PATH%.tar})
 
+#' Masked pools have ".:.:.:.:.:." at a site; poolfstat needs counts, so
+#' write them as 0 counts (missing data in BayPass).
+gunzip -c ${COUNTS_IN} \
+    | sed 's/\.:\.:\.:\.:\.:\./0:0:0:0:0:0/g' \
+    | gzip > counts_missing0.sync.gz
+check_exit_status "convert masked sites to 0 counts" $?
+rm ${COUNTS_IN}
+export COUNTS_IN="counts_missing0.sync.gz"
+
 
 
 #' ========================================================================
@@ -89,6 +105,7 @@ suppressWarnings(n_subs <- as.integer(args[[1]]))
 if (is.na(n_subs)) stop("Improper input to R script")
 
 .n_threads <- ${THREADS}
+min_prop_pools <- ${MIN_PROP_POOLS}
 in_files <- list(samp_info = "${SAMPLE_INFO}",
                  names = "${NAMES_IN}",
                  counts = "${COUNTS_IN}",
@@ -104,7 +121,10 @@ n_haps <- pools |>
     as.list()
 
 cat("Reading pool data...\n")
-#' Remove very low coverage and non-biallelic SNPs, read into pooldata object.
+#' Remove non-biallelic SNPs and those with pooled minor-allele frequency
+#' < 0.01 (default filters), read into pooldata object.
+#' Pools with 0 coverage at a site are kept as missing data
+#' (default min.cov.per.pool = -1).
 pool_dat <- popsync2pooldata(sync.file = in_files[["counts"]],
                              poolsizes = n_haps,
                              poolnames = pools,
@@ -117,10 +137,18 @@ pool_dat <- popsync2pooldata(sync.file = in_files[["counts"]],
 #' signals." (BayPass v1.31 manual)
 #'
 cat("Filtering pool data...\n")
+#' Means are over pools with data at that SNP. Also requires data in at
+#' least `min_prop_pools` of pools.
 # Create a logical vector for which SNPs aren't near fixation:
-avg_ref_probs <- apply(pool_dat@refallele.readcount / pool_dat@readcoverage,
-                       1, mean)
-poly_snps <- avg_ref_probs > 0.1 & avg_ref_probs < 0.9
+has_data <- pool_dat@readcoverage > 0
+ref_probs <- pool_dat@refallele.readcount / pool_dat@readcoverage
+ref_probs[!has_data] <- NA
+avg_ref_probs <- rowMeans(ref_probs, na.rm = TRUE)
+enough_pools <- rowMeans(has_data) >= min_prop_pools
+cat(sprintf("SNPs read: %i; with data in >= %.0f%% of pools: %i\n",
+            pool_dat@nsnp, 100 * min_prop_pools, sum(enough_pools)))
+poly_snps <- enough_pools & avg_ref_probs > 0.1 & avg_ref_probs < 0.9
+cat(sprintf("SNPs kept: %i\n", sum(poly_snps)))
 # Now updating fields:
 pool_dat@nsnp <- sum(poly_snps)
 pool_dat@refallele.readcount <- pool_dat@refallele.readcount[poly_snps,]

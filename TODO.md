@@ -91,12 +91,28 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Other analysis items
 
-- [ ] **Pool coverage cutoff.** Median coverage ≥ 30 drops 13 of 30 SN pools,
-      including 1988a (N = 76), the only sequenced deep-crash pool. Reason
-      for the cutoff is not recorded; owner is open to changing it. Revisit
-      with reports in `~/_data/_tany-time/trimmed/trimmed_reports/`. Since
-      no new pools can be added, this is the only way to widen the abundance
-      range.
+- [ ] **Pool inclusion** (decided 2026-10-10: QC-metric protocol instead of a
+      median-coverage cutoff; implemented, not yet run).
+      - Metrics: missing-data rate after masking, private SNPs, duplication
+        rate, GC content, mapping rate (not pN/pS: annotation too poor).
+        Computed by `_bash/02-allele-freqs/03-pool-qc`; bounds applied in
+        `_R/pool-qc.R`. Set bounds after seeing the metrics but before any
+        allele-frequency results, and record the rationale in the script.
+      - Still to decide: fixed bounds per metric (DEST 1.0 style), or an
+        outlier rule on the PCA of metrics (DEST 2.0 style).
+      - Report the 2025 set (median coverage ≥ 30; `*-pools-cov30.txt`)
+        as a sensitivity analysis.
+      - Missing data per pool allowed in BayPass (masked pools → 0 counts;
+        `00-baypass-inputs.sh`). **Provisional:** `MIN_PROP_POOLS = 0.75`
+        (SNP kept if ≥ 75% of pools have data); confirm or change.
+      - Background (`_R/coverage-cutoff-check.R` → `_data/coverage-cutoff-check.csv`):
+        5 pools failed outright (median 0–4), including 1988a (N = 76),
+        2009b, and 2013b; 1982a, 1988a, 1991b, and 2013b have GC 46–63%
+        vs. 32.5% for the assembly. 8 pools have median 6–24, including
+        1998b (N = 450). Conventions: DEST 1.0 (Kapun et al. 2021) kept
+        pools down to 10x and excluded > 7% missing data; DEST 2.0 (Nunez et
+        al. 2025) used a PCA of QC metrics; Schlötterer et al. 2014
+        recommend ≥ 50x for SNP-level tests as a design target.
 - [ ] GO enrichment uses the default universe (all annotated *D.
       melanogaster* proteins) with 8 input genes; unusable until the
       universe is genes near tested SNPs with a Dmel ortholog. Count linked

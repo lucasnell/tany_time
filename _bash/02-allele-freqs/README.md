@@ -9,7 +9,8 @@ doi:10.1093/molbev/msab259) using its helper scripts (in the container's
 |---|---|---|---|
 | `01-snape` | Uppercase reference and pileup; counts, coverage, and indel positions (`Mpileup2Sync.py`, base quality ≥ 25); SNAPE-pooled per contig; convert to gSYNC (`SNAPE2SYNC.py`); mask (`MaskSYNC_snape.py`) twice (below) | one per pool (`../samples/all-pools-n-adults.txt`) | `snape/<pool>_snape.tar` |
 | `02-npstat` | Convert the partially masked gSYNC to pileup; npstat per contig in 10-kb windows (π, Watterson's θ, Tajima's D) at sites in the SNP file | one per pool | `npstat/<pool>_npstat_10kb.stat.gz` |
-| `03-combine-syncs` | Combine partially masked gSYNC files across QC-passing pools for time, space, and all pools, keeping sites SNAPE calls polymorphic (P ≥ 0.9) in at least one pool | one | `snape/{snape,count}_masked_{time,space,all}.tar` |
+| `03-pool-qc` | Per-pool QC metrics for all candidate pools (below) | one | `pool-qc/pool-qc.tar` |
+| `04-combine-syncs` | Combine partially masked gSYNC files across included pools for time, space, and all pools, keeping sites SNAPE calls polymorphic (P ≥ 0.9) in at least one pool | one | `snape/{snape,count}_masked_{time,space,all}.tar` |
 
 ## SNAPE settings (`01-snape`)
 
@@ -26,9 +27,30 @@ doi:10.1093/molbev/msab259) using its helper scripts (in the container's
   `MaskSYNC_snape.py`). Positions kept here form the npstat SNP file.
 - **Partially masked** (`<pool>_snape_part_masked.sync`): no P(polymorphic)
   filter; input to npstat (so monomorphic sites count toward diversity) and
-  to `03-combine-syncs`.
+  to `04-combine-syncs`.
 
-## Combined outputs (`03-combine-syncs`)
+## Choosing pools (`03-pool-qc`, then `_R/pool-qc.R`)
+
+Pools are included or excluded from QC metrics, decided before any
+allele-frequency analysis (following the DEST approach: Kapun et al. 2021;
+Nunez et al. 2025). `03-pool-qc` computes, for the candidate pools in
+`../samples/{time,space}-pools-candidates.txt`:
+
+| Metric | Source |
+|---|---|
+| Missing-data rate after masking | partially masked gSYNC (`pool-qc-sync.py`) |
+| Number of SNPs and private SNPs (P ≥ 0.9 only in that pool, among the set's candidates) | partially masked gSYNC (`pool-qc-sync.py`) |
+| Duplication rate | Picard MarkDuplicates report (`03-mpileup`); fastp estimate also reported |
+| GC content | fastp (`01-fastp`) |
+| Mapping rate (mapped / all records) and usable rate (MAPQ ≥ 20, primary / all records) | `bamtools stats` (`02-bwa`) |
+
+pN/pS isn't used because the *T. gracilentus* annotation isn't good enough.
+`_R/pool-qc.R` plots the metrics, applies bounds set in that script, and
+writes `../samples/{time,space}-pools.txt`. The 2025 inclusion rule (median
+coverage ≥ 30) is kept as `../samples/*-pools-cov30.txt` for sensitivity
+analyses.
+
+## Combined outputs (`04-combine-syncs`)
 
 Inputs are the partially masked files. A site is kept if SNAPE calls it
 polymorphic (P ≥ 0.9, `MIN_PP`) in at least one pool of the set, so pools
@@ -41,7 +63,9 @@ after coverage, repeat, and indel masks).
   quality:P(polymorphic):P(fixed):mean minor-allele frequency`). Used by
   `_R/tidy-freq-data.R` and `_R/make-time-series-data.R`.
 - `count_masked_*`: allele counts per pool (`A:T:C:G:N:del`). The `time`
-  `_noblanks` file is the BayPass input (`03-select-time/00-baypass-inputs`).
+  file (with masked pools) is the BayPass input
+  (`03-select-time/00-baypass-inputs`), where masked pools become missing
+  data.
 
 Before 2026-10-10 the inputs were the fully masked files, so `_noblanks`
 kept only sites SNAPE called polymorphic in **every** pool, excluding sites
