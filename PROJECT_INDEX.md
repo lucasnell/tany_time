@@ -73,7 +73,8 @@ are written by `_R/make-job-lists.R`.
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
 | `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
-| `pool-qc.R` | Chooses pools from `03-pool-qc` metrics using bounds set in the script (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; not yet run |
+| `pool-qc.R` | Chooses pools from `03-pool-qc` metrics with a robust-PCA outlier rule (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; rule not yet calibrated, so it stops before writing outputs |
+| `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
