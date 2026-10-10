@@ -17,12 +17,13 @@ On hold until the owner says to run them. Listed in dependency order.
       before any new covariate runs.
 - [x] `-nval` set explicitly (`NVAL=5000`) in `01-baypass-init.sh` and
       `02-baypass-beta.sh` (3.1 default is 250). Expect ~25–50 h per job
-      (estimate from 2.31 run times; see the scripts). Covariate scaling is the
+      (estimate from 2.31 run times; see the scripts); CHTC's default run
+      limit is 72 h. Covariate scaling is the
       3.1 default; noted in `02-baypass-beta.sh`. (2026-10-09)
 - [x] `samtools mpileup -Q 25` in `03-mpileup.sh`, matching the counts'
       base-quality threshold. (2026-10-09)
-- [ ] Replace `_R/baypass-utils.R` (copied from 2.31) with the 3.1 `utils/`
-      version.
+- [x] `_R/baypass-utils.R` replaced with the 3.1 `utils/` version (local
+      `concatenate_res` edits re-applied; listed in its header). (2026-10-10)
 - [x] **SNP set:** `03-combine-syncs` now combines partially masked syncs
       and keeps sites SNAPE calls polymorphic (P ≥ 0.9) in at least one
       pool (option B). Previously a site had to be polymorphic in every

@@ -40,6 +40,9 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
   each `.sh` under "Edit these for your system"). Steps that set
   `output_destination` in their `.sub` also copy outputs to ResearchDrive
   (`pelican://chtc.wisc.edu/researchdrive/arives/CHTC/`).
+- CHTC's default run limit is 72 h per job. The longest steps are
+  `03-mpileup` (indel realignment, 9+ h) and BayPass (~25–50 h with
+  `NVAL=5000`; see `03-select-time/README.md`).
 - Every `.sh` starts with `. /app/.bashrc` (loads the functions in
   `_apptainer/helpers.sh`) and `conda activate <env>`.
 

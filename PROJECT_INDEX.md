@@ -64,7 +64,7 @@ are written by `_R/make-job-lists.R`.
 | `snape-helpers.cpp` | Rcpp parsers for SNAPE/count sync strings, distance thinning |
 | `crash-test.R` | Legacy: earlier binomial GLMM approach (lme4), superseded by BayPass |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |
-| `baypass-utils.R` | Copied BayPass utility functions |
+| `baypass-utils.R` | BayPass v3.1 R utilities (`simulate.baypass`, `fmd.dist`, `concatenate_res`, …) with local `concatenate_res` edits |
 | `baypass-check-omegas.R` | Ω consistency across subsamples |
 | `baypass-analysis.R` | Candidate SNPs, gene matching, BLAST, enrichment |
 | `baypass-check-candidates.R` | Confirms `candi_df.rds` matches local BayPass output; per-candidate run consistency → `_data/baypass-check-candidates.txt` |

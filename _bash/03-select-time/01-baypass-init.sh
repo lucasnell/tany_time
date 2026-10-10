@@ -23,7 +23,8 @@ export PARENT_DIR_OUT="/staging/lnell/dna/baypass/init"
 #' CPUs. With 3.1 defaults otherwise (thin 20, burn-in 1,000, 10 pilot runs
 #' of 100), 5,000 samples is ~102,000 iterations, i.e., ~3–4x longer:
 #' roughly 25–50 h per job if speed per iteration is unchanged (not yet
-#' checked for 3.1). Check CHTC run-time limits before submitting.
+#' checked for 3.1). CHTC's default run limit is 72 h, so check the first
+#' job's progress (log file) before submitting the rest.
 export NVAL=5000
 
 export SUBSAMPLE=$1

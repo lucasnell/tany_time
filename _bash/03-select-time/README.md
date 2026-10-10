@@ -25,8 +25,9 @@ abundance across the 17 time-series pools. Runs in `baypass-env`
 - Both BayPass scripts set `-nval` (`NVAL=5000`; 3.1's default is 250).
   Expect roughly 25–50 h per job with 8 CPUs (2.31 runs with ≤ 35,000
   iterations took 9–12 h; 5,000 samples under 3.1 defaults is ~102,000
-  iterations). That's 4 Ω jobs plus 20 covariate jobs; check CHTC run-time
-  limits before submitting.
+  iterations). That's 4 Ω jobs plus 20 covariate jobs. CHTC's default run
+  limit is 72 h; the upper estimate is under it but not by much, so check
+  the first job's progress before submitting the rest.
   BayPass 3.1 scales covariates by default (2.31 runs used raw logN).
 - Existing Ω came from 2.31 with 8 threads, affected by a bug fixed in 2.4.
 - Local analysis of outputs: `_R/baypass-check-omegas.R`,

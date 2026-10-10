@@ -1,6 +1,17 @@
-###############################################*
+#'
+#' BayPass v3.1 R utilities (`utils/baypass_utils.R` from
+#' https://forge.inrae.fr/mathieu.gautier/baypass_public, tag v3.1).
+#'
+#' Local edits (Lucas Nell), both in `concatenate_res`:
+#'   1. `anasep` argument for the separator between `anaprefix` and the
+#'      subset number (was hard-coded "_").
+#'   2. Read `_summary_betai.out` (AUX covariate model output) when
+#'      `_summary_betai_reg.out` doesn't exist.
+#'
+
+###############################################
 ###function: Simulate under the inference model
-##############################################*
+##############################################
 simulate.baypass <- function(omega.mat,
                              nsnp=1000,
                              beta.coef=NA,
@@ -17,10 +28,10 @@ simulate.baypass <- function(omega.mat,
   #coverage = matrix with npop colums or vector of length npop with coverage => activate poolseq data
   #pop.trait = vector of length npop OR matrix of dimension npop*ntrait
   #beta.coef = vector or length nsnp_asso OR matrix of dimension nsnp_asso*ntrait
-
+  
   if(!is.matrix(omega.mat)){stop("omega.mat must be a matrix (e.g., as obtained from *mat_omega.out BayPass output)")}
   npop=nrow(omega.mat)
-
+  
   if(sum(is.na(beta.coef))==0){
     beta.coef=as.matrix(beta.coef) #security
     pop.trait=as.matrix(pop.trait)
@@ -40,7 +51,7 @@ simulate.baypass <- function(omega.mat,
     }
     nsnp=nsnp + nsnp.asso
   }else{simu.cov=FALSE}
-
+  
   if(length(sample.size)==1){
     NN=matrix(sample.size,nsnp,npop)
     poolsize=rep(sample.size,npop)
@@ -55,7 +66,7 @@ simulate.baypass <- function(omega.mat,
       NN=sample.size[tmp.snp,]
       poolsize=apply(sample.size,2,max)
     }}
-
+  
   if(length(coverage)==1){
     if(is.na(coverage)){
       poolseq=FALSE
@@ -73,25 +84,25 @@ simulate.baypass <- function(omega.mat,
       NN.coverage=coverage[tmp.snp,]
     }
   }
-
+  
   if(poolseq){
     YY.coverage=NN.coverage*0
     NN=matrix(rep(poolsize,nsnp),nsnp,npop,byrow=TRUE)
   }
-
+  
   if(length(beta.pi)!=2){stop("beta.pi must be of length 2")}else{
     if(sum(beta.pi==1)==2){Pi=runif(nsnp,pi.maf,1-pi.maf)}else{
       Pi=rbeta(nsnp,beta.pi[1],beta.pi[2])
       Pi[Pi<pi.maf]=pi.maf ; Pi[Pi>1-pi.maf]=1-pi.maf
     }
   }
-
+  
   #pop. allele frequencies
   ALPHA=matrix(rnorm(nsnp*npop),npop,nsnp) #alpha_tilde (transpose to facilitate further rescaling by column)
   ALPHA=t(chol(omega.mat))%*%ALPHA         #transformation into alpha (! lower triangular choleski matrix but chol returns upper triangular)
   ALPHA=t(ALPHA)*sqrt(Pi*(1-Pi)) + Pi
   if(simu.cov){ALPHA=ALPHA + alpha.cov}
-  ALPHA_tr=ALPHA ; ALPHA_tr[ALPHA>1]=1 ; ALPHA_tr[ALPHA<0]=0
+  ALPHA_tr=ALPHA ; ALPHA_tr[ALPHA>1]=1 ; ALPHA_tr[ALPHA<0]=0 
   #sample allele count
   YY=matrix(0,nsnp,npop)
   for(i in 1:nsnp){
@@ -103,33 +114,33 @@ simulate.baypass <- function(omega.mat,
     }
     if(i%%(nsnp/10)==0){cat(i,"SNP simulated out of",nsnp,"\n")}
   }
-
+  
   if(output.bayenv.format){remove.fixed.loci=TRUE}#Bayenv doesn't accept fixed loci
-
+  
   if(remove.fixed.loci){
     if(poolseq){tmp.freq=rowSums(YY.coverage)/rowSums(NN.coverage)}else{tmp.freq=rowSums(YY)/rowSums(NN)}
     snp.sel=tmp.freq>0 & tmp.freq<1
     nsnp=sum(snp.sel)
-    YY=YY[snp.sel,] ; NN=NN[snp.sel,] ; Pi=Pi[snp.sel] ; ALPHA=ALPHA[snp.sel,]
+    YY=YY[snp.sel,] ; NN=NN[snp.sel,] ; Pi=Pi[snp.sel] ; ALPHA=ALPHA[snp.sel,] 
     if(poolseq){YY.coverage=YY.coverage[snp.sel,];NN.coverage=NN.coverage[snp.sel,]}
     if(simu.cov){beta.coef=beta.coef[snp.sel]}
     cat("Number of SNPs removed: ",sum(!snp.sel),"\n")
   }
-
+  
   if(print.sim.params.values){
     write.table(file=paste("pi.",suffix,sep=""),Pi,quote=F,col.names=F,row.names=F)
     write.table(file=paste("alpha.",suffix,sep=""),ALPHA,quote=F,col.names=F,row.names=F)
-
+    
     if(simu.cov){
       write.table(file=paste("betacoef.",suffix,sep=""),beta.coef,quote=F,col.names=F,row.names=F)
       write.table(file=paste("pheno.",suffix,sep=""),t(pop.trait),quote=F,col.names=F,row.names=F)
     }
   }
-
+  
   mat_baypass=cbind(YY,NN)
   all2.pos=2*(1:npop)
   mat_baypass[,all2.pos-1]=YY ; mat_baypass[,all2.pos]=NN-YY
-
+  
   if(!poolseq | print.sim.params.values){
     write.table(file=paste("G.",suffix,sep="") ,mat_baypass,quote=F,col.names=F,row.names=F)
     if(output.bayenv.format){
@@ -140,13 +151,13 @@ simulate.baypass <- function(omega.mat,
       write.table(file=paste("bayenv_freq.",suffix,sep=""),mat_bayenv,sep="\t",quote=F,col.names=F,row.names=F)
     }
   }
-
+  
   if(poolseq){
     mat_baypass=cbind(YY.coverage,NN.coverage)
     all2.pos=2*(1:npop)
     mat_baypass[,all2.pos-1]=YY.coverage ; mat_baypass[,all2.pos]=NN.coverage-YY.coverage
     write.table(file=paste("Gpool.",suffix,sep="") ,mat_baypass,quote=F,col.names=F,row.names=F)
-
+    
     if(output.bayenv.format){
       mat_bayenv=rbind(YY.coverage,NN.coverage)
       all2.pos=2*(1:nsnp)
@@ -156,7 +167,7 @@ simulate.baypass <- function(omega.mat,
     }
     write.table(file=paste("poolsize.",suffix,sep=""),t(poolsize),quote=F,col.names=F,row.names=F)
   }
-
+  
   if(simu.cov){
     if(poolseq){
       list(Y.pool=YY.coverage,N.pool=NN.coverage,Y.sim=YY,N.sim=NN,Pi.sim=Pi,alpha.sim=ALPHA,omega.sim=omega.mat,betacoef.sim=beta.coef)
@@ -172,9 +183,9 @@ simulate.baypass <- function(omega.mat,
   }
 }
 
-###############################################*
+###############################################
 ###function: transform geno input files into YY and NN
-##############################################*
+##############################################
 
 geno2YN<-function(genofile){
  data=read.table(genofile)
@@ -184,18 +195,18 @@ geno2YN<-function(genofile){
  list(YY=YY,NN=NN)
 }
 
-###############################################*
+###############################################
 ###function: Compute FMD distance (Forstner and Moonen, 2003) between two covariance matrices
-##############################################*
+##############################################
 fmd.dist<-function(mat1,
                    mat2){
  require(geigen)
  return(sqrt(sum(log(geigen(mat1,mat2)$values)**2)))
 }
 
-###############################################*
+###############################################
 ###function: Simulate covariate value correlated to a given Omega PC
-##############################################*
+##############################################
 simulate.PCcorrelated.covariate <- function(omega,
                                             axis=1,
                                             targeted.rho=0.1){
@@ -213,9 +224,9 @@ simulate.PCcorrelated.covariate <- function(omega,
  return(scale(w)[,1])
 }
 
-###############################################*
+###############################################
 ###function: Plot Omega after spectral decomposition: Omega=UDU' with D=diagonal matrix of singular values
-##############################################*
+##############################################
 plot.omega <- function(omega,
                        PC=c(1,2),
                        pop.names=paste0("Pop",1:nrow(omega)),
@@ -234,9 +245,9 @@ plot.omega <- function(omega,
  list(PC=om.svd$u,eig=eig,pcent.var=pcent.var)
 }
 
-#################################################*
+#################################################
 #####function: compute genetic offset from estimated regression coefficient
-#################################################*
+#################################################
 compute_genetic_offset<-function(beta.coef=NULL,
                                  regfile="summary_betai.out",
                                  candidate.snp=NULL,
@@ -248,9 +259,9 @@ compute_genetic_offset<-function(beta.coef=NULL,
   #adapted from genetic.gap function of the LEA package to compute genetic gap (Gain and Francois, 2023)
   #beta.coef=matrix of nsnp X ncovariates coefficient. If NULL, user may provide a BayPass output file
   #regfile = BayPass output file (either [outprefix_]summary_betai_reg.out or [outprefix_]summary_betai.out if IS or MC estimates respectively)
-  #covfile = BayPass covariate file (-efile)
+  #covfile = BayPass covariate file (-efile) 
   #newenv = covariate values for the new environment(s): either a vector of ncovariates is only a single new environment or a matrix of with covariate values for several new environments in column (i.e., ncovariates X nenvironments)
-  #refenv = covariable values for the ref environment(s) to be used instead of covfile (i.e.: default: ref environment = those in cov files specified by each row of covariable value). Same format as newenv
+  #refenv = covariable values for the ref environment(s) to be used instead of covfile (i.e.: default: ref environment = those in cov files specified by each row of covariable value). Same format as newenv 
   require(data.table)
   ##reading and checking covariate
   cov=as.matrix(read.table(covfile))
@@ -263,7 +274,7 @@ compute_genetic_offset<-function(beta.coef=NULL,
     stop("Check newenv argument: The number of covariates for the new environment is not equal to the number of covariates in the original covariate file\n")
   }
   n.newenv=ncol(newenv)
-  ##Scaling pop and new covariates
+  ##Scaling pop and new covariates 
   if(scalecov){
     m.cov=rowMeans(cov) ; sd.cov=apply(cov,1,sd)
     cov=(cov-m.cov)/sd.cov
@@ -280,7 +291,7 @@ compute_genetic_offset<-function(beta.coef=NULL,
       stop("Check refenv argument: the number of covariates for the reference environment is not equal to the number of covariates in the original covariate file\n")
     }
     n.refenv=ncol(refenv)
-    ##Scaling pop and new covariates
+    ##Scaling pop and new covariates 
     if(scalecov){refenv=(refenv-m.cov)/sd.cov}
     cat("Genetic Offset statistics will be estimated between each of the",n.refenv,"reference environment (specified by",n.cov,"covariables)\n provided with refenv argument and the",n.newenv,"target environments provided with newenv argument.\n
   The resulting GO matrix will contain",n.refenv,"reference environment (row) times",n.newenv,"target environments (column) entries\n")
@@ -293,7 +304,7 @@ compute_genetic_offset<-function(beta.coef=NULL,
       beta.coef=matrix(fread(regfile,data.table=FALSE,header=T)$Beta_is,ncol=n.cov) #nsnp,ncov
     }
     if(grepl("summary_betai.out",regfile)){
-      type="MC"
+      type="MC" 
       beta.coef=matrix(fread(regfile,data.table=FALSE,header=T)$M_Beta,ncol=n.cov) #nsnp,ncov
     }
     if(is.null(type)){
@@ -301,18 +312,18 @@ compute_genetic_offset<-function(beta.coef=NULL,
     }
   }else{
     beta.coef=as.matrix(beta.coef)
-    if(ncol(beta.coef)!=n.cov){stop("ERROR: The number of covariates (columns) of the beta.coef matrix is not equal to the number of covariates in the original covariate file\n")}
+    if(ncol(beta.coef)!=n.cov){stop("ERROR: The number of covariates (columns) of the beta.coef matrix is not equal to the number of covariates in the original covariate file\n")} 
   }
-
-  ###################*
+  
+  ###################
   ggap=matrix(0,n.refenv,n.newenv)
   if(!is.null(candidate.snp)){beta.coef=beta.coef[candidate.snp,]}
   BtB=t(beta.coef)%*%beta.coef/nrow(beta.coef) # cov(beta.coef)
   eig <- eigen(BtB,symmetric = TRUE) #eigendecompositon of BtB=(beta.coef*t(beta.coef))/nsnp=UDU' car symetrique
-
+  
   for(i in 1:n.refenv){#usually more target than ref
-    #    M=t(cov-newenv[,i])%*%t(beta.coef) #sum of reg. coeff for each covariable weighted by the difference between the current and new env. <=> sum. of expected difference in predicted and current allele frequency!
-    # E(f_cur_i - f_new_i) = (Pi_i + S_j(beta_ij*Ycur_j)) - (Pi_i + S_j(beta_ij*Ynew_j)) = S_j(beta_ij*(Ycur_j-Ynew_j))
+    #    M=t(cov-newenv[,i])%*%t(beta.coef) #sum of reg. coeff for each covariable weighted by the difference between the current and new env. <=> sum. of expected difference in predicted and current allele frequency! 
+    # E(f_cur_i - f_new_i) = (Pi_i + S_j(beta_ij*Ycur_j)) - (Pi_i + S_j(beta_ij*Ynew_j)) = S_j(beta_ij*(Ycur_j-Ynew_j))     
     #    ggap[,i] = rowMeans(M**2) #diag(M %*% t(M))/nrow(beta.coef)
     #    mean.diff.freq[,i]=rowMeans(M)
     diff=newenv-refenv[,i]
@@ -321,18 +332,18 @@ compute_genetic_offset<-function(beta.coef=NULL,
   #covariable importance
   covimp=(eig$vectors**2)%*%(eig$values)
   out=list(go = ggap,BtB.eigenvalues = eig$values, BtB.eigenvectors = eig$vectors,covimp=as.vector(covimp))
-
+  
   if(compute.rona){
     out$rona=matrix(0,n.refenv,n.newenv)
     for(i in 1:n.refenv){out$rona[i,]=rowMeans(abs(t(newenv-refenv[,i])%*%t(beta.coef)))}
-  }
-
+  } 
+  
   return(out)
 }
 
-###############################################*
+###############################################
 ###function: concatenate sub-datasets results
-##############################################*
+############################################## 
 concatenate_res<-function(dir="./",
                           anaprefix="ana",
                           anasep="_",
@@ -348,9 +359,9 @@ concatenate_res<-function(dir="./",
   corepref=""
   if(nchar(anaprefix)>0){corepref=paste0(anaprefix, anasep)}
   if(nsubsets<1){stop("Check nsubsets: at least one subset is needed\n")}
-
+  
   for(i in 1:nsubsets){
-    # cat("Processing run",i,"out of",nsubsets,"\n")
+    cat("Processing run",i,"out of",nsubsets,"\n")
     tmp.snpdet=fread((paste0(snpdet_prefix,i,extension)),data.table = F)[,1:2]
     colnames(tmp.snpdet)=c("CHR","POS")
     tmp.nsnps=nrow(tmp.snpdet)
@@ -365,7 +376,7 @@ concatenate_res<-function(dir="./",
           if (!file.exists(bfis_fn)) stop("can't find ", bfis_fn, "!")
       }
       tmp=fread(bfis_fn,data.table=F)$"BF(dB)"
-      tmp=matrix(as.numeric(tmp),tmp.nsnps)
+      tmp=matrix(as.numeric(tmp),tmp.nsnps)      
       colnames(tmp)=paste0("BFis_cov_",1:ncol(tmp))
       tmp.snpdet=cbind(tmp.snpdet,tmp)
     }
@@ -381,10 +392,10 @@ concatenate_res<-function(dir="./",
   return(res)
 }
 
-####################################*
+####################################
 ## function: Compute Local Score and Identify significant windows of markers
-####################################*
-compute.local.scores<-function(snp.position,                #data.frame with 2 columns: i) chromosome name; ii) position (should be ordered)
+####################################
+compute.local.scores<-function(snp.position,                #data.frame with 2 columns: i) chromosome name; ii) position (should be ordered)  
                                snp.pi,                      #overall (average) reference allele frequency of the SNPs (=Pi)
                                snp.pvalue=NULL,             #p-value associated to the test statistics (C2 or XtX*) assumed to be on the -log10 scale
                                snp.bf=NULL,                 #BF (in deciban units i.e. 10log10(BF))
@@ -408,12 +419,12 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
   require(data.table)
   #checks
   nsnp=nrow(snp.position)
-  chr.names=table(snp.position[,1])
+  chr.names=table(snp.position[,1]) 
   cat(nsnp," SNPs found in ",length(chr.names)," different chromosomes\n")
-
+  
   if(length(snp.pi)!=nsnp){stop("snp.pi vector must be the same length as the number of SNPs\n")}
   snp.maf=0.5-abs(0.5-snp.pi)
-
+  
   if(!is.null(snp.bf)){
     if(!is.null(snp.pvalue)){stop("Please provide either of vectors of BF or a vectors of p-value")}
     if(length(snp.bf)!=nsnp){stop("snp.bf vector must be the same length as the number of SNPs\n")}
@@ -424,7 +435,7 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
       cat("WARNING:",sum(tmp.inf)," values are Inf in the BF vector: there were set to the maximum (+Inf) or minimum (-Inf) finite value\n")
       tmp.range=range(snp.bf[is.finite(snp.bf)])
       snp.bf[snp.bf == -Inf & !(na.remove)]=tmp.range[1]
-      snp.bf[snp.bf == Inf & !(na.remove)]=tmp.range[2]
+      snp.bf[snp.bf == Inf & !(na.remove)]=tmp.range[2]      
     }
     is.bf=TRUE
   }else{
@@ -440,7 +451,7 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
     }
     is.bf=FALSE
   }
-
+  
   for(i in names(chr.names)){
     tmp=snp.position[snp.position[,1]==i,2]
     if(is.unsorted(tmp) & is.unsorted(rev(tmp))){
@@ -448,35 +459,35 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
       #  cat("\tThese will be reordered (if chromosome retained)\n")
     }
   }
-
-  snp.sel=snp.maf>min.maf & snp.position[,1]%in%(names(chr.names[chr.names>min.nsnp])) & !(na.remove)
+  
+  snp.sel=snp.maf>min.maf & snp.position[,1]%in%(names(chr.names[chr.names>min.nsnp])) & !(na.remove) 
   cat(sum(snp.sel)," SNPs retained mapping to",length(unique(snp.position[snp.sel,1]))," different chromosomes\n")
-
+  
   if(!is.null(lindley.capping)){
     if(!manplot){
       cat("WARNING: the argument lindley.capping is only used for plotting (i.e., disregarded when manplot is FALSE\n")
     }else{
-      if(lindley.capping<0){stop("lindley.capping must be a positive number\n")}
+      if(lindley.capping<0){stop("lindley.capping must be a positive number\n")}  
     }
   }
-
+  
   if(sum(xi != 1:4)==4){
     cat("WARNING: xi is not equal to 1, 2, 3 or 4 => p-values associated with the local-score will not be computed (see Fariello et al., for simulation based approaches). You may alternatively provide a user-defined threshold value (lindley.thr option) to identify windows of interest\n")
     compute.localscore.pval=FALSE
   }else{
     compute.localscore.pval=TRUE
   }
-
+  
   if(!is.null(lindley.thr)){
     if(lindley.thr<0){cat("WARNING: lindley.thr must be >0 (disregarded)\n")}
     if(compute.localscore.pval){
       cat("WARNING: the computation of p-value for the lindley-score will not be performed (the provided threshold will be used instead to identify windows)\n")
       compute.localscore.pval=FALSE}
   }
-
+  
   ##Internal functions
   # computation of the autocorrelation
-  autocor=function(x){abs(cor(x[-1],x[-length(x)]))}
+  autocor=function(x){abs(cor(x[-1],x[-length(x)]))} 
   # computation of the lindley process from scores
   lindley=function(scores){
     L=length(scores) ; sl=rep(0,L+1)
@@ -492,38 +503,38 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
     b.poly.coef=rbind(c(-1.22,0.37,2.55,3.45),   #coeff associated with cor^2 for xi=1 to xi=4
                       c(3.17,2.14,-0.02,-0.98),  #coeff associated with cor   for xi=1 to xi=4
                       c(-1.99,-2.35,-2.31,-2.33)) #intercept term              for xi=1 to xi=4
-
+    
     if(sum(xi != 1:4)==4){
       print('xi must be equal to 1, 2, 3 or 4')
       thres=NULL
     }else{#warning input cor might be a vector
       tmp.cor2=cor**2
-      a=log(L)+a.poly.coef[1,xi]*(cor**3) + a.poly.coef[2,xi]*(cor**2) +
+      a=log(L)+a.poly.coef[1,xi]*(cor**3) + a.poly.coef[2,xi]*(cor**2) + 
         a.poly.coef[3,xi]*cor + a.poly.coef[4,xi]
       b=b.poly.coef[1,xi]*(cor**2) + b.poly.coef[2,xi]*cor + b.poly.coef[3,xi]
-      thres=( log(-log(1-alpha)) - a ) / b
+      thres=( log(-log(1-alpha)) - a ) / b 
     }
     return(thres)
   }
   ##
-
+  
   if(is.bf){
     score=snp.bf[snp.sel]*bf.scale/10
     score[score<0]=-log10(runif(sum(score<0)))
   }else{
     score=snp.pvalue[snp.sel]
   }
-
+  
   mydata=data.table(chr=snp.position[snp.sel,1],pos=snp.position[snp.sel,2],pval=10**(-score),score=score-xi)
   rm(score)
   setkey(mydata, chr)
   if(plot.pvalhist){
     hist(mydata$pval,breaks=100,freq=F,ylab="score",main="P-value distribution")
     abline(h=1,lty=3,col="red")
-  }
+  }  
   ##ordering of SNPs (in case not ordered) => pose pb (hard check plus haut: stop si un chr est pas ordonne)
   #  mydata <- mydata[order(chr, pos)]
-
+  
   Nchr=length(mydata[,unique(chr)])
   #This is useful for doing genomewide plots (and compute thresholds)
   chrInf=mydata[,.(L=.N,cor=autocor(pval)),chr]
@@ -538,13 +549,13 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
     chrInf[,th01:=thresUnif(L, cor, xi=xi,alpha = pval.local.score.thres),]
   }else{
     if(!is.null(lindley.thr)){
-      chrInf[,th01:=lindley.thr,]
+      chrInf[,th01:=lindley.thr,] 
       compute.localscore.pval=TRUE #pour pouvoir identifier les fenetres
     }
-  }
-
+  }  
+  
   mydata=as.data.frame(mydata)
-
+  
   if(manplot){
     tmp_chr=unique(mydata$chr)
     col_chr=1:length(tmp_chr) ; names(col_chr) = tmp_chr
@@ -562,7 +573,7 @@ compute.local.scores<-function(snp.position,                #data.frame with 2 c
     chrInf=as.data.frame(chrInf)
     for(i in 1:nrow(chrInf)){lines(x=range(which(mydata$chr==chrInf$chr[i])),y=rep(chrInf$th01[i],2),col=i,lty=2)}
   }
-
+  
   ###
   #detail region + annotation avec ma fonction (car autre ne sort pas la position du pic)
   #mydata=mydata[chrInf]
