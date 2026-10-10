@@ -1,16 +1,22 @@
 #!/bin/bash
 
-#' Combine masked gSYNC files from all quality-passing pools into one file
-#' per sample set (time, space, all) and data type:
+#' Combine partially masked gSYNC files (coverage, repeat, and indel masks
+#' only) from all quality-passing pools into one file per sample set
+#' (time, space, all) and data type, keeping only sites that SNAPE calls
+#' polymorphic (P >= MIN_PP) in at least one pool of the set:
 #'
 #' - `snape_masked_<set>`: SNAPE-pooled info (allele frequency estimates);
 #'   used for allele frequencies in `_R/`.
 #' - `count_masked_<set>`: allele counts by nucleotide; used for BayPass
 #'   (via poolfstat).
 #'
-#' Each output tar contains `<name>.sync.gz`, `<name>.names.gz` (pool names
-#' in column order), and `<name>_noblanks.sync.gz` (only sites with data in
-#' every pool).
+#' Each output tar contains `<name>.sync.gz` (sites passing the SNAPE
+#' filter), `<name>.names.gz` (pool names in column order), and
+#' `<name>_noblanks.sync.gz` (those sites with data in every pool).
+#'
+#' Before 2026-10-10, inputs were the fully masked files, so `_noblanks`
+#' kept only sites SNAPE called polymorphic in *every* pool. That excluded
+#' sites that drifted to fixation in any pool (e.g., in crash years).
 #'
 #' Pools in each set come from `time-pools.txt` and `space-pools.txt`
 #' (transferred from `_bash/samples/`; written by `_R/make-job-lists.R`).
@@ -23,6 +29,9 @@ conda activate main-env
 
 # Edit this for your system:
 export SNAPE_DIR="/staging/lnell/dna/snape"
+
+# Minimum SNAPE P(polymorphic) required in at least one pool:
+export MIN_PP=0.9
 
 
 require_files time-pools.txt space-pools.txt
@@ -41,10 +50,10 @@ for samp in ${ALL_SAMPS[@]}; do
 done
 
 for samp in ${ALL_SAMPS[@]}; do
-    tar -xf ${SNAPE_DIR}/${samp}_snape.tar ${samp}_snape/${samp}_snape_masked.sync.gz \
-        && mv ${samp}_snape/${samp}_snape_masked.sync.gz ./ \
+    tar -xf ${SNAPE_DIR}/${samp}_snape.tar ${samp}_snape/${samp}_snape_part_masked.sync.gz \
+        && mv ${samp}_snape/${samp}_snape_part_masked.sync.gz ./ \
         && rm -r ${samp}_snape \
-        && mv ${samp}_snape_masked.sync.gz ${samp}.sync.gz
+        && mv ${samp}_snape_part_masked.sync.gz ${samp}.sync.gz
     check_exit_status "cp, rename ${samp}" $?
 done
 
@@ -77,7 +86,8 @@ for kind in snape count; do
         OUT_NOBLANKS=${OUT_BASE}_noblanks.sync.gz
 
         # Combine sync files (takes ~17 min)
-        combine-syncs.py ${COMB_FLAG} -o ${OUT%.gz} ${SAMPS[@]/%/.sync.gz}
+        combine-syncs.py ${COMB_FLAG} --min-pp ${MIN_PP} -o ${OUT%.gz} \
+            ${SAMPS[@]/%/.sync.gz}
         check_exit_status "combine-syncs.py ($kind, $type)" $?
 
         # Create file of names

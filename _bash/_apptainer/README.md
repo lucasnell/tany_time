@@ -50,7 +50,7 @@ Appended to `/app/.bashrc`, so scripts get them via `. /app/.bashrc`.
 | Script | Purpose | Used by |
 |---|---|---|
 | `PickleRef.py`, `Mpileup2Sync.py`, `SNAPE2SYNC.py`, `MaskSYNC_snape.py` | SNAPE helper scripts from DEST (Kapun et al. 2021); see `02-allele-freqs/README.md` for local edits | `01-snape` |
-| `combine-syncs.py` | Combine per-pool gSYNC files; counts by default, SNAPE info with `--snape` | `03-combine-syncs` |
+| `combine-syncs.py` | Combine per-pool gSYNC files; counts by default, SNAPE info with `--snape`; `--min-pp` keeps sites polymorphic in at least one pool | `03-combine-syncs` |
 | `run-parallel.py` | Run a command once per item (e.g., contig) in parallel and report failures | `01-snape`, `02-npstat` |
 
 Python scripts run with whichever environment is active (`main-env` in all

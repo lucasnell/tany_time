@@ -15,34 +15,26 @@ On hold until the owner says to run them. Listed in dependency order.
       parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but
       all current candidates rest on this Ω. Rerun `01-baypass-init` with 3.1
       before any new covariate runs.
-- [ ] **Set `-nval` explicitly** in `02-baypass-beta.sh`. BayPass 3.1 lowered
-      the default from 1,000 to 250 (lower BF ceiling) and changed the
-      adaptive MCMC defaults.
-- [ ] Covariate scaling is the default since BayPass 2.4 (`-nocovscaling`
-      turns it off); this settles the `-scalecov` item below for new runs.
+- [x] `-nval` set explicitly (`NVAL=5000`) in `01-baypass-init.sh` and
+      `02-baypass-beta.sh` (3.1 default is 250). Expect ~25–50 h per job
+      (estimate from 2.31 run times; see the scripts). Covariate scaling is the
+      3.1 default; noted in `02-baypass-beta.sh`. (2026-10-09)
+- [x] `samtools mpileup -Q 25` in `03-mpileup.sh`, matching the counts'
+      base-quality threshold. (2026-10-09)
 - [ ] Replace `_R/baypass-utils.R` (copied from 2.31) with the 3.1 `utils/`
       version.
-- [ ] **Decide the BayPass SNP set's ascertainment.** `count_masked_time_noblanks`
-      keeps only sites SNAPE calls polymorphic (P ≥ 0.9) in *every* pool
-      (fully masked inputs + no-blanks filter). Sites that drifted to
-      fixation or near-loss in any pool, e.g. in crash years, are excluded,
-      which matters for a crash-focused question. An alternative is to
-      combine partially masked syncs (coverage/repeat/indel masks only) and
-      filter on pooled frequency afterwards. Decide before re-running
-      `02-allele-freqs/03-combine-syncs`.
-- [ ] `03-mpileup` window coverage (`*_win500.txt.gz`) assigns each
-      position only to the first overlapping window, so alternate windows
-      undercount. Not used downstream; fix or drop.
-- [ ] The staging file `/staging/lnell/dna/snape/snape-files.tar.gz` and the
-      local `_bash/02-allele-freqs/snape-files.tar.gz` are no longer used
-      (scripts are now in the container); delete when convenient.
+- [x] **SNP set:** `03-combine-syncs` now combines partially masked syncs
+      and keeps sites SNAPE calls polymorphic (P ≥ 0.9) in at least one
+      pool (option B). Previously a site had to be polymorphic in every
+      pool, which excluded sites that drifted to fixation in any pool.
+      (2026-10-10)
+- [x] Dropped the `03-mpileup` window coverage (overlapping windows
+      undercounted; output unused). (2026-10-10)
+- [ ] With the new SNP set, `freq` in the SNAPE files is still each pool's
+      own minor allele, and some pools are now fixed at a site. Review
+      step 1 (one fixed allele per SNP from counts) matters more.
 
 - [ ] **Pipeline options from DESTv3** (compared 2026-10-09; undecided):
-      - `03-mpileup.sh` runs `samtools mpileup -B` with the default minimum
-        base quality (13), so SNAPE frequencies use bases with BQ ≥ 13
-        while the count files (`Mpileup2Sync.py`) use BQ ≥ 25. DESTv3 sets
-        `-Q 25` in mpileup. Matching them would require rerunning from
-        `03-mpileup` onward.
       - DESTv3's `MaskSYNC_snape_monomorphic_filter.py` reassigns all reads
         to one allele at sites SNAPE calls confidently monomorphic (removes
         error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).

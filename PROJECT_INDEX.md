@@ -23,7 +23,9 @@ are written by `_R/make-job-lists.R`.
    only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked gSYNC; undoes
    softmasking) → `02-npstat`; `03-combine-syncs` (combines QC-passing pools
    into `snape_masked_*` and `count_masked_*` for `time`, `space`, and `all`;
-   was `03-combine-snapes` + `04-combine-counts` before 2026-10-09).
+   was `03-combine-snapes` + `04-combine-counts` before 2026-10-09). Since
+   2026-10-10 it uses partially masked syncs and keeps sites polymorphic in
+   at least one pool; existing outputs required polymorphism in every pool.
 5. `_R/tidy-pop-abunds.R` → `_data/tany-abundances.csv` (year, generation,
    N, logN = log1p(N)).
 6. `_bash/03-select-time/` (cluster):
