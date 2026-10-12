@@ -14,10 +14,12 @@ Columns:
                    `bwa mem -M` count in both)
   usable_rate      records in the final filtered BAM (MAPQ >= 20, primary)
                    / total records in the unfiltered alignments
-  target_rate      records in the final filtered BAM on T. gracilentus
-                   contigs / total records in the unfiltered alignments
-                   (from `<pool>_species-counts.tsv`; competitive mapping)
-  nontarget_rate   same, for all other species in the combined reference
+  target_rate      records in the final filtered BAM on nuclear
+                   T. gracilentus contigs / total records in the unfiltered
+                   alignments (from `<pool>_species-counts.tsv`; competitive
+                   mapping)
+  nontarget_rate   same, for other species' nuclear genomes (`nt_*` groups;
+                   mitogenome and COI barcode groups are not included)
 
 usage:
 pool-qc-files.py --header
@@ -61,15 +63,16 @@ def bamtools_counts(fn):
 
 
 def species_counts(fn):
-    """dict of species -> reads from `<pool>_species-counts.tsv`"""
+    """dict of group -> reads from `<pool>_species-counts.tsv`
+    (columns: group, length, n_reads)"""
     if not os.path.exists(fn):
         return None
     out = {}
     with open(fn) as f:
         next(f)
         for line in f:
-            sp, n = line.rstrip().split("\t")
-            out[sp] = int(n)
+            grp, length, n = line.rstrip().split("\t")
+            out[grp] = int(n)
     return out
 
 
@@ -127,7 +130,7 @@ if __name__ == "__main__":
                 if sp is not None:
                     target_rate = sp.get("target", 0) / total
                     nontarget_rate = sum(v for k, v in sp.items()
-                                         if k != "target") / total
+                                         if k.startswith("nt_")) / total
 
     print("\t".join([args.pool] + [fmt(x) for x in (gc, fdup, pdup, map_rate,
                                                      usable_rate, target_rate,

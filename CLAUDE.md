@@ -26,6 +26,12 @@ not yet interpretable (see `TODO.md`).
 - Deep-crash generations (e.g. 1984, 2003–2005, 2011) had too few adults to
   sequence; no further pools can be added, and existing pools can't be
   re-sequenced (no material left).
+- Midge community: 37 chironomid species at Mývatn; trap counts in
+  Einarsson et al. 2026, *Aquatic Ecology* 60:58 (Table 1;
+  doi:10.1007/s10452-026-10294-2; Zotero `WEMS8F4U`). Most abundant in
+  traps: *T. gracilentus*, *Cricotopus sylvestris*, *Simulium vittatum*
+  (black fly), *Eukiefferiella minor*, *Micropsectra lindrothi*,
+  *Procladius islandicus*, *Chironomus islandicus*.
 - Archived samples were stored in plastic containers in a basement for
   years; some were stored poorly (some dried out), which likely degraded
   DNA. Older samples were probably more affected, but quality doesn't track
@@ -41,12 +47,13 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
   Shared shell functions are in `_bash/_apptainer/helpers.sh`; shared
   scripts are in `_bash/_apptainer/bin/` (installed on the container's
-  `PATH`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`,
+  `PATH`). Small reference sequences for jobs are in `_bash/references/`
+  (from `_R/get-mito-refs.R`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`,
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`,
-  `kraken-env`.
+  `kraken-env`, `mito-env`.
   Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools
   1.24, …); all existing outputs were made with v1.0.0 (BayPass 2.31).
   snape-pooled is built from the DEST-bio fork (original repo deleted).
@@ -72,7 +79,7 @@ Scripts read large files by absolute path; none are in git.
 |---|---|
 | `~/_data/_tany-time/snape/{snape,count}_masked_{time,space,all}/` | Combined SNAPE frequency and read-count sync files |
 | `~/_data/_baypass/{baypass-inputs,init,beta}/` | BayPass inputs and outputs (local copy holds only `beta0` runs 1–10) |
-| `~/_data/midgenomes/` | Assembly, GO terms, OrthoFinder HOG→GO tables |
+| `~/_data/midgenomes/` | Assemblies (`assemblies/<code>_assembly.fasta.gz`; `Ctenta2023` and `Saterr` added 2026-10-12 from NCBI, GCA_963573255.1 and GCA_033063855.1), GO terms, OrthoFinder HOG→GO tables |
 | `~/_data/Tgraci_genes.gff3` | Gene annotation |
 | `~/Desktop/Tgraci_proteins.faa`, `~/Desktop/Tgraci-funct-Dmel.csv` | Protein FASTA and BLASTP output used in `baypass-analysis.R` |
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |

@@ -1,0 +1,13 @@
+name: mito-env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - flye=2.9.6
+  - medaka=2.2.2
+  - minimap2=2.31
+  - samtools=1.24
+  - bwa=0.7.19
+  - polypolish=0.7.1
+  - seqtk=1.5
+prefix: /opt/conda/envs/mito-env

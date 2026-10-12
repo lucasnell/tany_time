@@ -4,15 +4,18 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = logs/00-hologenome/hologenome.log
-error = logs/00-hologenome/hologenome.err
-output = logs/00-hologenome/hologenome.out
+log = logs/00b-hologenome/hologenome.log
+error = logs/00b-hologenome/hologenome.err
+output = logs/00b-hologenome/hologenome.out
 
-executable = 00-hologenome.sh
+executable = 00b-hologenome.sh
 
 batch_name = "hologenome"
 
 should_transfer_files = YES
+
+## COI barcodes (written by `_R/get-mito-refs.R`):
+transfer_input_files = ../references/coi-barcodes.fasta
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

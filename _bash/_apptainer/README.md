@@ -1,6 +1,6 @@
 # `_apptainer/`: container
 
-`tany_time.def` builds `tany_time.sif` (v2.1.0) from
+`tany_time.def` builds `tany_time.sif` (v2.2.0) from
 `condaforge/miniforge3:26.7.2-0` (Ubuntu 24.04).
 
 ## Build
@@ -26,6 +26,7 @@ channel priority; channels conda-forge then bioconda).
 | `gatk3-env` | GATK 3.8 (IndelRealigner) | `03-mpileup` |
 | `baypass-env` | BayPass 3.1, R with poolfstat and tidyverse | `03-select-time/` |
 | `kraken-env` | Kraken2 2.17.2, samtools, seqtk | `01-variant-calling/06-kraken` |
+| `mito-env` | Flye 2.9.6, medaka 2.2.2 (R9.4.1 model `r941_min_hac_g507` downloaded at build), minimap2, bwa, polypolish 0.7.1, samtools, seqtk | `01-variant-calling/00a-mitogenome` |
 
 Also built from source: `snape-pooled` (DEST-bio fork, commit `284bfe0`;
 the original repo was deleted) and `npstat` (commit `dc230fb`).

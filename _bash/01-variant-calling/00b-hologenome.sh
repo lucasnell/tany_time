@@ -7,7 +7,15 @@
 #' contigs are used downstream (`03-mpileup`).
 #'
 #' T. gracilentus contig names are unchanged. Other sequences are renamed
-#' `nt_<code>__<first word of header>` so they're easy to filter out.
+#' so they're easy to filter out and count by group:
+#' - `nt_<code>__<name>`: nuclear assemblies of other species
+#' - `mt_Tgraci__Tgraci_mitogenome`: T. gracilentus mitogenome
+#'   (`00a-mitogenome`), so mitochondrial reads don't map to nuclear copies
+#'   of mitochondrial DNA
+#' - `bc_<code>__<accession>`: COI barcodes of abundant trap taxa
+#'   (`coi-barcodes.fasta` from `_R/get-mito-refs.R`). Reads on these vs.
+#'   the T. gracilentus mitogenome give a per-pool contamination index.
+#' Only `target_contigs.bed` (nuclear T. gracilentus) is used for mpileup.
 #'
 #' Output `hologenome.tar` (on staging) contains directory `hologenome/`:
 #' - hologenome.fasta (+ bwa index, .fai, .dict)
@@ -24,21 +32,34 @@ export THREADS=$(count_threads)
 export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 export OTHER_DIR="/staging/lnell/other-genomes"
 export PARENT_DIR_OUT="/staging/lnell"
+export MITO_TAR_FULL_PATH="/staging/lnell/Tgraci_mitogenome.tar"
 
-#' Non-target assemblies, as `<code>:<file in OTHER_DIR>`. Chironomus spp.
-#' are proxies for the Chironomus species at Mývatn (no assembly available).
+#' Non-target assemblies, as `<code>:<file in OTHER_DIR>`, chosen as the
+#' closest available genomes to abundant non-target taxa in Mývatn traps
+#' (Einarsson et al. 2026, Aquatic Ecology 60:58, Table 1):
+#' - Chironomini (Chironomus islandicus): Chironomus riparius
+#'   (GCA_917627325) and C. tentans (GCA_963573255.1, 2023)
+#' - Orthocladiinae (e.g., Cricotopus sylvestris, Eukiefferiella minor):
+#'   Smittia aterrima (GCA_033063855.1) and Propsilocerus akamusi
+#'   (GCA_018397935)
+#' No assemblies exist for Micropsectra (Tanytarsini), Tanypodinae, or
+#' Simulium (checked 2026-10-12).
 export OTHERS=("Cripar:Cripar_assembly.fasta.gz"
-               "Ctenta:Ctenta_assembly.fasta.gz")
+               "Ctenta:Ctenta2023_assembly.fasta.gz"
+               "Saterr:Saterr_assembly.fasta.gz"
+               "Pakamu:Pakamu_assembly.fasta.gz")
 
 
 OTHER_FILES=()
 for x in "${OTHERS[@]}"; do OTHER_FILES+=(${OTHER_DIR}/${x#*:}); done
-require_files ${GENOME_FULL_PATH} ${OTHER_FILES[@]}
+require_files ${GENOME_FULL_PATH} ${OTHER_FILES[@]} ${MITO_TAR_FULL_PATH} \
+    coi-barcodes.fasta
 
 
 export OUT_DIR=hologenome
 export HOLO=hologenome.fasta
 mkdir ${OUT_DIR}
+mv coi-barcodes.fasta ${OUT_DIR}/
 cd ${OUT_DIR}
 
 
@@ -63,6 +84,16 @@ for x in "${OTHERS[@]}"; do
     check_exit_status "add ${code}" $?
 done
 
+# T. gracilentus mitogenome:
+tar -xf ${MITO_TAR_FULL_PATH} -O Tgraci_mitogenome/Tgraci_mitogenome.fasta \
+    | awk '{if (/^>/) {print ">mt_Tgraci__Tgraci_mitogenome"} else {print}}' \
+    >> ${HOLO}
+check_exit_status "add mitogenome" $?
+
+# COI barcodes (already named `bc_<code>__<accession>`):
+cat coi-barcodes.fasta >> ${HOLO} && rm coi-barcodes.fasta
+check_exit_status "add barcodes" $?
+
 # Check that names are unique:
 N_DUPS=$(grep "^>" ${HOLO} | sort | uniq -d | wc -l)
 if (( N_DUPS > 0 )); then
@@ -84,7 +115,7 @@ conda deactivate
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # Summary of sequences per species:
-awk '{split($1, a, "__"); sp = (a[1] ~ /^nt_/) ? substr(a[1], 4) : "target";
+awk '{split($1, a, "__"); sp = (a[1] ~ /^(nt|mt|bc)_/) ? a[1] : "target";
      n[sp]++; len[sp] += $2}
      END {for (s in n) print s "\t" n[s] " sequences\t" len[s] " bp"}' \
     ${HOLO}.fai

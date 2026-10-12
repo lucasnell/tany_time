@@ -8,7 +8,7 @@
 #' that also contains read group info.
 #'
 #' Reads are mapped competitively to the combined reference from
-#' `00-hologenome` (T. gracilentus plus other species). The output BAM
+#' `00b-hologenome` (T. gracilentus plus other species). The output BAM
 #' includes reads mapped to any species; `03-mpileup` keeps only
 #' T. gracilentus contigs. Reads per species (MAPQ >= 20, primary) are
 #' written to `<pool>_species-counts.tsv` (in the output tar.gz) for QC.
@@ -89,7 +89,7 @@ gunzip ${READS1}.gz && \
     gunzip ${READS2}.gz
 check_exit_status "gunzip reads" $?
 
-# Combined reference with its bwa index (built in `00-hologenome`):
+# Combined reference with its bwa index (built in `00b-hologenome`):
 tar -xf ${HOLO_TAR_FULL_PATH} -C ./ \
     && mv hologenome/${GENOME}* ./ \
     && rm -r hologenome
@@ -206,14 +206,17 @@ call_bam_stats ${UNMAPPED_BAM} "(final, unmapped)"
 
 
 # Reads per species in the final BAM (MAPQ >= 20, primary):
-# "target" = T. gracilentus; others from `nt_<code>__` sequence names.
+# Groups: "target" = nuclear T. gracilentus; `nt_<code>` = other species'
+# nuclear genomes; `mt_Tgraci` = T. gracilentus mitogenome; `bc_<code>` =
+# COI barcodes of other taxa (see `00b-hologenome`). Lengths are summed.
 samtools index ${OUT_BAM}
 check_exit_status "samtools index (final)" $?
 samtools idxstats ${OUT_BAM} \
     | awk 'BEGIN{OFS="\t"} $1 != "*" {
-        split($1, a, "__"); sp = (a[1] ~ /^nt_/) ? substr(a[1], 4) : "target";
-        n[sp] += $3 }
-        END {print "species", "n_reads"; for (s in n) print s, n[s]}' \
+        split($1, a, "__"); sp = (a[1] ~ /^(nt|mt|bc)_/) ? a[1] : "target";
+        n[sp] += $3; len[sp] += $2 }
+        END {print "group", "length", "n_reads";
+             for (s in n) print s, len[s], n[s]}' \
     > ${READ_BASE}_species-counts.tsv
 check_exit_status "species counts" $?
 rm ${OUT_BAM}.bai

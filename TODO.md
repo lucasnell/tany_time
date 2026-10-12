@@ -6,7 +6,7 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Before rerunning anything on the cluster
 
-- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.1.0). Pins
+- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.2.0). Pins
       were updated 2026-10-09 and dry-run solved for linux-64, but the image
       has not been built or tested. Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
@@ -40,14 +40,43 @@ On hold until the owner says to run them. Listed in dependency order.
         to one allele at sites SNAPE calls confidently monomorphic (removes
         error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).
       - [x] Competitive mapping (DESTv3 "hologenome") added 2026-10-10:
-        `01-variant-calling/00-hologenome` (T. gracilentus + *C. riparius*
-        + *C. tentans* as proxies for Mývatn *Chironomus*); `02-bwa` maps
+        `01-variant-calling/00b-hologenome` (T. gracilentus + *C. riparius*,
+        *C. tentans* 2023, *Smittia aterrima*, *Propsilocerus akamusi*;
+        decided 2026-10-12); `02-bwa` maps
         to it and counts reads per species; `03-mpileup` keeps only
         T. gracilentus contigs. Other species could be added (`OTHERS` in
-        `00-hologenome.sh`); copy assemblies to `/staging/lnell/other-genomes/`
+        `00b-hologenome.sh`); copy assemblies to `/staging/lnell/other-genomes/`
         first.
+        Species chosen from Einarsson et
+        al. 2026 (Table 1) and NCBI (queried 2026-10-12): assemblies exist
+        for *Chironomus* (incl. chromosome-level *C. tentans*
+        GCA_963573255.1, better than the local 2014 scaffolds) and for
+        Orthocladiinae (*Smittia aterrima* GCA_033063855.1, present but rare
+        at Mývatn; *Propsilocerus akamusi*, local), but none for
+        *Cricotopus*, *Micropsectra* (Tanytarsini, the closest relatives of
+        T. gracilentus), *Procladius*, *Eukiefferiella*, or *Simulium*.
+      - [ ] **Micropsectra (Tanytarsini) contamination** (discussing
+        2026-10-12). NCBI (queried 2026-10-12) has no Micropsectra or other
+        non-Tanytarsus Tanytarsini genome, transcriptome, raw reads, or
+        mitogenome; it has ~4,260 Micropsectra COI records (including
+        *M. lindrothi* voucher IS39, KC788724) and Tanytarsini mitogenomes
+        (*Tanytarsus formosanus*, *T. verralli*, *Cladotanytarsus
+        pseudomancus*). The T. gracilentus assembly appears to lack a
+        mitogenome (CONTIG1, 16 kb, has no match to the T. gracilentus COI
+        barcode MZ659759). Decided and implemented 2026-10-12 (not yet run):
+        mitochondrial/barcode competitive mapping as a per-pool
+        contamination index. `01-variant-calling/00a-mitogenome` assembles
+        the T. gracilentus mitogenome from the nanopore reads of one
+        identified male (R9.4.1, Guppy 5.0.11 hac; not re-basecalled) with
+        Flye + medaka (`r941_min_hac_g507`) + polypolish (pool SN-1-08_S24);
+        check `coi-check.tsv` against COI MZ659759/MN679642 before going on.
+        `00b-hologenome` adds the mitogenome and COI barcodes
+        (`_R/get-mito-refs.R` → `_bash/references/`; selection in
+        `_data/coi-barcode-selection.csv`; *Procladius* at genus level since
+        *P. islandicus* has no NCBI sequences). Index per pool and taxon:
+        `_R/mito-contam.R` (relative, not a DNA fraction).
       - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06-kraken`;
-        `kraken-env` in container v2.1.0). Needs a Kraken2 database on
+        `kraken-env` in container v2.1.0+). Needs a Kraken2 database on
         staging (PlusPF-16 suggested). No local script yet to summarize
         the reports.
         Cheaper first look: `02-bwa.sh` already saves unmapped reads

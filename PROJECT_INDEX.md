@@ -6,8 +6,10 @@ Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`.
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
-1. `_bash/01-variant-calling/` (cluster): `00-hologenome` (combined
-   reference: T. gracilentus + *Chironomus* spp.) → `01-fastp` trim →
+1. `_bash/01-variant-calling/` (cluster): `00a-mitogenome` (T. gracilentus
+   mitogenome from nanopore reads) → `00b-hologenome` (combined reference:
+   T. gracilentus + 2 *Chironomus* + 2 Orthocladiinae nuclear genomes, the
+   mitogenome, and COI barcodes of trap taxa) → `01-fastp` trim →
    `02-bwa` merge overlapping pairs with bbmerge, align competitively with
    `bwa mem` → `03-mpileup` mark duplicates, GATK indel realignment,
    `samtools mpileup` on T. gracilentus contigs; `05-bam-cov` (coverage
@@ -80,6 +82,8 @@ are written by `_R/make-job-lists.R`.
 | `pool-qc.R` | Chooses pools from `03-pool-qc` metrics: ROBPCA outlier rule with bootstrap-calibrated threshold (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; needs `rrcov` |
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
+| `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |
+| `mito-contam.R` | Per-pool mitochondrial contamination index per trap taxon from `02-bwa` read counts → `_data/mito-contam.csv`; not yet run |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
 ## `_data/`

@@ -1,0 +1,17 @@
+code,species,accession,length,country,iceland,n_candidates,n_iceland
+Cislan,Chironomus islandicus,HM405980.1,658,Norway,FALSE,7,0
+Csylve,Cricotopus sylvestris,MT535252.1,700,"Montenegro: Skadar Lake Basin, Virpazar",FALSE,150,0
+Eminor,Eukiefferiella minor,JF870931.1,658,Norway,FALSE,1,0
+Matrof,Micropsectra atrofasciata,FN796497.1,659,Iceland:Thingvallavatn,TRUE,11,6
+Mlindr,Micropsectra lindrothi,FN796502.1,659,Iceland:Thingvallavatn,TRUE,13,6
+Svitta,Simulium vittatum,HM386306.1,658,USA,FALSE,82,0
+Procla,Procladius choreus aggregate sp. 1 TR-2021a,MZ623238.1,658,"Finland: Finland Proper, Turku,
+                     Varsinais-Suomi, BrinkhallABC",FALSE,9,0
+Procla,Procladius frigidus,HM405916.1,658,Norway,FALSE,22,0
+Procla,Procladius imicola,MZ633727.1,658,"Finland: Regio aboensis, Salo,
+                     Hamarijaervi",FALSE,4,0
+Procla,Procladius nigriventris,HQ551512.1,658,Norway,FALSE,5,0
+Procla,Procladius nudipennis,MZ634090.1,658,"Finland: Regio aboensis, Salo, Naarjaervi",FALSE,4,0
+Procla,Procladius pectinatus,MZ657073.1,658,"Finland: Tavastia australis, Haemeenlinna,
+                     Lammin puhdistamo",FALSE,4,0
+Procla,Procladius signatus,JF870858.1,658,Norway,FALSE,7,0

@@ -17,7 +17,9 @@
 #' by `_R/make-job-lists.R`).
 #'
 #' Output: `pool-qc.tar` containing `pool-qc-sync_time.tsv`,
-#' `pool-qc-sync_space.tsv`, and `pool-qc-files.tsv`.
+#' `pool-qc-sync_space.tsv`, `pool-qc-files.tsv`, and `species-counts/`
+#' (each pool's reads per reference group from `02-bwa`, for the
+#' mitochondrial contamination index in `_R/mito-contam.R`).
 #'
 
 
@@ -49,6 +51,7 @@ cd ${OUT_DIR}
 #' ========================================================================
 
 pool-qc-files.py --header > pool-qc-files.tsv
+mkdir species-counts
 
 for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
     mkdir tmp
@@ -69,6 +72,9 @@ for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
         --markdup tmp/${samp}_mpileup/${samp}_bwa_nodups_report.txt \
         >> pool-qc-files.tsv
     check_exit_status "pool-qc-files.py (${samp})" $?
+    if [ -f tmp/${samp}_bwa/${samp}_species-counts.tsv ]; then
+        cp tmp/${samp}_bwa/${samp}_species-counts.tsv species-counts/
+    fi
     rm -r tmp
 done
 
