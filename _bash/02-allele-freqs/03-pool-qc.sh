@@ -8,8 +8,9 @@
 #'   missing-data rate after masking, number of SNPs, and number of private
 #'   SNPs (SNPs found only in that pool among the set's candidates).
 #' - From upstream outputs (`pool-qc-files.py`): GC content and duplication
-#'   rate from fastp, duplication rate from Picard MarkDuplicates, and
-#'   mapping rates from `bamtools stats`.
+#'   rate from fastp, duplication rate from Picard MarkDuplicates, mapping
+#'   rates from `bamtools stats`, and reads assigned to T. gracilentus vs.
+#'   other species in the combined reference (`02-bwa`).
 #'
 #' Candidate pools come from `time-pools-candidates.txt` and
 #' `space-pools-candidates.txt` (transferred from `_bash/samples/`; written
@@ -57,7 +58,7 @@ for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
         trimmed_${samp}/fastp.json \
         || echo "WARNING: no fastp.json for ${samp}" 1>&2
     tar -xzf ${DNA_DIR}/bwa/${samp}_bwa.tar.gz -C tmp \
-        --wildcards "${samp}_bwa/*.stats" \
+        --wildcards "${samp}_bwa/*.stats" "${samp}_bwa/*_species-counts.tsv" \
         || echo "WARNING: no bamtools stats for ${samp}" 1>&2
     tar -xzf ${DNA_DIR}/mpileup/${samp}_mpileup.tar.gz -C tmp \
         ${samp}_mpileup/${samp}_bwa_nodups_report.txt \

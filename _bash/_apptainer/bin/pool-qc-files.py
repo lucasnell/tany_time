@@ -14,6 +14,10 @@ Columns:
                    `bwa mem -M` count in both)
   usable_rate      records in the final filtered BAM (MAPQ >= 20, primary)
                    / total records in the unfiltered alignments
+  target_rate      records in the final filtered BAM on T. gracilentus
+                   contigs / total records in the unfiltered alignments
+                   (from `<pool>_species-counts.tsv`; competitive mapping)
+  nontarget_rate   same, for all other species in the combined reference
 
 usage:
 pool-qc-files.py --header
@@ -56,6 +60,19 @@ def bamtools_counts(fn):
     return total, mapped
 
 
+def species_counts(fn):
+    """dict of species -> reads from `<pool>_species-counts.tsv`"""
+    if not os.path.exists(fn):
+        return None
+    out = {}
+    with open(fn) as f:
+        next(f)
+        for line in f:
+            sp, n = line.rstrip().split("\t")
+            out[sp] = int(n)
+    return out
+
+
 def picard_dup(fn):
     if fn is None or not os.path.exists(fn):
         return None
@@ -81,7 +98,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cols = ["pool", "fastp_gc", "fastp_dup", "picard_dup", "map_rate",
-            "usable_rate"]
+            "usable_rate", "target_rate", "nontarget_rate"]
     if args.header:
         print("\t".join(cols))
         sys.exit(0)
@@ -92,7 +109,7 @@ if __name__ == "__main__":
     gc, fdup = fastp_stats(args.fastp)
     pdup = picard_dup(args.markdup)
 
-    map_rate = usable_rate = None
+    map_rate = usable_rate = target_rate = nontarget_rate = None
     if args.bwa_dir is not None:
         p = os.path.join(args.bwa_dir, args.pool)
         tm = [bamtools_counts(os.path.join(args.bwa_dir, "all_" + args.pool +
@@ -106,7 +123,13 @@ if __name__ == "__main__":
                 final_total, _ = bamtools_counts(p + "_bwa.stats")
                 if final_total is not None:
                     usable_rate = final_total / total
+                sp = species_counts(p + "_species-counts.tsv")
+                if sp is not None:
+                    target_rate = sp.get("target", 0) / total
+                    nontarget_rate = sum(v for k, v in sp.items()
+                                         if k != "target") / total
 
     print("\t".join([args.pool] + [fmt(x) for x in (gc, fdup, pdup, map_rate,
-                                                     usable_rate)]))
+                                                     usable_rate, target_rate,
+                                                     nontarget_rate)]))
     sys.exit(0)

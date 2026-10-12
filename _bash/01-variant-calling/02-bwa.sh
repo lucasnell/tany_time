@@ -6,6 +6,12 @@
 #' and any reads that can't be merged.
 #' It then combines these alignments into a single sorted BAM file
 #' that also contains read group info.
+#'
+#' Reads are mapped competitively to the combined reference from
+#' `00-hologenome` (T. gracilentus plus other species). The output BAM
+#' includes reads mapped to any species; `03-mpileup` keeps only
+#' T. gracilentus contigs. Reads per species (MAPQ >= 20, primary) are
+#' written to `<pool>_species-counts.tsv` (in the output tar.gz) for QC.
 
 
 . /app/.bashrc
@@ -16,7 +22,7 @@ export THREADS=$(count_threads)
 # Edit these for your system:
 export PARENT_DIR_IN="/staging/lnell/dna/trimmed"
 export PARENT_DIR_OUT="/staging/lnell/dna/bwa"
-export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
+export HOLO_TAR_FULL_PATH="/staging/lnell/hologenome.tar"
 
 
 
@@ -29,9 +35,9 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 
 export READ_BASE=$1
 
-require_files ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ${GENOME_FULL_PATH}
+require_files ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar ${HOLO_TAR_FULL_PATH}
 
-export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
+export GENOME=hologenome.fasta
 
 export READS1=$(read_tar_name ${PARENT_DIR_IN}/trimmed_${READ_BASE}.tar 1)
 check_exit_status "reads file name 1" $?
@@ -83,10 +89,11 @@ gunzip ${READS1}.gz && \
     gunzip ${READS2}.gz
 check_exit_status "gunzip reads" $?
 
-stage_genome ${GENOME_FULL_PATH}
-
-bwa index ${GENOME}
-check_exit_status "bwa-index" $?
+# Combined reference with its bwa index (built in `00-hologenome`):
+tar -xf ${HOLO_TAR_FULL_PATH} -C ./ \
+    && mv hologenome/${GENOME}* ./ \
+    && rm -r hologenome
+check_exit_status "extract hologenome" $?
 
 # For use later in creating read group info:
 export READ_ID=$(head -n 1 ${READS1} | grep -Eo "[ATGCN]+$")
@@ -196,6 +203,21 @@ rm ${MERGED_BAM} ${UN_BAM} ${UNMAPPED_MERGED_BAM} ${UNMAPPED_UN_BAM}
 
 call_bam_stats ${OUT_BAM} "(final)"
 call_bam_stats ${UNMAPPED_BAM} "(final, unmapped)"
+
+
+# Reads per species in the final BAM (MAPQ >= 20, primary):
+# "target" = T. gracilentus; others from `nt_<code>__` sequence names.
+samtools index ${OUT_BAM}
+check_exit_status "samtools index (final)" $?
+samtools idxstats ${OUT_BAM} \
+    | awk 'BEGIN{OFS="\t"} $1 != "*" {
+        split($1, a, "__"); sp = (a[1] ~ /^nt_/) ? substr(a[1], 4) : "target";
+        n[sp] += $3 }
+        END {print "species", "n_reads"; for (s in n) print s, n[s]}' \
+    > ${READ_BASE}_species-counts.tsv
+check_exit_status "species counts" $?
+rm ${OUT_BAM}.bai
+cat ${READ_BASE}_species-counts.tsv
 
 
 

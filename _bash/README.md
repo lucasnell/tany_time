@@ -16,8 +16,8 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 
 1. Build the container: `_apptainer/_build.sh` → `/staging/lnell/tany_time.sif`.
 2. Write job lists locally: `Rscript _R/make-job-lists.R` (from the repo root).
-3. `01-variant-calling/`: `01-fastp` → `02-bwa` → `03-mpileup`;
-   `05-bam-cov` after `02-bwa`. `04-ont-pi` is independent (one job on
+3. `01-variant-calling/`: `00-hologenome` (once) and `01-fastp` →
+   `02-bwa` → `03-mpileup`; `05-bam-cov` and `06-kraken` after `02-bwa`. `04-ont-pi` is independent (one job on
    Nanopore reads) and only sets the SNAPE prior θ used in `02-allele-freqs/01-snape`.
 4. `02-allele-freqs/`: `01-snape` → `03-pool-qc` → locally, `_R/pool-qc.R`
    (choose pools from QC metrics; writes `samples/{time,space}-pools.txt`)

@@ -5,7 +5,8 @@
 #' analysis.
 #'
 #' Metrics: missing-data rate after masking, number of private SNPs,
-#' duplication rate (Picard), GC content (fastp), and mapping rate.
+#' duplication rate (Picard), GC content (fastp), and mapping rate to
+#' T. gracilentus under competitive mapping.
 #' This script deliberately doesn't read abundances or allele frequencies,
 #' so inclusion can't depend on results.
 #'
@@ -14,17 +15,19 @@
 #' robust PCA of the QC metrics, or if any metric is missing.
 #'
 #'   1. Standardize each metric robustly: (x - median) / MAD.
-#'   2. Robust covariance by minimum covariance determinant (MCD;
-#'      `MASS::cov.rob`), so outlying pools don't shape the PCs.
-#'   3. PCs = eigenvectors of that covariance; keep the first k explaining
-#'      >= 80% of variance (k <= number of metrics - 1).
-#'   4. Score distance (SD): Mahalanobis distance within the k PCs; cutoff
-#'      sqrt(chi-squared_k quantile 0.975).
-#'      Orthogonal distance (OD): distance from the k-PC subspace; cutoff
-#'      (median(OD^(2/3)) + MAD(OD^(2/3)) * z_0.975)^(3/2).
-#'      These are the ROBPCA cutoffs of Hubert et al. 2005
-#'      (doi:10.1198/004017004000000563).
-#'   5. Outlier if SD or OD exceeds its cutoff.
+#'   2. ROBPCA (`rrcov::PcaHubert`; Hubert et al. 2005,
+#'      doi:10.1198/004017004000000563) with its default number of PCs and
+#'      default (0.975) cutoffs for score distance (SD; within the PCs) and
+#'      orthogonal distance (OD; off the PCs).
+#'   3. Outlier score = max(SD / SD cutoff, OD / OD cutoff).
+#'   4. Calibrate: ROBPCA's cutoffs flag 4-9% of pools in clean simulated
+#'      data at n = 18-30 (`_R/pool-qc-rule-sim.R`), so the threshold for
+#'      the score is set by parametric bootstrap. Simulate clean data
+#'      (multivariate normal, same n, robust correlation of the metrics from
+#'      reweighted MCD, `rrcov::CovMcd`), apply steps 1-3, and use the
+#'      (1 - FP_TARGET) quantile of simulated scores. This targets a
+#'      per-pool false-positive rate of FP_TARGET under the clean model.
+#'   5. Outlier if score > threshold.
 #'
 #' Steps:
 #'   1. Download and extract `pool-qc.tar` into `qc_dir` (below).
@@ -40,20 +43,17 @@ library(patchwork)
 
 qc_dir <- "~/_data/_tany-time/pool-qc"
 
-#' QC metrics used in the rule (see `03-pool-qc.sh` for definitions):
+#' QC metrics used in the rule (definitions in `03-pool-qc.sh` and
+#' `pool-qc-files.py`). The mapping rate is `target_rate`: reads assigned to
+#' T. gracilentus contigs (MAPQ >= 20, primary) under competitive mapping,
+#' over all reads.
 metrics <- c("prop_missing", "n_private", "picard_dup", "fastp_gc",
-             "map_rate")
+             "target_rate")
 
 #' Rule parameters (fixed before seeing any metrics; see above):
-PCA_PROP_VAR <- 0.8    # proportion of variance the kept PCs must explain
-CUTOFF_Q <- 0.975      # quantile for SD and OD cutoffs
-MCD_SEED <- 1702635893 # MCD uses random subsets; fixed for reproducibility
-
-#' NOT YET CALIBRATED. `_R/pool-qc-rule-sim.R` shows this implementation
-#' (`MASS::cov.rob` without small-sample corrections) excludes 2–7 clean
-#' pools per set on simulated clean data. The script stops before writing
-#' pool lists until the rule is fixed (see TODO.md).
-RULE_CALIBRATED <- FALSE
+FP_TARGET <- 0.025     # per-pool false-positive rate under the clean model
+N_BOOT <- 2000         # simulated data sets for calibration
+RULE_SEED <- 1702635893 # MCD and bootstrap use random numbers
 
 
 
@@ -66,7 +66,7 @@ samp_df <- read_csv("_data/full-sample-info.csv", col_types = "cDccidd") |>
     mutate(n_haps = 2L * n_adults)
 
 files_df <- read_tsv(file.path(qc_dir, "pool-qc-files.tsv"),
-                     col_types = "cddddd", na = "NA")
+                     col_types = "cddddddd", na = "NA")
 
 qc_df <- c("time", "space") |>
     map(\(s) {
@@ -82,7 +82,8 @@ qc_df <- c("time", "space") |>
     left_join(files_df, by = "pool") |>
     left_join(samp_df, by = "pool") |>
     select(set, pool, n_haps, prop_missing, n_snps, n_private, picard_dup,
-           fastp_dup, fastp_gc, map_rate, usable_rate)
+           fastp_dup, fastp_gc, target_rate, nontarget_rate, map_rate,
+           usable_rate)
 
 
 
@@ -91,39 +92,50 @@ qc_df <- c("time", "space") |>
 # Robust PCA outlier rule ----
 # =============================================================================*
 
-#' Returns a tibble with one row per pool in `d`: SD, OD, cutoffs, k, and
-#' PC1/PC2 scores. Pools with any missing metric get NA (excluded later).
-robust_pca_outliers <- function(d) {
-    complete <- complete.cases(d[, metrics])
-    X <- as.matrix(d[complete, metrics])
-    Z <- apply(X, 2, \(x) {
+#' Robust standardization of each column: (x - median) / MAD.
+robust_z <- function(X) {
+    apply(X, 2, \(x) {
         s <- mad(x)
         if (s == 0) s <- sd(x)
         if (s == 0) stop("metric with no variation")
         (x - median(x)) / s
     })
-    set.seed(MCD_SEED)
-    mcd <- MASS::cov.rob(Z, method = "mcd")
-    eig <- eigen(mcd$cov, symmetric = TRUE)
-    p <- ncol(Z)
-    k <- min(which(cumsum(eig$values) / sum(eig$values) >= PCA_PROP_VAR),
-             p - 1L)
-    Zc <- sweep(Z, 2, mcd$center)
-    V <- eig$vectors[, 1:k, drop = FALSE]
-    scores <- Zc %*% V
-    sd_dist <- sqrt(rowSums(sweep(scores^2, 2, eig$values[1:k], "/")))
-    od_dist <- sqrt(rowSums((Zc - scores %*% t(V))^2))
-    sd_cut <- sqrt(qchisq(CUTOFF_Q, k))
-    od23 <- od_dist^(2/3)
-    od_cut <- (median(od23) + mad(od23) * qnorm(CUTOFF_Q))^(3/2)
-    out <- tibble(pool = d$pool, k = k, sd_dist = NA_real_,
-                  od_dist = NA_real_, sd_cut = sd_cut, od_cut = od_cut,
-                  pc1 = NA_real_, pc2 = NA_real_,
-                  prop_var_k = sum(eig$values[1:k]) / sum(eig$values))
-    out$sd_dist[complete] <- sd_dist
-    out$od_dist[complete] <- od_dist
-    out$pc1[complete] <- scores[, 1]
-    if (k > 1) out$pc2[complete] <- scores[, 2]
+}
+
+#' ROBPCA outlier scores: max(SD / SD cutoff, OD / OD cutoff), plus k and
+#' the first two robust PC scores.
+robpca_scores <- function(Z) {
+    pc <- rrcov::PcaHubert(Z, k = 0, scale = FALSE)
+    od_ratio <- if (pc@cutoff.od > 0) pc@od / pc@cutoff.od else 0
+    list(score = pmax(pc@sd / pc@cutoff.sd, od_ratio),
+         sd = pc@sd, od = pc@od, k = pc@k,
+         pcs = pc@scores[, 1:min(2, pc@k), drop = FALSE])
+}
+
+#' Returns a tibble with one row per pool in `d`. Pools with any missing
+#' metric get NA (excluded later).
+robust_pca_outliers <- function(d) {
+    set.seed(RULE_SEED)
+    complete <- complete.cases(d[, metrics])
+    Z <- robust_z(as.matrix(d[complete, metrics]))
+    n <- nrow(Z)
+    obs <- robpca_scores(Z)
+    # Parametric bootstrap under a clean multivariate normal model:
+    R <- cov2cor(rrcov::getCov(rrcov::CovMcd(Z)))
+    boot <- map(seq_len(N_BOOT), \(i) {
+        Zb <- robust_z(MASS::mvrnorm(n, rep(0, ncol(Z)), R))
+        robpca_scores(Zb)$score
+    }) |>
+        unlist()
+    threshold <- quantile(boot, 1 - FP_TARGET, names = FALSE)
+    out <- tibble(pool = d$pool, k = obs$k, score = NA_real_,
+                  sd_dist = NA_real_, od_dist = NA_real_,
+                  threshold = threshold, pc1 = NA_real_, pc2 = NA_real_)
+    out$score[complete] <- obs$score
+    out$sd_dist[complete] <- obs$sd
+    out$od_dist[complete] <- obs$od
+    out$pc1[complete] <- obs$pcs[, 1]
+    if (ncol(obs$pcs) > 1) out$pc2[complete] <- obs$pcs[, 2]
     return(out)
 }
 
@@ -132,14 +144,11 @@ qc_df <- qc_df |>
     group_modify(\(d, g) left_join(d, robust_pca_outliers(d), by = "pool")) |>
     ungroup() |>
     mutate(missing_metric = !complete.cases(pick(all_of(metrics))),
-           outlier_sd = !missing_metric & sd_dist > sd_cut,
-           outlier_od = !missing_metric & od_dist > od_cut,
-           include = !missing_metric & !outlier_sd & !outlier_od,
-           exclude_reasons = pmap_chr(
-               list(missing_metric, outlier_sd, outlier_od),
-               \(m, s, o) paste(c("missing metric", "score distance",
-                                  "orthogonal distance")[c(m, s, o)],
-                                collapse = ";")))
+           outlier = !missing_metric & score > threshold,
+           include = !missing_metric & !outlier,
+           exclude_reasons = case_when(missing_metric ~ "missing metric",
+                                       outlier ~ "robust PCA outlier",
+                                       TRUE ~ ""))
 
 
 
@@ -171,16 +180,17 @@ plot_set <- function(s) {
         labs(x = "Robust PC1", y = "Robust PC2")
     p3 <- d |>
         filter(!missing_metric) |>
-        ggplot(aes(sd_dist, od_dist, label = pool, color = include)) +
-        geom_vline(aes(xintercept = sd_cut), linetype = 2, color = "gray50") +
-        geom_hline(aes(yintercept = od_cut), linetype = 2, color = "gray50") +
-        geom_text(size = 2) +
+        ggplot(aes(score, reorder(pool, score), color = include)) +
+        geom_vline(aes(xintercept = threshold), linetype = 2,
+                   color = "gray50") +
+        geom_point() +
         scale_color_manual(values = c("TRUE" = "black", "FALSE" = "firebrick"),
                            guide = "none") +
         theme_classic() +
-        labs(x = "Score distance", y = "Orthogonal distance",
-             caption = sprintf("k = %i PCs (%.0f%% of robust variance)",
-                               d$k[1], 100 * d$prop_var_k[1]))
+        theme(axis.title.y = element_blank(),
+              axis.text.y = element_text(size = 6)) +
+        labs(x = "Outlier score (dashed: calibrated threshold)",
+             caption = sprintf("ROBPCA with k = %i PCs", d$k[1]))
     p1 / (p2 | p3) + plot_annotation(title = paste("Pool QC:", s))
 }
 
@@ -195,12 +205,8 @@ for (s in c("time", "space")) {
 # Outputs ----
 # =============================================================================*
 
-if (!RULE_CALIBRATED) {
-    stop("Outlier rule not calibrated; no outputs written (see TODO.md)")
-}
-
 write_csv(qc_df, "_data/pool-qc.csv")
-print(select(qc_df, set, pool, all_of(metrics), sd_dist, od_dist, include,
+print(select(qc_df, set, pool, all_of(metrics), score, threshold, include,
              exclude_reasons), n = Inf, width = Inf)
 
 for (s in c("time", "space")) {

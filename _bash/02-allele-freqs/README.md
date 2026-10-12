@@ -42,11 +42,13 @@ Nunez et al. 2025). `03-pool-qc` computes, for the candidate pools in
 | Number of SNPs and private SNPs (P ≥ 0.9 only in that pool, among the set's candidates) | partially masked gSYNC (`pool-qc-sync.py`) |
 | Duplication rate | Picard MarkDuplicates report (`03-mpileup`); fastp estimate also reported |
 | GC content | fastp (`01-fastp`) |
-| Mapping rate (mapped / all records) and usable rate (MAPQ ≥ 20, primary / all records) | `bamtools stats` (`02-bwa`) |
+| Mapping rate to *T. gracilentus* (`target_rate`: reads assigned to its contigs, MAPQ ≥ 20, primary / all records); rate to other species, any-genome mapping rate, and usable rate are also reported | `bamtools stats` and species counts (`02-bwa`) |
 
 pN/pS isn't used because the *T. gracilentus* annotation isn't good enough.
-`_R/pool-qc.R` plots the metrics, applies bounds set in that script, and
-writes `../samples/{time,space}-pools.txt`. The 2025 inclusion rule (median
+`_R/pool-qc.R` excludes pools that are outliers in a robust PCA of the five
+metrics (ROBPCA, with a threshold calibrated by parametric bootstrap for a
+2.5% per-pool false-positive rate; see the script) or that lack a metric,
+and writes `../samples/{time,space}-pools.txt`. The 2025 inclusion rule (median
 coverage ≥ 30) is kept as `../samples/*-pools-cov30.txt` for sensitivity
 analyses.
 

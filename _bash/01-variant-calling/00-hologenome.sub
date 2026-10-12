@@ -1,0 +1,23 @@
+# hologenome.sub
+
+# build combined reference for competitive mapping
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = logs/00-hologenome/hologenome.log
+error = logs/00-hologenome/hologenome.err
+output = logs/00-hologenome/hologenome.out
+
+executable = 00-hologenome.sh
+
+batch_name = "hologenome"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+request_cpus = 2
+request_memory = 16GB
+request_disk = 30GB
+
+queue 1

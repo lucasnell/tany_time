@@ -4,7 +4,10 @@
 #' - mark and remove duplicates using `Picard MarkDuplicates`
 #' - re-align sequences in the proximity of indels with `IndelRealigner` and
 #'   `RealignerTargetCreator` in `GATK`
-#' - `samtools mpileup`
+#' - `samtools mpileup`, for T. gracilentus contigs only
+#'
+#' Steps before mpileup use the combined reference from `00-hologenome`,
+#' matching the alignments from `02-bwa`.
 
 
 
@@ -16,7 +19,7 @@ export THREADS=$(count_threads)
 # Edit these for your system:
 export PARENT_DIR_IN="/staging/lnell/dna/bwa"
 export PARENT_DIR_OUT="/staging/lnell/dna/mpileup"
-export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
+export HOLO_TAR_FULL_PATH="/staging/lnell/hologenome.tar"
 
 
 
@@ -29,9 +32,9 @@ export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
 export READ_BASE=$1
 
 export IN_BAM=${READ_BASE}_bwa.bam
-export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
+export GENOME=hologenome.fasta
 
-require_files ${PARENT_DIR_IN}/${IN_BAM} ${GENOME_FULL_PATH}
+require_files ${PARENT_DIR_IN}/${IN_BAM} ${HOLO_TAR_FULL_PATH}
 
 
 
@@ -66,11 +69,12 @@ cd ${OUT_DIR}
 cp ${PARENT_DIR_IN}/${IN_BAM} ./
 check_exit_status "move BAM" $?
 
-stage_genome ${GENOME_FULL_PATH}
-
-
-# Needed downstream
-samtools faidx --length 80 ${GENOME}
+# Combined reference with .fai and .dict (bwa index not needed here):
+tar -xf ${HOLO_TAR_FULL_PATH} -C ./ \
+    && mv hologenome/${GENOME} hologenome/${GENOME}.fai \
+        hologenome/${GENOME%.fasta}.dict hologenome/target_contigs.bed ./ \
+    && rm -r hologenome
+check_exit_status "extract hologenome" $?
 
 
 
@@ -80,9 +84,6 @@ samtools faidx --length 80 ${GENOME}
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 conda activate gatk-env
-
-gatk CreateSequenceDictionary R=${GENOME}
-check_exit_status "Picard_CreateSequenceDictionary" $?
 
 gatk MarkDuplicates \
     REMOVE_DUPLICATES=true \
@@ -143,12 +144,15 @@ call_bam_stats ${REALIGNED_OUT} "(realigned)"
 # Minimum base quality of 25 matches the threshold `Mpileup2Sync.py` uses
 # for allele counts in `02-allele-freqs/01-snape`, so SNAPE frequencies and
 # counts come from the same bases (as in DESTv3).
-samtools mpileup -B -Q 25 -f ${GENOME} ${REALIGNED_OUT} > ${OUT_FILE%.gz}
+# `-l target_contigs.bed` limits output to T. gracilentus contigs, so reads
+# assigned to other species are dropped here.
+samtools mpileup -B -Q 25 -l target_contigs.bed -f ${GENOME} \
+    ${REALIGNED_OUT} > ${OUT_FILE%.gz}
 check_exit_status "samtools mpileup" $?
 
 gzip ${OUT_FILE%.gz}
 
-rm ${GENOME/.fasta/}*
+rm ${GENOME/.fasta/}* target_contigs.bed
 
 
 

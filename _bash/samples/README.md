@@ -5,7 +5,7 @@ hand; edit the R script and re-run it.
 
 | File | Contents | Used by |
 |---|---|---|
-| `all-pools.txt` | All 62 sequenced pools | `01-variant-calling/` (`01-fastp`, `02-bwa`, `03-mpileup`, `05-bam-cov`) |
+| `all-pools.txt` | All 62 sequenced pools | `01-variant-calling/` (`01-fastp`, `02-bwa`, `03-mpileup`, `05-bam-cov`, `06-kraken`) |
 | `all-pools-n-adults.txt` | `pool,n_adults` for all 62 pools (from `_data/full-sample-info.csv`) | `02-allele-freqs/` (`01-snape`, `02-npstat`) |
 | `time-pools-candidates.txt` | All 30 time-series (SN) pools | `02-allele-freqs/03-pool-qc` |
 | `space-pools-candidates.txt` | All 18 spatial (2019) pools | `02-allele-freqs/03-pool-qc` |

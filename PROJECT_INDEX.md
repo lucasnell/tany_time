@@ -6,10 +6,14 @@ Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`.
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
-1. `_bash/01-variant-calling/` (cluster): `01-fastp` trim → `02-bwa` merge
-   overlapping pairs with bbmerge, align with `bwa mem` → `03-mpileup` mark
-   duplicates, GATK indel realignment, `samtools mpileup`; `05-bam-cov`
-   (coverage `.bed.gz`); `04-ont-pi` (SNAPE prior θ, independent).
+1. `_bash/01-variant-calling/` (cluster): `00-hologenome` (combined
+   reference: T. gracilentus + *Chironomus* spp.) → `01-fastp` trim →
+   `02-bwa` merge overlapping pairs with bbmerge, align competitively with
+   `bwa mem` → `03-mpileup` mark duplicates, GATK indel realignment,
+   `samtools mpileup` on T. gracilentus contigs; `05-bam-cov` (coverage
+   `.bed.gz`); `06-kraken` (Kraken2 on unmapped reads, diagnostic);
+   `04-ont-pi` (SNAPE prior θ, independent). Competitive mapping and
+   Kraken2 added 2026-10-10; existing outputs mapped to T. gracilentus only.
 2. `_R/tidy-sample-data.R` → `_data/full-sample-info.csv` (pool ID, date,
    lake, site, number of adults, lat/lon).
 3. `_R/sample-qc.R`: picks pools with median coverage ≥ 30 (17 of 30 SN time
@@ -73,8 +77,8 @@ are written by `_R/make-job-lists.R`.
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
 | `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
-| `pool-qc.R` | Chooses pools from `03-pool-qc` metrics with a robust-PCA outlier rule (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; rule not yet calibrated, so it stops before writing outputs |
-| `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv` |
+| `pool-qc.R` | Chooses pools from `03-pool-qc` metrics: ROBPCA outlier rule with bootstrap-calibrated threshold (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; needs `rrcov` |
+| `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 

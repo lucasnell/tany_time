@@ -6,7 +6,7 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Before rerunning anything on the cluster
 
-- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.0.0). Pins
+- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.1.0). Pins
       were updated 2026-10-09 and dry-run solved for linux-64, but the image
       has not been built or tested. Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
@@ -39,8 +39,17 @@ On hold until the owner says to run them. Listed in dependency order.
       - DESTv3's `MaskSYNC_snape_monomorphic_filter.py` reassigns all reads
         to one allele at sites SNAPE calls confidently monomorphic (removes
         error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).
-      - Competitive mapping against other genomes (DESTv3 "hologenome") as a
-        diagnostic of non-target reads per pool, if useful for review step 2.
+      - [x] Competitive mapping (DESTv3 "hologenome") added 2026-10-10:
+        `01-variant-calling/00-hologenome` (T. gracilentus + *C. riparius*
+        + *C. tentans* as proxies for Mývatn *Chironomus*); `02-bwa` maps
+        to it and counts reads per species; `03-mpileup` keeps only
+        T. gracilentus contigs. Other species could be added (`OTHERS` in
+        `00-hologenome.sh`); copy assemblies to `/staging/lnell/other-genomes/`
+        first.
+      - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06-kraken`;
+        `kraken-env` in container v2.1.0). Needs a Kraken2 database on
+        staging (PlusPF-16 suggested). No local script yet to summarize
+        the reports.
         Cheaper first look: `02-bwa.sh` already saves unmapped reads
         (`*_unmapped_{merged,unmerged}.bam`) and `bamtools stats` output, so
         per-pool mapping rates vs. logN need no remapping. Other chironomid
@@ -98,13 +107,19 @@ On hold until the owner says to run them. Listed in dependency order.
         Computed by `_bash/02-allele-freqs/03-pool-qc`; bounds applied in
         `_R/pool-qc.R`. Set bounds after seeing the metrics but before any
         allele-frequency results, and record the rationale in the script.
-      - Rule: outlier in a robust PCA of the metrics (decided 2026-10-10;
-        implemented in `_R/pool-qc.R`). **Not calibrated:** the base-R
-        version (`MASS::cov.rob`) excludes 2–7 clean pools per set in
-        simulations (`_R/pool-qc-rule-sim.R` → `_data/pool-qc-rule-sim.csv`),
-        so the script stops before writing pool lists. Options: install
-        `rrcov`/`robustbase` (corrected MCD, ROBPCA), or set cutoffs by
-        simulation in base R.
+      - Rule: outlier in a robust PCA of the metrics (decided 2026-10-10).
+        Implemented as ROBPCA (`rrcov::PcaHubert`; `rrcov` 1.7.7 installed
+        2026-10-10) with the outlier-score threshold calibrated by
+        parametric bootstrap for a 2.5% per-pool false-positive rate.
+        Uncalibrated versions, including ROBPCA's own cutoffs, excluded
+        2.6–7 clean pools per set in simulations (`_R/pool-qc-rule-sim.R`
+        → `_data/pool-qc-rule-sim*.csv`). The mapping-rate metric is
+        `target_rate` (reads assigned to T. gracilentus under competitive
+        mapping). Calibrated rule in simulation (200 reps;
+        `_data/pool-qc-rule-sim-calibrated.csv`): false-positive rate 2.4%
+        per pool; gross outliers (6 SD on 2 metrics) caught 94% (18 pools)
+        and 99% (30 pools); a moderate outlier (4 SD on 1 metric) caught
+        30% and 61%.
       - Report the 2025 set (median coverage ≥ 30; `*-pools-cov30.txt`)
         as a sensitivity analysis.
       - Missing data per pool allowed in BayPass (masked pools → 0 counts;

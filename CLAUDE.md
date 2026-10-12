@@ -45,7 +45,8 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
-  Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`.
+  Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`,
+  `kraken-env`.
   Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools
   1.24, …); all existing outputs were made with v1.0.0 (BayPass 2.31).
   snape-pooled is built from the DEST-bio fork (original repo deleted).
@@ -91,5 +92,7 @@ Scripts read large files by absolute path; none are in git.
 - Pool names encode site, generation, and two-digit year, e.g.
   `SN-2-07_S31` = SN, generation 2 (`b`), 2007. Years < 70 are 2000s.
 - `.Rprofile` only sets the macOS quartz device size.
+- `_R/pool-qc.R` needs the `rrcov` package (installed locally 2026-10-10).
+  `poolfstat` is only in the container, not installed locally.
 - After every prompt, check whether `CLAUDE.md`, `PROJECT_INDEX.md`, and
   `TODO.md` need updating, unless the owner says not to.

@@ -1,6 +1,6 @@
 # `_apptainer/`: container
 
-`tany_time.def` builds `tany_time.sif` (v2.0.0) from
+`tany_time.def` builds `tany_time.sif` (v2.1.0) from
 `condaforge/miniforge3:26.7.2-0` (Ubuntu 24.04).
 
 ## Build
@@ -25,6 +25,7 @@ channel priority; channels conda-forge then bioconda).
 | `gatk-env` | GATK 4 (Picard tools) | `02-bwa`, `03-mpileup` |
 | `gatk3-env` | GATK 3.8 (IndelRealigner) | `03-mpileup` |
 | `baypass-env` | BayPass 3.1, R with poolfstat and tidyverse | `03-select-time/` |
+| `kraken-env` | Kraken2 2.17.2, samtools, seqtk | `01-variant-calling/06-kraken` |
 
 Also built from source: `snape-pooled` (DEST-bio fork, commit `284bfe0`;
 the original repo was deleted) and `npstat` (commit `dc230fb`).
@@ -52,7 +53,7 @@ Appended to `/app/.bashrc`, so scripts get them via `. /app/.bashrc`.
 | `PickleRef.py`, `Mpileup2Sync.py`, `SNAPE2SYNC.py`, `MaskSYNC_snape.py` | SNAPE helper scripts from DEST (Kapun et al. 2021); see `02-allele-freqs/README.md` for local edits | `01-snape` |
 | `combine-syncs.py` | Combine per-pool gSYNC files; counts by default, SNAPE info with `--snape`; `--min-pp` keeps sites polymorphic in at least one pool | `04-combine-syncs` |
 | `pool-qc-sync.py` | Per-pool missing-data rate, SNPs, and private SNPs from partially masked gSYNC files | `03-pool-qc` |
-| `pool-qc-files.py` | Per-pool GC, duplication, and mapping rates from fastp, Picard, and bamtools outputs | `03-pool-qc` |
+| `pool-qc-files.py` | Per-pool GC, duplication, and mapping rates (including reads assigned to *T. gracilentus* vs. other species) from fastp, Picard, bamtools, and `02-bwa` outputs | `03-pool-qc` |
 | `run-parallel.py` | Run a command once per item (e.g., contig) in parallel and report failures | `01-snape`, `02-npstat` |
 
 Python scripts run with whichever environment is active (`main-env` in all
