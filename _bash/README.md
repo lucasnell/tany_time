@@ -20,7 +20,7 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 2. Write job lists locally: `Rscript _R/make-job-lists.R` (from the repo root).
 3. `01-variant-calling/`: `00a-mitogenome` → `00b-hologenome` (once each),
    and `01-fastp`; then `02-bwa` → `03-mpileup`; `05-bam-cov` and
-   `06-kraken` after `02-bwa`. `04-ont-pi` is independent (one job on
+   `06b-kraken` after `02-bwa` (`06a-silva-db` once, before `06b`). `04-ont-pi` is independent (one job on
    Nanopore reads) and only sets the SNAPE prior θ used in `02-allele-freqs/01-snape`.
 4. `02-allele-freqs/`: `01-snape` → `03-pool-qc` → locally, `_R/pool-qc.R`
    (choose pools from QC metrics; writes `samples/{time,space}-pools.txt`)

@@ -13,7 +13,7 @@ are written by `_R/make-job-lists.R`.
    `02-bwa` merge overlapping pairs with bbmerge, align competitively with
    `bwa mem` → `03-mpileup` mark duplicates, GATK indel realignment,
    `samtools mpileup` on T. gracilentus contigs; `05-bam-cov` (coverage
-   `.bed.gz`); `06-kraken` (Kraken2 on unmapped reads, diagnostic);
+   `.bed.gz`); `06a-silva-db` + `06b-kraken` (Kraken2 on unmapped reads: PlusPF and SILVA rRNA; diagnostic);
    `04-ont-pi` (SNAPE prior θ, independent). Competitive mapping and
    Kraken2 added 2026-10-10; existing outputs mapped to T. gracilentus only.
 2. `_R/tidy-sample-data.R` → `_data/full-sample-info.csv` (pool ID, date,
@@ -88,7 +88,7 @@ are written by `_R/make-job-lists.R`.
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |
-| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`06-kraken`): bacteria, fungi, human, etc. per pool, top genera, plot → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`; not yet run |
+| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`06b-kraken`): PlusPF composition (bacteria, fungi, human, etc.; top genera; plot) and SILVA parasite groups relative to host rRNA (top non-insect eukaryotes) → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`, `_data/kraken-silva-groups.csv`, `_data/kraken-silva-top-eukaryotes.csv`; not yet run |
 | `mito-contam.R` | Per-pool mitochondrial contamination index per trap taxon from `02-bwa` read counts → `_data/mito-contam.csv`; not yet run |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 

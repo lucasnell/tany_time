@@ -2,7 +2,7 @@
 
 Pool-seq reads → filtered, realigned BAMs → mpileup files.
 One job per pool (`../samples/all-pools.txt`) except `00a-mitogenome`,
-`00b-hologenome`, `04-ont-pi`, and `06-kraken`.
+`00b-hologenome`, `04-ont-pi`, `06a-silva-db`, and `06b-kraken`.
 
 Reads are mapped competitively (as in DEST) to a combined reference: the
 *T. gracilentus* assembly plus other species whose DNA could be in the
@@ -19,7 +19,8 @@ only *T. gracilentus* contigs.
 | `03-mpileup` | Remove duplicates (`gatk MarkDuplicates`); realign around indels (GATK 3 `RealignerTargetCreator` + `IndelRealigner`, 9+ h), both on the combined reference; `samtools mpileup -B -Q 25` on *T. gracilentus* contigs only | `bwa/`, `hologenome.tar` | `mpileup/<pool>_mpileup.txt.gz`, `mpileup/<pool>_mpileup.tar.gz` |
 | `04-ont-pi` | Map Nanopore reads from one individual (minimap2), call variants (bcftools), mean π in 1-kb windows (vcftools). Result (0.0088) is the SNAPE prior θ | `dna/ont/basecalls_guppy-5.0.11.fastq.gz`, assembly | `ont/ont_variants.bcf`, `ont/ont_variants.windowed.pi.gz` |
 | `05-bam-cov` | Per-base coverage (`bedtools genomecov -bga`) on *T. gracilentus* contigs, used in `_R/sample-qc.R` | `bwa/`, `hologenome.tar` | `bwa/<pool>_bwa_cov.bed.gz` |
-| `06-kraken` | Diagnostic: Kraken2 on a random 1M unmapped reads per pool (`kraken-env`; confidence 0.1) to identify non-target DNA. Not used for pool inclusion | `bwa/`, Kraken2 database (`kraken2-db/`; PlusPF-16 from https://benlangmead.github.io/aws-indexes/k2) | `kraken/kraken.tar` |
+| `06a-silva-db` | Build a Kraken2 database from SILVA 138.2 SSU rRNA (SSURef NR99; all domains, including eukaryotes), once. Download the three SILVA files to `/staging/lnell/silva/` first (URLs in the script) | `silva/` | `/staging/lnell/kraken2-db/silva-138.2.tar.gz` |
+| `06b-kraken` | Diagnostic, not used for pool inclusion. Kraken2 (`kraken-env`; confidence 0.1) on each pool's unmapped reads: PlusPF-16 on a random 1M (overall composition, endosymbiotic bacteria, viruses) and SILVA on all of them (eukaryotic parasites: fungi, oomycetes, microsporidia, mermithids, mites, ...). Summarized by `_R/kraken-summary.R` | `bwa/`, `kraken2-db/` (PlusPF-16 from https://benlangmead.github.io/aws-indexes/k2; SILVA from `06a`) | `kraken/kraken.tar` |
 
 ## Notes
 

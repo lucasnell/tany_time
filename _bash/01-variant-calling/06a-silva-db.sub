@@ -1,0 +1,23 @@
+# silva-db.sub
+
+# build a Kraken2 database from SILVA SSU rRNA (one time)
+
+container_image = file:///staging/lnell/tany_time.sif
+
+log = logs/06a-silva-db/silva-db.log
+error = logs/06a-silva-db/silva-db.err
+output = logs/06a-silva-db/silva-db.out
+
+executable = 06a-silva-db.sh
+
+batch_name = "silva-db"
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+request_cpus = 8
+request_memory = 32GB
+request_disk = 40GB
+
+queue 1

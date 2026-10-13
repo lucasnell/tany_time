@@ -85,7 +85,7 @@ On hold until the owner says to run them. Listed in dependency order.
         `_data/coi-barcode-selection.csv`; *Procladius* at genus level since
         *P. islandicus* has no NCBI sequences). Index per pool and taxon:
         `_R/mito-contam.R` (relative, not a DNA fraction).
-      - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06-kraken`;
+      - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06b-kraken`;
         `kraken-env` in container v2.1.0+). Needs a Kraken2 database on
         staging (PlusPF-16 suggested). Reports summarized by
         `_R/kraken-summary.R` (key groups, top genera, plot).
@@ -112,7 +112,17 @@ On hold until the owner says to run them. Listed in dependency order.
       giganteum*, *Romanomermis*/*Mermis* (mermithids). No genomes for
       water mites (Hydrachnidia), *Aphanomycopsis*, *Atkinsiella*,
       *Couchia*, *Crypticola*, *Culicinomyces*, or *Amblyospora*
-      (NCBI, queried 2026-10-13).
+      (NCBI, queried 2026-10-13). Adults (our pools) can carry
+      *Entomophthora*, water-mite larvae, mermithids, vertically
+      transmitted microsporidia, endosymbiotic bacteria, and viruses;
+      egg and larval parasites are unlikely in adults.
+      Decided and implemented 2026-10-13 (not yet run): a SILVA 138.2 SSU
+      rRNA Kraken2 database (`01-variant-calling/06a-silva-db`) run on
+      all unmapped reads per pool in `06b-kraken`, alongside PlusPF-16 on
+      1M reads; summarized per parasite group, relative to host
+      (Chironomidae) rRNA reads, by `_R/kraken-summary.R`. Check its
+      warning about SILVA names that matched nothing. Caveat: parasite DNA
+      may come from other specimens in the trap preservative.
 
 ## Review steps
 

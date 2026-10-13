@@ -4,11 +4,11 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = logs/06-kraken/kraken.log
-error = logs/06-kraken/kraken.err
-output = logs/06-kraken/kraken.out
+log = logs/06b-kraken/kraken.log
+error = logs/06b-kraken/kraken.err
+output = logs/06b-kraken/kraken.out
 
-executable = 06-kraken.sh
+executable = 06b-kraken.sh
 
 batch_name = "kraken"
 
@@ -24,6 +24,6 @@ output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/kraken
 
 request_cpus = 8
 request_memory = 24GB
-request_disk = 80GB
+request_disk = 100GB
 
 queue 1
