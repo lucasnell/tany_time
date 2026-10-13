@@ -96,7 +96,7 @@ case "${STEP_PATH}" in
 
     00-references/04-ont-pi)
         JOB_IDS=(ont-pi)
-        FILES=(${S}/dna/ont/ont_variants.windowed.pi.gz ${S}/dna/ont/ont_variants.bcf)
+        FILES=(${S}/dna/ont/ont_variants.windowed.pi.gz ${S}/dna/ont/ont_variants.vcf.gz)
         extra () {
             local theta=$(grep -E "^[0-9.]+(e-?[0-9]+)?$" ${LOG_DIR}/ont-pi.out 2> /dev/null | tail -n 1)
             local prior=$(grep "^export THETA=" ${BASH_DIR}/02-allele-freqs/01-snape.sh | cut -d= -f2)

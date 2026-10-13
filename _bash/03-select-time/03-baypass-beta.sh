@@ -136,8 +136,10 @@ check_exit_status "baypass" $?
 # These aren't necessary to keep for downstream:
 rm -r ${INPUTS_DIR} ${OMEGA_FILE}
 
-# These are the largest output files by far:
-gzip ${OUT_FILE_PREFIX}_summary_yij_pij.out \
+# These are the largest output files by far (BayPass >= 3.0 splits the
+# former `summary_yij_pij.out` into `summary_pij.out` and `summary_yij.out`):
+gzip ${OUT_FILE_PREFIX}_summary_pij.out \
+    && gzip ${OUT_FILE_PREFIX}_summary_yij.out \
     && gzip ${OUT_FILE_PREFIX}_summary_pi_xtx.out \
     && gzip ${OUT_FILE_PREFIX}_summary_betai.out
 check_exit_status "baypass" $?

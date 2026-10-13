@@ -20,7 +20,7 @@ export GENOME_FULL_PATH="/staging/l/lnell/Tgraci_assembly.fasta.gz"
 # Outputs
 export OUT_DIR=ont-pi
 export BAM=ont_align.bam
-export BCF=ont_variants.bcf
+export VCF=ont_variants.vcf.gz
 export PI_FILE=ont_variants.windowed.pi
 
 mkdir ${OUT_DIR}
@@ -67,8 +67,10 @@ rm ${BAM/.bam/_unfiltered.bam}
 
 
 # Takes about an hour
+# Written as VCF, not BCF: vcftools 0.1.17 crashed reading some bcftools 1.24
+# BCFs (empty or all-1/1 test files) but read the same calls as VCF.
 bcftools mpileup -Ou --config ont -f ${GENOME} ${BAM} \
-    | bcftools call -P 0.01 -mv --threads 2 -Ob -o ${BCF}
+    | bcftools call -P 0.01 -mv --threads 2 -Oz -o ${VCF}
 check_exit_status "bcftools mpileup | call" $?
 
 rm ${GENOME}* ${BAM}*
@@ -77,7 +79,7 @@ rm ${GENOME}* ${BAM}*
 #' Calculate nucleotide diversity in windows
 #' This step creates the file ${PI_FILE}
 
-vcftools --bcf ${BCF} --out ${PI_FILE%.windowed.pi} \
+vcftools --gzvcf ${VCF} --out ${PI_FILE%.windowed.pi} \
     --remove-indels \
     --max-alleles 2 \
     --window-pi 1000 \
@@ -112,7 +114,7 @@ gzip ${PI_FILE}
 # Handle output
 # ------------------------------
 
-mv ${PI_FILE}.gz ${BCF} ${PARENT_DIR_OUT}/
+mv ${PI_FILE}.gz ${VCF} ${PARENT_DIR_OUT}/
 
 cd ..
 rm -r ${OUT_DIR}
