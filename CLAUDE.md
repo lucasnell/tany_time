@@ -90,6 +90,7 @@ Scripts read large files by absolute path; none are in git.
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |
 | `/Volumes/Lucas512/...` | BAM coverage `.bed.gz` files (external drive) |
 | Cluster: `/staging/l/lnell/` (was `/staging/lnell/` until 2026-10-13), `pelican://chtc.wisc.edu/researchdrive/arives/CHTC/` | Cluster inputs and outputs |
+| Cluster: `/home/lnell/tany_time` | Clone of this repo on the submit server; jobs are submitted from it. Edit locally, push, then `git pull` there (`_bash/**/logs/` is git-ignored) |
 
 ## Conventions
 

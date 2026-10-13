@@ -9,7 +9,8 @@ Steps marked *(parallel)* can run alongside the step before them.
 
 ## A. Local preparation
 
-- [x] **A1.** Pull the latest repo (`git pull`); check `git status` is clean.
+- [x] **A1.** Pull the latest repo (`git pull`) locally and on the submit
+      server (`/home/lnell/tany_time`); check `git status` is clean in both.
 - [x] **A2.** Regenerate job lists (only needed if samples, QC, or the
       BayPass grid changed): `Rscript _R/make-job-lists.R`.
 - [x] **A3.** Make the sample-info tar for BayPass and copy it to
@@ -37,7 +38,7 @@ Steps marked *(parallel)* can run alongside the step before them.
           [ ! -f "$FILE" ] && echo "$FILE is missing."
           FILE=$S/dna/raw_fq/${line}_L002_R2_001.fastq.gz
           [ ! -f "$FILE" ] && echo "$FILE is missing."
-        done < "$HOME/tany_time/_bash/samples/all-pools.txt"
+        done < "/home/lnell/tany_time/_bash/samples/all-pools.txt"
         ```
 
   - [x] Nanopore reads: `$S/dna/ont/basecalls_guppy-5.0.11.fastq.gz`.
@@ -78,8 +79,11 @@ Steps marked *(parallel)* can run alongside the step before them.
       ```
 
 
-- [x] **B6.** Copy the whole `_bash/` folder to the submit server, keeping
-      its layout (`.sub` files read `../samples/` and `../references/`).
+- [x] **B6.** Clone the repo on the submit server (once) and pull before
+      each session: `cd /home/lnell && git clone
+      https://github.com/lucasnell/tany_time.git`, then
+      `cd /home/lnell/tany_time && git pull`. Submit jobs from inside the
+      clone; `logs/` folders are git-ignored.
 
 ## C. Container
 
@@ -121,7 +125,7 @@ From the step's folder on the submit server: `mkdir -p logs/<step>`, then
 they run), run `check-step.sh` from the `_bash/` folder:
 
 ```bash
-cd $HOME/tany_time/_bash
+cd /home/lnell/tany_time/_bash
 ./check-step.sh <folder>/<step>
 ```
 

@@ -6,10 +6,12 @@
 
 
 #'
-#' If necessary, to send all these scripts to the cluster from your machine:
+#' Copy the files from the repo clone on the cluster (see
+#' `_apptainer/README.md`):
 #'
-#' cd ~/GitHub/Wisconsin/tany_time/_bash/_apptainer
-#' scp -r *.yml helpers.sh *.def bin login.chtc:/home/lnell/_apptainer/
+#' cd /home/lnell/tany_time && git pull
+#' mkdir -p /staging/l/lnell/_apptainer/
+#' cp -r _bash/_apptainer/{*.yml,helpers.sh,*.def,bin,_build.sh} /staging/l/lnell/_apptainer/
 #'
 
 

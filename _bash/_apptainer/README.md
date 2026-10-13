@@ -7,7 +7,7 @@
 
 ```bash
 # From the cluster (after updating via `git pull`):
-cd $HOME/tany_time/_bash/_apptainer
+cd /home/lnell/tany_time/_bash/_apptainer
 mkdir -p /staging/l/lnell/_apptainer/
 cp -r *.yml helpers.sh *.def bin _build.sh /staging/l/lnell/_apptainer/
 # On the cluster, in an interactive build job:

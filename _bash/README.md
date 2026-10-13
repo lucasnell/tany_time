@@ -44,15 +44,28 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
 
 ## Running on CHTC
 
-- Copy the whole `_bash/` folder to the submit server, keeping its layout:
-  `.sub` files read job lists from `../samples/`.
+- The repo is cloned on the submit server at `/home/lnell/tany_time`
+  (public, so HTTPS works). Jobs are submitted from inside the clone, so
+  `.sub` files find `../samples/` and `../references/`:
+
+  ```bash
+  # once:
+  cd /home/lnell && git clone https://github.com/lucasnell/tany_time.git
+  # before each session (after pushing local changes):
+  cd /home/lnell/tany_time && git pull
+  ```
+
 - Submit from inside a step's folder, after creating its log folder, e.g.:
 
   ```bash
-  cd 01-variant-calling
+  cd /home/lnell/tany_time/_bash/01-variant-calling
   mkdir -p logs/01-fastp
   condor_submit 01-fastp.sub
   ```
+
+- `logs/` folders are git-ignored. Edit files locally and push, not on
+  the cluster, so `git pull` never conflicts. Job scripts are stored as
+  executable in git.
 
 - Inputs and outputs are on `/staging/l/lnell/` (paths are set near the top of
   each `.sh` under "Edit these for your system"). Steps that set

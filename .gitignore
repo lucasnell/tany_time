@@ -20,3 +20,6 @@ summ_scaffs
 _bash/zzz-old
 _data/tany-sample-info
 _data/baypass-inputs
+
+# HTCondor logs written when submitting from the clone on the cluster
+_bash/**/logs/
