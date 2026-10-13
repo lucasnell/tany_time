@@ -77,8 +77,8 @@ On hold until the owner says to run them. Listed in dependency order.
         `_R/mito-contam.R` (relative, not a DNA fraction).
       - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06-kraken`;
         `kraken-env` in container v2.1.0+). Needs a Kraken2 database on
-        staging (PlusPF-16 suggested). No local script yet to summarize
-        the reports.
+        staging (PlusPF-16 suggested). Reports summarized by
+        `_R/kraken-summary.R` (key groups, top genera, plot).
         Cheaper first look: `02-bwa.sh` already saves unmapped reads
         (`*_unmapped_{merged,unmerged}.bam`) and `bamtools stats` output, so
         per-pool mapping rates vs. logN need no remapping. Other chironomid

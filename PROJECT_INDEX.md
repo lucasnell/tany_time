@@ -83,6 +83,7 @@ are written by `_R/make-job-lists.R`.
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |
+| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`06-kraken`): bacteria, fungi, human, etc. per pool, top genera, plot → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`; not yet run |
 | `mito-contam.R` | Per-pool mitochondrial contamination index per trap taxon from `02-bwa` read counts → `_data/mito-contam.csv`; not yet run |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 
