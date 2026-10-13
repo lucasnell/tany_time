@@ -6,6 +6,8 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Before rerunning anything on the cluster
 
+Follow `_bash/RERUN-CHECKLIST.md`.
+
 - [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.2.0). Pins
       were updated 2026-10-09 and dry-run solved for linux-64, but the image
       has not been built or tested. Outputs from the new image will differ

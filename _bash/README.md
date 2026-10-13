@@ -16,6 +16,8 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 
 ## Run order
 
+Step-by-step checklist for a full rerun: `RERUN-CHECKLIST.md`.
+
 1. Build the container: `_apptainer/_build.sh` → `/staging/l/lnell/tany_time.sif`.
 2. Write job lists locally: `Rscript _R/make-job-lists.R` (from the repo root).
 3. `01-variant-calling/`: `00a-mitogenome` → `00b-hologenome` (once each),
