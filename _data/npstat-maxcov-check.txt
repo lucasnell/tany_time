@@ -1,0 +1,6 @@
+npstat commit: dc230fba3ac434ed6526ab7cd63a67d69d34b7d6
+toy pileup: 200 kb, coverage 40-150, n = 80, 10-kb windows
+observed max coverage: 150
+seconds, -maxcov 2000: 33.16
+seconds, -maxcov 150: 0.38
+identical output: yes

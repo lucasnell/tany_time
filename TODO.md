@@ -95,6 +95,25 @@ On hold until the owner says to run them. Listed in dependency order.
         assemblies for a combined reference are in
         `~/_data/midgenomes/assemblies/`.
 
+- [x] **npstat speed** (2026-10-13): npstat precomputes tables for every
+      coverage up to `-maxcov` at a cost ~ n × maxcov² (binomial terms), and
+      `02-npstat` passed `-maxcov 10000` for each of ~45 contigs per pool.
+      Now uses each contig's maximum coverage. Output identical, ~90x
+      faster on a 200-kb test (`_bash/tests/npstat-maxcov.sh` →
+      `_data/npstat-maxcov-check.txt`).
+- [ ] **Parasites with Kraken2** (discussing 2026-10-13). Sources:
+      `~/Downloads/midgeparasites/` (2015 Mývatn parasite protocols and
+      literature, incl. de Souza et al. 2014 review of fungal/oomycete
+      parasites of Chironomidae). Prebuilt Kraken2 databases are
+      RefSeq-based: they include endosymbiotic bacteria (*Wolbachia*,
+      *Spiroplasma*) and many viruses, but none of the chironomid parasite
+      genomes, which are GenBank-only (`GCA`): *Entomophthora muscae*,
+      *Coelomomyces lativittatus*, *Catenaria anguillulae*, *Lagenidium
+      giganteum*, *Romanomermis*/*Mermis* (mermithids). No genomes for
+      water mites (Hydrachnidia), *Aphanomycopsis*, *Atkinsiella*,
+      *Couchia*, *Crypticola*, *Culicinomyces*, or *Amblyospora*
+      (NCBI, queried 2026-10-13).
+
 ## Review steps
 
 1. [ ] **Rebuild `timeseries-data.csv` from counts** (`tany.genobaypass` +

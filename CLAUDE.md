@@ -51,6 +51,7 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   (from `_R/get-mito-refs.R`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`,
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.
+  `_bash/tests/` holds local checks of pipeline behavior.
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`,
   `kraken-env`, `mito-env`.

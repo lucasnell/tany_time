@@ -9,6 +9,7 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 | `_apptainer/` | Container definition, conda environments, shared shell functions, and shared scripts |
 | `samples/` | Job lists (pool names, pool sizes, QC-passing pools) |
 | `references/` | Small reference sequences (mitochondrial bait, COI barcodes) |
+| `tests/` | Local checks of pipeline behavior (results in `_data/`) |
 | `01-variant-calling/` | Reads → trimmed reads → BAM → mpileup |
 | `02-allele-freqs/` | mpileup → SNAPE allele frequencies, counts, and diversity statistics |
 | `03-select-time/` | BayPass: allele frequencies vs. abundance through time |

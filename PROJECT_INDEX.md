@@ -146,6 +146,12 @@ From `_data/candi_funcs_df.rds`: 26 of 33 candidates fall inside or within
 5 kb of a gene (24 unique genes); 8 unique *D. melanogaster* UniProt best hits
 at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
 
+## `_bash/tests/`
+
+Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
+`-maxcov` to the observed maximum leaves output unchanged; →
+`_data/npstat-maxcov-check.txt`).
+
 ## `_refs/`
 
 `BayPass_manual_v2.31.pdf` (version used for existing results) and

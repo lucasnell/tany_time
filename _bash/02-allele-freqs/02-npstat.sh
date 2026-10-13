@@ -239,7 +239,13 @@ if [ ! -f \${contig}.pileup ] || [ ! -f \${contig}.snp ]; then
     rm \${contig}.pileup \${contig}.snp 2> /dev/null
     exit 1
 fi
-npstat -n $((N_ADULTS * 2)) -l ${WIN_KB}000 -maxcov 10000 -nolowfreq 0 \\
+# npstat precomputes tables for every coverage up to -maxcov, at a cost
+# that grows with maxcov squared, so use this contig's actual maximum
+# coverage (at least 4, npstat's default minimum coverage). Output is
+# identical to a larger -maxcov, because npstat only drops sites above it
+# (checked: \`_bash/tests/npstat-maxcov.sh\`).
+MAXCOV=\$(awk 'BEGIN{m=4} {if (\$4 > m) m = \$4} END{print m}' \${contig}.pileup)
+npstat -n $((N_ADULTS * 2)) -l ${WIN_KB}000 -maxcov \${MAXCOV} -nolowfreq 0 \\
     -snpfile \${contig}.snp \${contig}.pileup \\
     &> \${contig}_npstat.out
 status=\$?
