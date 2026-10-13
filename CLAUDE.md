@@ -101,5 +101,7 @@ Scripts read large files by absolute path; none are in git.
 - `.Rprofile` only sets the macOS quartz device size.
 - `_R/pool-qc.R` needs the `rrcov` package (installed locally 2026-10-10).
   `poolfstat` is only in the container, not installed locally.
+- No trailing whitespace in any file written or edited (including script
+  outputs; check with `grep -n "[[:space:]]$"`).
 - After every prompt, check whether `CLAUDE.md`, `PROJECT_INDEX.md`, and
   `TODO.md` need updating, unless the owner says not to.

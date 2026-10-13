@@ -40,7 +40,8 @@ out <- c(sprintf("SNPs tested: %i", nrow(med_df)),
          sprintf("Identical to _data/candi_df.rds: %s",
                  identical(sort(recomputed), sort(candi_df$mrk))),
          "Number of runs (of 10) with bf_db >= 30, per candidate:",
-         capture.output(print(table(runs_df$n_runs_30))))
+         # (trimws: printed tables have trailing spaces)
+         trimws(capture.output(print(table(runs_df$n_runs_30))), "right"))
 
 cat(out, sep = "\n")
 write_lines(out, "_data/baypass-check-candidates.txt")
