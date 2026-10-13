@@ -66,7 +66,7 @@ mkdir ${READ_BASE}_fastqc
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 conda activate qc-env
-fastqc ${TRIM_READS1} ${TRIM_READS2} -o ${READ_BASE}_fastqc
+fastqc ${TRIM_READS1} ${TRIM_READS2} --outdir ${READ_BASE}_fastqc
 check_exit_status "fastqc" $?
 conda deactivate
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
