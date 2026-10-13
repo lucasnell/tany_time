@@ -33,6 +33,8 @@ are written by `_R/make-job-lists.R`.
    was `03-combine-snapes` + `04-combine-counts` before 2026-10-09). Since
    2026-10-10 it uses partially masked syncs and keeps sites polymorphic in
    at least one pool; existing outputs required polymorphism in every pool.
+   Since 2026-10-13, count files assign all reads to the reference in pools
+   SNAPE calls confidently monomorphic (P ≤ 0.1).
    BayPass inputs now allow missing data per pool (masked pools → 0 counts).
 5. `_R/tidy-pop-abunds.R` → `_data/tany-abundances.csv` (year, generation,
    N, logN = log1p(N)).

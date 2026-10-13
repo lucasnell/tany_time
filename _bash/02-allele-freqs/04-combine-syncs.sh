@@ -33,6 +33,11 @@ export SNAPE_DIR="/staging/lnell/dna/snape"
 
 # Minimum SNAPE P(polymorphic) required in at least one pool:
 export MIN_PP=0.9
+# Count files only: where a pool's SNAPE P(polymorphic) <= MAX_PP_MONO, all
+# its reads are assigned to the reference base (removes sequencing-error
+# reads in pools SNAPE calls confidently monomorphic; the reference-allele
+# case of DESTv3's monomorphic filter; decided 2026-10-13):
+export MAX_PP_MONO=0.1
 
 
 require_files time-pools.txt space-pools.txt
@@ -70,7 +75,7 @@ for kind in snape count; do
     if [ "${kind}" == "snape" ]; then
         COMB_FLAG="--snape"
     else
-        COMB_FLAG=""
+        COMB_FLAG="--clean-mono ${MAX_PP_MONO}"
     fi
 
     for type in TIME SPACE ALL; do

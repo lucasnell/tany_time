@@ -35,10 +35,17 @@ On hold until the owner says to run them. Listed in dependency order.
       own minor allele, and some pools are now fixed at a site. Review
       step 1 (one fixed allele per SNP from counts) matters more.
 
-- [ ] **Pipeline options from DESTv3** (compared 2026-10-09; undecided):
+- [x] **Pipeline options from DESTv3** (compared 2026-10-09; all decided):
       - DESTv3's `MaskSYNC_snape_monomorphic_filter.py` reassigns all reads
-        to one allele at sites SNAPE calls confidently monomorphic (removes
-        error reads). Low value for BayPass (SNP set is 0.1–0.9 mean freq).
+        to one allele where SNAPE calls a pool confidently monomorphic
+        (P ≤ 0.1) or fixed for the alternative (removes error reads). More
+        relevant since option B (2026-10-10): BayPass sites can now include
+        pools fixed at that site, whose raw counts contain error reads.
+        Cost: erases true rare alleles that SNAPE calls monomorphic.
+        Decided 2026-10-13: narrow version only (P ≤ 0.1 → all reads to
+        the reference; no rewrite for pools fixed for the alternative),
+        `--clean-mono` in `combine-syncs.py`, used for count files in
+        `04-combine-syncs` (`MAX_PP_MONO=0.1`).
       - [x] Competitive mapping (DESTv3 "hologenome") added 2026-10-10:
         `01-variant-calling/00b-hologenome` (T. gracilentus + *C. riparius*,
         *C. tentans* 2023, *Smittia aterrima*, *Propsilocerus akamusi*;

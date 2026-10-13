@@ -15,12 +15,20 @@ SNAPE P(polymorphic) >= P there (5th field of the SNAPE info column);
 inputs without SNAPE info at a site (i.e., masked) don't count. Output then
 no longer has one line per bp.
 
+With `--clean-mono P` (counts mode only), a pool whose SNAPE
+P(polymorphic) at a site is <= P has all its reads assigned to the
+reference base (e.g., A:T:C:G:N:del = 98:0:0:2:0:0 with reference A becomes
+100:0:0:0:0:0). This removes sequencing-error reads where SNAPE calls the
+pool confidently monomorphic (the reference-allele case of DESTv3's
+`MaskSYNC_snape_monomorphic_filter.py`). Masked pools and sites whose
+reference base isn't A, T, C, or G are left unchanged.
+
 To remove sites with missing data in any pool:
 gunzip -c POOLS.sync.gz | grep -Fv ".:.:.:.:.:." | gzip > POOLS_noblanks.sync.gz
 (This pattern also matches the 7-field SNAPE placeholder.)
 
 usage:
-combine-syncs.py [--snape] [--min-pp P] -o <output file name> <input sync files>
+combine-syncs.py [--snape] [--min-pp P] [--clean-mono P] -o <output file name> <input sync files>
 
 """
 
@@ -48,6 +56,10 @@ if __name__ == "__main__":
     parser.add_argument("--min-pp", type = float, default = None,
                         help = "Keep only sites where at least one input " +
                         "has SNAPE P(polymorphic) >= this value")
+    parser.add_argument("--clean-mono", type = float, default = None,
+                        help = "In counts mode, assign all reads to the " +
+                        "reference base where a pool's SNAPE " +
+                        "P(polymorphic) <= this value")
     parser.add_argument("inputs", nargs = "+", help="input sync files")
 
     args = parser.parse_args()
@@ -55,6 +67,9 @@ if __name__ == "__main__":
     inputs = args.inputs
     snape = args.snape
     min_pp = args.min_pp
+    clean_mono = args.clean_mono
+    if clean_mono is not None and snape:
+        make_error("--clean-mono only applies to counts (not --snape)")
 
     if not out.endswith((".sync", ".sync.gz")):
         make_error("Strange suffix to output file name. Exiting.")
@@ -90,10 +105,21 @@ if __name__ == "__main__":
     else:
         out_file = open(out, "w")
 
+    # Index of each base in the counts field (A:T:C:G:N:del):
+    base_idx = {"A": 0, "T": 1, "C": 2, "G": 3}
+
     def get_field(l_split):
         """Column to keep from one input line (already split by tab)"""
         if not snape:
-            return l_split[3].rstrip()
+            counts = l_split[3].rstrip()
+            ref = l_split[2].upper()
+            if (clean_mono is not None and not counts.startswith(".")
+                and ref in base_idx and 0 <= max_pp(l_split) <= clean_mono):
+                cnts = [int(x) for x in counts.split(":")]
+                new = [0] * len(cnts)
+                new[base_idx[ref]] = sum(cnts)
+                counts = ":".join(str(x) for x in new)
+            return counts
         if len(l_split) < 5:
             return ".:.:.:.:.:.:."
         return l_split[4].rstrip()

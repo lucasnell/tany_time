@@ -64,7 +64,13 @@ after coverage, repeat, and indel masks).
 - `snape_masked_*`: SNAPE info per pool (`ref count:alt count:ref quality:alt
   quality:P(polymorphic):P(fixed):mean minor-allele frequency`). Used by
   `_R/tidy-freq-data.R` and `_R/make-time-series-data.R`.
-- `count_masked_*`: allele counts per pool (`A:T:C:G:N:del`). The `time`
+- `count_masked_*`: allele counts per pool (`A:T:C:G:N:del`). Where SNAPE
+  calls a pool confidently monomorphic at a site (P(polymorphic) ≤ 0.1,
+  `MAX_PP_MONO`), all of its reads are assigned to the reference base,
+  removing sequencing-error reads (the reference-allele case of DESTv3's
+  monomorphic filter). This matters because sites can now include pools
+  fixed for the reference. True rare alleles that SNAPE calls monomorphic
+  are erased too. The `time`
   file (with masked pools) is the BayPass input
   (`03-select-time/00-baypass-inputs`), where masked pools become missing
   data.
