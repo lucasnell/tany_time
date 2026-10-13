@@ -6,11 +6,12 @@
 ## Build
 
 ```bash
-# From your machine:
-cd _bash/_apptainer
-scp -r *.yml helpers.sh *.def bin _build.sh lnell@ap2001.chtc.wisc.edu:/home/lnell/_apptainer/
+# From the cluster (after updating via `git pull`):
+cd $HOME/tany_time/_bash/_apptainer
+mkdir -p /staging/l/lnell/_apptainer/
+cp -r *.yml helpers.sh *.def bin _build.sh /staging/l/lnell/_apptainer/
 # On the cluster, in an interactive build job:
-cd ~/_apptainer && ./_build.sh     # moves tany_time.sif to /staging/l/lnell/
+cd /staging/l/lnell/_apptainer && chmod +x ./_build.sh && ./_build.sh     # moves tany_time.sif to /staging/l/lnell/
 ```
 
 ## Conda environments
@@ -25,8 +26,8 @@ channel priority; channels conda-forge then bioconda).
 | `gatk-env` | GATK 4 (Picard tools) | `02-bwa`, `03-mpileup` |
 | `gatk3-env` | GATK 3.8 (IndelRealigner) | `03-mpileup` |
 | `baypass-env` | BayPass 3.1, R with poolfstat and tidyverse | `03-select-time/` |
-| `kraken-env` | Kraken2 2.17.2, samtools, seqtk | `01-variant-calling/06a-silva-db`, `06b-kraken` |
-| `mito-env` | Flye 2.9.6, medaka 2.2.2 (R9.4.1 model `r941_min_hac_g507` downloaded at build), minimap2, bwa, polypolish 0.7.1, samtools, seqtk | `01-variant-calling/00a-mitogenome` |
+| `kraken-env` | Kraken2 2.17.2, samtools, seqtk | `00-references/03-silva-db`, `01-variant-calling/05-kraken` |
+| `mito-env` | Flye 2.9.6, medaka 2.2.2 (R9.4.1 model `r941_min_hac_g507` downloaded at build), minimap2, bwa, polypolish 0.7.1, samtools, seqtk | `00-references/01-mitogenome` |
 
 Also built from source: `snape-pooled` (DEST-bio fork, commit `284bfe0`;
 the original repo was deleted) and `npstat` (commit `dc230fb`).

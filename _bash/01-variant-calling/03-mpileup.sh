@@ -6,7 +6,7 @@
 #'   `RealignerTargetCreator` in `GATK`
 #' - `samtools mpileup`, for T. gracilentus contigs only
 #'
-#' Steps before mpileup use the combined reference from `00b-hologenome`,
+#' Steps before mpileup use the combined reference from `00-references/02-hologenome`,
 #' matching the alignments from `02-bwa`.
 
 

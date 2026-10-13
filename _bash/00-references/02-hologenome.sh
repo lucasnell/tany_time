@@ -10,7 +10,7 @@
 #' so they're easy to filter out and count by group:
 #' - `nt_<code>__<name>`: nuclear assemblies of other species
 #' - `mt_Tgraci__Tgraci_mitogenome`: T. gracilentus mitogenome
-#'   (`00a-mitogenome`), so mitochondrial reads don't map to nuclear copies
+#'   (`01-mitogenome`), so mitochondrial reads don't map to nuclear copies
 #'   of mitochondrial DNA
 #' - `bc_<code>__<accession>`: COI barcodes of abundant trap taxa
 #'   (`coi-barcodes.fasta` from `_R/get-mito-refs.R`). Reads on these vs.
@@ -91,6 +91,7 @@ tar -xf ${MITO_TAR_FULL_PATH} -O Tgraci_mitogenome/Tgraci_mitogenome.fasta \
 check_exit_status "add mitogenome" $?
 
 # COI barcodes (already named `bc_<code>__<accession>`):
+BC_GROUPS=($(grep "^>" coi-barcodes.fasta | sed 's/^>//; s/__.*//' | sort -u))
 cat coi-barcodes.fasta >> ${HOLO} && rm coi-barcodes.fasta
 check_exit_status "add barcodes" $?
 
@@ -114,11 +115,28 @@ check_exit_status "CreateSequenceDictionary" $?
 conda deactivate
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Summary of sequences per species:
+# Summary of sequences per group:
 awk '{split($1, a, "__"); sp = (a[1] ~ /^(nt|mt|bc)_/) ? a[1] : "target";
      n[sp]++; len[sp] += $2}
-     END {for (s in n) print s "\t" n[s] " sequences\t" len[s] " bp"}' \
-    ${HOLO}.fai
+     END {for (s in n) print s "\t" n[s] "\t" len[s]}' \
+    ${HOLO}.fai | sort > group-summary.tsv
+cat group-summary.tsv
+
+# Check that every expected group is present (fail without output if not):
+EXPECTED=("target" "mt_Tgraci" "${BC_GROUPS[@]}")
+for x in "${OTHERS[@]}"; do EXPECTED+=("nt_${x%%:*}"); done
+MISSING=0
+for g in "${EXPECTED[@]}"; do
+    if ! awk -v g="${g}" '$1 == g && $2 > 0 {f = 1} END {exit !f}' group-summary.tsv; then
+        echo "MISSING from combined reference: ${g}" 1>&2
+        MISSING=1
+    fi
+done
+if (( MISSING != 0 )); then
+    echo "HOLOGENOME CHECK FAILED. No output written." 1>&2
+    safe_exit 1
+fi
+echo "HOLOGENOME CHECK PASSED: all ${#EXPECTED[@]} groups present."
 
 
 cd ..

@@ -4,11 +4,11 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/05-bam-cov/$(readbase).log
-error = logs/05-bam-cov/$(readbase).err
-output = logs/05-bam-cov/$(readbase).out
+log = logs/04-bam-cov/$(readbase).log
+error = logs/04-bam-cov/$(readbase).err
+output = logs/04-bam-cov/$(readbase).out
 
-executable = 05-bam-cov.sh
+executable = 04-bam-cov.sh
 arguments = $(readbase)
 
 batch_name = "bam-cov"

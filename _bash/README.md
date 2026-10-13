@@ -10,6 +10,7 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 | `samples/` | Job lists (pool names, pool sizes, QC-passing pools) |
 | `references/` | Small reference sequences (mitochondrial bait, COI barcodes) |
 | `tests/` | Local checks of pipeline behavior (results in `_data/`) |
+| `00-references/` | References built once: *T. gracilentus* mitogenome, combined reference for competitive mapping, SILVA Kraken2 database, nanopore θ estimate |
 | `01-variant-calling/` | Reads → trimmed reads → BAM → mpileup |
 | `02-allele-freqs/` | mpileup → SNAPE allele frequencies, counts, and diversity statistics |
 | `03-select-time/` | BayPass: allele frequencies vs. abundance through time |
@@ -20,14 +21,24 @@ Step-by-step checklist for a full rerun: `RERUN-CHECKLIST.md`.
 
 1. Build the container: `_apptainer/_build.sh` → `/staging/l/lnell/tany_time.sif`.
 2. Write job lists locally: `Rscript _R/make-job-lists.R` (from the repo root).
-3. `01-variant-calling/`: `00a-mitogenome` → `00b-hologenome` (once each),
-   and `01-fastp`; then `02-bwa` → `03-mpileup`; `05-bam-cov` and
-   `06b-kraken` after `02-bwa` (`06a-silva-db` once, before `06b`). `04-ont-pi` is independent (one job on
-   Nanopore reads) and only sets the SNAPE prior θ used in `02-allele-freqs/01-snape`.
-4. `02-allele-freqs/`: `01-snape` → `03-pool-qc` → locally, `_R/pool-qc.R`
+3. `01-variant-calling/01-fastp` (the mitogenome is polished with trimmed
+   reads from one pool).
+4. `00-references/`: `01-mitogenome` → `02-hologenome`; `03-silva-db` and
+   `04-ont-pi` (optional) are independent.
+5. `01-variant-calling/`: `02-bwa` → `03-mpileup`; `04-bam-cov` and
+   `05-kraken` after `02-bwa`.
+6. `02-allele-freqs/`: `01-snape` → `03-pool-qc` → locally, `_R/pool-qc.R`
    (choose pools from QC metrics; writes `samples/{time,space}-pools.txt`)
    → `04-combine-syncs`. `02-npstat` runs any time after `01-snape`.
-5. `03-select-time/`: `00-baypass-inputs` → `01-baypass-init` → `02-baypass-beta`.
+7. `03-select-time/`: `00-baypass-inputs` → `01-baypass-init` →
+   `02-check-omegas` → `03-baypass-beta`.
+
+After (or while) a step runs, check it with `check-step.sh` from the
+submit server, e.g. `./check-step.sh 01-variant-calling/02-bwa`. It
+reports finished, failed, running, and unsubmitted jobs; the longest run
+time (warning above 54 h; CHTC's limit is 72 h); outputs missing from
+staging; and a step-specific summary. It ends with `RESULT: PASS` or the
+number of problems.
 
 Each folder's `README.md` lists inputs, outputs, and parameters.
 

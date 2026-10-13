@@ -4,11 +4,11 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).log
-error = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).err
-output = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).out
+log = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).log
+error = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).err
+output = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).out
 
-executable = 02-baypass-beta.sh
+executable = 03-baypass-beta.sh
 arguments = $(IsingBeta) $(RunNumber) $(RNGSeed) $(MpTag)
 
 batch_name = "baypass-beta"

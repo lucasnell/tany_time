@@ -1,7 +1,7 @@
 
 #'
 #' Per-pool mitochondrial contamination index from competitive mapping
-#' (`_bash/01-variant-calling/00b-hologenome`, `02-bwa`).
+#' (`_bash/00-references/02-hologenome`, `02-bwa`).
 #'
 #' For each COI barcode group `bc_<code>` (other trap taxa; `bc_Procla` is
 #' several Procladius species) the index is its read density relative to

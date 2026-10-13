@@ -4,11 +4,11 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/00b-hologenome/hologenome.log
-error = logs/00b-hologenome/hologenome.err
-output = logs/00b-hologenome/hologenome.out
+log = logs/02-hologenome/hologenome.log
+error = logs/02-hologenome/hologenome.err
+output = logs/02-hologenome/hologenome.out
 
-executable = 00b-hologenome.sh
+executable = 02-hologenome.sh
 
 batch_name = "hologenome"
 

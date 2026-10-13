@@ -9,7 +9,7 @@
 #'    https://benlangmead.github.io/aws-indexes/k2), on a random subsample
 #'    of N_READS reads: what the non-target DNA is overall, including
 #'    endosymbiotic bacteria (e.g., Wolbachia, Spiroplasma) and viruses.
-#' 2. SILVA SSU rRNA (built by `06a-silva-db`), on all unmapped reads:
+#' 2. SILVA SSU rRNA (built by `00-references/03-silva-db`), on all unmapped reads:
 #'    eukaryotic parasites (fungi, oomycetes, microsporidia, mermithid
 #'    nematodes, water mites, ...), whose genomes aren't in RefSeq. rRNA
 #'    reads are a small fraction of reads, so no subsampling.
@@ -29,7 +29,7 @@ export THREADS=$(count_threads)
 # Edit these for your system:
 export PARENT_DIR_IN="/staging/l/lnell/dna/bwa"
 export PARENT_DIR_OUT="/staging/l/lnell/dna/kraken"
-export KRAKEN_DB_TAR="/staging/l/lnell/kraken2-db/k2_pluspf_16gb.tar.gz"
+export KRAKEN_DB_TAR="/staging/l/lnell/kraken2-db/k2_pluspf_16_GB_20260626.tar.gz"
 export SILVA_DB_TAR="/staging/l/lnell/kraken2-db/silva-138.2.tar.gz"
 
 # Reads sampled per pool, sampling seed, and Kraken2 confidence threshold

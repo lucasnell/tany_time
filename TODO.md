@@ -21,10 +21,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       all current candidates rest on this Ω. Rerun `01-baypass-init` with 3.1
       before any new covariate runs.
 - [x] `-nval` set explicitly (`NVAL=5000`) in `01-baypass-init.sh` and
-      `02-baypass-beta.sh` (3.1 default is 250). Expect ~25–50 h per job
+      `03-baypass-beta.sh` (3.1 default is 250). Expect ~25–50 h per job
       (estimate from 2.31 run times; see the scripts); CHTC's default run
       limit is 72 h. Covariate scaling is the
-      3.1 default; noted in `02-baypass-beta.sh`. (2026-10-09)
+      3.1 default; noted in `03-baypass-beta.sh`. (2026-10-09)
 - [x] `samtools mpileup -Q 25` in `03-mpileup.sh`, matching the counts'
       base-quality threshold. (2026-10-09)
 - [x] `_R/baypass-utils.R` replaced with the 3.1 `utils/` version (local
@@ -52,12 +52,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         `--clean-mono` in `combine-syncs.py`, used for count files in
         `04-combine-syncs` (`MAX_PP_MONO=0.1`).
       - [x] Competitive mapping (DESTv3 "hologenome") added 2026-10-10:
-        `01-variant-calling/00b-hologenome` (T. gracilentus + *C. riparius*,
+        `00-references/02-hologenome` (T. gracilentus + *C. riparius*,
         *C. tentans* 2023, *Smittia aterrima*, *Propsilocerus akamusi*;
         decided 2026-10-12); `02-bwa` maps
         to it and counts reads per species; `03-mpileup` keeps only
         T. gracilentus contigs. Other species could be added (`OTHERS` in
-        `00b-hologenome.sh`); copy assemblies to `/staging/l/lnell/other-genomes/`
+        `00-references/02-hologenome.sh`); copy assemblies to `/staging/l/lnell/other-genomes/`
         first.
         Species chosen from Einarsson et
         al. 2026 (Table 1) and NCBI (queried 2026-10-12): assemblies exist
@@ -77,17 +77,17 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         mitogenome (CONTIG1, 16 kb, has no match to the T. gracilentus COI
         barcode MZ659759). Decided and implemented 2026-10-12 (not yet run):
         mitochondrial/barcode competitive mapping as a per-pool
-        contamination index. `01-variant-calling/00a-mitogenome` assembles
+        contamination index. `00-references/01-mitogenome` assembles
         the T. gracilentus mitogenome from the nanopore reads of one
         identified male (R9.4.1, Guppy 5.0.11 hac; not re-basecalled) with
         Flye + medaka (`r941_min_hac_g507`) + polypolish (pool SN-1-08_S24);
         check `coi-check.tsv` against COI MZ659759/MN679642 before going on.
-        `00b-hologenome` adds the mitogenome and COI barcodes
+        `00-references/02-hologenome` adds the mitogenome and COI barcodes
         (`_R/get-mito-refs.R` → `_bash/references/`; selection in
         `_data/coi-barcode-selection.csv`; *Procladius* at genus level since
         *P. islandicus* has no NCBI sequences). Index per pool and taxon:
         `_R/mito-contam.R` (relative, not a DNA fraction).
-      - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/06b-kraken`;
+      - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/05-kraken`;
         `kraken-env` in container v2.1.0+). Needs a Kraken2 database on
         staging (PlusPF-16 suggested). Reports summarized by
         `_R/kraken-summary.R` (key groups, top genera, plot).
@@ -119,8 +119,8 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       transmitted microsporidia, endosymbiotic bacteria, and viruses;
       egg and larval parasites are unlikely in adults.
       Decided and implemented 2026-10-13 (not yet run): a SILVA 138.2 SSU
-      rRNA Kraken2 database (`01-variant-calling/06a-silva-db`) run on
-      all unmapped reads per pool in `06b-kraken`, alongside PlusPF-16 on
+      rRNA Kraken2 database (`00-references/03-silva-db`) run on
+      all unmapped reads per pool in `01-variant-calling/05-kraken`, alongside PlusPF-16 on
       1M reads; summarized per parasite group, relative to host
       (Chironomidae) rRNA reads, by `_R/kraken-summary.R`. Check its
       warning about SILVA names that matched nothing. Caveat: parasite DNA

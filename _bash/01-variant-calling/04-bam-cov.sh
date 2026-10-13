@@ -10,7 +10,7 @@
 #' Note that chromosome coordinates are zero-based, half-open.
 #'
 #' BAMs from `02-bwa` are aligned to the combined reference
-#' (`00b-hologenome`); output keeps only T. gracilentus contigs.
+#' (`00-references/02-hologenome`); output keeps only T. gracilentus contigs.
 #'
 
 

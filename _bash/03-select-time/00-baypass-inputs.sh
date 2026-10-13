@@ -12,7 +12,7 @@
 #'     && mkdir ${SAMP_DIR} \
 #'     && cp full-sample-info.csv tany-abundances.csv ./${SAMP_DIR}/ \
 #'     && tar -cz --no-xattrs --exclude ".*" -f ${SAMP_DIR}.tar.gz ${SAMP_DIR} \
-#'     && scp ${SAMP_DIR}.tar.gz lnell@transfer.chtc.wisc.edu:/staging/l/lnell/
+#'     && scp ${SAMP_DIR}.tar.gz transfer.chtc:/staging/l/lnell/
 #'
 
 . /app/.bashrc

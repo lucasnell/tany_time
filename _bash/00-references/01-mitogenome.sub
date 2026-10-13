@@ -4,11 +4,11 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/00a-mitogenome/mitogenome.log
-error = logs/00a-mitogenome/mitogenome.err
-output = logs/00a-mitogenome/mitogenome.out
+log = logs/01-mitogenome/mitogenome.log
+error = logs/01-mitogenome/mitogenome.err
+output = logs/01-mitogenome/mitogenome.out
 
-executable = 00a-mitogenome.sh
+executable = 01-mitogenome.sh
 
 batch_name = "mitogenome"
 

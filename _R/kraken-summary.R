@@ -1,6 +1,6 @@
 
 #'
-#' Summarize Kraken2 reports from `_bash/01-variant-calling/06b-kraken`:
+#' Summarize Kraken2 reports from `_bash/01-variant-calling/05-kraken`:
 #' - PlusPF-16 (`<pool>_kraken-report.txt`): a random 1M unmapped reads per
 #'   pool; overall composition (bacteria, fungi, human, viruses).
 #' - SILVA SSU rRNA (`<pool>_silva-report.txt`): all unmapped reads;

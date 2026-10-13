@@ -3,20 +3,25 @@
 ## Pipeline order
 
 Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`;
-`_bash/RERUN-CHECKLIST.md` is the step-by-step list for a full rerun.
+`_bash/RERUN-CHECKLIST.md` is the step-by-step list for a full rerun, and
+`_bash/check-step.sh <folder>/<step>` checks any step's jobs and outputs.
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
-1. `_bash/01-variant-calling/` (cluster): `00a-mitogenome` (T. gracilentus
-   mitogenome from nanopore reads) → `00b-hologenome` (combined reference:
-   T. gracilentus + 2 *Chironomus* + 2 Orthocladiinae nuclear genomes, the
-   mitogenome, and COI barcodes of trap taxa) → `01-fastp` trim →
-   `02-bwa` merge overlapping pairs with bbmerge, align competitively with
-   `bwa mem` → `03-mpileup` mark duplicates, GATK indel realignment,
-   `samtools mpileup` on T. gracilentus contigs; `05-bam-cov` (coverage
-   `.bed.gz`); `06a-silva-db` + `06b-kraken` (Kraken2 on unmapped reads: PlusPF and SILVA rRNA; diagnostic);
-   `04-ont-pi` (SNAPE prior θ, independent). Competitive mapping and
-   Kraken2 added 2026-10-10; existing outputs mapped to T. gracilentus only.
+1. `_bash/00-references/` (cluster, once): `01-mitogenome` (T. gracilentus
+   mitogenome from nanopore reads; fails unless COI barcodes match) →
+   `02-hologenome` (combined reference: T. gracilentus + 2 *Chironomus* +
+   2 Orthocladiinae nuclear genomes, the mitogenome, and COI barcodes of
+   trap taxa; fails unless all groups present); `03-silva-db` (SILVA
+   Kraken2 database); `04-ont-pi` (SNAPE prior θ; optional).
+   `_bash/01-variant-calling/` (cluster): `01-fastp` trim (needed before
+   `01-mitogenome`) → `02-bwa` merge overlapping pairs with bbmerge, align
+   competitively with `bwa mem` → `03-mpileup` mark duplicates, GATK indel
+   realignment, `samtools mpileup` on T. gracilentus contigs; `04-bam-cov`
+   (coverage `.bed.gz`); `05-kraken` (Kraken2 on unmapped reads: PlusPF and
+   SILVA rRNA; diagnostic). Competitive mapping and Kraken2 added
+   2026-10-10; existing outputs mapped to T. gracilentus only. Reference
+   steps moved to `00-references/` on 2026-10-13.
 2. `_R/tidy-sample-data.R` → `_data/full-sample-info.csv` (pool ID, date,
    lake, site, number of adults, lat/lon).
 3. `_R/sample-qc.R`: picks pools with median coverage ≥ 30 (17 of 30 SN time
@@ -49,7 +54,9 @@ are written by `_R/make-job-lists.R`.
    - All three steps run for a grid of missing-data settings
      (`MIN_PROP_POOLS` 0.5, 0.75, 1.0; tags `mp050`/`mp075`/`mp100`;
      0.75 main; since 2026-10-13).
-   - `02-baypass-beta`: covariate model with Ω from all SNPs; 10 runs with
+   - `02-check-omegas`: FMD between subsample Ω matrices for `mp075`
+     (diagnostic; PASS/WARN).
+   - `03-baypass-beta`: covariate model with Ω from all SNPs; 10 runs with
      different seeds; Ising β given as an argument. Current runs use
      `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),
      because the assembly is not chromosome-level (contig-to-contig
@@ -89,7 +96,7 @@ are written by `_R/make-job-lists.R`.
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |
-| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`06b-kraken`): PlusPF composition (bacteria, fungi, human, etc.; top genera; plot) and SILVA parasite groups relative to host rRNA (top non-insect eukaryotes) → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`, `_data/kraken-silva-groups.csv`, `_data/kraken-silva-top-eukaryotes.csv`; not yet run |
+| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`01-variant-calling/05-kraken`): PlusPF composition (bacteria, fungi, human, etc.; top genera; plot) and SILVA parasite groups relative to host rRNA (top non-insect eukaryotes) → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`, `_data/kraken-silva-groups.csv`, `_data/kraken-silva-top-eukaryotes.csv`; not yet run |
 | `mito-contam.R` | Per-pool mitochondrial contamination index per trap taxon from `02-bwa` read counts → `_data/mito-contam.csv`; not yet run |
 | `review-checks.R` | Checks of the 2026-10 code-review claims (polarity, shared direction, 1997 dependence, per-run counts, crash sampling) → `_data/review-checks.txt` |
 

@@ -14,7 +14,8 @@ with respect to abundance, and published thresholds vary widely.
 |---|---|---|---|
 | `00-baypass-inputs` | Read `count_masked_time.sync.gz` with poolfstat (`popsync2pooldata`, default filters), with masked pools as 0 counts (BayPass treats these as missing data, manual v3.1 §2.2.1); keep SNPs with data in ≥ `MIN_PROP_POOLS` of pools and mean reference-allele read proportion (over pools with data) in (0.1, 0.9); write genotype, pool-size, SNP-detail, and logN covariate files, for all SNPs and as 3 thinned subsamples | one per setting (3; `baypass_inputs_info.txt`) | `baypass-inputs_<tag>.tar.gz`, `baypass-inputs_<tag>_3.tar.gz` |
 | `01-baypass-init` | Core model to estimate Ω (population covariance matrix) from all SNPs (`sub0`) for each setting, plus thinned subsamples (`sub1`–`sub3`) for `mp075` only, to check Ω consistency | 6 (`baypass_init_info.txt`) | `init/baypass-init-<tag>-sub<k>.tar.gz` |
-| `02-baypass-beta` | Covariate model (`-auxmodel`) with that setting's `sub0` Ω, for each Ising β (0, 1) and run (1–10) | 60 (`baypass_beta_info.txt`) | `beta/baypass-<tag>-beta<β>-run<r>.tar` |
+| `02-check-omegas` | FMD distances (Förstner and Moonen 2003) between Ω from `mp075`'s thinned subsamples and from all SNPs; reports PASS if all subsample pairs are < 0.5 (Gautier 2015), else WARN. Diagnostic only: covariate runs use the all-SNP Ω either way | 1 | `init/omega-check.tsv` |
+| `03-baypass-beta` | Covariate model (`-auxmodel`) with that setting's `sub0` Ω, for each Ising β (0, 1) and run (1–10) | 60 (`baypass_beta_info.txt`) | `beta/baypass-<tag>-beta<β>-run<r>.tar` |
 
 ## Inputs
 

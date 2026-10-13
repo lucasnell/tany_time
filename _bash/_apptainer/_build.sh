@@ -9,7 +9,7 @@
 #' If necessary, to send all these scripts to the cluster from your machine:
 #'
 #' cd ~/GitHub/Wisconsin/tany_time/_bash/_apptainer
-#' scp -r *.yml helpers.sh *.def bin lnell@ap2001.chtc.wisc.edu:/home/lnell/_apptainer/
+#' scp -r *.yml helpers.sh *.def bin login.chtc:/home/lnell/_apptainer/
 #'
 
 

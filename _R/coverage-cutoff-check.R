@@ -4,7 +4,7 @@
 #' the median-coverage cutoff used to choose pools (`_R/sample-qc.R`).
 #'
 #' Inputs: `_data/bed-summs.rds` (from `_R/sample-qc.R`; coverage from
-#' `05-bam-cov` BED files), MultiQC general stats, sample info, abundances.
+#' `01-variant-calling/04-bam-cov` BED files), MultiQC general stats, sample info, abundances.
 #' Output: `_data/coverage-cutoff-check.csv`.
 #' Assembly GC content is 32.5% (`_R/sample-qc.R`).
 #'

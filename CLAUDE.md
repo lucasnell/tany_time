@@ -52,6 +52,10 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.
   `_bash/tests/` holds local checks of pipeline behavior.
+  `_bash/check-step.sh <folder>/<step>` (on the submit server) checks a
+  step's jobs, run times, outputs, and step-specific results; checks
+  should be scripted like this rather than left to manual inspection
+  (owner's request, 2026-10-13).
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`,
   `kraken-env`, `mito-env`.

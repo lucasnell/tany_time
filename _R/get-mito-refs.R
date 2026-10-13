@@ -1,8 +1,8 @@
 
 #'
 #' Fetch reference sequences from NCBI for the mitogenome assembly
-#' (`_bash/01-variant-calling/00a-mitogenome`) and the barcode
-#' contamination index (`00b-hologenome`). Run from the repo root.
+#' (`_bash/00-references/01-mitogenome`) and the barcode
+#' contamination index (`00-references/02-hologenome`). Run from the repo root.
 #'
 #' Outputs (in `_bash/references/`, transferred to cluster jobs):
 #'   tgraci-mito-bait.fasta  all T. gracilentus mitochondrial records, used

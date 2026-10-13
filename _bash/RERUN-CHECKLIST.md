@@ -9,16 +9,16 @@ Steps marked *(parallel)* can run alongside the step before them.
 
 ## A. Local preparation
 
-- [ ] **A1.** Pull the latest repo (`git pull`); check `git status` is clean.
-- [ ] **A2.** Regenerate job lists (only needed if samples, QC, or the
+- [x] **A1.** Pull the latest repo (`git pull`); check `git status` is clean.
+- [x] **A2.** Regenerate job lists (only needed if samples, QC, or the
       BayPass grid changed): `Rscript _R/make-job-lists.R`.
-- [ ] **A3.** Make the sample-info tar for BayPass and copy it to
+- [x] **A3.** Make the sample-info tar for BayPass and copy it to
       staging (commands at the top of
       `03-select-time/00-baypass-inputs.sh`) → `$S/tany-sample-info.tar.gz`.
 
 ## B. Staging setup (on the transfer/submit server)
 
-- [ ] **B1.** Create output folders (only pool QC, Kraken2, and the SILVA
+- [x] **B1.** Create output folders (only pool QC, Kraken2, and the SILVA
       build create their own):
 
       ```bash
@@ -27,93 +27,177 @@ Steps marked *(parallel)* can run alongside the step before them.
           $S/dna/baypass/{init,beta} $S/{other-genomes,silva,kraken2-db}
       ```
 
-- [ ] **B2.** Confirm inputs already on staging:
-  - [ ] Raw reads: `$S/dna/raw_fq/<pool>_L002_R{1,2}_001.fastq.gz` for all
-        62 pools in `samples/all-pools.txt`.
-  - [ ] Nanopore reads: `$S/dna/ont/basecalls_guppy-5.0.11.fastq.gz`.
-  - [ ] Assembly: `$S/Tgraci_assembly.fasta.gz`.
-  - [ ] Repeats: `$S/Tgraci_repeats_locs.gff3.gz`.
-- [ ] **B3.** Copy the other assemblies from
+- [x] **B2.** Confirm inputs already on staging:
+  - [x] Raw reads: `$S/dna/raw_fq/<pool>_L002_R{1,2}_001.fastq.gz` for all
+        62 pools in `samples/all-pools.txt`:
+
+        ```bash
+        while IFS= read -r line; do
+          FILE=$S/dna/raw_fq/${line}_L002_R1_001.fastq.gz
+          [ ! -f "$FILE" ] && echo "$FILE is missing."
+          FILE=$S/dna/raw_fq/${line}_L002_R2_001.fastq.gz
+          [ ! -f "$FILE" ] && echo "$FILE is missing."
+        done < "$HOME/tany_time/_bash/samples/all-pools.txt"
+        ```
+
+  - [x] Nanopore reads: `$S/dna/ont/basecalls_guppy-5.0.11.fastq.gz`.
+  - [x] Assembly: `$S/Tgraci_assembly.fasta.gz`.
+  - [x] Repeats: `$S/Tgraci_repeats_locs.gff3.gz`.
+- [x] **B3.** Copy the other assemblies from
       `~/_data/midgenomes/assemblies/` to `$S/other-genomes/`:
       `Cripar_assembly.fasta.gz`, `Ctenta2023_assembly.fasta.gz`,
-      `Saterr_assembly.fasta.gz`, `Pakamu_assembly.fasta.gz`.
-- [ ] **B4.** Download the three SILVA 138.2 files into `$S/silva/` (URLs at
-      the top of `01-variant-calling/06a-silva-db.sh`).
-- [ ] **B5.** Download Kraken2 PlusPF-16 into `$S/kraken2-db/` from
+      `Saterr_assembly.fasta.gz`, `Pakamu_assembly.fasta.gz`:
+
+      ```bash
+      cd ~/_data/midgenomes/assemblies
+      scp Cripar_assembly.fasta.gz Ctenta2023_assembly.fasta.gz \
+        Saterr_assembly.fasta.gz Pakamu_assembly.fasta.gz \
+        transfer.chtc:/staging/l/lnell/other-genomes/
+      ```
+
+- [x] **B4.** Download the three SILVA 138.2 files into `$S/silva/` (URLs at
+      the top of `00-references/03-silva-db.sh`):
+
+      ```bash
+      # on cluster:
+      cd /staging/l/lnell/silva/
+      wget https://ftp.arb-silva.de/release_138_2/Exports/SILVA_138.2_SSURef_NR99_tax_silva.fasta.gz
+      wget https://ftp.arb-silva.de/release_138_2/Exports/taxonomy/tax_slv_ssu_138.2.acc_taxid.gz
+      wget https://ftp.arb-silva.de/release_138_2/Exports/taxonomy/tax_slv_ssu_138.2.txt.gz
+      ```
+
+- [x] **B5.** Download Kraken2 PlusPF-16 into `$S/kraken2-db/` from
       https://benlangmead.github.io/aws-indexes/k2, and set
-      `KRAKEN_DB_TAR` in `01-variant-calling/06b-kraken.sh` to its file
-      name (currently a placeholder, `k2_pluspf_16gb.tar.gz`).
-- [ ] **B6.** Copy the whole `_bash/` folder to the submit server, keeping
+      `KRAKEN_DB_TAR` in `01-variant-calling/05-kraken.sh` to its file
+      name (currently a placeholder, `k2_pluspf_16gb.tar.gz`):
+
+      ```bash
+      # on cluster:
+      cd /staging/l/lnell/kraken2-db/
+      wget https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_16_GB_20260626.tar.gz
+      ```
+
+
+- [x] **B6.** Copy the whole `_bash/` folder to the submit server, keeping
       its layout (`.sub` files read `../samples/` and `../references/`).
 
 ## C. Container
 
-- [ ] **C1.** Build the image (`_apptainer/README.md`): copy
+- [x] **C1.** Build the image (`_apptainer/README.md`): copy
       `_apptainer/` files to the submit server, run `_build.sh` in an
       interactive build job → `$S/tany_time.sif`.
-- [ ] **C2.** Quick check in an interactive job: each environment
+- [x] **C2.** Quick check in an interactive job: each environment
       activates (`main-env`, `qc-env`, `gatk-env`, `gatk3-env`,
       `baypass-env`, `kraken-env`, `mito-env`), `/app/bin` scripts are on
       `PATH`, and `medaka tools list_models` (in `mito-env`) shows
-      `r941_min_hac_g507`.
+      `r941_min_hac_g507`:
 
-## D. References (`01-variant-calling/`)
+      ```bash
+      bash
+      . /app/.bashrc
+      for f in $(find /app/bin -name "*.py"); do
+        which $(basename $f)
+      done
+      conda activate main-env
+      conda deactivate
+      conda activate qc-env
+      conda deactivate
+      conda activate gatk-env
+      conda deactivate
+      conda activate gatk3-env
+      conda deactivate
+      conda activate baypass-env
+      conda deactivate
+      conda activate kraken-env
+      conda deactivate
+      conda activate mito-env
+      medaka tools list_models | grep  --color=always r941_min_hac_g507
+      ```
 
-- [ ] **D1.** `00a-mitogenome` (1 job).
-- [ ] **D2.** **Check** `coi-check.tsv` in `$S/Tgraci_mitogenome.tar`:
-      both T. gracilentus COI barcodes align over their full length at
-      ~100% identity, and the mitogenome is ~16 kb. Stop here if not.
-- [ ] **D3.** `00b-hologenome` (1 job) → `$S/hologenome.tar`. Its log
-      lists sequences and bp per group; check every species is there.
-- [ ] **D4.** *(parallel with D1–D3)* `06a-silva-db` (1 job) →
-      `$S/kraken2-db/silva-138.2.tar.gz`.
-- [ ] **D5.** *(optional, parallel)* `04-ont-pi` (1 job). The SNAPE prior
-      θ = 0.0088 is hard-coded in `02-allele-freqs/01-snape.sh`; only
-      update it if this gives a clearly different value.
+## D. How to run and check each step
 
-## E. Reads to pileups (`01-variant-calling/`, 62 jobs each)
+From the step's folder on the submit server: `mkdir -p logs/<step>`, then
+`condor_submit <step>.sub`. When the jobs finish (or to check on them while
+they run), run `check-step.sh` from the `_bash/` folder:
 
-- [ ] **E1.** `01-fastp` *(can start during D)*.
-- [ ] **E2.** `02-bwa` (needs `hologenome.tar` from D3). Spot-check a few
-      `<pool>_species-counts.tsv` in `$S/dna/bwa/<pool>_bwa.tar.gz`.
-- [ ] **E3.** `03-mpileup` (9+ h per job). Check the first job finishes
-      well within the 72-h limit.
-- [ ] **E4.** *(parallel with E3)* `05-bam-cov`.
-- [ ] **E5.** *(parallel with E3)* `06b-kraken` (1 job, all pools; long:
-      check its log after a few pools).
+```bash
+cd $HOME/tany_time/_bash
+./check-step.sh <folder>/<step>
+```
 
-## F. Allele frequencies (`02-allele-freqs/`)
+It reports finished, failed, running, and unsubmitted jobs; the longest
+run time (warning above 54 h; CHTC's limit is 72 h); outputs missing from
+staging; and a step-specific summary. Go on only after `RESULT: PASS`.
+For steps marked "one first", submit a single job (e.g., by temporarily
+keeping only one line of the job list) and check its run time before
+submitting the rest.
 
-- [ ] **F1.** `01-snape` (62 jobs).
-- [ ] **F2.** *(parallel)* `02-npstat` (62 jobs).
-- [ ] **F3.** `03-pool-qc` (1 job) → `$S/dna/pool-qc/pool-qc.tar`.
-- [ ] **F4.** Locally: download `pool-qc.tar` and extract it to
-      `~/_data/_tany-time/pool-qc/`; run `Rscript _R/pool-qc.R` (needs
-      `rrcov`). It writes `_bash/samples/{time,space}-pools.txt`. Review
-      `_plots/pool-qc-*.pdf` and the excluded pools, then commit the lists.
-- [ ] **F5.** Locally: `Rscript _R/mito-contam.R` (contamination index;
-      uses the same `pool-qc` folder). After E5, download `kraken.tar`
-      to `~/_data/_tany-time/kraken/` and run `Rscript _R/kraken-summary.R`;
-      read its warning about SILVA names that matched nothing.
-- [ ] **F6.** Copy the new `samples/{time,space}-pools.txt` to the submit
-      server.
-- [ ] **F7.** `04-combine-syncs` (1 job).
+## E. Trimming (`01-variant-calling/`)
 
-## G. BayPass (`03-select-time/`)
+- [ ] **E1.** `01-fastp` (62 jobs) → `./check-step.sh 01-variant-calling/01-fastp`.
 
-- [ ] **G1.** `00-baypass-inputs` (3 jobs, one per missing-data setting).
-      Check each log's "SNPs read / kept" counts.
-- [ ] **G2.** `01-baypass-init` (6 jobs). Submit one first and check its
-      progress against the 72-h limit (expected 25–50 h).
-- [ ] **G3.** Check Ω consistency for `mp075` (subsamples 1–3 vs. all
-      SNPs; FMD distance) before going on. `_R/baypass-check-omegas.R`
-      needs updating for the new file names first.
-- [ ] **G4.** `02-baypass-beta` (60 jobs). Submit one first and check its
-      progress, then the rest.
+## F. References (`00-references/`)
 
-## H. After the rerun
+- [ ] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
+      SN-1-08_S24 from E1). It fails by itself, writing nothing, unless
+      the *T. gracilentus* COI barcodes match the assembly →
+      `./check-step.sh 00-references/01-mitogenome`.
+- [ ] **F2.** `02-hologenome` (1 job). It fails by itself unless every
+      species, the mitogenome, and every barcode group are present →
+      `./check-step.sh 00-references/02-hologenome`.
+- [ ] **F3.** *(parallel with F1–F2)* `03-silva-db` (1 job) →
+      `./check-step.sh 00-references/03-silva-db`.
+- [ ] **F4.** *(optional, parallel)* `04-ont-pi` (1 job) →
+      `./check-step.sh 00-references/04-ont-pi` compares the new θ with
+      the SNAPE prior in `02-allele-freqs/01-snape.sh` and warns if they
+      differ by more than 10%.
 
-- [ ] **H1.** Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`,
+## G. Reads to pileups (`01-variant-calling/`)
+
+- [ ] **G1.** `02-bwa` (62 jobs) → `./check-step.sh 01-variant-calling/02-bwa`
+      (also tabulates each pool's reads on *T. gracilentus*, other
+      species, the mitogenome, and barcodes).
+- [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
+      `./check-step.sh 01-variant-calling/03-mpileup`.
+- [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
+      `./check-step.sh 01-variant-calling/04-bam-cov`.
+- [ ] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
+      `./check-step.sh 01-variant-calling/05-kraken` (pools classified so
+      far, warnings).
+
+## H. Allele frequencies (`02-allele-freqs/`)
+
+- [ ] **H1.** `01-snape` (62 jobs) → `./check-step.sh 02-allele-freqs/01-snape`
+      (also lists contigs where SNAPE reported errors).
+- [ ] **H2.** *(parallel)* `02-npstat` (62 jobs) →
+      `./check-step.sh 02-allele-freqs/02-npstat`.
+- [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
+- [ ] **H4.** Locally: download `$S/dna/pool-qc/pool-qc.tar` and extract it
+      to `~/_data/_tany-time/pool-qc/`; run `Rscript _R/pool-qc.R` (writes
+      `_bash/samples/{time,space}-pools.txt` by the pre-set outlier rule)
+      and `Rscript _R/mito-contam.R`. After G4, download
+      `$S/dna/kraken/kraken.tar` to `~/_data/_tany-time/kraken/` and run
+      `Rscript _R/kraken-summary.R`. Commit and push the pool lists.
+- [ ] **H5.** On the submit server, `git pull` (gets the pool lists).
+- [ ] **H6.** `04-combine-syncs` (1 job) →
+      `./check-step.sh 02-allele-freqs/04-combine-syncs`.
+
+## I. BayPass (`03-select-time/`)
+
+- [ ] **I1.** `00-baypass-inputs` (3 jobs) →
+      `./check-step.sh 03-select-time/00-baypass-inputs` (fails if a
+      setting keeps no SNPs).
+- [ ] **I2.** `01-baypass-init` (6 jobs, 25–50 h each; one first) →
+      `./check-step.sh 03-select-time/01-baypass-init`.
+- [ ] **I3.** `02-check-omegas` (1 job) →
+      `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on Ω
+      consistency; covariate runs use the all-SNP Ω either way).
+- [ ] **I4.** `03-baypass-beta` (60 jobs, 25–50 h each; one first) →
+      `./check-step.sh 03-select-time/03-baypass-beta`.
+
+## J. After the rerun
+
+- [ ] **J1.** Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`,
       and `baypass-check-candidates.R` for the new output names and the
       missing-data grid.
-- [ ] **H2.** Continue with the review steps in `TODO.md`.
+- [ ] **J2.** Continue with the review steps in `TODO.md`.

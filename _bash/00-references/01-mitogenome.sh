@@ -12,7 +12,9 @@
 #'    reads from one pool (polypolish). Pool reads give a population
 #'    consensus, which is what a mapping reference needs.
 #' 5. Validate: align published T. gracilentus COI barcodes
-#'    (`tgraci-coi.fasta`) to the result and report identity.
+#'    (`tgraci-coi.fasta`) to the result. The job fails, without writing
+#'    output, unless both align over >= MIN_COI_COV of their length at
+#'    >= MIN_COI_ID identity (allowing for COI variation within species).
 #'
 #' Output `Tgraci_mitogenome.tar` (staging and ResearchDrive) with
 #' `Tgraci_mitogenome.fasta`, `coi-check.tsv`, and Flye assembly info.
@@ -37,6 +39,8 @@ export N_PAIRS=4000000
 export SEED=2125381094
 
 export MEDAKA_MODEL="r941_min_hac_g507"
+export MIN_COI_COV=0.95
+export MIN_COI_ID=0.98
 export MIN_LEN=13000
 export MAX_LEN=22000
 
@@ -149,13 +153,25 @@ minimap2 -x asm20 --secondary=no Tgraci_mitogenome.fasta tgraci-coi.fasta \
         {print $1, $2, $4 - $3, $10 / $11, ml}' >> coi-check.tsv
 cat coi-check.tsv
 
+# Both barcodes must align, over enough of their length, at high identity:
+N_PASS=$(awk -v c=${MIN_COI_COV} -v i=${MIN_COI_ID} \
+    'NR > 1 && $3 / $2 >= c && $4 >= i' coi-check.tsv | cut -f 1 | sort -u | wc -l)
+N_BARCODES=$(grep -c "^>" tgraci-coi.fasta)
+if (( N_PASS < N_BARCODES )); then
+    echo "COI CHECK FAILED: ${N_PASS} of ${N_BARCODES} T. gracilentus COI" \
+        "barcodes align over >= ${MIN_COI_COV} of their length at" \
+        ">= ${MIN_COI_ID} identity (see table above). No output written." 1>&2
+    safe_exit 1
+fi
+echo "COI CHECK PASSED: ${N_PASS} of ${N_BARCODES} barcodes."
+
 
 #' ========================================================================
 #' Outputs
 #' ========================================================================
 
 rm -r flye1 flye2 medaka reads*.fastq ill_* medaka.fasta* draft*.fasta* \
-    trimmed_* tgraci-mito-bait.fasta 2> /dev/null
+    trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta 2> /dev/null
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 cp ${OUT_DIR}.tar ${PARENT_DIR_OUT}/

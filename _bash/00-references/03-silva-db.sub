@@ -4,11 +4,11 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/06a-silva-db/silva-db.log
-error = logs/06a-silva-db/silva-db.err
-output = logs/06a-silva-db/silva-db.out
+log = logs/03-silva-db/silva-db.log
+error = logs/03-silva-db/silva-db.err
+output = logs/03-silva-db/silva-db.out
 
-executable = 06a-silva-db.sh
+executable = 03-silva-db.sh
 
 batch_name = "silva-db"
 

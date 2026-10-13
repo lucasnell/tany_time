@@ -3,7 +3,7 @@
 #' Build a Kraken2 database from SILVA SSU rRNA (SSURef NR99; Bacteria,
 #' Archaea, and Eukarya), for detecting eukaryotic parasites (fungi,
 #' oomycetes, microsporidia, nematodes, mites, ...) in unmapped reads
-#' (`06b-kraken`). Follows Kraken2's own `16S_silva_installation.sh`, but
+#' (`01-variant-calling/05-kraken`). Follows Kraken2's own `16S_silva_installation.sh`, but
 #' with SILVA 138.2 (Kraken2 2.17.2 uses 138.1).
 #'
 #' Compute nodes may lack internet access, so first download these files
