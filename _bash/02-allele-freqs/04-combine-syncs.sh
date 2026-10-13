@@ -29,7 +29,7 @@ conda activate main-env
 
 
 # Edit this for your system:
-export SNAPE_DIR="/staging/lnell/dna/snape"
+export SNAPE_DIR="/staging/l/lnell/dna/snape"
 
 # Minimum SNAPE P(polymorphic) required in at least one pool:
 export MIN_PP=0.9

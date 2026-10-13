@@ -2,7 +2,7 @@
 
 # prep aligned Pool-seq DNA reads and call `samtools mpileup`
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/03-mpileup/$(readbase).log
 error = logs/03-mpileup/$(readbase).err

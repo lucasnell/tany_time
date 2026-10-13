@@ -5,7 +5,7 @@
 # Window length in kb:
 win_kb = 10
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log =           logs/02-npstat/$(readbase)_$(win_kb)kb.log
 error =         logs/02-npstat/$(readbase)_$(win_kb)kb.err

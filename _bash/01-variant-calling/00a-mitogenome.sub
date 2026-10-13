@@ -2,7 +2,7 @@
 
 # assemble the T. gracilentus mitochondrial genome from nanopore reads
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/00a-mitogenome/mitogenome.log
 error = logs/00a-mitogenome/mitogenome.err

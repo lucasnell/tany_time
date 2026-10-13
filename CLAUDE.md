@@ -44,7 +44,7 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 - `_bash/` — cluster pipeline (UW–Madison CHTC, HTCondor); see
   `_bash/README.md`. Each step is a `.sh` + `.sub` pair, numbered in run
   order. Runs inside the Apptainer image built from
-  `_bash/_apptainer/tany_time.def` (`/staging/lnell/tany_time.sif`).
+  `_bash/_apptainer/tany_time.def` (`/staging/l/lnell/tany_time.sif`).
   Shared shell functions are in `_bash/_apptainer/helpers.sh`; shared
   scripts are in `_bash/_apptainer/bin/` (installed on the container's
   `PATH`). Small reference sequences for jobs are in `_bash/references/`
@@ -85,7 +85,7 @@ Scripts read large files by absolute path; none are in git.
 | `~/_data/_tany-time/blast/` | Protein FASTA (`Tgraci_proteins.faa`), candidate-gene proteins (`Tgraci-funct.faa`), and BLASTP output (`Tgraci-funct-Dmel.csv`) used in `baypass-analysis.R` and `make-time-series-plot.R` (moved from `~/Desktop` 2026-10-13); BLAST database in `~/blastdb/` |
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |
 | `/Volumes/Lucas512/...` | BAM coverage `.bed.gz` files (external drive) |
-| Cluster: `/staging/lnell/`, `pelican://chtc.wisc.edu/researchdrive/arives/CHTC/` | Cluster inputs and outputs |
+| Cluster: `/staging/l/lnell/` (was `/staging/lnell/` until 2026-10-13), `pelican://chtc.wisc.edu/researchdrive/arives/CHTC/` | Cluster inputs and outputs |
 
 ## Conventions
 

@@ -21,9 +21,9 @@ conda activate main-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export PARENT_DIR_IN="/staging/lnell/dna/bwa"
-export PARENT_DIR_OUT="/staging/lnell/dna/bwa"
-export HOLO_TAR_FULL_PATH="/staging/lnell/hologenome.tar"
+export PARENT_DIR_IN="/staging/l/lnell/dna/bwa"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/bwa"
+export HOLO_TAR_FULL_PATH="/staging/l/lnell/hologenome.tar"
 
 
 

@@ -10,7 +10,7 @@
 cd _bash/_apptainer
 scp -r *.yml helpers.sh *.def bin _build.sh lnell@ap2001.chtc.wisc.edu:/home/lnell/_apptainer/
 # On the cluster, in an interactive build job:
-cd ~/_apptainer && ./_build.sh     # moves tany_time.sif to /staging/lnell/
+cd ~/_apptainer && ./_build.sh     # moves tany_time.sif to /staging/l/lnell/
 ```
 
 ## Conda environments

@@ -27,10 +27,10 @@ conda activate kraken-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export PARENT_DIR_IN="/staging/lnell/dna/bwa"
-export PARENT_DIR_OUT="/staging/lnell/dna/kraken"
-export KRAKEN_DB_TAR="/staging/lnell/kraken2-db/k2_pluspf_16gb.tar.gz"
-export SILVA_DB_TAR="/staging/lnell/kraken2-db/silva-138.2.tar.gz"
+export PARENT_DIR_IN="/staging/l/lnell/dna/bwa"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/kraken"
+export KRAKEN_DB_TAR="/staging/l/lnell/kraken2-db/k2_pluspf_16gb.tar.gz"
+export SILVA_DB_TAR="/staging/l/lnell/kraken2-db/silva-138.2.tar.gz"
 
 # Reads sampled per pool, sampling seed, and Kraken2 confidence threshold
 # (fraction of a read's k-mers that must support its assigned taxon):

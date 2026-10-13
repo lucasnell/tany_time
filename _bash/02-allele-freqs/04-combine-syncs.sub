@@ -2,7 +2,7 @@
 
 # combine masked gSYNC files (SNAPE info and counts) across pools
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/04-combine-syncs/combine-syncs.log
 error = logs/04-combine-syncs/combine-syncs.err

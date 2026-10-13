@@ -29,10 +29,10 @@ conda activate main-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
-export OTHER_DIR="/staging/lnell/other-genomes"
-export PARENT_DIR_OUT="/staging/lnell"
-export MITO_TAR_FULL_PATH="/staging/lnell/Tgraci_mitogenome.tar"
+export GENOME_FULL_PATH="/staging/l/lnell/Tgraci_assembly.fasta.gz"
+export OTHER_DIR="/staging/l/lnell/other-genomes"
+export PARENT_DIR_OUT="/staging/l/lnell"
+export MITO_TAR_FULL_PATH="/staging/l/lnell/Tgraci_mitogenome.tar"
 
 #' Non-target assemblies, as `<code>:<file in OTHER_DIR>`, chosen as the
 #' closest available genomes to abundant non-target taxa in Mývatn traps

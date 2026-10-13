@@ -13,8 +13,8 @@ conda activate baypass-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export INPUTS_PARENT_DIR="/staging/lnell/dna/baypass"
-export PARENT_DIR_OUT="/staging/lnell/dna/baypass/beta"
+export INPUTS_PARENT_DIR="/staging/l/lnell/dna/baypass"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/beta"
 
 #' Number of retained MCMC samples. Set explicitly because BayPass 3.1
 #' lowered the default from 1,000 to 250. More samples raise the ceiling on

@@ -5,7 +5,7 @@ diversity statistics. Follows the DEST pipeline (Kapun et al. 2021,
 doi:10.1093/molbev/msab259) using its helper scripts (in the container's
 `/app/bin`).
 
-| Step | Does | Jobs | Output (`/staging/lnell/dna/`) |
+| Step | Does | Jobs | Output (`/staging/l/lnell/dna/`) |
 |---|---|---|---|
 | `01-snape` | Uppercase reference and pileup; counts, coverage, and indel positions (`Mpileup2Sync.py`, base quality ≥ 25); SNAPE-pooled per contig; convert to gSYNC (`SNAPE2SYNC.py`); mask (`MaskSYNC_snape.py`) twice (below) | one per pool (`../samples/all-pools-n-adults.txt`) | `snape/<pool>_snape.tar` |
 | `02-npstat` | Convert the partially masked gSYNC to pileup; npstat per contig in 10-kb windows (π, Watterson's θ, Tajima's D) at sites in the SNP file, with `-maxcov` set to each contig's maximum coverage (npstat's setup grows with `maxcov`²; output unchanged, `../tests/npstat-maxcov.sh`) | one per pool | `npstat/<pool>_npstat_10kb.stat.gz` |

@@ -28,7 +28,7 @@ apptainer build ${OUT_SIF} ${IN_DEF}
 ## If you want to test it:
 # apptainer shell -e ${OUT_SIF}
 
-mv ${OUT_SIF} /staging/lnell/
+mv ${OUT_SIF} /staging/l/lnell/
 
 cd ..
 rm -r working

@@ -2,7 +2,7 @@
 
 # build a Kraken2 database from SILVA SSU rRNA (one time)
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/06a-silva-db/silva-db.log
 error = logs/06a-silva-db/silva-db.err

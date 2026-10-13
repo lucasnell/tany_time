@@ -12,8 +12,8 @@ conda activate main-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export PARENT_DIR_IN="/staging/lnell/dna/raw_fq"
-export PARENT_DIR_OUT="/staging/lnell/dna/trimmed"
+export PARENT_DIR_IN="/staging/l/lnell/dna/raw_fq"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/trimmed"
 
 export READ_BASE=$1
 

@@ -2,7 +2,7 @@
 
 # classify a subsample of unmapped reads per pool (diagnostic)
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/06b-kraken/kraken.log
 error = logs/06b-kraken/kraken.err

@@ -10,7 +10,7 @@ of pools with data at a SNP (`MIN_PROP_POOLS` = 0.5, 0.75, 1.0; tags
 (decided 2026-10-13). Missingness tracks pool coverage, so it isn't random
 with respect to abundance, and published thresholds vary widely.
 
-| Step | Does | Jobs | Output (`/staging/lnell/dna/baypass/`) |
+| Step | Does | Jobs | Output (`/staging/l/lnell/dna/baypass/`) |
 |---|---|---|---|
 | `00-baypass-inputs` | Read `count_masked_time.sync.gz` with poolfstat (`popsync2pooldata`, default filters), with masked pools as 0 counts (BayPass treats these as missing data, manual v3.1 §2.2.1); keep SNPs with data in ≥ `MIN_PROP_POOLS` of pools and mean reference-allele read proportion (over pools with data) in (0.1, 0.9); write genotype, pool-size, SNP-detail, and logN covariate files, for all SNPs and as 3 thinned subsamples | one per setting (3; `baypass_inputs_info.txt`) | `baypass-inputs_<tag>.tar.gz`, `baypass-inputs_<tag>_3.tar.gz` |
 | `01-baypass-init` | Core model to estimate Ω (population covariance matrix) from all SNPs (`sub0`) for each setting, plus thinned subsamples (`sub1`–`sub3`) for `mp075` only, to check Ω consistency | 6 (`baypass_init_info.txt`) | `init/baypass-init-<tag>-sub<k>.tar.gz` |
@@ -18,7 +18,7 @@ with respect to abundance, and published thresholds vary widely.
 
 ## Inputs
 
-- `00-baypass-inputs` needs `/staging/lnell/tany-sample-info.tar.gz`,
+- `00-baypass-inputs` needs `/staging/l/lnell/tany-sample-info.tar.gz`,
   containing `_data/full-sample-info.csv` and `_data/tany-abundances.csv`
   (see comments at the top of the script for how to make and upload it), and
   `snape/count_masked_time.tar` from `02-allele-freqs/04-combine-syncs`.

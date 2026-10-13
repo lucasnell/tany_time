@@ -25,9 +25,9 @@ conda activate mito-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export ONT_FASTQ="/staging/lnell/dna/ont/basecalls_guppy-5.0.11.fastq.gz"
-export TRIMMED_DIR="/staging/lnell/dna/trimmed"
-export PARENT_DIR_OUT="/staging/lnell"
+export ONT_FASTQ="/staging/l/lnell/dna/ont/basecalls_guppy-5.0.11.fastq.gz"
+export TRIMMED_DIR="/staging/l/lnell/dna/trimmed"
+export PARENT_DIR_OUT="/staging/l/lnell"
 
 # Illumina pool used for short-read polishing (high coverage, 80 haploid
 # genomes; see `_data/coverage-cutoff-check.csv`):

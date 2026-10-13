@@ -22,8 +22,8 @@ conda activate kraken-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export SILVA_DIR="/staging/lnell/silva"
-export PARENT_DIR_OUT="/staging/lnell/kraken2-db"
+export SILVA_DIR="/staging/l/lnell/silva"
+export PARENT_DIR_OUT="/staging/l/lnell/kraken2-db"
 
 export SILVA_VERSION="138.2"
 export DB_NAME="silva-${SILVA_VERSION}"

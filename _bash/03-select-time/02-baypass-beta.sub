@@ -2,7 +2,7 @@
 
 # baypass for selection analysis on time samples
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).log
 error = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).err

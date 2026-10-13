@@ -57,10 +57,10 @@ conda activate main-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export PARENT_DIR_IN="/staging/lnell/dna/mpileup"
-export PARENT_DIR_OUT="/staging/lnell/dna/snape"
-export GENOME_FULL_PATH="/staging/lnell/Tgraci_assembly.fasta.gz"
-export REPEATS_FULL_PATH="/staging/lnell/Tgraci_repeats_locs.gff3.gz"
+export PARENT_DIR_IN="/staging/l/lnell/dna/mpileup"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/snape"
+export GENOME_FULL_PATH="/staging/l/lnell/Tgraci_assembly.fasta.gz"
+export REPEATS_FULL_PATH="/staging/l/lnell/Tgraci_repeats_locs.gff3.gz"
 
 
 #' ========================================================================

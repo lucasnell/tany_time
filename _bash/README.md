@@ -16,7 +16,7 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 
 ## Run order
 
-1. Build the container: `_apptainer/_build.sh` → `/staging/lnell/tany_time.sif`.
+1. Build the container: `_apptainer/_build.sh` → `/staging/l/lnell/tany_time.sif`.
 2. Write job lists locally: `Rscript _R/make-job-lists.R` (from the repo root).
 3. `01-variant-calling/`: `00a-mitogenome` → `00b-hologenome` (once each),
    and `01-fastp`; then `02-bwa` → `03-mpileup`; `05-bam-cov` and
@@ -41,7 +41,7 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
   condor_submit 01-fastp.sub
   ```
 
-- Inputs and outputs are on `/staging/lnell/` (paths are set near the top of
+- Inputs and outputs are on `/staging/l/lnell/` (paths are set near the top of
   each `.sh` under "Edit these for your system"). Steps that set
   `output_destination` in their `.sub` also copy outputs to ResearchDrive
   (`pelican://chtc.wisc.edu/researchdrive/arives/CHTC/`).

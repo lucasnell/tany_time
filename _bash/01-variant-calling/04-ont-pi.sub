@@ -2,7 +2,7 @@
 
 # calculating nucleotide diversity and heterozygosity from nanopore reads
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/04-ont-pi/ont-pi.log
 error = logs/04-ont-pi/ont-pi.err

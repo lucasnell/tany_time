@@ -2,7 +2,7 @@
 
 # build combined reference for competitive mapping
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/00b-hologenome/hologenome.log
 error = logs/00b-hologenome/hologenome.err

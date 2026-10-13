@@ -55,7 +55,7 @@ On hold until the owner says to run them. Listed in dependency order.
         decided 2026-10-12); `02-bwa` maps
         to it and counts reads per species; `03-mpileup` keeps only
         T. gracilentus contigs. Other species could be added (`OTHERS` in
-        `00b-hologenome.sh`); copy assemblies to `/staging/lnell/other-genomes/`
+        `00b-hologenome.sh`); copy assemblies to `/staging/l/lnell/other-genomes/`
         first.
         Species chosen from Einarsson et
         al. 2026 (Table 1) and NCBI (queried 2026-10-12): assemblies exist

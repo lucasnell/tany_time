@@ -2,7 +2,7 @@
 
 # Calculate coverage in BAM files using `bedtools genomecov`
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/05-bam-cov/$(readbase).log
 error = logs/05-bam-cov/$(readbase).err

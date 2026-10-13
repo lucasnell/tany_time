@@ -12,7 +12,7 @@
 #'     && mkdir ${SAMP_DIR} \
 #'     && cp full-sample-info.csv tany-abundances.csv ./${SAMP_DIR}/ \
 #'     && tar -cz --no-xattrs --exclude ".*" -f ${SAMP_DIR}.tar.gz ${SAMP_DIR} \
-#'     && scp ${SAMP_DIR}.tar.gz lnell@transfer.chtc.wisc.edu:/staging/lnell/
+#'     && scp ${SAMP_DIR}.tar.gz lnell@transfer.chtc.wisc.edu:/staging/l/lnell/
 #'
 
 . /app/.bashrc
@@ -21,14 +21,14 @@ conda activate baypass-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export DATA_TAR_FULL_PATH="/staging/lnell/tany-sample-info.tar.gz"
+export DATA_TAR_FULL_PATH="/staging/l/lnell/tany-sample-info.tar.gz"
 export SAMPLE_INFO="full-sample-info.csv"
 export ABUNDANCES="tany-abundances.csv"
-export COUNTS_TAR_FULL_PATH="/staging/lnell/dna/snape/count_masked_time.tar"
+export COUNTS_TAR_FULL_PATH="/staging/l/lnell/dna/snape/count_masked_time.tar"
 # All sites passing `04-combine-syncs` (masked pools allowed; see below):
 export COUNTS_IN="count_masked_time.sync.gz"
 export NAMES_IN="count_masked_time.names.gz"
-export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass"
 
 #' Arguments (from `baypass_inputs_info.txt`, written by
 #' `_R/make-job-lists.R`):

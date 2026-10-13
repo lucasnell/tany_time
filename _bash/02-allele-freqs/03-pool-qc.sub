@@ -2,7 +2,7 @@
 
 # per-pool QC metrics for deciding which pools to include
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/03-pool-qc/pool-qc.log
 error = logs/03-pool-qc/pool-qc.err

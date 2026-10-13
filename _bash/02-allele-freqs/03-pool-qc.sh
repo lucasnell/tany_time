@@ -28,8 +28,8 @@ conda activate main-env
 
 
 # Edit these for your system:
-export DNA_DIR="/staging/lnell/dna"
-export PARENT_DIR_OUT="/staging/lnell/dna/pool-qc"
+export DNA_DIR="/staging/l/lnell/dna"
+export PARENT_DIR_OUT="/staging/l/lnell/dna/pool-qc"
 
 # Minimum SNAPE P(polymorphic) for a SNP (same as `01-snape`):
 export MIN_PP=0.9

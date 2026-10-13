@@ -2,7 +2,7 @@
 
 # baypass core model to estimate Omega, per missing-data setting and subsample
 
-container_image = file:///staging/lnell/tany_time.sif
+container_image = file:///staging/l/lnell/tany_time.sif
 
 log = logs/01-baypass-init/$(MpTag)-sub$(Subsample).log
 error = logs/01-baypass-init/$(MpTag)-sub$(Subsample).err
