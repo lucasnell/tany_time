@@ -45,6 +45,9 @@ are written by `_R/make-job-lists.R`.
    - `01-baypass-init`: Ω (population covariance matrix) from all SNPs
      (`sub0`) and 3 subsamples. Existing Ω is from BayPass 2.31 with 8
      threads, affected by an Ω-update bug fixed in 2.4 (see `TODO.md`).
+   - All three steps run for a grid of missing-data settings
+     (`MIN_PROP_POOLS` 0.5, 0.75, 1.0; tags `mp050`/`mp075`/`mp100`;
+     0.75 main; since 2026-10-13).
    - `02-baypass-beta`: covariate model with Ω from all SNPs; 10 runs with
      different seeds; Ising β given as an argument. Current runs use
      `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),

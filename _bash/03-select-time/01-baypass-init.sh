@@ -10,7 +10,7 @@ conda activate baypass-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
+export INPUTS_PARENT_DIR="/staging/lnell/dna/baypass"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass/init"
 
 #' Number of retained MCMC samples. Set explicitly because BayPass 3.1
@@ -27,10 +27,16 @@ export PARENT_DIR_OUT="/staging/lnell/dna/baypass/init"
 #' job's progress (log file) before submitting the rest.
 export NVAL=5000
 
-export SUBSAMPLE=$1
+#' Arguments (from `baypass_init_info.txt`, written by `_R/make-job-lists.R`):
+#' 1. Missing-data setting tag (e.g., `mp075`; see `00-baypass-inputs.sh`).
+#' 2. Subsample: 0 = all SNPs; 1-3 = thinned subsamples (only run for the
+#'    main setting, to check Ω consistency).
+export MP_TAG=$1
+export SUBSAMPLE=$2
+export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}.tar.gz"
 
 if (( SUBSAMPLE < 0 )) || (( SUBSAMPLE > 3 )); then
-    echo "First arg to 01-baypass-init.sh must be >= 0 and <= 3." 1>&2
+    echo "Second arg (subsample) to 01-baypass-init.sh must be >= 0 and <= 3." 1>&2
     safe_exit 1
 fi
 
@@ -63,8 +69,8 @@ if (( SUBSAMPLE > 0 )); then
     INPUTS_DIR=${INPUTS_DIR%_3}
 fi
 
-export OUT_DIR="baypass-init-sub${SUBSAMPLE}"
-export OUT_FILE_PREFIX="tany-init-sub${SUBSAMPLE}"
+export OUT_DIR="baypass-init-${MP_TAG}-sub${SUBSAMPLE}"
+export OUT_FILE_PREFIX="tany-init-${MP_TAG}-sub${SUBSAMPLE}"
 
 
 mkdir ${OUT_DIR}

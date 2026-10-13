@@ -14,7 +14,9 @@
 #'
 #' The pools actually used (`time-pools.txt`, `space-pools.txt`) are written
 #' by `_R/pool-qc.R` from QC metrics (`02-allele-freqs/03-pool-qc`).
-#'   _bash/03-select-time/baypass_beta_info.txt   ising_beta,run,seed
+#'   _bash/03-select-time/baypass_inputs_info.txt  tag,min_prop_pools
+#'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
+#'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag
 #'
 
 library(tidyverse)
@@ -67,11 +69,33 @@ write_lines(space_pools, "_bash/samples/space-pools-cov30.txt")
 
 
 #'
-#' BayPass covariate runs: Ising beta of 0 and 1, 10 runs each, with seeds.
-#' This reproduces the seeds used for the 2025 runs
-#' (originally written via `clipr::write_clip`; see `02-baypass-beta.sub`).
+#' BayPass is run for a grid of missing-data settings: minimum proportion
+#' of pools with data at a SNP (decided 2026-10-13; all are reported, 0.75 is
+#' the main analysis). Tags are used in all BayPass file names.
 #'
+mp_df <- tibble(min_prop_pools = c(0.5, 0.75, 1),
+                tag = sprintf("mp%03i", round(100 * min_prop_pools)))
+MAIN_TAG <- "mp075"
+stopifnot(MAIN_TAG %in% mp_df$tag)
+mp_df |>
+    mutate(min_prop_pools = format(min_prop_pools, nsmall = 2)) |>
+    select(tag, min_prop_pools) |>
+    write_csv("_bash/03-select-time/baypass_inputs_info.txt",
+              col_names = FALSE)
+
+#' Omega runs: all SNPs (subsample 0) for every setting; thinned
+#' subsamples 1-3 (Omega consistency check) for the main setting only.
+bind_rows(tibble(tag = mp_df$tag, subsample = 0L),
+          tibble(tag = MAIN_TAG, subsample = 1:3)) |>
+    write_csv("_bash/03-select-time/baypass_init_info.txt", col_names = FALSE)
+
+#' Covariate runs: Ising beta of 0 and 1, 10 runs each, for every setting.
+#' Seeds reproduce those of the 2025 runs (originally written via
+#' `clipr::write_clip`) and are the same across settings, so settings can
+#' be compared run by run.
 set.seed(1323829402)
 x <- expand.grid(beta = 0:1, run = 1:10)
 x[["seed"]] <- sample.int(2^31-1, nrow(x))
-write_csv(x, "_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)
+crossing(as_tibble(x), tag = mp_df$tag) |>
+    arrange(tag, run, beta) |>
+    write_csv("_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)

@@ -1,15 +1,15 @@
 # baypass-init.sub
 
-# baypass for selection analysis on time samples
+# baypass core model to estimate Omega, per missing-data setting and subsample
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = logs/01-baypass-init/sub$(Process).log
-error = logs/01-baypass-init/sub$(Process).err
-output = logs/01-baypass-init/sub$(Process).out
+log = logs/01-baypass-init/$(MpTag)-sub$(Subsample).log
+error = logs/01-baypass-init/$(MpTag)-sub$(Subsample).err
+output = logs/01-baypass-init/$(MpTag)-sub$(Subsample).out
 
 executable = 01-baypass-init.sh
-arguments = $(Process)
+arguments = $(MpTag) $(Subsample)
 
 batch_name = "baypass-init"
 
@@ -17,14 +17,13 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
-
 ## Copying outputs to ResearchDrive:
-transfer_output_files = baypass-init-sub$(Process).tar.gz
+transfer_output_files = baypass-init-$(MpTag)-sub$(Subsample).tar.gz
 output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/init
 
 request_cpus = 8
 request_memory = 24GB
 request_disk = 50GB
 
-queue 4
-
+#' `baypass_init_info.txt` (tag,subsample) is written by `_R/make-job-lists.R`.
+queue MpTag,Subsample from baypass_init_info.txt

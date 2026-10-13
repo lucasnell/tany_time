@@ -4,12 +4,12 @@
 
 container_image = file:///staging/lnell/tany_time.sif
 
-log = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).log
-error = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).err
-output = logs/02-baypass-beta/beta$(IsingBeta)-run$(RunNumber).out
+log = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).log
+error = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).err
+output = logs/02-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).out
 
 executable = 02-baypass-beta.sh
-arguments = $(IsingBeta) $(RunNumber) $(RNGSeed)
+arguments = $(IsingBeta) $(RunNumber) $(RNGSeed) $(MpTag)
 
 batch_name = "baypass-beta"
 
@@ -19,7 +19,7 @@ requirements = (HasCHTCStaging == true)
 
 
 ## Copying outputs to ResearchDrive:
-transfer_output_files = baypass-beta$(IsingBeta)-run$(RunNumber).tar
+transfer_output_files = baypass-$(MpTag)-beta$(IsingBeta)-run$(RunNumber).tar
 output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/beta
 
 
@@ -27,7 +27,7 @@ request_cpus = 8
 request_memory = 20GB
 request_disk = 50GB
 
-#' `baypass_beta_info.txt` (ising_beta,run,seed) is written by
+#' `baypass_beta_info.txt` (ising_beta,run,seed,tag) is written by
 #' `_R/make-job-lists.R`.
-queue IsingBeta,RunNumber,RNGSeed from baypass_beta_info.txt
+queue IsingBeta,RunNumber,RNGSeed,MpTag from baypass_beta_info.txt
 

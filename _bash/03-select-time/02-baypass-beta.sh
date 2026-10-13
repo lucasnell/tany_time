@@ -13,7 +13,7 @@ conda activate baypass-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export INPUTS_TAR_FULL_PATH="/staging/lnell/dna/baypass/baypass-inputs.tar.gz"
+export INPUTS_PARENT_DIR="/staging/lnell/dna/baypass"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass/beta"
 
 #' Number of retained MCMC samples. Set explicitly because BayPass 3.1
@@ -35,8 +35,6 @@ export NVAL=5000
 #' between subsamples, I am using the one based on all SNPs, despite
 #' this not being as computationally efficient.
 #'
-export BP_INIT_TAR_FULL_PATH="/staging/lnell/dna/baypass/init/baypass-init-sub0.tar.gz"
-export OMEGA_FILE="tany-init-sub0_mat_omega.out"
 
 
 #' ========================================================================
@@ -46,6 +44,12 @@ export OMEGA_FILE="tany-init-sub0_mat_omega.out"
 export ISING_BETA=$1
 export RUN_NUM=$2
 export SEED=$3
+#' Missing-data setting tag (e.g., `mp075`; see `00-baypass-inputs.sh`).
+#' Inputs and Ω (from all SNPs, `sub0`) are those of this setting.
+export MP_TAG=$4
+export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}.tar.gz"
+export BP_INIT_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/init/baypass-init-${MP_TAG}-sub0.tar.gz"
+export OMEGA_FILE="tany-init-${MP_TAG}-sub0_mat_omega.out"
 
 
 if ! awk -v b="${ISING_BETA}" 'BEGIN { exit !(b ~ /^[0-9.]+$/ && b >= 0 && b <= 1) }'; then
@@ -75,8 +79,8 @@ require_files ${INPUTS_TAR_FULL_PATH} ${BP_INIT_TAR_FULL_PATH}
 
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})
 
-export OUT_DIR="baypass-beta${ISING_BETA}-run${RUN_NUM}"
-export OUT_FILE_PREFIX="tany-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_DIR="baypass-${MP_TAG}-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_FILE_PREFIX="tany-${MP_TAG}-beta${ISING_BETA}-run${RUN_NUM}"
 
 
 mkdir ${OUT_DIR}

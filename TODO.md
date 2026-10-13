@@ -10,6 +10,9 @@ On hold until the owner says to run them. Listed in dependency order.
       were updated 2026-10-09 and dry-run solved for linux-64, but the image
       has not been built or tested. Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
+- [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
+      `baypass-check-candidates.R` for the new BayPass output names
+      (missing-data tag) and to compare settings.
 - [ ] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
       `-nthreads 8`; BayPass 2.4 fixed a bug in the Ω update "introduced with
       parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but
@@ -162,9 +165,19 @@ On hold until the owner says to run them. Listed in dependency order.
       - Report the 2025 set (median coverage ≥ 30; `*-pools-cov30.txt`)
         as a sensitivity analysis.
       - Missing data per pool allowed in BayPass (masked pools → 0 counts;
-        `00-baypass-inputs.sh`). **Provisional:** `MIN_PROP_POOLS = 0.75`
-        (SNP kept if ≥ 75% of pools have data); OK for now, revisit
-        before running BayPass.
+        `00-baypass-inputs.sh`); `MIN_PROP_POOLS` = minimum proportion of
+        pools with data at a SNP. Literature search (2026-10-13): no standard
+        value for pooled/population-level data; practice ranges from no
+        missing data (e.g., Machado et al. 2021 required polymorphism in
+        every population) to call-rate thresholds like ≥ 90% per
+        population (kelp temporal study) and 0.6–0.8 in individual-level
+        RAD/GEA work. Ahrens et al. (F-word paper) found GEA results are
+        sensitive to small changes in missing-data filters; stricter
+        filters cut power. Missingness here tracks coverage, so it isn't
+        random with respect to abundance. Decided 2026-10-13: grid of 0.5,
+        0.75, 1.0 (tags `mp050`, `mp075`, `mp100`), all reported, 0.75 main;
+        implemented in `_bash/03-select-time/` (6 Ω jobs, 60 covariate
+        jobs).
       - Background (`_R/coverage-cutoff-check.R` → `_data/coverage-cutoff-check.csv`):
         5 pools failed outright (median 0–4), including 1988a (N = 76),
         2009b, and 2013b; 1982a, 1988a, 1991b, and 2013b have GC 46–63%

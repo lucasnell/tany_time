@@ -30,11 +30,19 @@ export COUNTS_IN="count_masked_time.sync.gz"
 export NAMES_IN="count_masked_time.names.gz"
 export PARENT_DIR_OUT="/staging/lnell/dna/baypass"
 
-#' Minimum proportion of pools with data (coverage > 0 after masking) for a
-#' SNP to be kept. BayPass treats a pool with 0 reads at a SNP as missing
-#' data (manual v3.1, section 2.2.1).
-#' PROVISIONAL value; see TODO.md.
-export MIN_PROP_POOLS=0.75
+#' Arguments (from `baypass_inputs_info.txt`, written by
+#' `_R/make-job-lists.R`):
+#' 1. Tag for this setting (e.g., `mp075`), used in all output names.
+#' 2. Minimum proportion of pools with data (coverage > 0 after masking)
+#'    for a SNP to be kept. BayPass treats a pool with 0 reads at a SNP as
+#'    missing data (manual v3.1, section 2.2.1). Run as a grid (0.5, 0.75,
+#'    1.0; 0.75 is the main analysis), and all are reported.
+export MP_TAG=$1
+export MIN_PROP_POOLS=$2
+if ! awk -v p="${MIN_PROP_POOLS}" 'BEGIN { exit !(p ~ /^[0-9.]+$/ && p > 0 && p <= 1) }'; then
+    echo "MIN_PROP_POOLS must be in (0, 1]" 1>&2
+    safe_exit 1
+fi
 
 
 
@@ -49,7 +57,7 @@ export MIN_PROP_POOLS=0.75
 require_files ${DATA_TAR_FULL_PATH} ${COUNTS_TAR_FULL_PATH}
 
 
-export OUT_DIR="baypass-inputs"
+export OUT_DIR="baypass-inputs_${MP_TAG}"
 # For sample info files:
 export SAMPLE_FILE_PREFIX="tany"
 
