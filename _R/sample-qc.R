@@ -2,7 +2,7 @@
 #'
 #' ```bash
 #' # Beforehand:
-#' # Download tar files from `01-fastp` step into the `~/_data/trimmed_reports`
+#' # Download tar files from `01-fastp` step into the `~/_data/_tany-time/trimmed/trimmed_reports`
 #' # directory.
 #' # Install `multiqc` into new conda environment (v 1.30):
 #'
@@ -12,7 +12,7 @@
 #'
 #'
 #' # Go to this directory of reports and un-tar all files
-#' cd ~/_data/trimmed_reports
+#' cd ~/_data/_tany-time/trimmed/trimmed_reports
 #' for f in *.tar.gz; do tar -xzf $f; done
 #' rm *.tar.gz
 #'
@@ -53,7 +53,7 @@ theme_set(theme_classic() %+replace%
 
 
 
-# read_tsv("~/_data/trimmed_reports/multiqc_data/multiqc_fastqc.txt",
+# read_tsv("~/_data/_tany-time/trimmed/trimmed_reports/multiqc_data/multiqc_fastqc.txt",
 #          col_types = cols()) |>
 #     filter()
 
@@ -119,7 +119,7 @@ if (!file.exists("_data/bed-summs.rds")) {
 #     mutate(test = as.integer(fails_gc == 0 & fails_dup == 0 & gc < 40),
 #            test2 = as.integer(gc < 50))
 
-fastqc <- read_tsv("~/_data/trimmed_reports/multiqc_data/multiqc_fastqc.txt",
+fastqc <- read_tsv("~/_data/_tany-time/trimmed/trimmed_reports/multiqc_data/multiqc_fastqc.txt",
                    col_types = cols()) |>
     select(Sample, `%GC`, total_deduplicated_percentage,
            per_sequence_gc_content, sequence_duplication_levels,
@@ -245,7 +245,7 @@ qc_df |> filter(median >= 30, !str_starts(sample, "KS-|H-|SN-")) |>
 
 
 # # Heatmap of pass / fail / warning output from multiqc report:
-# heatmap <- read_tsv("~/_data/trimmed_reports/multiqc_data/fastqc-status-check-heatmap.txt",
+# heatmap <- read_tsv("~/_data/_tany-time/trimmed/trimmed_reports/multiqc_data/fastqc-status-check-heatmap.txt",
 #                     col_types = cols()) |>
 #     rename(sample = `.`) |>
 #     pivot_longer(-sample, names_to = "stat", values_to = "flag") |>

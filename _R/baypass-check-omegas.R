@@ -48,7 +48,7 @@ fmd_df <- crossing(a = 1:length(omegas), b = 1:length(omegas)) |>
     arrange(desc(fmd))
 
 range(fmd_df$fmd)
-# [1] 0.3019383 0.3829098
+# [1] 0.2724682 3.7849116
 
 fmd_df
 

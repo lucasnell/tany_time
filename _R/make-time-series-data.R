@@ -7,9 +7,6 @@
 library(tidyverse)
 library(Rcpp)
 
-# Overwrite existing CSV?
-OVERWRITE <- FALSE
-
 
 sourceCpp("_R/snape-helpers.cpp")
 
@@ -110,6 +107,7 @@ ts_df <- candi_freqs |>
 #'     11. abund - Tanytarsus gracilentus abundance in the generation coinciding with this sample
 #'
 
-if (OVERWRITE || !file.exists("_data/timeseries-data.csv")) write_csv(ts_df, "_data/timeseries-data.csv")
+# Always written, so the file matches the current inputs after any rerun:
+write_csv(ts_df, "_data/timeseries-data.csv")
 
 

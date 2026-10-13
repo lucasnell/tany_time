@@ -179,14 +179,7 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Housekeeping
 
-- [ ] `_R/sample-qc.R` points to `~/_data/trimmed_reports`; reports are now in
-      `~/_data/_tany-time/trimmed/trimmed_reports/`.
-- [ ] `_R/make-time-series-plot.R` saves its main figure to
-      `~/Desktop/freq-abund-time.pdf`; point it at `_plots/`.
-- [ ] Move BLAST inputs/outputs off `~/Desktop` (`Tgraci_proteins.faa`,
-      `Tgraci-funct-Dmel.csv`) to a stable path.
-- [ ] `baypass-check-omegas.R`: the comment `range(fmd_df$fmd)` → 0.30–0.38
-      contradicts the printed table (max 3.78). Update the stale comment.
-- [ ] `candi_df.rds`, `candi_funcs_df.rds`, and `timeseries-data.csv` are
-      written only if absent; stale after any rerun.
-- [ ] `README.md` contains only "midge_archive".
+Done 2026-10-13: `sample-qc.R` report path; `make-time-series-plot.R` saves
+to `_plots/`; BLAST files moved to `~/_data/_tany-time/blast/`;
+`baypass-check-omegas.R` range comment (0.27–3.78); derived datasets
+written unconditionally; repo `README.md` written.

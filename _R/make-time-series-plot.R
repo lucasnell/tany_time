@@ -52,7 +52,7 @@ frq_ts_p <- freq_df |>
           axis.ticks.y.right = element_line(color = "gray70"),
           axis.title.x = element_blank())
 frq_ts_p
-ggsave("~/Desktop/freq-abund-time.pdf", frq_ts_p, width = 6, height = 4)
+ggsave("_plots/freq-abund-time.pdf", frq_ts_p, width = 6, height = 4)
 
 
 
@@ -70,7 +70,7 @@ freq_df |>
 #' 1. Q9VUD3 (sox21b), male genital, fertility
 #' 2. Q9VDD2 (SNF4Agamma), responses to starvation
 #'
-focal_snps <- "~/Desktop/Tgraci-genomics/Tgraci-funct-Dmel.csv" |>
+focal_snps <- "~/_data/_tany-time/blast/Tgraci-funct-Dmel.csv" |>
     read_csv(col_types = cols()) |>
     filter(grepl("Q9VUD3|Q9VDD2", saccver)) |>
     mutate(uniprot = str_split(saccver, "\\|") |> map_chr(\(x) x[[2]]),

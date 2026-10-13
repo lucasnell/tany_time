@@ -62,7 +62,8 @@ candi_df <- bf_df |> filter(bf_db >= 30)
 
 
 # For use in other analyses:
-if (!file.exists("_data/candi_df.rds")) write_rds(candi_df, "_data/candi_df.rds")
+# Always written, so the file matches the current BayPass outputs:
+write_rds(candi_df, "_data/candi_df.rds")
 
 
 
@@ -266,7 +267,7 @@ candi_funcs_df |>
     select(-desc)
 
 
-if (!file.exists("_data/candi_funcs_df.rds")) write_rds(candi_funcs_df, "_data/candi_funcs_df.rds")
+write_rds(candi_funcs_df, "_data/candi_funcs_df.rds")
 
 
 
@@ -274,7 +275,7 @@ if (!file.exists("_data/candi_funcs_df.rds")) write_rds(candi_funcs_df, "_data/c
 # BLAST Results ----
 # =============================================================================*
 
-faa_file <- "~/Desktop/Tgraci_proteins.faa"
+faa_file <- "~/_data/_tany-time/blast/Tgraci_proteins.faa"
 
 faa <- read.fasta(faa_file, "AA")
 names(faa) <- names(faa) |> trans2genes()
@@ -298,7 +299,7 @@ candi_funcs_faa <- candi_funcs_df |>
 #     imap(\(x, i) c(paste0(">", i), x)) |>
 #     unname() |>
 #     do.call(what = c) |>
-#     write_lines("~/Desktop/Tgraci-funct.faa")
+#     write_lines("~/_data/_tany-time/blast/Tgraci-funct.faa")
 
 
 
@@ -319,9 +320,9 @@ candi_funcs_faa <- candi_funcs_df |>
 #'
 #' Then did search:
 #'
-#' blastp -query ~/Desktop/Tgraci-funct.faa \
+#' blastp -query ~/_data/_tany-time/blast/Tgraci-funct.faa \
 #'      -db Dmel_UniProt \
-#'      -out ~/Desktop/Tgraci-funct-Dmel.csv \
+#'      -out ~/_data/_tany-time/blast/Tgraci-funct-Dmel.csv \
 #'      -outfmt 20
 #'
 #'
@@ -330,7 +331,7 @@ candi_funcs_faa <- candi_funcs_df |>
 #'
 #'
 
-blast_df <- "~/Desktop/Tgraci-funct-Dmel.csv" |>
+blast_df <- "~/_data/_tany-time/blast/Tgraci-funct-Dmel.csv" |>
     read_csv(col_types = cols()) |>
     group_by(qaccver) |>
     filter(evalue == min(evalue)) |>

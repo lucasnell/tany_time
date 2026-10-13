@@ -81,7 +81,7 @@ Scripts read large files by absolute path; none are in git.
 | `~/_data/_baypass/{baypass-inputs,init,beta}/` | BayPass inputs and outputs (local copy holds only `beta0` runs 1–10) |
 | `~/_data/midgenomes/` | Assemblies (`assemblies/<code>_assembly.fasta.gz`; `Ctenta2023` and `Saterr` added 2026-10-12 from NCBI, GCA_963573255.1 and GCA_033063855.1), GO terms, OrthoFinder HOG→GO tables |
 | `~/_data/Tgraci_genes.gff3` | Gene annotation |
-| `~/Desktop/Tgraci_proteins.faa`, `~/Desktop/Tgraci-funct-Dmel.csv` | Protein FASTA and BLASTP output used in `baypass-analysis.R` |
+| `~/_data/_tany-time/blast/` | Protein FASTA (`Tgraci_proteins.faa`), candidate-gene proteins (`Tgraci-funct.faa`), and BLASTP output (`Tgraci-funct-Dmel.csv`) used in `baypass-analysis.R` and `make-time-series-plot.R` (moved from `~/Desktop` 2026-10-13); BLAST database in `~/blastdb/` |
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |
 | `/Volumes/Lucas512/...` | BAM coverage `.bed.gz` files (external drive) |
 | Cluster: `/staging/lnell/`, `pelican://chtc.wisc.edu/researchdrive/arives/CHTC/` | Cluster inputs and outputs |
@@ -91,10 +91,10 @@ Scripts read large files by absolute path; none are in git.
 - R: tidyverse, native pipe `|>`, `\(x)` lambdas, 4-space indent,
   `#'` comment blocks for prose, `# ---- ` section headers with `=*` rules.
 - Derived `.rds` saved with `compress = "gz"`.
-- Many writes are guarded by `if (!file.exists(...))` (or an `OVERWRITE`
-  flag), so a saved file can be older than the code that made it. Check
-  before trusting one; `_R/baypass-check-candidates.R` does this for
-  `candi_df.rds`.
+- Derived datasets are written unconditionally (since 2026-10-13), so they
+  match the code after a rerun. Only slow caches are written if absent
+  (`_data/bed-summs.rds` in `_R/sample-qc.R`; `allele-freqs-time-crash.rds`
+  in legacy `_R/crash-test.R`); delete them to rebuild.
 - Contigs are ordered as `factor(contig, levels = paste0("CONTIG", 1:45))`.
 - Pool names encode site, generation, and two-digit year, e.g.
   `SN-2-07_S31` = SN, generation 2 (`b`), 2007. Years < 70 are 2000s.
