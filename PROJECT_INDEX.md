@@ -158,7 +158,9 @@ at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
 
 Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
 `-maxcov` to the observed maximum leaves output unchanged; →
-`_data/npstat-maxcov-check.txt`).
+`_data/npstat-maxcov-check.txt`) and `v2-tool-check.sh` (every tool call
+runs with the versions pinned in `_apptainer/*.yml`, and outputs that could
+have changed match the v1.0.0 pins; → `_data/v2-tool-check.txt`).
 
 ## `_refs/`
 

@@ -67,8 +67,9 @@ rm ${BAM/.bam/_unfiltered.bam}
 
 
 # Takes about an hour
-# Written as VCF, not BCF: vcftools 0.1.17 crashed reading some bcftools 1.24
-# BCFs (empty or all-1/1 test files) but read the same calls as VCF.
+# Written as VCF, not BCF: in local tests (2026-10-13), vcftools aborted
+# reading several valid toy BCFs (from bcftools 1.22 and 1.24, with vcftools
+# 0.1.16 and 0.1.17; trigger not isolated) but read the same calls as VCF.
 bcftools mpileup -Ou --config ont -f ${GENOME} ${BAM} \
     | bcftools call -P 0.01 -mv --threads 2 -Oz -o ${VCF}
 check_exit_status "bcftools mpileup | call" $?

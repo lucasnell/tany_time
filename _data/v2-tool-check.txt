@@ -1,0 +1,40 @@
+Tool versions from _bash/_apptainer/*.yml, checked 2026-10-13
+
+PASS: fastp 1.4.0 with 01-fastp flags
+PASS: fastqc 0.13.0 --outdir
+PASS: pool-qc-files.py reads fastp JSON (gc and dup not NA)
+PASS: bbmerge.sh 40.02
+PASS: samtools view -f 0x4
+PASS: samtools view -q 20 -F 0x100
+PASS: samtools index -@
+PASS: samtools idxstats
+PASS: samtools mpileup -B -Q 25 -l -f (non-empty)
+PASS: samtools fastq -@
+PASS: minimap2 2.31 -x map-ont -K 1G -2 | samtools sort
+PASS: samtools faidx --length 80
+PASS: samtools view --threads
+PASS: bcftools 1.24 mpileup --config ont | call -P -mv
+PASS: vcftools 0.1.17 --gzvcf (04-ont-pi route)
+PASS: pi identical to v1.0.0 route (bcftools 1.22 BCF, vcftools 0.1.16)
+PASS: kraken2 2.17.2 flags
+PASS: kraken2-build flags
+PASS: seqtk sample flags
+PASS: flye 2.9.6 flags
+PASS: medaka_consensus 2.2.2 flags
+PASS: medaka model r941_min_hac_g507 exists
+PASS: polypolish filter 0.7.1 flags
+PASS: Python 3.13.5 vs 3.14.8: mp.sync identical
+PASS: Python 3.13.5 vs 3.14.8: masked_masked.sync identical
+PASS: Python 3.13.5 vs 3.14.8: masked.bed identical
+PASS: Python 3.13.5 vs 3.14.8: counts.sync identical
+PASS: Python 3.13.5 vs 3.14.8: snape.sync identical
+PASS: Python 3.13.5 vs 3.14.8: qc.tsv identical
+PASS: Python 3.13.5 vs 3.14.8: pickles (ref, cov, indel) load to equal objects
+PASS: poolfstat 3.1.0: popsync2pooldata, slots, pooldata2genobaypass
+PASS: BayPass 3.1 with 01-baypass-init options
+PASS: BayPass 3.1 with 03-baypass-beta options
+PASS: BayPass: files gzipped by 03-baypass-beta exist
+PASS: BayPass: summary_betai.out header as read in _R/
+PASS: BayPass: summary_pi_xtx.out has M_P, M_XtX, XtXst
+
+PASS: 36; FAIL: 0
