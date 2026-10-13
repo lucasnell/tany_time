@@ -93,8 +93,12 @@ On hold until the owner says to run them. Listed in dependency order.
        the alternative at 16. Small; local.
 2. [ ] **Explain the shared direction of the candidates.** All 33 have the
        on-average-rarer allele more common at low abundance (random SNPs: 52%).
-       Species contamination is ruled out (genitalia-checked males; no other
-       *Tanytarsus* in Mývatn). Remaining explanations to test:
+       Misidentified *Tanytarsus* is ruled out (genitalia-checked males; no
+       other *Tanytarsus* in Mývatn). DNA carried over from other trap taxa
+       (more likely when T. gracilentus was scarce) is now tested by
+       competitive mapping, the mitochondrial contamination index
+       (`_R/mito-contam.R`), and Kraken2 (`_R/kraken-summary.R`). Other
+       explanations to test:
        - noise in the smallest, lowest-coverage pools (1997a/b, 2013a: 48, 38,
          28 haplotypes) combined with picking the tail of 433k tests;
        - a cryptic lineage or immigrants at low abundance;
@@ -133,9 +137,8 @@ On hold until the owner says to run them. Listed in dependency order.
       median-coverage cutoff; implemented, not yet run).
       - Metrics: missing-data rate after masking, private SNPs, duplication
         rate, GC content, mapping rate (not pN/pS: annotation too poor).
-        Computed by `_bash/02-allele-freqs/03-pool-qc`; bounds applied in
-        `_R/pool-qc.R`. Set bounds after seeing the metrics but before any
-        allele-frequency results, and record the rationale in the script.
+        Computed by `_bash/02-allele-freqs/03-pool-qc`; rule applied in
+        `_R/pool-qc.R` before any allele-frequency results exist.
       - Rule: outlier in a robust PCA of the metrics (decided 2026-10-10).
         Implemented as ROBPCA (`rrcov::PcaHubert`; `rrcov` 1.7.7 installed
         2026-10-10) with the outlier-score threshold calibrated by
