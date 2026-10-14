@@ -1,0 +1,70 @@
+minimap2 2.31-r1302; checked 2026-10-14
+
+== reference PV994466.1 Tanytarsus verralli mitochondrion, complete genome
+genes (start end name; from the NCBI feature table):
+    263 1303 ND2; 1669 3204 COX1; 3320 4003 COX2; 4196 4363 ATP8; 4357 5034
+  ATP6; 5115 5903 COX3; 5990 6343 ND3; 8583 6852 ND5; 10021 8684 ND4; 10305
+  10015 ND4L; 10443 10985 ND6; 11162 12298 CYTB; 13547 12603 ND1
+contig blocks (contig, length: contig start-end ~ ref start-end strand identity; unaligned bp):
+  with_opts_assembly:contig_10, 29542 bp:
+    3692-7753 ~ 11482-15889 - 0.760
+    16073-17369 ~ 1806-3104 - 0.840
+    unaligned: 24185 bp
+  draft_meta:meta, 21763 bp:
+    4358-5654 ~ 1806-3104 + 0.840
+    13974-18037 ~ 11482-15889 + 0.760
+    unaligned: 16404 bp
+  draft_trim:trim, 13677 bp:
+    8332-9628 ~ 1806-3104 - 0.840
+    unaligned: 12381 bp
+  r2_meta_assembly:contig_1, 28829 bp:
+    18042-22102 ~ 11482-15889 - 0.760
+    unaligned: 24769 bp
+  r2_meta_assembly:contig_2, 32209 bp:
+    446-3512 ~ 11489-14849 - 0.738
+    18095-22155 ~ 11482-15889 + 0.759
+    unaligned: 25083 bp
+  r2_trim_assembly:contig_1, 30263 bp:
+    6022-7318 ~ 1806-3104 + 0.840
+    15641-19702 ~ 11482-15889 + 0.760
+    unaligned: 24906 bp
+  r2_trim_assembly:contig_6, 6124 bp:
+    unaligned: 6124 bp
+
+== reference NC_069313.1 Tanytarsus formosanus mitochondrion, complete genome
+genes (start end name; from the NCBI feature table):
+    1 68 trnI(gat); 143 75 trnQ(ttg); 158 227 trnM(cat); 228 1259 ND2; 1282
+  1348 trnW(tca); 1418 1350 trnC(gca); 1504 1439 trnY(gta); 1523 3061 COX1;
+  3082 3147 trnL(taa); 3178 3861 COX2; 3876 3947 trnK(ctt); 3953 4021
+  trnD(gtc); 4022 4186 ATP8; 4180 4857 ATP6; 4863 5648 COX3; 5657 5722
+  trnG(tcc); 5723 6076 ND3; 6082 6147 trnA(tgc); 6161 6226 trnR(tcg); 6229
+  6294 trnN(gtt); 6295 6362 trnS(gct); 6366 6439 trnE(ttc); 6507 6441
+  trnF(gaa); 8255 6522 ND5; 8321 8256 trnH(gtg); 9658 8324 ND4; 9942 9652
+  ND4L; 9972 10038 trnT(tgt); 10105 10039 trnP(tgg); 10120 10650 ND6; 10771
+  11907 CYTB; 11916 11983 trnS(tga); 12941 12003 ND1; 13011 12945 trnL(tag);
+  14465 13012 rrn16; 14537 14466 trnV(tac); 15368 14537 rrn12
+contig blocks (contig, length: contig start-end ~ ref start-end strand identity; unaligned bp):
+  with_opts_assembly:contig_10, 29542 bp:
+    3630-6505 ~ 12315-15258 - 0.813
+    12736-17390 ~ 1642-6129 - 0.768
+    unaligned: 22013 bp
+  draft_meta:meta, 21763 bp:
+    4337-9443 ~ 1642-6416 + 0.743
+    15143-18099 ~ 12234-15258 + 0.812
+    unaligned: 13701 bp
+  draft_trim:trim, 13677 bp:
+    4541-9649 ~ 1642-6416 - 0.744
+    unaligned: 8569 bp
+  r2_meta_assembly:contig_1, 28829 bp:
+    17980-20855 ~ 12315-15258 - 0.813
+    unaligned: 25954 bp
+  r2_meta_assembly:contig_2, 32209 bp:
+    477-2352 ~ 12234-14166 - 0.798
+    19263-22218 ~ 12234-15258 + 0.811
+    unaligned: 27379 bp
+  r2_trim_assembly:contig_1, 30263 bp:
+    6001-10656 ~ 1642-6129 + 0.769
+    16889-19764 ~ 12315-15258 + 0.813
+    unaligned: 22733 bp
+  r2_trim_assembly:contig_6, 6124 bp:
+    unaligned: 6124 bp

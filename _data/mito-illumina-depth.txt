@@ -1,0 +1,28 @@
+minimap2 2.31-r1302, samtools 1.24; checked 2026-10-14
+first 4000000 read pairs per library; T. gracilentus assembly 91827299 bp
+
+== MyKS-19-B_S18 (DNA): 1208000000 bp read; nuclear expectation 13.2x; reads mapped 148877, with MAPQ >= 20 98100
+mean depth in 1-kb bins (bin start kb: depth):
+   0:    114   1:   1287   2:    628   3:    540   4:    425
+   5:    519   6:    764   7:    737   8:    737   9:    794
+  10:    783  11:    722  12:    706  13:    749  14:    743
+  15:    507  16:    634  17:    724  18:    715  19:    490
+  20:    140  21:    169  22:   2376  23:    286  24:   1658
+  25:    703  26:    433  27:   1544  28:   1247  29:     65
+gene region (4-19 kb), MAPQ >= 20: 66959 reads, identity 0.9934
+COI barcodes (barcode: reads, identity):
+  MN679642.1: 4, 0.9449
+  MZ659759.1: 2665, 0.9858
+
+== TanyAdult_S1 (RNA): 1208000000 bp read; RNA-seq, depth = transcription; reads mapped 1661090, with MAPQ >= 20 1646952
+mean depth in 1-kb bins (bin start kb: depth):
+   0:      0   1:      1   2:      5   3:    140   4:    605
+   5:   7624   6:   4317   7:  31620   8:   3809   9:   6615
+  10:   2194  11:   3259  12:    593  13:  49535  14:  16650
+  15:  24594  16:  71645  17:  20808  18:   2600  19:     29
+  20:      1  21:      0  22:     17  23:      0  24:      0
+  25:     19  26:      0  27:      1  28:     22  29:      0
+gene region (4-19 kb), MAPQ >= 20: 1631922 reads, identity 0.9946
+COI barcodes (barcode: reads, identity):
+  MN679642.1: 767, 0.9451
+  MZ659759.1: 220905, 0.9881

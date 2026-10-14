@@ -1,0 +1,25 @@
+Flye 2.9.6-b1802, minimap2 2.31-r1302, samtools 1.24, seqtk 1.5; checked 2026-10-14
+round-1 reads: 7245 (cached, >= 300 bp aligned to the bait)
+
+== trim
+round 1: core contig_10:7742-21418 of the 29.5-kb contig
+round 2: 36051 reads, Flye exit 0; pick_contig found no 13-22 kb contig
+  contig_1 30263 340 N
+  contig_6 6124 6819 N
+
+== strict
+round 1: 303 reads, Flye exit 0; pick_contig found no 13-22 kb contig (option stops)
+  contig_1 22026 47 N
+  contig_3 2863 40 Y
+
+== meta
+round 1: Flye exit 0; pick_contig chose contig_3
+  contig_3 21763 703 N
+  contig_1 2845 47 Y
+round 2: 60664 reads, Flye exit 0; pick_contig found no 13-22 kb contig
+  contig_2 32209 13 N
+  contig_1 28829 83 N
+
+== meta_gs
+round 1: Flye exit 2; pick_contig found no 13-22 kb contig (option stops)
+  (no assembly)

@@ -161,6 +161,17 @@ Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
 `_data/npstat-maxcov-check.txt`) and `v2-tool-check.sh` (every tool call
 runs with the versions pinned in `_apptainer/*.yml`, and outputs that could
 have changed match the v1.0.0 pins; → `_data/v2-tool-check.txt`).
+Mitogenome diagnostics (local nanopore reads; cache in
+`_data/mito-flye-cache/`): `mito-flye-round1.sh` (round 1 as written and
+with `--genome-size`/`--asm-coverage`), `mito-contig-diag.sh` (COI hits,
+repeats, read depth along the contig), `mito-round1-options.sh` (trim,
+strict recruitment, `--meta`, each through round 2),
+`mito-contig-vs-ref.sh` (contigs vs Tanytarsus verralli and T. formosanus
+mitogenomes), `mito-long-reads.sh` (are reads > 17 kb mitochondrial),
+`mito-illumina-depth.sh` (Illumina depth along the contig and identity to
+it and to the COI barcodes), `mito-old-assemblies.sh` (mitochondrial
+contigs in the 2019 whole-genome assemblies);
+outputs `_data/mito-*.txt`.
 
 ## `_refs/`
 

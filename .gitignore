@@ -25,3 +25,6 @@ _data/baypass-inputs
 
 # HTCondor logs written when submitting from the clone on the cluster
 _bash/**/logs/
+
+# local cache for _bash/tests/mito-*.sh
+_data/mito-flye-cache/

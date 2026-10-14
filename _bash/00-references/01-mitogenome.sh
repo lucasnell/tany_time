@@ -147,7 +147,8 @@ check_exit_status "polypolish polish" $?
 MITO_LEN=$(grep -v "^>" Tgraci_mitogenome.fasta | tr -d '\n' | wc -c)
 echo -e "barcode\tbarcode_len\taligned_bp\tidentity\tmitogenome_len" \
     > coi-check.tsv
-minimap2 -x asm20 --secondary=no Tgraci_mitogenome.fasta tgraci-coi.fasta \
+# -c: base-level alignment, so column 10 / 11 is the actual identity
+minimap2 -c -x asm20 --secondary=no Tgraci_mitogenome.fasta tgraci-coi.fasta \
     2> /dev/null \
     | awk -v ml=${MITO_LEN} 'BEGIN{OFS="\t"}
         {print $1, $2, $4 - $3, $10 / $11, ml}' >> coi-check.tsv

@@ -87,6 +87,34 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         `_data/coi-barcode-selection.csv`; *Procladius* at genus level since
         *P. islandicus* has no NCBI sequences). Index per pool and taxon:
         `_R/mito-contam.R` (relative, not a DNA fraction).
+        - [ ] **`01-mitogenome` fails (first run 2026-10-14); decide how to
+          build the reference.** Round-1 Flye assembles nothing at ~2,000x
+          coverage (`--genome-size 16k --asm-coverage 150` fixes that).
+          Every successful assembly is a 28-32 kb linear contig: ~13.6 kb
+          collinear with Tanytarsus gene order plus AT-rich sequence with a
+          ~2.8-kb tandem repeat where the control region sits; trimming,
+          stricter recruitment, and `--meta` all fail `pick_contig`
+          (13-22 kb). Long reads (> 17 kb) mostly match the gene region at
+          mitochondrial identity, but 8 of 60 carry a short internal piece
+          flanked by > 2 kb of other sequence (NUMT-like). Illumina DNA
+          depth (pool MyKS-19-B, 4M pairs): the control-region-side
+          sequence is at mitochondrial-level depth (140-2,400x vs 500-800x
+          in the gene region; nuclear ~13x). Best supported: a long,
+          repeat-rich control region (mitogenome >= ~22 kb); the circle is
+          not closed and the repeat array's length is unreliable. The 2019
+          NextDenovo genome assembly has a 66.4-kb contig with the gene
+          region twice, 44,625 bp apart, separated by ~28.7 kb of control
+          region including ~8 copies of a ~2.5-kb unit (copies ~89%
+          identical); SMARTdenovo shows ~5 copies on each side of the gene
+          region. If right, the mitogenome is ~44.6 kb (unverified).
+          Goal (owner, 2026-10-14): a publication-quality mitogenome.
+          (TanyAdult_S1/TanyJuven_S2 are RNA-seq of Myvatn adults and
+          juveniles, so their ~0 depth there says nothing about it.)
+          **COI check:** the DNA pool and the adult RNA-seq match MZ659759.1
+          (98.6-98.8%) but MN679642.1 only at ~94.5% (4 and 767 reads vs
+          2,665 and 220,905), so requiring >= 98% for both barcodes would
+          reject a correct assembly. Scripts and outputs:
+          `_bash/tests/mito-*.sh` → `_data/mito-*.txt`.
       - [x] Kraken2 diagnostic of unmapped reads (`01-variant-calling/05-kraken`;
         `kraken-env` in container v2.1.0+). Needs a Kraken2 database on
         staging (PlusPF-16 suggested). Reports summarized by

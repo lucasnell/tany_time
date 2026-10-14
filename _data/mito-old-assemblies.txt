@@ -1,0 +1,55 @@
+minimap2 2.31-r1302; checked 2026-10-14
+
+== flye/contigs_flye
+contig contig_1981: 21215 bp, A+T 0.764
+  pieces >= 500 bp (piece start-end ~ contig start-end, strand, aligned bp, identity), by contig position:
+    genes        0-15901 ~   2887- 18793 + 15906 1.000
+    CR_right     0- 2423 ~  18792- 21215 +  2423 1.000
+    CR_right  2522- 3200 ~   1090-  1760 +   684 0.917
+    CR_left    761- 3600 ~     46-  2888 +  2843 0.994
+    CR_right  4176- 5954 ~     50-  1760 +  1784 0.920
+    CR_right  6957- 8794 ~      4-  1760 +  1843 0.916
+
+== necat/contigs_necat
+  no contig with MZ659759.1
+
+== nextdenovo/contigs_next
+contig ctg000860: 66354 bp, A+T 0.802
+  pieces >= 500 bp (piece start-end ~ contig start-end, strand, aligned bp, identity), by contig position:
+    CR_right     0-10043 ~  17887- 27937 + 10059 0.997
+    genes        0-15901 ~   1975- 17888 + 15917 0.999
+    genes        0-15901 ~  46600- 62577 + 15987 0.994
+    CR_left      0- 2472 ~  21467- 23851 +  2560 0.874
+    CR_left      0- 2472 ~  24231- 26688 +  2570 0.895
+    CR_left      0- 2472 ~  27052- 29473 +  2565 0.884
+    CR_left      0- 2472 ~  30115- 32551 +  2566 0.892
+    CR_left      0- 2472 ~  33193- 35636 +  2556 0.900
+    CR_left      0- 2472 ~  36282- 38721 +  2571 0.890
+    CR_left      0- 2472 ~  39622- 42088 +  2567 0.901
+    CR_left      0- 3600 ~  42997- 46601 +  3612 0.993
+    CR_left   1624- 3600 ~      0-  1976 +  1976 1.000
+    CR_right     0- 3727 ~  62576- 66354 +  3781 0.981
+    CR_right  2220- 8794 ~  37804- 45473 +  7856 0.802
+  gene-region starts 44625 apart (circumference if the path is right)
+
+== smartdenovo/contigs_smart
+contig utg319: 55952 bp, A+T 0.831
+  pieces >= 500 bp (piece start-end ~ contig start-end, strand, aligned bp, identity), by contig position:
+    CR_right  2562-10038 ~     13-  8988 +  9071 0.804
+    genes        0-15901 ~  18331- 34247 + 15918 0.999
+    CR_left      0- 2472 ~   1294-  3664 +  2580 0.852
+    CR_left      0- 2472 ~   4803-  7285 +  2565 0.909
+    CR_left      0- 2472 ~   7929- 10506 +  2605 0.905
+    CR_left      0- 2472 ~  11405- 13827 +  2538 0.907
+    CR_left      0- 2472 ~  37818- 40196 +  2557 0.873
+    CR_left      0- 2472 ~  40579- 43068 +  2575 0.903
+    CR_left      0- 2472 ~  43700- 46110 +  2557 0.890
+    CR_left      0- 2472 ~  46749- 49287 +  2566 0.931
+    CR_left      0- 2472 ~  49931- 52355 +  2551 0.900
+    CR_left      0- 2918 ~  52999- 55915 +  2938 0.980
+    CR_left      0- 3600 ~  14726- 18332 +  3609 0.996
+    CR_right  2486- 8794 ~   9793- 17204 +  7521 0.814
+    CR_right  5311- 9753 ~     13-  4627 +  4691 0.919
+    CR_right     0- 9762 ~  34246- 44042 +  9805 0.994
+    CR_right  2446- 9762 ~   2914- 11492 +  8641 0.832
+    CR_right  2220- 9763 ~   6385- 14814 +  8560 0.857

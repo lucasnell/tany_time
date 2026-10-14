@@ -1,0 +1,68 @@
+minimap2 2.31-r1302, samtools 1.24; checked 2026-10-14
+contigs (name, length):
+  contig_10 29542
+
+COI barcode hits (barcode, barcode bp, contig, start, end, strand, aligned bp, identity):
+  MZ659759.1 622 contig_10 16810 17430 - 622 0.987
+  MN679642.1 653 contig_10 16812 17463 - 653 0.939
+
+self-alignments >= 500 bp off the diagonal (start-end ~ matching start-end, strand, aligned bp, identity):
+  contig_10 19787-29542 ~ 19787-26751 + 9818 0.702
+  contig_10 21719-26751 ~ 24555-29542 + 5131 0.943
+  contig_10 25834-28293 ~ 0-2472 + 2570 0.896
+  contig_10 0-2472 ~ 25834-28293 + 2570 0.896
+  contig_10 23073-25453 ~ 0-2472 + 2559 0.873
+  contig_10 0-2472 ~ 23073-25453 + 2559 0.873
+  contig_10 27383-29446 ~ 21719-23764 + 2147 0.903
+  contig_10 21719-23764 ~ 27383-29446 + 2147 0.903
+  contig_10 26098-28293 ~ 0-2472 + 2561 0.803
+  contig_10 0-2472 ~ 26098-28293 + 2561 0.803
+  contig_10 25828-28293 ~ 250-2472 + 2503 0.842
+  contig_10 250-2472 ~ 25828-28293 + 2503 0.842
+  contig_10 23337-25453 ~ 0-2472 + 2550 0.779
+  contig_10 0-2472 ~ 23337-25453 + 2550 0.779
+  contig_10 250-2472 ~ 23067-25453 + 2396 0.876
+  contig_10 19773-20877 ~ 19773-20894 + 1137 0.949
+  contig_10 21719-22870 ~ 27383-28464 + 1153 0.922
+  contig_10 27383-28464 ~ 21719-22870 + 1153 0.922
+  contig_10 28469-29393 ~ 22875-23812 + 937 0.970
+  contig_10 22875-23812 ~ 28469-29393 + 937 0.970
+  contig_10 4-804 ~ 4-723 + 800 0.899
+  contig_10 0-785 ~ 28655-29446 + 794 0.971
+  contig_10 28655-29446 ~ 0-785 + 794 0.971
+  contig_10 20339-20845 ~ 20373-20896 + 523 0.952
+  contig_10 1804-2472 ~ 22021-22699 + 683 0.917
+  contig_10 22021-22699 ~ 1804-2472 + 683 0.917
+
+recruited reads mapped: 7245 of 7245
+mean read depth in 1-kb bins (contig, bin start kb, depth):
+  contig_10 0 7
+  contig_10 1 20
+  contig_10 2 42
+  contig_10 3 74
+  contig_10 4 120
+  contig_10 5 183
+  contig_10 6 263
+  contig_10 7 404
+  contig_10 8 600
+  contig_10 9 895
+  contig_10 10 1398
+  contig_10 11 2131
+  contig_10 12 2907
+  contig_10 13 3199
+  contig_10 14 3380
+  contig_10 15 2055
+  contig_10 16 2164
+  contig_10 17 3587
+  contig_10 18 3327
+  contig_10 19 2658
+  contig_10 20 1427
+  contig_10 21 403
+  contig_10 22 50
+  contig_10 23 40
+  contig_10 24 36
+  contig_10 25 32
+  contig_10 26 27
+  contig_10 27 23
+  contig_10 28 19
+  contig_10 29 12
