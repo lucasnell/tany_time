@@ -50,7 +50,7 @@ L=$(awk '!/^>/ {n += length($0)} END {print n}' ${ASM})
 samtools faidx ${ASM} ${C}:3600-19500 | sed '1s/.*/>genes/' > genes.fa
 samtools faidx ${ASM} ${C}:1-3600 | sed '1s/.*/>CR_left/' > cr.fa
 samtools faidx ${ASM} ${C}:19500-${L} | sed '1s/.*/>CR_right/' >> cr.fa
-samtools faidx ${COI} MZ659759.1 > coi.fa
+cp ${COI} coi_all.fa && samtools faidx coi_all.fa MZ659759.1 > coi.fa
 
 {
     echo "minimap2 $(minimap2 --version); checked $(date +%Y-%m-%d)"

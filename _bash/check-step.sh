@@ -67,6 +67,52 @@ extra () { :; }
 
 case "${STEP_PATH}" in
 
+    00-basecall/01-split-fast5)
+        JOB_IDS=(split-fast5)
+        FILES=(${S}/dna/ont/fast5_chunks/manifest.tsv)
+        extra () {
+            grep -h "fast5 files:\|archive MD5:" ${LOG_DIR}/split-fast5.out 2> /dev/null
+            local m=$(grep -h "archive MD5:" ${LOG_DIR}/split-fast5.out 2> /dev/null)
+            [ -n "${m}" ] && echo "${m}" | awk '{exit !($3 == $5)}' \
+                || problem "archive MD5 missing or not as expected"
+            local mf=${S}/dna/ont/fast5_chunks/manifest.tsv
+            if [ -f ${mf} ]; then
+                local n_chunk=$(cut -f 1 ${mf} | sort -u | wc -l | tr -d " ")
+                local n_tar=$(ls ${S}/dna/ont/fast5_chunks/chunk_*.tar 2> /dev/null | wc -l | tr -d " ")
+                echo "chunks in manifest: ${n_chunk}; chunk tars on staging: ${n_tar}"
+                (( n_chunk == n_tar )) || problem "manifest and chunk tars disagree"
+            fi
+        } ;;
+
+    00-basecall/02-dorado)
+        for f in ${S}/dna/ont/fast5_chunks/chunk_*.tar; do
+            [ -f "${f}" ] || continue
+            c=$(basename ${f} .tar)
+            JOB_IDS+=(${c})
+            FILES+=(${S}/dna/ont/dorado/${c}.bam ${S}/dna/ont/dorado/${c}_summary.tsv)
+        done
+        extra () {
+            local n=0 r
+            for id in "${JOB_IDS[@]}"; do
+                r=$(grep -h "Simplex reads basecalled" ${LOG_DIR}/${id}.out 2> /dev/null \
+                    | grep -oE "[0-9]+$" | tail -n 1)
+                n=$((n + ${r:-0}))
+            done
+            echo "reads basecalled (all chunks with logs): ${n}"
+            grep -h "Samples/s" ${LOG_DIR}/*.out 2> /dev/null \
+                | grep -oE "[0-9.]+e\+[0-9]+" \
+                | awk '{s += $1; k++} END {if (k) printf "mean speed: %.3g samples/s over %d jobs\n", s / k, k}'
+        } ;;
+
+    00-basecall/03-combine)
+        JOB_IDS=(combine)
+        FILES=(${S}/dna/ont/basecalls_dorado-0.9.6_sup.fastq.gz
+               ${S}/dna/ont/basecalls_dorado-0.9.6_sup--summary.tsv.gz)
+        extra () {
+            grep -h "chunks:\|all reads:\|FASTQ reads:" ${LOG_DIR}/combine.out 2> /dev/null \
+                || problem "no totals in combine.out"
+        } ;;
+
     00-references/01-mitogenome)
         JOB_IDS=(mitogenome)
         FILES=(${S}/Tgraci_mitogenome.tar)

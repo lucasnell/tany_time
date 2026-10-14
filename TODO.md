@@ -108,6 +108,13 @@ Follow `_bash/RERUN-CHECKLIST.md`.
           identical); SMARTdenovo shows ~5 copies on each side of the gene
           region. If right, the mitogenome is ~44.6 kb (unverified).
           Goal (owner, 2026-10-14): a publication-quality mitogenome.
+          - [ ] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
+            2026-10-14): copy `ives_fast5.tar.bz2` to staging, run
+            `00-setup.sh`, then the three steps. Afterwards switch
+            `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup
+            model (container rebuild to bundle it).
+          - [ ] Review `_data/mito-reassemble.txt` (four assemblers on all
+            mitochondrial reads; repeat bridging and Illumina copy number).
           (TanyAdult_S1/TanyJuven_S2 are RNA-seq of Myvatn adults and
           juveniles, so their ~0 depth there says nothing about it.)
           **COI check:** the DNA pool and the adult RNA-seq match MZ659759.1

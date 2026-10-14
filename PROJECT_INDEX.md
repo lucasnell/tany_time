@@ -8,7 +8,12 @@ Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`;
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
-1. `_bash/00-references/` (cluster, once): `01-mitogenome` (T. gracilentus
+1. `_bash/00-basecall/` (cluster, optional; set up 2026-10-14, not yet run):
+   `00-setup.sh` (Dorado 0.9.6 + R9.4.1 sup model to staging) →
+   `01-split-fast5` (330-GB raw-signal archive → 20-file chunks, MD5
+   check) → `02-dorado` (GPU, one job per chunk) → `03-combine` (q >= 10
+   FASTQ + summary).
+   `_bash/00-references/` (cluster, once): `01-mitogenome` (T. gracilentus
    mitogenome from nanopore reads; fails unless COI barcodes match) →
    `02-hologenome` (combined reference: T. gracilentus + 2 *Chironomus* +
    2 Orthocladiinae nuclear genomes, the mitogenome, and COI barcodes of
@@ -170,7 +175,9 @@ strict recruitment, `--meta`, each through round 2),
 mitogenomes), `mito-long-reads.sh` (are reads > 17 kb mitochondrial),
 `mito-illumina-depth.sh` (Illumina depth along the contig and identity to
 it and to the COI barcodes), `mito-old-assemblies.sh` (mitochondrial
-contigs in the 2019 whole-genome assemblies);
+contigs in the 2019 whole-genome assemblies), `mito-reassemble.sh` (four
+assemblers on all mitochondrial reads, with repeat-structure tests);
+`dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);
 outputs `_data/mito-*.txt`.
 
 ## `_refs/`

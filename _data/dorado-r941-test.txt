@@ -1,0 +1,6 @@
+Dorado 0.9.6+0949eb8, model dna_r9.4.1_e8_sup@v3.6; checked 2026-10-14
+first FAST5 file of the archive; 200 reads requested; 200 basecalled; 200 matched to the Guppy summary
+mean predicted q: Dorado sup 17.27, Guppy hac 14.40
+mean read length: Dorado 5751, Guppy 5758
+q difference (sup - hac): median 2.81, 10th percentile 1.44, 90th 4.31
+Mac speed: Basecalled @ Samples/s: 6.896294e+04

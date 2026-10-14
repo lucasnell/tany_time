@@ -52,6 +52,10 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.
   `_bash/tests/` holds local checks of pipeline behavior.
+  `_bash/00-basecall/` re-basecalls the raw nanopore signal (archive
+  `/Volumes/TanyGen5TB/nanopore/ives_fast5.tar.bz2`) with Dorado 0.9.6, the
+  last release with R9.4.1 models and FAST5 input; `02-dorado` runs on GPUs
+  without the container.
   `_bash/check-step.sh <folder>/<step>` (on the submit server) checks a
   step's jobs, run times, outputs, and step-specific results; checks
   should be scripted like this rather than left to manual inspection

@@ -2,7 +2,8 @@
 
 Scripts for the UW–Madison CHTC cluster (HTCondor). Each step is a `.sh`
 script plus a `.sub` submit file, numbered in run order within each folder.
-All jobs run inside the Apptainer container built from `_apptainer/`.
+Jobs run inside the Apptainer container built from `_apptainer/`, except
+`00-basecall/02-dorado` (GPU; uses the Dorado release directly).
 
 | Folder | Contents |
 |---|---|
@@ -10,6 +11,7 @@ All jobs run inside the Apptainer container built from `_apptainer/`.
 | `samples/` | Job lists (pool names, pool sizes, QC-passing pools) |
 | `references/` | Small reference sequences (mitochondrial bait, COI barcodes) |
 | `tests/` | Local checks of pipeline behavior (results in `_data/`) |
+| `00-basecall/` | Re-basecall the raw nanopore signal (Dorado 0.9.6, R9.4.1 sup) on CHTC GPUs; optional |
 | `00-references/` | References built once: *T. gracilentus* mitogenome, combined reference for competitive mapping, SILVA Kraken2 database, nanopore θ estimate |
 | `01-variant-calling/` | Reads → trimmed reads → BAM → mpileup |
 | `02-allele-freqs/` | mpileup → SNAPE allele frequencies, counts, and diversity statistics |
