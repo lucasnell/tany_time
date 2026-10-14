@@ -9,6 +9,8 @@ summ_scaffs
 *.fastq.gz
 *.fasta
 *.fasta.gz
+# small NCBI references that cluster jobs read from the repo clone
+!_bash/references/*.fasta
 
 *.pdf
 
