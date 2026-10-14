@@ -19,10 +19,6 @@ requirements = (HasCHTCStaging == true)
 ## Pool lists (written by `_R/pool-qc.R`):
 transfer_input_files = ../samples/time-pools.txt, ../samples/space-pools.txt
 
-## Copying outputs to ResearchDrive:
-transfer_output_files = snape_masked_time.tar, snape_masked_space.tar, snape_masked_all.tar, count_masked_time.tar, count_masked_space.tar, count_masked_all.tar
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/snape
-
 request_cpus = 2
 request_memory = 4GB
 request_disk = 120GB

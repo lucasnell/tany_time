@@ -68,9 +68,9 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
   executable in git.
 
 - Inputs and outputs are on `/staging/l/lnell/` (paths are set near the top of
-  each `.sh` under "Edit these for your system"). Steps that set
-  `output_destination` in their `.sub` also copy outputs to ResearchDrive
-  (`pelican://chtc.wisc.edu/researchdrive/arives/CHTC/`).
+  each `.sh` under "Edit these for your system"). Jobs don't write to
+  ResearchDrive: pelican output transfers failed for lack of a credential
+  (2026-10-14), so outputs are moved to staging only.
 - CHTC's default run limit is 72 h per job. The longest steps are
   `03-mpileup` (indel realignment, 9+ h) and BayPass (~25–50 h with
   `NVAL=5000`; see `03-select-time/README.md`).
@@ -84,6 +84,6 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
   `${READ_BASE}_L002_R{1,2}_001.fastq.gz`.
 - Scripts check inputs with `require_files` and check each command with
   `check_exit_status`, which prints logs and exits on failure.
-- Scripts that copy outputs to ResearchDrive end with `exit 0` rather than
-  `safe_exit 0`, because `safe_exit` deletes the scratch directory before
-  HTCondor can transfer outputs.
+- Scripts move outputs to staging, check the move, and end with
+  `safe_exit 0`, which empties the scratch directory so HTCondor doesn't
+  transfer leftover files back to the submit server.

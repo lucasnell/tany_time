@@ -121,9 +121,10 @@ rm -r ${INPUTS_DIR}
 cd ..
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
 
-cp ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+mv ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 
 rm -r ${OUT_DIR}
 
 
-exit 0
+safe_exit 0

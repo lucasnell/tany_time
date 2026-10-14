@@ -16,7 +16,7 @@
 #'    output, unless both align over >= MIN_COI_COV of their length at
 #'    >= MIN_COI_ID identity (allowing for COI variation within species).
 #'
-#' Output `Tgraci_mitogenome.tar` (staging and ResearchDrive) with
+#' Output `Tgraci_mitogenome.tar` (staging) with
 #' `Tgraci_mitogenome.fasta`, `coi-check.tsv`, and Flye assembly info.
 #'
 
@@ -174,10 +174,9 @@ rm -r flye1 flye2 medaka reads*.fastq ill_* medaka.fasta* draft*.fasta* \
     trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta 2> /dev/null
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
-cp ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 rm -r ${OUT_DIR}
 if [ -f tany_time.sif ]; then rm tany_time.sif; fi
 
-#' Do NOT use `safe_exit` because that'll remove the files before they
-#' can be moved to ResearchDrive.
-exit 0
+safe_exit 0

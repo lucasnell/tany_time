@@ -19,10 +19,6 @@ requirements = (HasCHTCStaging == true)
 ## Candidate pool lists (written by `_R/make-job-lists.R`):
 transfer_input_files = ../samples/time-pools-candidates.txt, ../samples/space-pools-candidates.txt
 
-## Copying outputs to ResearchDrive:
-transfer_output_files = pool-qc.tar
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/pool-qc
-
 request_cpus = 2
 request_memory = 4GB
 request_disk = 120GB

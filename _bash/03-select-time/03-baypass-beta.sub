@@ -17,12 +17,6 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
-
-## Copying outputs to ResearchDrive:
-transfer_output_files = baypass-$(MpTag)-beta$(IsingBeta)-run$(RunNumber).tar
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/baypass/beta
-
-
 request_cpus = 8
 request_memory = 20GB
 request_disk = 50GB

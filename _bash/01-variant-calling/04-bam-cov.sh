@@ -84,16 +84,10 @@ check_exit_status "gzip BED" $?
 #' Handle output files
 #' ========================================================================
 
-#'
-#' Output file will be copied to both staging and (upon exit) ResearchDrive.
-#'
-#' Copying, not moving so that they will be moved to ResearchDrive after exit
-#'
-cp ${OUT_FILE} ${PARENT_DIR_OUT}/
+mv ${OUT_FILE} ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 
 rm *.bam *.sif
 
 
-#' Do NOT use `safe_exit` because that'll remove the files before they
-#' can be moved to ResearchDrive.
-exit 0
+safe_exit 0

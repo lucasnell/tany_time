@@ -123,11 +123,9 @@ done
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 mkdir -p ${PARENT_DIR_OUT}
-# Copying, not moving so that it will be moved to ResearchDrive after exit
-cp ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 rm -r ${OUT_DIR}
 if [ -f tany_time.sif ]; then rm tany_time.sif; fi
 
-#' Do NOT use `safe_exit` because that'll remove the files before they
-#' can be moved to ResearchDrive.
-exit 0
+safe_exit 0

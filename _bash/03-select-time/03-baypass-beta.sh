@@ -147,10 +147,11 @@ check_exit_status "baypass" $?
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 
-cp ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 
 rm -r ${OUT_DIR}
 
 
-exit 0
+safe_exit 0
 

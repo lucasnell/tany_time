@@ -239,12 +239,13 @@ rm ${SAMPLE_INFO} ${ABUNDANCES} ${COUNTS_IN} ${NAMES_IN}
 cd ..
 tar -czf ${OUT_DIR}.tar.gz ${OUT_DIR}
 
-cp ${OUT_DIR}_3.tar.gz ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+mv ${OUT_DIR}_3.tar.gz ${OUT_DIR}.tar.gz ${PARENT_DIR_OUT}/
+check_exit_status "move output to staging" $?
 
 rm -r ${OUT_DIR} baypass-inputs.R
 
 
-exit 0
+safe_exit 0
 
 
 # tany.genobaypass.sub1

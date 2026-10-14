@@ -112,14 +112,12 @@ for kind in snape count; do
             && gzip ${OUT%.gz}
         check_exit_status "gzip out and names ($kind, $type)" $?
 
-        # create output tar file
-        # Note that I'm copying (not moving) to staging bc this file will be
-        # transferred to ResearchDrive upon exit
+        # create output tar file and move it to staging
         mkdir ${OUT_BASE}
         mv ${OUT} ${OUT_NAMES} ${OUT_NOBLANKS} ./${OUT_BASE}/ \
             && tar -cf ${OUT_BASE}.tar ${OUT_BASE} \
-            && cp ${OUT_BASE}.tar ${SNAPE_DIR}/
-        check_exit_status "tar, copy over output files ($kind, $type)" $?
+            && mv ${OUT_BASE}.tar ${SNAPE_DIR}/
+        check_exit_status "tar, move output files ($kind, $type)" $?
 
         # remove unnecessary folder of outputs
         rm -r ${OUT_BASE}
@@ -133,6 +131,4 @@ done
 rm *.sync.gz time-pools.txt space-pools.txt
 if [ -f tany_time.sif ]; then rm tany_time.sif; fi
 
-#' Do NOT use `safe_exit` because that'll remove the files before they
-#' can be moved to ResearchDrive.
-exit 0
+safe_exit 0

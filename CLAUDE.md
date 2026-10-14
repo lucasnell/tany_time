@@ -89,7 +89,7 @@ Scripts read large files by absolute path; none are in git.
 | `~/_data/_tany-time/blast/` | Protein FASTA (`Tgraci_proteins.faa`), candidate-gene proteins (`Tgraci-funct.faa`), and BLASTP output (`Tgraci-funct-Dmel.csv`) used in `baypass-analysis.R` and `make-time-series-plot.R` (moved from `~/Desktop` 2026-10-13); BLAST database in `~/blastdb/` |
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |
 | `/Volumes/Lucas512/...` | BAM coverage `.bed.gz` files (external drive) |
-| Cluster: `/staging/l/lnell/` (was `/staging/lnell/` until 2026-10-13), `pelican://chtc.wisc.edu/researchdrive/arives/CHTC/` | Cluster inputs and outputs |
+| Cluster: `/staging/l/lnell/` (was `/staging/lnell/` until 2026-10-13) | Cluster inputs and outputs. Older outputs also exist on ResearchDrive (`pelican://chtc.wisc.edu/researchdrive/arives/CHTC/`); jobs no longer write there (2026-10-14) |
 | Cluster: `/home/lnell/tany_time` | Clone of this repo on the submit server; jobs are submitted from it. Edit locally, push, then `git pull` there (`_bash/**/logs/` is git-ignored) |
 
 ## Conventions

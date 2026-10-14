@@ -19,10 +19,6 @@ requirements = (HasCHTCStaging == true)
 ## Reference sequences (written by `_R/get-mito-refs.R`):
 transfer_input_files = ../references/tgraci-mito-bait.fasta, ../references/tgraci-coi.fasta
 
-## Copying outputs to ResearchDrive:
-transfer_output_files = Tgraci_mitogenome.tar
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/mitogenome
-
 request_cpus = 8
 request_memory = 32GB
 request_disk = 100GB

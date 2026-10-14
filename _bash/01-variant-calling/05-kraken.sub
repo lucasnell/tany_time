@@ -18,10 +18,6 @@ requirements = (HasCHTCStaging == true)
 
 transfer_input_files = ../samples/all-pools.txt
 
-## Copying outputs to ResearchDrive:
-transfer_output_files = kraken.tar
-output_destination = pelican://chtc.wisc.edu/researchdrive/arives/CHTC/kraken
-
 request_cpus = 8
 request_memory = 24GB
 request_disk = 100GB
