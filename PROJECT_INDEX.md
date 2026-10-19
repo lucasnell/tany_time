@@ -9,7 +9,8 @@ Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
 1. `_bash/00-basecall/` (cluster, optional; set up 2026-10-14, not yet run):
-   `00-setup.sh` (Dorado 0.9.6 + R9.4.1 sup model to staging) →
+   `00-setup` (interactive build job: Dorado 0.9.6 + R9.4.1 sup model to
+   staging) →
    `01-split-fast5` (330-GB raw-signal archive → 20-file chunks, MD5
    check) → `02-dorado` (GPU, one job per chunk) → `03-combine` (q >= 10
    FASTQ + summary).

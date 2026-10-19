@@ -1,7 +1,9 @@
 #!/bin/bash
 
-#' Run once on the submit server (not a job): put Dorado 0.9.6 and the
-#' R9.4.1 sup basecalling model on staging for `02-dorado`.
+#' Run once, inside the interactive build job from `00-setup.sub` (CHTC
+#' builds and installs software in build jobs, not on the submit server):
+#' put Dorado 0.9.6 and the R9.4.1 sup basecalling model on staging for
+#' `02-dorado`.
 #'
 #' Dorado 0.9.6 is the last release that reads FAST5 and has R9.4.1 models
 #' (both removed in Dorado 1.0.0; see Dorado's CHANGELOG). Needs internet.
@@ -17,7 +19,8 @@ DORADO=dorado-0.9.6-linux-x64
 MODEL=dna_r9.4.1_e8_sup@v3.6
 
 mkdir -p ${OUT}
-TMP=$(mktemp -d)
+TMP=${_CONDOR_SCRATCH_DIR:-$(mktemp -d)}/dorado-setup
+mkdir -p ${TMP}
 cd ${TMP}
 curl -sSL -O https://cdn.oxfordnanoportal.com/software/analysis/${DORADO}.tar.gz
 tar -xzf ${DORADO}.tar.gz

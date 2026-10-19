@@ -110,9 +110,15 @@ Follow `_bash/RERUN-CHECKLIST.md`.
           Goal (owner, 2026-10-14): a publication-quality mitogenome.
           - [ ] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
             2026-10-14): copy `ives_fast5.tar.bz2` to staging, run
-            `00-setup.sh`, then the three steps. Afterwards switch
+            `00-setup.sh` in the `00-setup.sub` build job, then the three
+            steps. Afterwards switch
             `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup
             model (container rebuild to bundle it).
+            Staging (2026-10-19): ~350 GB of 1,000 used after the owner
+            removed the trimmed FASTQs (archive included); the split adds
+            ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
+            `01-variant-calling/02-bwa` read the trimmed reads, so restore
+            them (or rerun `01-fastp`) before those steps.
           - [ ] Rerun `_bash/tests/mito-reassemble.sh` with the external drive
             mounted (first run 2026-10-14: Illumina copy-number test used
             MAPQ >= 20 and was uninformative, Flye's contig was skipped,

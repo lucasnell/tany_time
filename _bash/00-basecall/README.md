@@ -10,7 +10,7 @@ Guppy hac (`../tests/dorado-r941-test.sh` → `_data/dorado-r941-test.txt`).
 
 | Step | Does | Input (`/staging/l/lnell/`) | Output (`/staging/l/lnell/`) |
 |---|---|---|---|
-| `00-setup.sh` | Run once on the submit server (not a job): download Dorado 0.9.6 (linux-x64) and model `dna_r9.4.1_e8_sup@v3.6` | (internet) | `dorado/` |
+| `00-setup` | Run once in an interactive build job (`condor_submit -i 00-setup.sub`, then `bash 00-setup.sh`): download Dorado 0.9.6 (linux-x64) and model `dna_r9.4.1_e8_sup@v3.6` | (internet) | `dorado/` |
 | `01-split-fast5` | Stream the archive and write uncompressed tars of 20 FAST5 files (~8 GB) each; checks the archive's MD5 in the same pass. One CPU job, several hours | `dna/ont/ives_fast5.tar.bz2` | `dna/ont/fast5_chunks/chunk_NNN.tar`, `manifest.tsv` |
 | `02-dorado` | Basecall one chunk per GPU job (CHTC GPU Lab); runs without the container | `dorado/`, `dna/ont/fast5_chunks/` | `dna/ont/dorado/chunk_NNN.bam`, `chunk_NNN_summary.tsv` |
 | `03-combine` | Reads with mean quality >= 10 to one FASTQ; all reads to one summary table | `dna/ont/dorado/` | `dna/ont/basecalls_dorado-0.9.6_sup.fastq.gz`, `basecalls_dorado-0.9.6_sup--summary.tsv.gz` |
@@ -24,7 +24,8 @@ Before `01-split-fast5`:
    (`/Volumes/TanyGen5TB/nanopore/ives_fast5.tar.bz2`) to
    `/staging/l/lnell/dna/ont/`, e.g. with `rsync --partial --progress`
    through CHTC's transfer server.
-3. Run `00-setup.sh` on the submit server.
+3. Start an interactive build job (`mkdir -p logs/00-setup && condor_submit -i
+   00-setup.sub`) and run `bash 00-setup.sh` inside it, then `exit`.
 
 Submit `02-dorado` after `01-split-fast5` finishes: its submit file queues
 one job per `chunk_*.tar` on staging. The GPU settings in `02-dorado.sub`

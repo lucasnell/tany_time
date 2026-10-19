@@ -60,6 +60,10 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   step's jobs, run times, outputs, and step-specific results; checks
   should be scripted like this rather than left to manual inspection
   (owner's request, 2026-10-13).
+  Software building or installing (container builds, downloads of tools or
+  models) runs in an interactive build job (`condor_submit -i` with
+  `+IsBuildJob = true`; https://chtc.cs.wisc.edu/uw-research-computing/inter-submit),
+  never on the submit server (owner's rule, 2026-10-19).
   `_bash/zzz-old/` (git-ignored, local only) holds old assembly scripts.
   Conda envs: `main-env`, `qc-env`, `gatk-env`, `gatk3-env`, `baypass-env`,
   `kraken-env`, `mito-env`.

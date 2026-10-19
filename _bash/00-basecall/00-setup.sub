@@ -1,0 +1,28 @@
+# setup.sub
+
+# interactive build job (CHTC build servers) to put Dorado 0.9.6 and the
+# R9.4.1 sup model on staging; see
+# https://chtc.cs.wisc.edu/uw-research-computing/inter-submit
+#
+# From this folder on the submit server:
+#   mkdir -p logs/00-setup && condor_submit -i 00-setup.sub
+# then, inside the job:
+#   bash 00-setup.sh && exit
+
+universe = vanilla
+
+log = logs/00-setup/setup.log
+
+## Interactive jobs need an executable; the work is done by hand
+executable = /usr/bin/hostname
+
+transfer_input_files = 00-setup.sh
+
++IsBuildJob = true
+requirements = (HasCHTCStaging == true)
+
+request_cpus = 1
+request_memory = 4GB
+request_disk = 10GB
+
+queue
