@@ -10,6 +10,8 @@ its result to `_data/`.
 | `mito-flye-round1.sh` | Flye round 1 of `00-references/01-mitogenome` as written and with `--genome-size 16k --asm-coverage 150`; caches recruited reads and assembly in `_data/mito-flye-cache/` | `_data/mito-flye-round1-check.txt` |
 | `dorado-r941-test.sh` | Dorado 0.9.6 basecalls the 2019 R9.4.1 FAST5 data with the sup model; predicted quality vs Guppy 5.0.11 hac on the same reads | `_data/dorado-r941-test.txt` |
 | `mito-reassemble.sh` | All mitochondrial reads reassembled with Flye, Raven, NextDenovo, and SMARTdenovo; control-region repeat structure tested by read bridging and Illumina copy number | `_data/mito-reassemble.txt` |
+| `mito-cr-span.sh` | Control-region length per molecule: reads crossing from the gene region's end to its start (checked on synthetic reads), and how far reads run past each end without crossing | `_data/mito-cr-span.txt` |
+| `mito-depth-by-length.sh` | Nanopore depth by read length in the gene region, the unique control-region segments, and the repeat copies of the reassembled SMARTdenovo contig | `_data/mito-depth-by-length.txt` |
 | `mito-contig-diag.sh` | COI barcode hits, self-repeats, and read depth along the cached round-1 contig | `_data/mito-contig-diag.txt` |
 | `mito-round1-options.sh` | Round-1 alternatives (trim to high-depth core, recruit >= 1 kb, Flye `--meta`) each carried through round 2 | `_data/mito-round1-options.txt` |
 | `mito-contig-vs-ref.sh` | Which parts of the T. verralli and T. formosanus mitogenomes each test contig covers | `_data/mito-contig-vs-ref.txt` |

@@ -1,0 +1,13 @@
+minimap2 2.31-r1302; checked 2026-10-14
+synthetic check (read, detected control-region length; true = filler + 0):
+  syn_minus_3000 9000 3030
+  syn_minus_500 6500 530
+  syn_minus_8000 14000 8030
+  syn_plus_3000 9000 3030
+  syn_plus_500 6500 530
+  syn_plus_8000 14000 8030
+reads: 61619; with alignments >= 500 bp to the gene region: 57758
+wrap reads (crossed the whole control region): 0
+read extension beyond the gene region without wrapping:
+  past_ND2_end       reads  5655; median 1488, 99th pct 9516, max 22252; >= 5 kb 164, >= 10 kb 52, >= 15 kb 14
+  before_rRNA_start  reads 19378; median 935, 99th pct 7632, max 22518; >= 5 kb 401, >= 10 kb 107, >= 15 kb 30

@@ -1,0 +1,20 @@
+minimap2 2.31-r1302, samtools 1.24; checked 2026-10-14
+contig: utg111 length=52241 nodes=39; reads: 61619
+regions (name start end):
+  gene 23811 39725
+  CR_unique_left 22685 23811
+  CR_unique_right 39725 43318
+  repeats_left 8123 10496
+  repeats_left 10877 13329
+  repeats_left 13691 16100
+  repeats_left 16738 19169
+  repeats_left 20094 22685
+  repeats_right 43318 45696
+  repeats_right 46077 48545
+  repeats_right 48906 51317
+mean depth (primary, MAPQ >= 20) by read length:
+  read length                gene   CR_unique_left  CR_unique_right     repeats_left    repeats_right
+  0-5000                     7055             5832             1552              408               32
+  5000-11000                 6736             4808              388              331               20
+  11000-1000000               671              596               55               88               18
+nuclear coverage of the whole library: ~250x (mito-long-reads.sh)

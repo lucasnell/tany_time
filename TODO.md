@@ -113,8 +113,23 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             `00-setup.sh`, then the three steps. Afterwards switch
             `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup
             model (container rebuild to bundle it).
-          - [ ] Review `_data/mito-reassemble.txt` (four assemblers on all
-            mitochondrial reads; repeat bridging and Illumina copy number).
+          - [ ] Rerun `_bash/tests/mito-reassemble.sh` with the external drive
+            mounted (first run 2026-10-14: Illumina copy-number test used
+            MAPQ >= 20 and was uninformative, Flye's contig was skipped,
+            NextDenovo failed; script fixed, output not committed). First
+            run: Raven 42.8 kb (4 repeat copies), SMARTdenovo 52.4 kb (8);
+            every unit boundary of the 2019 NextDenovo contig spanned by
+            97-145 uniquely aligned reads.
+          - Control-region length (2026-10-14, `mito-cr-span.sh`): of 61,619
+            mitochondrial reads, none crosses from the gene region's end to
+            its start (wrap detection checked on synthetic reads); reads run
+            up to 22.3-22.5 kb past either end without wrapping, so sampled
+            molecules have a control region > ~22.5 kb (mitogenome
+            >= ~38 kb). Nanopore depth falls with distance from the gene
+            region (`mito-depth-by-length.sh`: 83% of gene-region depth in
+            the 1.1 kb next to its start, 22% in the 3.6 kb next to its end);
+            cause unresolved (repeat MAPQ, length variation among molecules,
+            or assembly errors).
           (TanyAdult_S1/TanyJuven_S2 are RNA-seq of Myvatn adults and
           juveniles, so their ~0 depth there says nothing about it.)
           **COI check:** the DNA pool and the adult RNA-seq match MZ659759.1

@@ -13,7 +13,7 @@
 #' 2. Keep the longest, best reads up to TARGET_BP (Filtlong).
 #' 3. Assemble with Flye (`--genome-size 45k --asm-coverage 200`), Raven,
 #'    NextDenovo (genome_size 45k), and SMARTdenovo.
-#' 4. For each contig with >= 10 kb of the gene region (plus the 2019
+#' 4. For each contig with >= 5 kb of the gene region (plus the 2019
 #'    NextDenovo contig for comparison), report the layout: gene-region
 #'    copies, control-region pieces, repeat-unit copies (hits of one unit,
 #'    round-1 contig 1-2472), and the distance between gene-region starts.
@@ -22,10 +22,12 @@
 #'       alignment spans 1 kb either side of each boundary between
 #'       neighbouring repeat units; a boundary no read spans is unsupported
 #'    b. copy number: Illumina DNA (first ILL_PAIRS pairs of pool
-#'       MyKS-19-B_S18) mean depth (MAPQ >= 20) on each unit relative to the
-#'       gene region; ~1 per unit if the assembly has the right number of
-#'       copies, > 1 if it collapsed copies (units differ by ~10%, so short
-#'       reads can be placed)
+#'       MyKS-19-B_S18) mean depth (all mapping qualities, so reads that
+#'       fit several copies still count once) on each unit relative to the
+#'       gene region, and their sum: the number of unit copies in the
+#'       genome's molecules if Illumina covers the A+T-rich units as well as
+#'       the gene region (it tends to under-cover A+T-rich sequence, so the
+#'       sum is more likely low than high)
 #' Assemblies are unpolished. Requires mamba, the external drive
 #' (`/Volumes/TanyGen5TB`), the cache from `mito-flye-round1.sh`, and
 #' `~/_data/midgenomes/_sra/`. Takes ~2-3 h. Run from the repo root.
@@ -136,6 +138,7 @@ nextgraph_options = -a 1
 EOF
 nextDenovo nd.cfg > nd.log 2>&1
 echo "nextdenovo exit $?" >> asm_status.txt
+cp nd.log ${RDIR}/nextdenovo.log
 cp nd/03.ctg_graph/nd.asm.fasta asm_nextdenovo.fa 2> /dev/null
 
 mkdir smart && (cd smart \
@@ -150,12 +153,12 @@ for a in flye raven nextdenovo smartdenovo; do
 done
 
 # ---- 4-5. per-contig layout and tests
-# mito contigs: >= 10 kb of the gene region aligned
+# mito contigs: >= 5 kb of the gene region aligned
 : > cands.fa
 for a in flye raven nextdenovo smartdenovo; do
     [ -s asm_${a}.fa ] || continue
     minimap2 -c -x asm20 --secondary=yes -N 5 asm_${a}.fa genes.fa \
-        2> /dev/null | awk '$4 - $3 >= 10000 {print $6}' | sort -u > ids.txt
+        2> /dev/null | awk '$4 - $3 >= 5000 {print $6}' | sort -u > ids.txt
     while read id; do
         awk -v c=${id} '/^>/ {p = (substr($1, 2) == c)} p' asm_${a}.fa \
             | sed "1s/.*/>${a}_${id}/" >> cands.fa
@@ -231,18 +234,19 @@ span_counts () {
         minimap2 -a -x sr -t ${THREADS} cand.fa ill1.fq ill2.fq 2> /dev/null \
             | samtools sort -o ill.bam - 2> /dev/null
         samtools index ill.bam
-        samtools depth -a -Q 20 ill.bam > ill.depth
+        samtools depth -a -Q 0 ill.bam > ill.depth
         GENE=$(minimap2 -c -x asm20 --secondary=no cand.fa genes.fa 2> /dev/null \
             | awk '{print $8, $9; exit}')
         if [ -n "${GENE}" ] && [ -s units.txt ]; then
-            echo "Illumina depth (MAPQ >= 20) per unit / gene-region depth:"
+            echo "Illumina depth (all MAPQ) per unit / gene-region depth; sum:"
             awk -v g="${GENE}" 'BEGIN {split(g, x, " ")}
                 NR == FNR {s[NR] = $1; e[NR] = $2; n = NR; next}
                 $2 > x[1] && $2 <= x[2] {gs += $3; gn++}
                 {for (i = 1; i <= n; i++) if ($2 > s[i] && $2 <= e[i]) {us[i] += $3; un[i]++}}
                 END {gd = gs / gn; printf "  gene region %.0fx;", gd
-                     for (i = 1; i <= n; i++) printf " %.2f", (us[i] / un[i]) / gd
-                     printf "\n"}' units.txt ill.depth | fold -s -w 76 \
+                     for (i = 1; i <= n; i++) {r = (us[i] / un[i]) / gd; t += r
+                                               printf " %.2f", r}
+                     printf "; sum %.1f\n", t}' units.txt ill.depth | fold -s -w 76 \
                 | sed 's/[[:space:]]*$//'
         fi
     done 3< cands.fa.fai

@@ -176,7 +176,9 @@ mitogenomes), `mito-long-reads.sh` (are reads > 17 kb mitochondrial),
 `mito-illumina-depth.sh` (Illumina depth along the contig and identity to
 it and to the COI barcodes), `mito-old-assemblies.sh` (mitochondrial
 contigs in the 2019 whole-genome assemblies), `mito-reassemble.sh` (four
-assemblers on all mitochondrial reads, with repeat-structure tests);
+assemblers on all mitochondrial reads, with repeat-structure tests),
+`mito-cr-span.sh` (control-region length from reads), `mito-depth-by-length.sh`
+(depth along the reassembled contig);
 `dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);
 outputs `_data/mito-*.txt`.
 
