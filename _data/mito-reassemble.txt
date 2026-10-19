@@ -1,0 +1,92 @@
+flye 2.9.6, raven 1.8.3, nextdenovo 2.5.2, smartdenovo 1.0.0, filtlong 0.3.1, minimap2 2.31, samtools 1.24, seqtk 1.5; checked 2026-10-19
+recruited reads: 61619 reads, 311584651 bp; subsample: 1474 reads, 22510691 bp, shortest 11258
+assembler flye exit 0
+assembler raven exit 0
+assembler nextdenovo exit 1
+assembler smartdenovo exit 0
+flye contigs (name length): contig_1 38418
+raven contigs (name length): Utg110 42849
+nextdenovo contigs (name length):smartdenovo contigs (name length): utg111 52351
+
+== flye_contig_1: 38418 bp, A+T 0.766
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  CR_right     0-10043 ~  18210- 28261 + 10060 0.997
+  genes     9984-15901 ~  12287- 18211 +  5924 0.999
+  CR_left      0-  598 ~  30166- 30772 +   607 0.972
+  CR_left      0-  598 ~  33242- 33848 +   607 0.972
+  CR_left      0-  598 ~  36355- 36961 +   607 0.972
+  CR_left      0- 1808 ~  36619- 38264 +  1811 0.900
+  CR_left      0- 2472 ~  21782- 24164 +  2558 0.874
+  CR_left      0- 2472 ~  24546- 27004 +  2571 0.895
+  CR_left      0- 2472 ~  27370- 29790 +  2559 0.888
+  CR_left      0- 2472 ~  30430- 32862 +  2563 0.894
+  CR_left      0- 2472 ~  33506- 35975 +  2553 0.914
+repeat-unit copies (>= 1.5 kb aligned): 6
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   21782:120 24355:113 27187:146 30110:180 33184:180 36297:102 38264:0
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 678x; 0.81 0.29 0.65 1.27 1.24 0.68; sum 4.9
+
+== raven_Utg110: 42849 bp, A+T 0.838
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  genes        0-12723 ~   7991- 20625 + 12737 0.991
+  genes    13642-15633 ~  21456- 23434 +  1998 0.984
+  CR_right     0-  918 ~  23651- 24569 +   919 0.998
+  CR_left     88- 1820 ~  27081- 28640 +  1741 0.868
+  CR_left      0- 3600 ~  32405- 36080 +  3786 0.867
+  CR_left     26- 3600 ~   4484-  7992 +  3581 0.974
+  CR_right  2224- 5954 ~   2703-  6865 +  4331 0.800
+  CR_right  2226- 6288 ~  31129- 35345 +  4374 0.864
+  CR_right  3049- 8794 ~    271-  6865 +  6800 0.783
+  CR_right  1219- 9209 ~  24750- 35431 + 10956 0.680
+  CR_right  5803- 9368 ~    271-  4198 +  4018 0.825
+  CR_right  4955- 9763 ~  28384- 33013 +  4915 0.871
+repeat-unit copies (>= 1.5 kb aligned): 4
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   1727:41 4048:420 16973:10354 30522:355 35016:28
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 678x; 2.63 1.01 0.40 1.56; sum 5.6
+
+== smartdenovo_utg111: 52351 bp, A+T 0.812
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  CR_right     0-10043 ~   4520- 14573 + 10092 0.990
+  CR_right     0-10043 ~  39724- 49789 + 10076 0.995
+  genes        0-15901 ~  23811- 39725 + 15921 0.998
+  CR_left      0- 2472 ~   8123- 10496 +  2556 0.872
+  CR_left      0- 2472 ~  10877- 13329 +  2571 0.892
+  CR_left      0- 2472 ~  13691- 16100 +  2556 0.886
+  CR_left      0- 2472 ~  16738- 19169 +  2565 0.890
+  CR_left      0- 2472 ~  43318- 45696 +  2557 0.873
+  CR_left      0- 2472 ~  46077- 48545 +  2579 0.893
+  CR_left      0- 2472 ~  48906- 51317 +  2560 0.880
+  CR_left      0- 3600 ~  20094- 23812 +  3746 0.951
+repeat-unit copies (>= 1.5 kb aligned): 8
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   8123:19 10686:63 13510:176 16419:349 19631:197 33001:9569 45886:49
+ 48725:21 51317:1
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 667x; 0.47 0.24 0.84 0.84 0.74 0.60 0.66 0.20; sum 4.6
+
+== next2019: 66354 bp, A+T 0.802
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  CR_right     0-10043 ~  17887- 27937 + 10059 0.997
+  genes        0-15901 ~   1975- 17888 + 15917 0.999
+  genes        0-15901 ~  46600- 62577 + 15987 0.994
+  CR_left      0- 2472 ~  21467- 23851 +  2560 0.874
+  CR_left      0- 2472 ~  24231- 26688 +  2570 0.895
+  CR_left      0- 2472 ~  27052- 29473 +  2565 0.884
+  CR_left      0- 2472 ~  30115- 32551 +  2566 0.892
+  CR_left      0- 2472 ~  33193- 35636 +  2556 0.900
+  CR_left      0- 2472 ~  36282- 38721 +  2571 0.890
+  CR_left      0- 2472 ~  39622- 42088 +  2567 0.901
+  CR_left      0- 3600 ~  42997- 46601 +  3612 0.993
+  CR_left   1624- 3600 ~      0-  1976 +  1976 1.000
+  CR_right     0- 3727 ~  62576- 66354 +  3781 0.981
+  CR_right  2220- 8794 ~  37804- 45473 +  7856 0.802
+gene-region starts 44625 apart
+repeat-unit copies (>= 1.5 kb aligned): 8
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   21467:115 24041:97 26870:99 29794:116 32872:116 35959:122 39171:109
+ 42542:145 45473:2916
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 424x; 0.95 0.51 0.71 1.47 1.19 1.26 0.42 0.89; sum 7.4

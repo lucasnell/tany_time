@@ -119,13 +119,18 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
             `01-variant-calling/02-bwa` read the trimmed reads, so restore
             them (or rerun `01-fastp`) before those steps.
-          - [ ] Rerun `_bash/tests/mito-reassemble.sh` with the external drive
-            mounted (first run 2026-10-14: Illumina copy-number test used
-            MAPQ >= 20 and was uninformative, Flye's contig was skipped,
-            NextDenovo failed; script fixed, output not committed). First
-            run: Raven 42.8 kb (4 repeat copies), SMARTdenovo 52.4 kb (8);
-            every unit boundary of the 2019 NextDenovo contig spanned by
-            97-145 uniquely aligned reads.
+          - Reassembly (`mito-reassemble.sh`, rerun 2026-10-19): Flye
+            38.4 kb (gene region partial; 6 repeat copies), Raven 42.8 kb
+            (4), SMARTdenovo 52.4 kb (8), 2019 NextDenovo 66.4 kb (8, gene
+            region twice 44.6 kb apart); NextDenovo failed at `seed_cns`.
+            Every unit boundary is spanned by 19-420 uniquely aligned reads
+            in all assemblies (not discriminating). Illumina (all reads)
+            total unit copies ~4.6-5.6 in every assembly (NextDenovo's 7.4
+            halves gene depth by having the gene region twice; ~4.7
+            corrected); likely low, since Illumina under-covers A+T-rich
+            sequence. With the > 22.5-kb control-region bound, 4 copies is
+            too few; 6-8 copies (mitogenome ~42-45 kb) fit. Revisit with sup
+            basecalls.
           - Control-region length (2026-10-14, `mito-cr-span.sh`): of 61,619
             mitochondrial reads, none crosses from the gene region's end to
             its start (wrap detection checked on synthetic reads); reads run
