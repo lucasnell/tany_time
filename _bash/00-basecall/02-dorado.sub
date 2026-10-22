@@ -24,7 +24,7 @@ request_gpus = 1
 +WantGPULab = true
 +GPUJobLength = "short"
 gpus_minimum_capability = 7.0
-gpus_minimum_memory = 16000
+gpus_minimum_memory = 16000M
 
 request_cpus = 4
 request_memory = 32GB
