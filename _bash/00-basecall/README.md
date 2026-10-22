@@ -29,8 +29,10 @@ Before `01-split-fast5`:
 
 Submit `02-dorado` after `01-split-fast5` finishes: its submit file queues
 one job per `chunk_*.tar` on staging. The GPU settings in `02-dorado.sub`
-(`+WantGPULab`, `+GPUJobLength`, `require_gpus`) follow CHTC's GPU guide as
-of this writing; check them against the current guide.
+(`+WantGPULab`, `+GPUJobLength`, `gpus_minimum_capability`,
+`gpus_minimum_memory`) follow CHTC's GPU guide
+(https://chtc.cs.wisc.edu/uw-research-computing/gpu-jobs, checked
+2026-10-22).
 
 Not yet done: the pipeline steps that use nanopore reads (`01-mitogenome`,
 `04-ont-pi` in `00-references/`) still read the Guppy basecalls. Switching
