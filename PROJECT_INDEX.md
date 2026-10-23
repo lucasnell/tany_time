@@ -168,7 +168,8 @@ Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
 `_data/npstat-maxcov-check.txt`) and `v2-tool-check.sh` (every tool call
 runs with the versions pinned in `_apptainer/*.yml`, and outputs that could
 have changed match the v1.0.0 pins; → `_data/v2-tool-check.txt`).
-Mitogenome diagnostics (local nanopore reads; cache in
+Mitogenome diagnostics (nanopore and trimmed Illumina reads on
+`/Volumes/lan_images4/`; cache in
 `_data/mito-flye-cache/`): `mito-flye-round1.sh` (round 1 as written and
 with `--genome-size`/`--asm-coverage`), `mito-contig-diag.sh` (COI hits,
 repeats, read depth along the contig), `mito-round1-options.sh` (trim,
@@ -182,6 +183,8 @@ assemblers on all mitochondrial reads, with repeat-structure tests),
 `mito-cr-span.sh` (control-region length from reads), `mito-depth-by-length.sh`
 (depth along the reassembled contig);
 `dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);
+`dorado-sup-check.sh` (combined sup basecalls vs Guppy hac;
+→ `_data/dorado-sup-check.txt`);
 outputs `_data/mito-*.txt`.
 
 ## `_refs/`

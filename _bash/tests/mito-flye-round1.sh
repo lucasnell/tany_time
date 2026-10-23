@@ -15,6 +15,10 @@
 #' the read file. Recruited reads and assemblies are kept in
 #' `_data/mito-flye-cache/` (git-ignored); delete it to re-recruit.
 #' `mito-contig-diag.sh` describes the cached assembly.
+#' Reads default to the Dorado sup basecalls on the external drive; outputs
+#' saved before 2026-10-23 used the Guppy 5.0.11 hac reads (deleted
+#' locally), as do reads already in `_data/mito-flye-cache/`, which are
+#' reused if present (delete them to recruit sup reads).
 #'
 #' Output: `_data/mito-flye-round1-check.txt`.
 #'
@@ -25,7 +29,7 @@ YML=${ROOT}/_bash/_apptainer/mito-env.yml
 BAIT=${ROOT}/_bash/references/tgraci-mito-bait.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
 CACHE=${ROOT}/_data/mito-flye-cache
-ONT_FASTQ=${ONT_FASTQ:-${HOME}/_data/midgenomes/_sra/basecalls_guppy-5.0.11.fastq.gz}
+ONT_FASTQ=${ONT_FASTQ:-/Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz}
 THREADS=$(sysctl -n hw.ncpu 2> /dev/null || nproc)
 WORK=$(mktemp -d)
 ENV_DIR=${ENV_DIR:-${WORK}/env}

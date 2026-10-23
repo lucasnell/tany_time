@@ -10,6 +10,9 @@
 #' summary by read ID. Qualities are the basecallers' own predictions
 #' (mean_qscore), not measured accuracy. Requires internet and the external
 #' drive. Takes ~10 min. Run from the repo root.
+#' The Guppy 5.0.11 hac files it reads were deleted from the local disk
+#' on 2026-10-23 (copies kept elsewhere by the owner); restore them to
+#' rerun.
 #'
 #' Output: `_data/dorado-r941-test.txt`.
 #'

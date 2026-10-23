@@ -1,0 +1,43 @@
+Dorado 0.9.6 sup (00-basecall/03-combine) vs Guppy 5.0.11 hac; checked 2026-10-23
+files: /Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz, /Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup--summary.tsv.gz; /Users/lucasnell/_data/midgenomes/_sra/basecalls_guppy-5.0.11.fastq.gz, /Users/lucasnell/_data/ont/basecalls_guppy-5.0.11--sequencing_summary.txt.gz
+
+== Dorado sup FASTQ integrity ==
+gunzip exit status: 0 (0 = whole file decompressed)
+malformed records or sequence/quality length mismatches: 0
+duplicate read IDs: 0
+reads without qs tag: 0
+reads with qs < 10: 0
+summary reads with q >= 10 missing from FASTQ: 0
+FASTQ reads not in summary at q >= 10: 0
+FASTQ length != summary length: 0
+
+== Guppy hac FASTQ (used by the mitogenome tests and 04-ont-pi) ==
+gunzip exit status: 0; malformed records: 0
+duplicate read IDs: 0
+FASTQ reads not in Guppy summary: 0
+Guppy summary q of FASTQ reads: min 9.00, median 15.45
+
+== Yield ==
+Dorado summary, all reads:     3617785 reads, 23.064 Gb, N50 7514
+Dorado FASTQ (q >= 10):        3602836 reads, 23.000 Gb, N50 7518
+Guppy summary, all reads:      3611293 reads, 23.083 Gb, N50 7539
+Guppy summary, q >= 10:        3480201 reads, 22.332 Gb, N50 7561
+Guppy FASTQ:                   3581828 reads, 22.929 Gb, N50 7544
+
+== Read sets ==
+duplicate IDs in Dorado summary: 0
+reads in both summaries: 3601640
+Dorado only: 16145; Guppy only: 9653
+Guppy FASTQ reads in Dorado FASTQ: 3568487 of 3581828
+Dorado FASTQ reads not in Guppy FASTQ: 34349
+
+== Predicted quality, reads in both summaries ==
+mean q: Dorado 18.00, Guppy 14.96; length differs in 3517335 of 3601640 reads
+q difference (Dorado - Guppy): 10th percentile 1.67, median 3.06, 90th 4.32
+Guppy length [0, 1000): 102504 reads, mean q Dorado 16.82, Guppy 14.00
+Guppy length [1000, 5000): 1561637 reads, mean q Dorado 17.87, Guppy 14.89
+Guppy length [5000, 20000): 1923162 reads, mean q Dorado 18.17, Guppy 15.07
+Guppy length [20000, 1e12): 14337 reads, mean q Dorado 18.24, Guppy 15.16
+q bins (reads, all): q < 7 / 7-10 / 10-15 / 15-20 / >= 20
+  Dorado: 1518 / 13431 / 553624 / 2103869 / 945343
+  Guppy: 819 / 130273 / 1444989 / 2032369 / 2843

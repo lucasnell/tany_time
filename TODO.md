@@ -110,9 +110,13 @@ Follow `_bash/RERUN-CHECKLIST.md`.
           Goal (owner, 2026-10-14): a publication-quality mitogenome.
           - [ ] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
             2026-10-14): archive on staging, `00-setup` and `01-split-fast5`
-            run, `02-dorado` submitted 2026-10-22. Next: `03-combine`; delete
-            the archive once `check-step.sh 00-basecall/01-split-fast5`
-            shows the MD5 matches, and the chunks once `03-combine` passes.
+            run, `02-dorado` submitted 2026-10-22, `03-combine` done; local
+            copy in `/Volumes/lan_images4/ont/` passed
+            `_bash/tests/dorado-sup-check.sh` (2026-10-23: 3,602,836 reads
+            at q >= 10, 23.0 Gb, N50 7.5 kb; median predicted q +3.1 over
+            Guppy on the same reads). Delete the archive once
+            `check-step.sh 00-basecall/01-split-fast5` shows the MD5
+            matches, and the chunks once `check-step.sh 00-basecall/03-combine` passes.
             Then redo the mitochondrial recruitment and assemblies on the sup
             reads (owner chose to wait for them, 2026-10-19), and switch
             `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup

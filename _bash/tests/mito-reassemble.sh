@@ -30,7 +30,13 @@
 #'       sum is more likely low than high)
 #' Assemblies are unpolished. Requires mamba, the external drive
 #' (`/Volumes/TanyGen5TB`), the cache from `mito-flye-round1.sh`, and
-#' `~/_data/midgenomes/_sra/`. Takes ~2-3 h. Run from the repo root.
+#' `/Volumes/lan_images4/` (sup nanopore reads; fastp-trimmed MyKS-19-B
+#' reads, streamed from the uncompressed tar; the 2026-10-19 output used
+#' the raw Illumina reads). Takes ~2-3 h. Run from the repo root.
+#' Reads default to the Dorado sup basecalls on the external drive; outputs
+#' saved before 2026-10-23 used the Guppy 5.0.11 hac reads (deleted
+#' locally), as do reads already in `_data/mito-flye-cache/reassemble/`, which are
+#' reused if present (delete them to recruit sup reads).
 #' Set ENV_DIR to reuse environments (`asm` and `smart` inside it).
 #'
 #' Output: `_data/mito-reassemble.txt`; reads and assemblies in
@@ -43,8 +49,8 @@ CACHE=${ROOT}/_data/mito-flye-cache
 RDIR=${CACHE}/reassemble
 R1C=${CACHE}/with_opts_assembly.fasta
 OLD=/Volumes/TanyGen5TB/assembly
-ONT_FASTQ=${ONT_FASTQ:-${HOME}/_data/midgenomes/_sra/basecalls_guppy-5.0.11.fastq.gz}
-ILL=${HOME}/_data/midgenomes/_sra/MyKS-19-B_S18_L002_R
+ONT_FASTQ=${ONT_FASTQ:-/Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz}
+ILL=/Volumes/lan_images4/ill/dna/trimmed/trimmed_MyKS-19-B_S18.tar
 ILL_PAIRS=4000000
 TARGET_BP=22500000  # ~500x of a 45-kb molecule
 THREADS=$(sysctl -n hw.ncpu 2> /dev/null || nproc)
@@ -54,6 +60,7 @@ cd ${WORK}
 
 [ -s ${R1C} ] || { echo "run _bash/tests/mito-flye-round1.sh first" 1>&2; exit 1; }
 [ -d ${OLD} ] || { echo "external drive not mounted" 1>&2; exit 1; }
+[ -s ${ILL} ] || { echo "missing ${ILL} (drive mounted?)" 1>&2; exit 1; }
 
 # ---- environments
 if [ ! -d ${ENV_DIR}/asm ]; then
@@ -170,8 +177,8 @@ samtools faidx cands.fa
 # long-read and Illumina alignments to all candidates at once would make
 # reads choose among near-identical candidates, so align per candidate
 for k in 1 2; do
-    gunzip -c ${ILL}${k}_001.fastq.gz 2> /dev/null \
-        | head -n $(( ILL_PAIRS * 4 )) > ill${k}.fq
+    tar -xOf ${ILL} trimmed_MyKS-19-B_S18_L002_R${k}_001.fastq.gz 2> /dev/null \
+        | gunzip -c 2> /dev/null | head -n $(( ILL_PAIRS * 4 )) > ill${k}.fq
 done
 
 # span_counts <bam> <contig> <positions file>: reads spanning pos +/- 1 kb

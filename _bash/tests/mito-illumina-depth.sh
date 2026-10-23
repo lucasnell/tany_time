@@ -6,12 +6,14 @@
 #' sequence should have depth far above nuclear, and nuclear sequence
 #' (e.g., NUMT flanks) depth near the nuclear expectation.
 #'
-#' Maps the first N_PAIRS read pairs of two local Illumina libraries to the
+#' Maps the first N_PAIRS read pairs of two Illumina libraries to the
 #' cached contig: MyKS-19-B_S18 (DNA, 2019 Myvatn pool) and TanyAdult_S1
 #' (RNA-seq of adult T. gracilentus from Myvatn; depth reflects
 #' transcription, so it says nothing about untranscribed sequence such as
 #' the control region, but its identity to transcribed genes and COI is
-#' informative). Contig file:
+#' informative). Reads are the fastp-trimmed FASTQs, streamed from the
+#' uncompressed tars on the external drive (`/Volumes/lan_images4/`; the
+#' 2026-10-14 output used the raw reads, since deleted locally). Contig file:
 #' `_data/mito-flye-cache/with_opts_assembly.fasta` (from
 #' `mito-flye-round1.sh`) with minimap2 -x sr, and reports mean depth
 #' (all mapping qualities) in 1-kb bins, plus, for DNA, the nuclear
@@ -34,9 +36,10 @@ OUT=${ROOT}/_data/mito-illumina-depth.txt
 YML=${ROOT}/_bash/_apptainer/mito-env.yml
 ASM=${ROOT}/_data/mito-flye-cache/with_opts_assembly.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
-SRA=${HOME}/_data/midgenomes/_sra
+DRIVE=/Volumes/lan_images4
 ASM_TG=${HOME}/_data/midgenomes/assemblies/Tgraci_assembly.fasta.gz
-LIBS=(MyKS-19-B_S18:DNA TanyAdult_S1:RNA)
+LIBS=(MyKS-19-B_S18:DNA:${DRIVE}/ill/dna/trimmed
+      TanyAdult_S1:RNA:${DRIVE}/rna/trimmed)
 N_PAIRS=4000000
 THREADS=$(sysctl -n hw.ncpu 2> /dev/null || nproc)
 WORK=$(mktemp -d)
@@ -44,6 +47,10 @@ ENV_DIR=${ENV_DIR:-${WORK}/env}
 cd ${WORK}
 
 [ -s ${ASM} ] || { echo "run _bash/tests/mito-flye-round1.sh first" 1>&2; exit 1; }
+for x in ${LIBS[@]}; do
+    [ -s ${x##*:}/trimmed_${x%%:*}.tar ] \
+        || { echo "missing ${x##*:}/trimmed_${x%%:*}.tar (drive mounted?)" 1>&2; exit 1; }
+done
 
 pin () { grep -E "^\s+- $1=" ${YML} | sed 's/.*=//'; }
 
@@ -66,10 +73,11 @@ GL=$(gunzip -c ${ASM_TG} | awk '!/^>/ {n += length($0)} END {print n}')
         "${GL} bp"
     for x in ${LIBS[@]}; do
         lib=${x%%:*}
-        type=${x#*:}
+        type=$(echo ${x} | cut -d : -f 2)
+        TAR=${x##*:}/trimmed_${lib}.tar
         for k in 1 2; do
-            gunzip -c ${SRA}/${lib}_L002_R${k}_001.fastq.gz 2> /dev/null \
-                | head -n $(( N_PAIRS * 4 )) > r${k}.fq
+            tar -xOf ${TAR} trimmed_${lib}_L002_R${k}_001.fastq.gz 2> /dev/null \
+                | gunzip -c 2> /dev/null | head -n $(( N_PAIRS * 4 )) > r${k}.fq
         done
         B=$(awk 'NR % 4 == 2 {b += length($0)} END {printf "%.0f", b}' r1.fq r2.fq)
         minimap2 -a -x sr -t ${THREADS} ${ASM} r1.fq r2.fq 2> /dev/null \

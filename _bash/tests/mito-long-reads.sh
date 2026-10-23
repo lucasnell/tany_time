@@ -22,6 +22,9 @@
 #'      ND2-side (17400-19500) segments, and the read bp between them
 #' Versions are read from `_apptainer/mito-env.yml`. Requires mamba.
 #' Run from the repo root. Set ENV_DIR to reuse an environment.
+#' The Guppy 5.0.11 hac files it reads were deleted from the local disk
+#' on 2026-10-23 (copies kept elsewhere by the owner); restore them to
+#' rerun.
 #'
 #' Output: `_data/mito-long-reads.txt`.
 #'
