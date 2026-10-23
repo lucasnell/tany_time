@@ -8,7 +8,8 @@ Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`;
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 
-1. `_bash/00-basecall/` (cluster, optional; set up 2026-10-14, not yet run):
+1. `_bash/00-basecall/` (cluster, optional; set up 2026-10-14; `02-dorado`
+   submitted 2026-10-22):
    `00-setup` (interactive build job: Dorado 0.9.6 + R9.4.1 sup model to
    staging) →
    `01-split-fast5` (330-GB raw-signal archive → 20-file chunks, MD5

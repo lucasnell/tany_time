@@ -109,9 +109,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
           region. If right, the mitogenome is ~44.6 kb (unverified).
           Goal (owner, 2026-10-14): a publication-quality mitogenome.
           - [ ] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
-            2026-10-14): copy `ives_fast5.tar.bz2` to staging, run
-            `00-setup.sh` in the `00-setup.sub` build job, then the three
-            steps. Afterwards switch
+            2026-10-14): archive on staging, `00-setup` and `01-split-fast5`
+            run, `02-dorado` submitted 2026-10-22. Next: `03-combine`; delete
+            the archive once `check-step.sh 00-basecall/01-split-fast5`
+            shows the MD5 matches, and the chunks once `03-combine` passes.
+            Then redo the mitochondrial recruitment and assemblies on the sup
+            reads (owner chose to wait for them, 2026-10-19), and switch
             `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup
             model (container rebuild to bundle it).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
