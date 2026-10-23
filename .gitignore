@@ -28,3 +28,4 @@ _bash/**/logs/
 
 # local cache for _bash/tests/mito-*.sh
 _data/mito-flye-cache/
+_data/mito-flye-cache-guppy/

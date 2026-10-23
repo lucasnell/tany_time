@@ -2,6 +2,10 @@
 
 #' This is to get a rough estimate of nucleotide diversity and
 #' heterozygosity from Nanopore sequencing to use as priors in SNAPE-pooled.
+#' Reads: the Dorado 0.9.6 sup basecalls (`00-basecall/03-combine`; q >= 10).
+#' Outputs are tagged with the basecaller (BASECALLS) so runs on different
+#' basecalls don't overwrite each other; the Guppy 5.0.11 hac run wrote
+#' `ont_variants.vcf.gz` and `ont_variants.windowed.pi.gz` (untagged).
 
 
 . /app/.bashrc
@@ -17,17 +21,19 @@ export GENOME_FULL_PATH="/staging/l/lnell/Tgraci_assembly.fasta.gz"
 
 
 
+export BASECALLS=dorado-0.9.6_sup
+
 # Outputs
 export OUT_DIR=ont-pi
 export BAM=ont_align.bam
-export VCF=ont_variants.vcf.gz
-export PI_FILE=ont_variants.windowed.pi
+export VCF=ont_variants_${BASECALLS}.vcf.gz
+export PI_FILE=ont_variants_${BASECALLS}.windowed.pi
 
 mkdir ${OUT_DIR}
 cd ${OUT_DIR}
 
 # Inputs
-export ONT_FASTQ=basecalls_guppy-5.0.11.fastq
+export ONT_FASTQ=basecalls_${BASECALLS}.fastq
 export GENOME=$(basename ${GENOME_FULL_PATH%.gz})
 
 require_files ${PARENT_DIR_IN}/${ONT_FASTQ}.gz ${GENOME_FULL_PATH}
@@ -97,8 +103,9 @@ rm *.log
 #' Because this is one diploid individual, Watterson's estimator is the
 #' same as pi here.
 #'
-#' The output from this was "0.008763051086537054".
-#' I'll use 0.0088 for my prior for SNAPE-pool.
+#' The output from this with the Guppy 5.0.11 hac reads was
+#' "0.008763051086537054" (2026-10-23 rerun). I'll use 0.0088 for my prior
+#' for SNAPE-pool.
 #'
 echo $(python3 << EOF
 import pandas as pd

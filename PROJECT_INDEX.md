@@ -5,6 +5,7 @@
 Cluster steps are documented in `_bash/README.md` and each `_bash/*/README.md`;
 `_bash/RERUN-CHECKLIST.md` is the step-by-step list for a full rerun, and
 `_bash/check-step.sh <folder>/<step>` checks any step's jobs and outputs.
+`_bash/submit.sh <step>.sub` submits a step with email notification.
 Job lists (`_bash/samples/`, `_bash/03-select-time/baypass_beta_info.txt`)
 are written by `_R/make-job-lists.R`.
 

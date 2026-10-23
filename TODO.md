@@ -119,8 +119,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             matches, and the chunks once `check-step.sh 00-basecall/03-combine` passes.
             Then redo the mitochondrial recruitment and assemblies on the sup
             reads (owner chose to wait for them, 2026-10-19), and switch
-            `01-mitogenome`/`04-ont-pi` to the sup FASTQ and medaka to a sup
-            model (container rebuild to bundle it).
+            `01-mitogenome` to the sup FASTQ and medaka to a sup model
+            (container rebuild to bundle it). `04-ont-pi` switched
+            2026-10-23 (outputs tagged `_dorado-0.9.6_sup`; not yet run).
+            Medaka has no model for `dna_r9.4.1_e8_sup@v3.6`; its
+            basecaller table maps `dna_r9.4.1_e8_sup@v3.3` to
+            `r941_min_sup_g507` (`medaka/options.py`, checked 2026-10-23).
+            Owner to decide: re-basecall with v3.3, use `r941_min_sup_g507`
+            on v3.6 reads, or polish with Illumina only. Local mitogenome
+            tests rerun on sup reads from 2026-10-23 (Guppy cache kept in
+            `_data/mito-flye-cache-guppy/`).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
