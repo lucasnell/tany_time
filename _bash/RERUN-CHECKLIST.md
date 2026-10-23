@@ -138,7 +138,7 @@ submitting the rest.
 
 ## E. Trimming (`01-variant-calling/`)
 
-- [ ] **E1.** `01-fastp` (62 jobs) → `./check-step.sh 01-variant-calling/01-fastp`.
+- [x] **E1.** `01-fastp` (62 jobs) → `./check-step.sh 01-variant-calling/01-fastp`.
 
 ## F. References (`00-references/`)
 
@@ -149,9 +149,9 @@ submitting the rest.
 - [ ] **F2.** `02-hologenome` (1 job). It fails by itself unless every
       species, the mitogenome, and every barcode group are present →
       `./check-step.sh 00-references/02-hologenome`.
-- [ ] **F3.** *(parallel with F1–F2)* `03-silva-db` (1 job) →
+- [x] **F3.** *(parallel with F1–F2)* `03-silva-db` (1 job) →
       `./check-step.sh 00-references/03-silva-db`.
-- [ ] **F4.** *(optional, parallel)* `04-ont-pi` (1 job) →
+- [x] **F4.** *(optional, parallel)* `04-ont-pi` (1 job) →
       `./check-step.sh 00-references/04-ont-pi` compares the new θ with
       the SNAPE prior in `02-allele-freqs/01-snape.sh` and warns if they
       differ by more than 10%.

@@ -97,7 +97,7 @@ rm *.log
 #' Because this is one diploid individual, Watterson's estimator is the
 #' same as pi here.
 #'
-#' The output from this was "0.008763101163069224".
+#' The output from this was "0.008763051086537054".
 #' I'll use 0.0088 for my prior for SNAPE-pool.
 #'
 echo $(python3 << EOF
