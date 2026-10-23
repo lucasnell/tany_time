@@ -53,11 +53,12 @@ From: condaforge/miniforge3:26.7.2-0
         rm /app/kraken-env.yml && \
         conda clean --all -y
     # medaka downloads models at run time; jobs may lack internet, so fetch
-    # the model for the nanopore reads (R9.4.1, Guppy 5.0.11 hac) now:
+    # the model for the nanopore reads (R9.4.1, Dorado 0.9.6 sup v3.6; medaka
+    # pairs this model with sup v3.3, none with v3.6) now:
     conda env create -q -f /app/mito-env.yml && \
         rm /app/mito-env.yml && \
         conda run -n mito-env medaka tools download_models \
-            --models r941_min_hac_g507 && \
+            --models r941_min_sup_g507 && \
         conda clean --all -y
     # snape-pooled: original repo (EmanueleRaineri/snape-pooled) was deleted;
     # the DEST-bio fork has the same commit.
@@ -100,4 +101,4 @@ From: condaforge/miniforge3:26.7.2-0
     Author Lucas Nell
     ContactEmail lucnell@gmail.com
     Name tany_time
-    Version v2.2.0
+    Version v2.3.0

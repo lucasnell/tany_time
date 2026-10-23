@@ -10,8 +10,9 @@
 #' control-region sequence and then repeat-unit copies on each side) and
 #' reports mean depth (primary alignments, MAPQ >= 20) by read-length class
 #' in each region. Regions are located on the contig by alignment
-#' (minimap2 -c -x asm20) of the round-1 contig's gene region
-#' (3600-19500) and one repeat unit (1-2472); the unique control-region
+#' (minimap2 -c -x asm20) of the gene region and one repeat unit, taken
+#' from the round-1 contig (features `genes` and `unit` of
+#' `mito-features.sh`); the unique control-region
 #' segments lie between the gene region and the nearest repeat copy.
 #' MAPQ >= 20 undercounts the repeat copies (similar copies give low MAPQ);
 #' the unique control-region segments are not affected. Versions are read
@@ -48,10 +49,10 @@ if [ ! -d ${ENV_DIR} ]; then
 fi
 export PATH=${ENV_DIR}/bin:${PATH}
 
-cp ${R1C} r1c.fa
-C=$(head -1 r1c.fa | sed 's/^>//; s/ .*//')
-samtools faidx r1c.fa ${C}:3600-19500 | sed '1s/.*/>genes/' > genes.fa
-samtools faidx r1c.fa ${C}:1-2472 | sed '1s/.*/>unit/' > unit.fa
+. ${ROOT}/_bash/tests/mito-features.sh
+locate_features ${R1C} || exit 1
+samtools faidx r1c.fa $(region genes) | sed '1s/.*/>genes/' > genes.fa
+samtools faidx r1c.fa $(region unit) | sed '1s/.*/>unit/' > unit.fa
 awk '/^>/ {print ">asm"; next} {print}' ${ASM} > asm.fa
 
 # Regions on the contig: gene region; repeat copies (unit hits >= 1.5 kb);
@@ -77,6 +78,7 @@ samtools index all.bam
 {
     echo "minimap2 $(minimap2 --version), samtools $(pin samtools);" \
         "checked $(date +%Y-%m-%d)"
+    echo "query pieces from the round-1 contig: genes $(region genes), unit $(region unit)"
     echo "contig: $(head -1 ${ASM} | sed 's/^>//'); reads: $(awk 'NR % 4 == 2' ${MR} | wc -l | tr -d ' ')"
     echo "regions (name start end):"
     sed 's/^/  /' regions.txt

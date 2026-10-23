@@ -16,7 +16,10 @@
 #' 4. For each contig with >= 5 kb of the gene region (plus the 2019
 #'    NextDenovo contig for comparison), report the layout: gene-region
 #'    copies, control-region pieces, repeat-unit copies (hits of one unit,
-#'    round-1 contig 1-2472), and the distance between gene-region starts.
+#'    from the round-1 contig), and the distance between gene-region starts.
+#'    Pieces of the round-1 contig (gene region, control-region sides, one
+#'    unit) are located by alignment (`mito-features.sh`; on the 29.5-kb
+#'    Guppy contig 3600-19500, 1-3600, 19500-end, and 1-2472).
 #' 5. Test the repeat structure:
 #'    a. bridging: recruited reads (MAPQ >= 20, primary) whose single
 #'       alignment spans 1 kb either side of each boundary between
@@ -80,13 +83,12 @@ export PATH=${ENV_DIR}/asm/bin:${PATH}
 mkdir -p ${RDIR}
 
 # ---- reference pieces (from the round-1 contig)
-C=$(head -1 ${R1C} | sed 's/^>//; s/ .*//')
-L=$(awk '!/^>/ {n += length($0)} END {print n}' ${R1C})
-cp ${R1C} r1c.fa
-samtools faidx r1c.fa ${C}:3600-19500 | sed '1s/.*/>genes/' > genes.fa
-samtools faidx r1c.fa ${C}:1-3600 | sed '1s/.*/>CR_left/' > pieces.fa
-samtools faidx r1c.fa ${C}:19500-${L} | sed '1s/.*/>CR_right/' >> pieces.fa
-samtools faidx r1c.fa ${C}:1-2472 | sed '1s/.*/>unit/' > unit.fa
+. ${ROOT}/_bash/tests/mito-features.sh
+locate_features ${R1C} || exit 1
+samtools faidx r1c.fa $(region genes) | sed '1s/.*/>genes/' > genes.fa
+samtools faidx r1c.fa $(region CR_left) | sed '1s/.*/>CR_left/' > pieces.fa
+samtools faidx r1c.fa $(region CR_right) | sed '1s/.*/>CR_right/' >> pieces.fa
+samtools faidx r1c.fa $(region unit) | sed '1s/.*/>unit/' > unit.fa
 get_ctg () {  # get_ctg <fasta.gz> <contig> <new name>
     gunzip -c $1 | awk -v c=$2 '/^>/ {p = (substr($1, 2) == c)} p' \
         | sed "1s/.*/>$3/"

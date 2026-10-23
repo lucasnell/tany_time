@@ -8,9 +8,9 @@ On hold until the owner says to run them. Listed in dependency order.
 
 Follow `_bash/RERUN-CHECKLIST.md`.
 
-- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`, v2.2.0). Pins
-      were updated 2026-10-09 and dry-run solved for linux-64, but the image
-      has not been built or tested. Outputs from the new image will differ
+- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`) as v2.3.0:
+      v2.2.0 (pins updated 2026-10-09; built, RERUN-CHECKLIST C1) plus
+      medaka model `r941_min_sup_g507` (2026-10-23; not yet built, C3). Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
 - [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
       `baypass-check-candidates.R` for the new BayPass output names
@@ -79,8 +79,8 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         mitochondrial/barcode competitive mapping as a per-pool
         contamination index. `00-references/01-mitogenome` assembles
         the T. gracilentus mitogenome from the nanopore reads of one
-        identified male (R9.4.1, Guppy 5.0.11 hac; not re-basecalled) with
-        Flye + medaka (`r941_min_hac_g507`) + polypolish (pool SN-1-08_S24);
+        identified male (R9.4.1, Dorado 0.9.6 sup v3.6 since 2026-10-23) with
+        Flye + medaka (`r941_min_sup_g507`) + polypolish (pool SN-1-08_S24);
         check `coi-check.tsv` against COI MZ659759/MN679642 before going on.
         `00-references/02-hologenome` adds the mitogenome and COI barcodes
         (`_R/get-mito-refs.R` → `_bash/references/`; selection in
@@ -133,8 +133,21 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             still assembles nothing; with `--genome-size 16k --asm-coverage
             150`, one 24.2-kb linear contig (555x) that matches Guppy contig
             1,639-25,875 at 99.6% (BLAST), so `pick_contig` still fails.
-            Scripts with Guppy-contig coordinates (3600-19500, 1-2472) need
-            new ones or the Guppy contig before rerunning on sup reads.
+            The mito checks now locate features by alignment
+            (`_bash/tests/mito-features.sh`, 2026-10-23;
+            `mito-features-check.sh` reproduces the old Guppy coordinates).
+            Medaka model test (`medaka-model-test.sh` →
+            `_data/medaka-model-test.txt`, sup round-1 contig vs MyKS-19-B
+            Illumina): in the gene region, `r941_min_sup_g507` on the v3.6
+            reads fixes all 6 of the draft's indel errors and adds 1;
+            `r941_min_hac_g507` ends with 3; SNVs (17, likely
+            pool-vs-individual differences) unchanged. Outside the gene
+            region both models add the same 3 SNVs (sup one more, alt 0.91)
+            where Illumina is not a reliable truth (repeat copies collapsed
+            on the 24-kb contig; one site at 4,500x). Owner chose
+            `r941_min_sup_g507` on the v3.6 reads (2026-10-23):
+            `01-mitogenome` now reads the sup FASTQ and uses it; container
+            v2.3.0 bundles it (rebuild needed, RERUN-CHECKLIST C3).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

@@ -18,13 +18,13 @@
 #' `mito-flye-round1.sh`) with minimap2 -x sr, and reports mean depth
 #' (all mapping qualities) in 1-kb bins, plus, for DNA, the nuclear
 #' expectation (library bases / T. gracilentus assembly length); identity
-#' (1 - NM / aligned bp) of MAPQ >= 20 reads within the gene region; and
+#' (1 - NM / aligned bp) of MAPQ >= 20 reads within the gene region (less
+#' 400 bp at its start and 500 at its end); and
 #' identity of reads aligned to each T. gracilentus COI barcode
 #' (`tgraci-coi.fasta`; the final check in `01-mitogenome` requires >= 98%
-#' for both). Contig regions
-#' (`mito-contig-vs-ref.sh`, `mito-contig-diag.sh`): ~3.6-19.5 kb gene
-#' region; 0-3.6 and 19.5-29.5 kb control-region side, with a ~2.8-kb
-#' tandem repeat in ~21.7-29.5 kb.
+#' for both). The gene region is located on the contig by alignment
+#' (`mito-features.sh`; 3.6-19.5 kb on the 29.5-kb Guppy contig); the rest
+#' is control-region side, with tandem repeat copies.
 #' Versions are read from `_apptainer/mito-env.yml`. Requires mamba. Run
 #' from the repo root. Set ENV_DIR to reuse an environment.
 #'
@@ -34,7 +34,7 @@
 ROOT=$(pwd)
 OUT=${ROOT}/_data/mito-illumina-depth.txt
 YML=${ROOT}/_bash/_apptainer/mito-env.yml
-ASM=${ROOT}/_data/mito-flye-cache/with_opts_assembly.fasta
+R1C=${ROOT}/_data/mito-flye-cache/with_opts_assembly.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
 DRIVE=/Volumes/lan_images4
 ASM_TG=${HOME}/_data/midgenomes/assemblies/Tgraci_assembly.fasta.gz
@@ -46,7 +46,7 @@ WORK=$(mktemp -d)
 ENV_DIR=${ENV_DIR:-${WORK}/env}
 cd ${WORK}
 
-[ -s ${ASM} ] || { echo "run _bash/tests/mito-flye-round1.sh first" 1>&2; exit 1; }
+[ -s ${R1C} ] || { echo "run _bash/tests/mito-flye-round1.sh first" 1>&2; exit 1; }
 for x in ${LIBS[@]}; do
     [ -s ${x##*:}/trimmed_${x%%:*}.tar ] \
         || { echo "missing ${x##*:}/trimmed_${x%%:*}.tar (drive mounted?)" 1>&2; exit 1; }
@@ -64,6 +64,9 @@ if [ ! -d ${ENV_DIR} ]; then
 fi
 export PATH=${ENV_DIR}/bin:${PATH}
 
+. ${ROOT}/_bash/tests/mito-features.sh
+locate_features ${R1C} || exit 1
+ASM=r1c.fa
 GL=$(gunzip -c ${ASM_TG} | awk '!/^>/ {n += length($0)} END {print n}')
 
 {
@@ -71,6 +74,7 @@ GL=$(gunzip -c ${ASM_TG} | awk '!/^>/ {n += length($0)} END {print n}')
         "checked $(date +%Y-%m-%d)"
     echo "first ${N_PAIRS} read pairs per library; T. gracilentus assembly" \
         "${GL} bp"
+    echo "contig: ${L} bp; gene region $(region genes)"
     for x in ${LIBS[@]}; do
         lib=${x%%:*}
         type=$(echo ${x} | cut -d : -f 2)
@@ -100,11 +104,12 @@ GL=$(gunzip -c ${ASM_TG} | awk '!/^>/ {n += length($0)} END {print n}')
                             printf "%s%2d: %6d", (i % 5 ? "  " : (i ? "\n  " : "  ")),
                                 i, s[i] / n[i]; printf "\n"}'
         minimap2 -c -x sr -t ${THREADS} ${ASM} r1.fq r2.fq 2> /dev/null \
-            | awk '$12 >= 20 && $8 >= 4000 && $9 <= 19000 && $11 >= 100 {
+            | awk -v lo=$((GS + 400)) -v hi=$((GE - 500)) \
+                '$12 >= 20 && $8 >= lo && $9 <= hi && $11 >= 100 {
                    for (i = 13; i <= NF; i++) if ($i ~ /^NM:i:/) nm = substr($i, 6)
                    s += nm; b += $11; n++}
-                   END {printf "gene region (4-19 kb), MAPQ >= 20: %d reads," \
-                        " identity %.4f\n", n, 1 - s / b}'
+                   END {printf "gene region (%d-%d), MAPQ >= 20: %d reads," \
+                        " identity %.4f\n", lo, hi, n, 1 - s / b}'
         echo "COI barcodes (barcode: reads, identity):"
         minimap2 -c -x sr -t ${THREADS} ${COI} r1.fq r2.fq 2> /dev/null \
             | awk '$11 >= 100 {for (i = 13; i <= NF; i++)

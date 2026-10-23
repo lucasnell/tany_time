@@ -9,6 +9,12 @@ nanopore reads; trimmed Illumina tars). The Guppy 5.0.11 files read by
 were deleted locally on 2026-10-23, so those three need them restored
 to rerun. Mitogenome outputs saved before then used the Guppy reads.
 
+The `mito-*.sh` checks locate the gene region, repeat unit, and other
+features on whatever round-1 contig is cached by aligning the sequences in
+`_data/mito-features.fasta` (`mito-features.sh`; cut from the Guppy
+round-1 contig, now in `_data/mito-flye-cache-guppy/`), instead of fixed
+coordinates.
+
 | Script | Checks | Output |
 |---|---|---|
 | `npstat-maxcov.sh` | npstat output is identical when `-maxcov` is lowered to the maximum coverage present, and how much faster that is (`02-allele-freqs/02-npstat` relies on this) | `_data/npstat-maxcov-check.txt` |
@@ -24,4 +30,6 @@ to rerun. Mitogenome outputs saved before then used the Guppy reads.
 | `mito-contig-vs-ref.sh` | Which parts of the T. verralli and T. formosanus mitogenomes each test contig covers | `_data/mito-contig-vs-ref.txt` |
 | `mito-illumina-depth.sh` | Illumina depth along the round-1 contig (MyKS-19-B_S18 DNA pool; TanyAdult_S1 RNA-seq), and identity to the gene region and to each COI barcode | `_data/mito-illumina-depth.txt` |
 | `mito-old-assemblies.sh` | Layout of the mitochondrial contigs in the 2019 whole-genome assemblies (`/Volumes/TanyGen5TB/assembly/`): gene region, control-region pieces, repeat-unit copies | `_data/mito-old-assemblies.txt` |
+| `mito-features-check.sh` | `locate_features` (`mito-features.sh`) recovers the fixed coordinates used on the Guppy round-1 contig; feature positions on the sup round-1 contig | `_data/mito-features-check.txt` |
+| `medaka-model-test.sh` | Medaka `r941_min_hac_g507` and `r941_min_sup_g507` on the sup v3.6 reads vs no polishing: errors against Illumina (MyKS-19-B, 4M trimmed pairs cached in `_data/mito-flye-cache/ill/`) in and outside the gene region | `_data/medaka-model-test.txt` |
 | `mito-long-reads.sh` | Whether recruited reads > 17 kb are mitochondrial (length tails, identity by length and q-score, read structure) | `_data/mito-long-reads.txt` |

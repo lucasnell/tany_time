@@ -181,7 +181,10 @@ it and to the COI barcodes), `mito-old-assemblies.sh` (mitochondrial
 contigs in the 2019 whole-genome assemblies), `mito-reassemble.sh` (four
 assemblers on all mitochondrial reads, with repeat-structure tests),
 `mito-cr-span.sh` (control-region length from reads), `mito-depth-by-length.sh`
-(depth along the reassembled contig);
+(depth along the reassembled contig); `mito-features.sh` (shared helper:
+locates features from `_data/mito-features.fasta` on a contig) and
+`mito-features-check.sh`; `medaka-model-test.sh` (medaka models on the
+sup reads vs Illumina);
 `dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);
 `dorado-sup-check.sh` (combined sup basecalls vs Guppy hac;
 → `_data/dorado-sup-check.txt`);

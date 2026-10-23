@@ -3,8 +3,8 @@
 #' Local check (not a cluster job): how long is the control region in the
 #' molecules the nanopore reads came from?
 #'
-#' The gene region (round-1 contig 3600-19500: rRNA side to ND2 side; see
-#' `mito-contig-vs-ref.sh`) sits between the two ends of the control region
+#' The gene region (feature `genes` of `mito-features.sh`, located on the
+#' round-1 contig: rRNA side to ND2 side; see `mito-contig-vs-ref.sh`) sits between the two ends of the control region
 #' on the circular molecule. A read containing the end of the gene region
 #' and then its start (same strand, in molecule order) crossed the whole
 #' control region, and the read bases between them give that molecule's
@@ -46,9 +46,9 @@ if [ ! -d ${ENV_DIR} ]; then
 fi
 export PATH=${ENV_DIR}/bin:${PATH}
 
-cp ${R1C} r1c.fa
-C=$(head -1 r1c.fa | sed 's/^>//; s/ .*//')
-samtools faidx r1c.fa ${C}:3600-19500 | sed '1s/.*/>genes/' > genes.fa
+. ${ROOT}/_bash/tests/mito-features.sh
+locate_features ${R1C} || exit 1
+samtools faidx r1c.fa $(region genes) | sed '1s/.*/>genes/' > genes.fa
 
 # wraps <PAF> -> read, read length, control-region length
 wraps () {
@@ -95,6 +95,7 @@ awk '{L = $7; ext = -1}
 
 {
     echo "minimap2 $(minimap2 --version); checked $(date +%Y-%m-%d)"
+    echo "gene region: $(region genes) of the round-1 contig (${L} bp)"
     echo "synthetic check (read, detected control-region length; true =" \
         "filler + 0):"
     sed 's/^/  /' syn.txt

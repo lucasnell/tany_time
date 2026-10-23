@@ -1,6 +1,7 @@
 # Cluster rerun checklist
 
-Full rerun of the pipeline with container v2.2.0. Paths are on CHTC
+Full rerun of the pipeline with container v2.3.0 (v2.2.0 plus the sup
+medaka model; built v2.2.0 for steps run so far). Paths are on CHTC
 staging (`/staging/l/lnell/`, written `$S` below) unless noted. Submit each
 step from inside its folder after `mkdir -p logs/<step>`. Details for each
 step are in that folder's `README.md`.
@@ -94,7 +95,7 @@ Steps marked *(parallel)* can run alongside the step before them.
       activates (`main-env`, `qc-env`, `gatk-env`, `gatk3-env`,
       `baypass-env`, `kraken-env`, `mito-env`), `/app/bin` scripts are on
       `PATH`, and `medaka tools list_models` (in `mito-env`) shows
-      `r941_min_hac_g507`:
+      `r941_min_hac_g507` (v2.2.0):
 
       ```bash
       bash
@@ -117,6 +118,10 @@ Steps marked *(parallel)* can run alongside the step before them.
       conda activate mito-env
       medaka tools list_models | grep  --color=always r941_min_hac_g507
       ```
+
+- [ ] **C3.** Rebuild as v2.3.0 (medaka model `r941_min_sup_g507` for the
+      sup reads; 2026-10-23) as in C1, then C2 with
+      `grep r941_min_sup_g507`. Needed before F1.
 
 ## D. How to run and check each step
 

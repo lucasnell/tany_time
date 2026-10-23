@@ -1,14 +1,17 @@
 #!/bin/bash
 
 #' Assemble the T. gracilentus mitochondrial genome from nanopore reads of a
-#' single identified male (R9.4.1 flow cell; Guppy 5.0.11 hac).
+#' single identified male (R9.4.1 flow cell; re-basecalled with Dorado 0.9.6,
+#' model `dna_r9.4.1_e8_sup@v3.6`, in `00-basecall/`).
 #'
 #' 1. Recruit mitochondrial reads by mapping all reads to T. gracilentus
 #'    mitochondrial sequences from NCBI (`tgraci-mito-bait.fasta`).
 #' 2. Assemble them with Flye; keep the contig 13-22 kb long (preferring
 #'    one Flye reports as circular).
 #' 3. Re-recruit reads against that draft and re-assemble.
-#' 4. Polish with medaka (model r941_min_hac_g507), then with Illumina
+#' 4. Polish with medaka (model r941_min_sup_g507; medaka has no model for
+#'    sup v3.6, and this one did best on the gene region in
+#'    `_bash/tests/medaka-model-test.sh`), then with Illumina
 #'    reads from one pool (polypolish). Pool reads give a population
 #'    consensus, which is what a mapping reference needs.
 #' 5. Validate: align published T. gracilentus COI barcodes
@@ -27,7 +30,7 @@ conda activate mito-env
 export THREADS=$(count_threads)
 
 # Edit these for your system:
-export ONT_FASTQ="/staging/l/lnell/dna/ont/basecalls_guppy-5.0.11.fastq.gz"
+export ONT_FASTQ="/staging/l/lnell/dna/ont/basecalls_dorado-0.9.6_sup.fastq.gz"
 export TRIMMED_DIR="/staging/l/lnell/dna/trimmed"
 export PARENT_DIR_OUT="/staging/l/lnell"
 
@@ -38,7 +41,7 @@ export POLISH_POOL="SN-1-08_S24"
 export N_PAIRS=4000000
 export SEED=2125381094
 
-export MEDAKA_MODEL="r941_min_hac_g507"
+export MEDAKA_MODEL="r941_min_sup_g507"
 export MIN_COI_COV=0.95
 export MIN_COI_ID=0.98
 export MIN_LEN=13000

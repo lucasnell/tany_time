@@ -1,0 +1,116 @@
+medaka 2.2.2, minimap2 2.31-r1302, samtools 1.24, bcftools 1.24; checked 2026-10-23
+draft: /Users/lucasnell/GitHub/Wisconsin/tany_time/_data/mito-flye-cache/with_opts_assembly.fasta (24181 bp; gene region contig_1:1963-17862); reads: 7221 recruited sup reads
+Illumina: 4000000 pairs; sites with depth >= 50; error = alt >= 0.9 of reads; mixed = 0.1-0.9
+
+columns per region: callable bp, SNV, homopolymer indel, other indel, mixed, errors per 10 kb
+version            length | gene region                             | outside gene region
+draft               24181 |  15849   17    5    1   14  14.51 |   7297   12    0    1   21  17.82
+r941_min_hac_g507   24184 |  15860   17    3    0    9  12.61 |   7356   15    0    0   20  20.39
+r941_min_sup_g507   24192 |  15859   17    1    0   11  11.35 |   7357   16    0    0   19  21.75
+
+error sites (version, region, position on that version, ref>alt, alt fraction, depth, inside a repeat-unit copy, type):
+  draft              outside    242 G>C alt 0.96 depth 267 in-unit no SNV
+  draft              outside    559 A>G alt 0.97 depth 478 in-unit no SNV
+  draft              outside    562 G>A alt 0.97 depth 472 in-unit no SNV
+  draft              outside    927 C>T alt 0.97 depth 609 in-unit no SNV
+  draft              outside   1031 C>T alt 1.00 depth 575 in-unit no SNV
+  draft              outside   1612 T>A alt 1.00 depth 436 in-unit no SNV
+  draft              genes     4671 C>T alt 0.99 depth 641 in-unit no SNV
+  draft              genes     4830 C>A alt 0.98 depth 653 in-unit no SNV
+  draft              genes     5016 ATTTTTTT>ATTTTTTTT alt 0.93 depth 789 in-unit no homopolymer-indel
+  draft              genes     7231 CTTTTTTT>CTTTTTTTT alt 0.93 depth 691 in-unit no homopolymer-indel
+  draft              genes     8056 A>G alt 1.00 depth 704 in-unit no SNV
+  draft              genes     8757 TAAAAAAA>TAAAAAAAA alt 0.90 depth 639 in-unit no homopolymer-indel
+  draft              genes     9059 G>T alt 1.00 depth 674 in-unit no SNV
+  draft              genes     9422 T>C alt 0.98 depth 559 in-unit no SNV
+  draft              genes     9740 A>G alt 1.00 depth 622 in-unit no SNV
+  draft              genes     9949 CTTTTTTTT>CTTTTTTTTT alt 0.94 depth 703 in-unit no homopolymer-indel
+  draft              genes    10173 T>C alt 1.00 depth 673 in-unit no SNV
+  draft              genes    10285 T>TTC alt 0.92 depth 666 in-unit no other-indel
+  draft              genes    10358 A>G alt 1.00 depth 694 in-unit no SNV
+  draft              genes    11102 C>T alt 1.00 depth 660 in-unit no SNV
+  draft              genes    11138 T>C alt 0.98 depth 650 in-unit no SNV
+  draft              genes    11251 A>G alt 1.00 depth 658 in-unit no SNV
+  draft              genes    13749 A>G alt 0.98 depth 623 in-unit no SNV
+  draft              genes    14476 C>T alt 1.00 depth 433 in-unit no SNV
+  draft              genes    15127 T>C alt 0.96 depth 702 in-unit no SNV
+  draft              genes    16172 TAAAAAAA>TAAAAAAAA alt 0.92 depth 721 in-unit no homopolymer-indel
+  draft              genes    17528 A>G alt 1.00 depth 709 in-unit no SNV
+  draft              genes    17729 G>T alt 0.98 depth 540 in-unit no SNV
+  draft              genes    17842 C>T alt 1.00 depth 527 in-unit no SNV
+  draft              outside  17973 G>A alt 1.00 depth 383 in-unit no SNV
+  draft              outside  18484 A>C alt 1.00 depth 94 in-unit no SNV
+  draft              outside  19974 C>A alt 1.00 depth 214 in-unit no SNV
+  draft              outside  20245 G>A alt 1.00 depth 50 in-unit no SNV
+  draft              outside  23140 C>T alt 0.99 depth 495 in-unit yes SNV
+  draft              outside  23224 CTATT>CT alt 0.94 depth 201 in-unit yes other-indel
+  draft              outside  24009 A>G alt 0.99 depth 70 in-unit no SNV
+  r941_min_hac_g507  outside    242 G>C alt 0.96 depth 266 in-unit no SNV
+  r941_min_hac_g507  outside    560 A>G alt 0.97 depth 478 in-unit no SNV
+  r941_min_hac_g507  outside    563 G>A alt 0.97 depth 472 in-unit no SNV
+  r941_min_hac_g507  outside    928 C>T alt 0.97 depth 608 in-unit no SNV
+  r941_min_hac_g507  outside   1032 C>T alt 1.00 depth 575 in-unit no SNV
+  r941_min_hac_g507  outside   1614 T>A alt 1.00 depth 435 in-unit no SNV
+  r941_min_hac_g507  genes     4673 C>T alt 0.99 depth 641 in-unit no SNV
+  r941_min_hac_g507  genes     4832 C>A alt 0.98 depth 653 in-unit no SNV
+  r941_min_hac_g507  genes     8061 A>G alt 1.00 depth 704 in-unit no SNV
+  r941_min_hac_g507  genes     9066 G>T alt 1.00 depth 675 in-unit no SNV
+  r941_min_hac_g507  genes     9429 T>C alt 0.98 depth 559 in-unit no SNV
+  r941_min_hac_g507  genes     9747 A>G alt 1.00 depth 622 in-unit no SNV
+  r941_min_hac_g507  genes     9956 CTTTTTTTTTT>CTTTTTTTTT alt 0.96 depth 681 in-unit no homopolymer-indel
+  r941_min_hac_g507  genes    10182 T>C alt 1.00 depth 683 in-unit no SNV
+  r941_min_hac_g507  genes    10369 A>G alt 1.00 depth 685 in-unit no SNV
+  r941_min_hac_g507  genes    11113 C>T alt 1.00 depth 660 in-unit no SNV
+  r941_min_hac_g507  genes    11149 T>C alt 0.98 depth 650 in-unit no SNV
+  r941_min_hac_g507  genes    11262 A>G alt 1.00 depth 658 in-unit no SNV
+  r941_min_hac_g507  genes    11410 CTTTTTTT>CTTTTTT alt 0.94 depth 567 in-unit no homopolymer-indel
+  r941_min_hac_g507  genes    13762 A>G alt 0.98 depth 621 in-unit no SNV
+  r941_min_hac_g507  genes    14489 C>T alt 1.00 depth 433 in-unit no SNV
+  r941_min_hac_g507  genes    15091 CTTTTTTT>CTTTTTT alt 0.94 depth 647 in-unit no homopolymer-indel
+  r941_min_hac_g507  genes    15141 T>C alt 0.96 depth 684 in-unit no SNV
+  r941_min_hac_g507  genes    17543 A>G alt 1.00 depth 709 in-unit no SNV
+  r941_min_hac_g507  genes    17744 G>T alt 0.98 depth 540 in-unit no SNV
+  r941_min_hac_g507  genes    17857 C>T alt 1.00 depth 527 in-unit no SNV
+  r941_min_hac_g507  outside  17988 G>A alt 1.00 depth 383 in-unit no SNV
+  r941_min_hac_g507  outside  18500 A>C alt 1.00 depth 94 in-unit no SNV
+  r941_min_hac_g507  outside  19990 C>A alt 1.00 depth 216 in-unit no SNV
+  r941_min_hac_g507  outside  20261 G>A alt 1.00 depth 50 in-unit no SNV
+  r941_min_hac_g507  outside  20465 C>G alt 0.95 depth 826 in-unit no SNV
+  r941_min_hac_g507  outside  21248 G>A alt 0.96 depth 324 in-unit no SNV
+  r941_min_hac_g507  outside  22796 G>C alt 1.00 depth 4499 in-unit yes SNV
+  r941_min_hac_g507  outside  23138 C>T alt 1.00 depth 511 in-unit yes SNV
+  r941_min_hac_g507  outside  23903 A>G alt 1.00 depth 87 in-unit no SNV
+  r941_min_sup_g507  outside    242 G>C alt 0.96 depth 266 in-unit no SNV
+  r941_min_sup_g507  outside    560 A>G alt 0.97 depth 478 in-unit no SNV
+  r941_min_sup_g507  outside    563 G>A alt 0.97 depth 472 in-unit no SNV
+  r941_min_sup_g507  outside    928 C>T alt 0.97 depth 608 in-unit no SNV
+  r941_min_sup_g507  outside   1032 C>T alt 1.00 depth 575 in-unit no SNV
+  r941_min_sup_g507  outside   1614 T>A alt 1.00 depth 435 in-unit no SNV
+  r941_min_sup_g507  genes     4673 C>T alt 0.99 depth 641 in-unit no SNV
+  r941_min_sup_g507  genes     4832 C>A alt 0.98 depth 653 in-unit no SNV
+  r941_min_sup_g507  genes     8061 A>G alt 1.00 depth 704 in-unit no SNV
+  r941_min_sup_g507  genes     9066 G>T alt 1.00 depth 675 in-unit no SNV
+  r941_min_sup_g507  genes     9429 T>C alt 0.98 depth 560 in-unit no SNV
+  r941_min_sup_g507  genes     9747 A>G alt 1.00 depth 622 in-unit no SNV
+  r941_min_sup_g507  genes    10181 T>C alt 1.00 depth 683 in-unit no SNV
+  r941_min_sup_g507  genes    10368 A>G alt 1.00 depth 685 in-unit no SNV
+  r941_min_sup_g507  genes    11112 C>T alt 1.00 depth 660 in-unit no SNV
+  r941_min_sup_g507  genes    11148 T>C alt 0.98 depth 650 in-unit no SNV
+  r941_min_sup_g507  genes    11261 A>G alt 1.00 depth 658 in-unit no SNV
+  r941_min_sup_g507  genes    11409 CTTTTTTT>CTTTTTT alt 0.94 depth 567 in-unit no homopolymer-indel
+  r941_min_sup_g507  genes    13761 A>G alt 0.98 depth 622 in-unit no SNV
+  r941_min_sup_g507  genes    14488 C>T alt 1.00 depth 433 in-unit no SNV
+  r941_min_sup_g507  genes    15139 T>C alt 0.96 depth 702 in-unit no SNV
+  r941_min_sup_g507  genes    17541 A>G alt 1.00 depth 709 in-unit no SNV
+  r941_min_sup_g507  genes    17742 G>T alt 0.98 depth 540 in-unit no SNV
+  r941_min_sup_g507  genes    17855 C>T alt 1.00 depth 527 in-unit no SNV
+  r941_min_sup_g507  outside  17986 G>A alt 1.00 depth 383 in-unit no SNV
+  r941_min_sup_g507  outside  18498 A>C alt 1.00 depth 94 in-unit no SNV
+  r941_min_sup_g507  outside  19988 C>A alt 1.00 depth 216 in-unit no SNV
+  r941_min_sup_g507  outside  20259 G>A alt 1.00 depth 52 in-unit no SNV
+  r941_min_sup_g507  outside  20467 C>G alt 0.96 depth 870 in-unit no SNV
+  r941_min_sup_g507  outside  21249 G>A alt 0.96 depth 304 in-unit no SNV
+  r941_min_sup_g507  outside  21284 A>G alt 0.91 depth 253 in-unit no SNV
+  r941_min_sup_g507  outside  22804 G>C alt 1.00 depth 4504 in-unit yes SNV
+  r941_min_sup_g507  outside  23146 C>T alt 1.00 depth 543 in-unit yes SNV
+  r941_min_sup_g507  outside  23909 A>G alt 1.00 depth 95 in-unit no SNV

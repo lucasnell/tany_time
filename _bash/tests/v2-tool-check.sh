@@ -189,8 +189,8 @@ flags "flye $(pin mito-env flye)" "$(${E}/mito/bin/flye --help 2>&1)" \
 flags "medaka_consensus $(pin mito-env medaka)" \
     "$(PATH=${E}/mito/bin:${PATH} medaka_consensus -h 2>&1)" \
     "-i  " "-d  " "-o  " "-m  " "-t  "
-check "medaka model r941_min_hac_g507 exists" bash -c \
-    "${E}/mito/bin/medaka tools list_models 2>&1 | grep -q r941_min_hac_g507"
+check "medaka model r941_min_sup_g507 exists" bash -c \
+    "${E}/mito/bin/medaka tools list_models 2>&1 | grep -q r941_min_sup_g507"
 flags "polypolish filter $(pin mito-env polypolish)" \
     "$(${E}/mito/bin/polypolish filter --help 2>&1)" --in1 --in2 --out1 --out2
 

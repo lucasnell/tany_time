@@ -1,0 +1,22 @@
+minimap2 2.31-r1302; checked 2026-10-23
+
+== Guppy round-1 contig (_data/mito-flye-cache-guppy/with_opts_assembly.fasta)
+length 29542; orientation as-is
+  CR_left 1 3600
+  CR_right 19500 29542
+  ND2_side 17400 19500
+  core 9674 15798
+  genes 3600 19500
+  rRNA_side 3700 6500
+  unit 1 2472
+matches the fixed coordinates used before 2026-10-23: PASS
+
+== sup round-1 contig (_data/mito-flye-cache/with_opts_assembly.fasta)
+length 24181; orientation as-is
+  CR_left 1 1963
+  CR_right 17862 24181
+  ND2_side 15760 17862
+  core 8039 14167
+  genes 1963 17862
+  rRNA_side 2063 4863
+  unit 21391 23764
