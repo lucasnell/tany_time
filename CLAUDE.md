@@ -56,8 +56,8 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   `/Volumes/TanyGen5TB/nanopore/ives_fast5.tar.bz2`) with Dorado 0.9.6, the
   last release with R9.4.1 models and FAST5 input; `02-dorado` runs on GPUs
   without the container.
-  `_bash/submit.sh <step>.sub` submits with email notification (address
-  from `NOTIFY_EMAIL` on the submit server; untested as of 2026-10-23).
+  CHTC disables HTCondor email notification (submissions with
+  `notification`/`notify_user` are rejected; 2026-10-23).
   `_bash/check-step.sh <folder>/<step>` (on the submit server) checks a
   step's jobs, run times, outputs, and step-specific results; checks
   should be scripted like this rather than left to manual inspection

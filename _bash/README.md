@@ -65,12 +65,9 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
   condor_submit 01-fastp.sub
   ```
 
-- To get email when jobs end, submit with `../submit.sh 01-fastp.sub`
-  instead (makes the log folder too). It needs `export
-  NOTIFY_EMAIL=<address>` in `~/.bashrc` on the submit server. One email
-  per job: by default one when a single-job step ends, and only failures
-  for steps with more jobs (override with a second argument, e.g.
-  `Complete`). Not tested on CHTC yet (added 2026-10-23).
+- CHTC rejects submissions with `notification` or `notify_user` ("Email
+  notifications are disabled"; 2026-10-23), so HTCondor can't email when
+  jobs end.
 
 - `logs/` folders are git-ignored. Edit files locally and push, not on
   the cluster, so `git pull` never conflicts. Job scripts are stored as

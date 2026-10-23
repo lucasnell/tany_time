@@ -128,7 +128,13 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             Owner to decide: re-basecall with v3.3, use `r941_min_sup_g507`
             on v3.6 reads, or polish with Illumina only. Local mitogenome
             tests rerun on sup reads from 2026-10-23 (Guppy cache kept in
-            `_data/mito-flye-cache-guppy/`).
+            `_data/mito-flye-cache-guppy/`). Round 1 on sup reads
+            (`mito-flye-round1.sh`): 7,221 reads recruited; default Flye
+            still assembles nothing; with `--genome-size 16k --asm-coverage
+            150`, one 24.2-kb linear contig (555x) that matches Guppy contig
+            1,639-25,875 at 99.6% (BLAST), so `pick_contig` still fails.
+            Scripts with Guppy-contig coordinates (3600-19500, 1-2472) need
+            new ones or the Guppy contig before rerunning on sup reads.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

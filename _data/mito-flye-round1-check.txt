@@ -1,12 +1,12 @@
-Flye 2.9.6-b1802, minimap2 2.31-r1302, seqtk 1.5; checked 2026-10-14
-reads: /Users/lucasnell/_data/midgenomes/_sra/basecalls_guppy-5.0.11.fastq.gz
-recruited (>= 300 bp aligned to tgraci-mito-bait.fasta): 7245 reads, 36947116 bp
+Flye 2.9.6-b1802, minimap2 2.31-r1302, seqtk 1.5; checked 2026-10-23
+reads: /Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz
+recruited (>= 300 bp aligned to tgraci-mito-bait.fasta): 7221 reads, 36752828 bp
 
 == round 1 as in 01-mitogenome.sh
 exit status: 1
-root: INFO: Total read length: 36947116
+root: INFO: Total read length: 36752828
 root: INFO: Assembling disjointigs
-INFO: Overlap-based coverage: 1957
+INFO: Overlap-based coverage: 1791
 INFO: Assembled 0 disjointigs
 INFO: Filtering contained disjointigs
 root: ERROR: No disjointigs were assembled - please check if the read type and genome size parameters are correct
@@ -15,12 +15,12 @@ no assembly
 
 == round 1 with --genome-size 16k --asm-coverage 150
 exit status: 0
-root: INFO: Total read length: 36947116
+root: INFO: Total read length: 36752828
 root: INFO: Assembling disjointigs
 INFO: Overlap-based coverage: 6
-INFO: Assembled 9 disjointigs
+INFO: Assembled 6 disjointigs
 INFO: Filtering contained disjointigs
 INFO: Parsing disjointigs
 contigs (name, length, coverage, circular):
-  contig_10 29542 287 N
+  contig_1 24181 555 N
 13-22 kb contig: no
