@@ -2,7 +2,8 @@
 
 #' Local check (not a cluster job): how do the earlier whole-genome
 #' assemblies of the same nanopore reads (Flye, NECAT, NextDenovo,
-#' SMARTdenovo; `/Volumes/TanyGen5TB/assembly/`) lay out the mitogenome?
+#' SMARTdenovo; `/Volumes/lan_images4/assembly/`, copied from
+#' `/Volumes/TanyGen5TB/assembly/` 2026-10-23) lay out the mitogenome?
 #'
 #' Finds contigs carrying the T. gracilentus COI barcode MZ659759.1, then
 #' maps onto each: the gene region of the cached round-1 contig
@@ -24,7 +25,7 @@ OUT=${ROOT}/_data/mito-old-assemblies.txt
 YML=${ROOT}/_bash/_apptainer/mito-env.yml
 R1C=${ROOT}/_data/mito-flye-cache/with_opts_assembly.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
-D=/Volumes/TanyGen5TB/assembly
+D=/Volumes/lan_images4/assembly
 OLD=(flye/contigs_flye necat/contigs_necat nextdenovo/contigs_next
      smartdenovo/contigs_smart)
 WORK=$(mktemp -d)

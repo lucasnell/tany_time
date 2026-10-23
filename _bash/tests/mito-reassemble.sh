@@ -32,7 +32,7 @@
 #'       the gene region (it tends to under-cover A+T-rich sequence, so the
 #'       sum is more likely low than high)
 #' Assemblies are unpolished. Requires mamba, the external drive
-#' (`/Volumes/TanyGen5TB`), the cache from `mito-flye-round1.sh`, and
+#' (`/Volumes/lan_images4/assembly/`), the cache from `mito-flye-round1.sh`, and
 #' `/Volumes/lan_images4/` (sup nanopore reads; fastp-trimmed MyKS-19-B
 #' reads, streamed from the uncompressed tar; the 2026-10-19 output used
 #' the raw Illumina reads). Takes ~2-3 h. Run from the repo root.
@@ -51,7 +51,7 @@ OUT=${ROOT}/_data/mito-reassemble.txt
 CACHE=${ROOT}/_data/mito-flye-cache
 RDIR=${CACHE}/reassemble
 R1C=${CACHE}/with_opts_assembly.fasta
-OLD=/Volumes/TanyGen5TB/assembly
+OLD=/Volumes/lan_images4/assembly
 ONT_FASTQ=${ONT_FASTQ:-/Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz}
 ILL=/Volumes/lan_images4/ill/dna/trimmed/trimmed_MyKS-19-B_S18.tar
 ILL_PAIRS=4000000

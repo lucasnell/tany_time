@@ -148,6 +148,20 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             `r941_min_sup_g507` on the v3.6 reads (2026-10-23):
             `01-mitogenome` now reads the sup FASTQ and uses it; container
             v2.3.0 bundles it (rebuild needed, RERUN-CHECKLIST C3).
+            Reassembly on sup reads (`mito-reassemble.sh`, 2026-10-23;
+            2019 assemblies now read from `/Volumes/lan_images4/assembly/`):
+            61,245 reads recruited. Flye's 26.1-kb contig and Raven's Utg158
+            are nuclear (CONTIG12 63.8-89.2 kb at 99.7%, BLAST; not in the
+            script output); Raven Utg156 (42.5 kb) has a gene region with
+            two gaps and 26 kb of unidentified sequence; SMARTdenovo 53.6 kb
+            with the gene region once and 9 unit copies, every boundary
+            spanned by 25-140 reads; Illumina unit copies sum 4.2;
+            NextDenovo failed at `seed_cns` again. `mito-cr-span.sh`: still
+            no read crosses the control region (max 22.2-22.3 kb past
+            either end). `mito-long-reads.sh`: same conclusions, identity
+            ~0.5 points higher. `mito-depth-by-length.sh`: regions now
+            differ (unit from another copy; 1 left, 8 right copies), so
+            depths are not comparable with the Guppy run.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
