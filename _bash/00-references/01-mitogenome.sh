@@ -8,7 +8,10 @@
 #'    mitochondrial sequences from NCBI (`tgraci-mito-bait.fasta`).
 #' 2. Assemble them with Flye; keep the contig 13-22 kb long (preferring
 #'    one Flye reports as circular).
-#' 3. Re-recruit reads against that draft and re-assemble.
+#'    Recruited reads that align better to the nuclear assembly than to
+#'    the bait (nuclear copies of mitochondrial DNA, and long nuclear reads
+#'    with weak A+T-rich matches) are dropped; see `keep_mito`.
+#' 3. Re-recruit reads against that draft (same filter) and re-assemble.
 #' 4. Polish with medaka (model r941_min_sup_g507; medaka has no model for
 #'    sup v3.6, and this one did best on the gene region in
 #'    `_bash/tests/medaka-model-test.sh`), then with Illumina
@@ -32,6 +35,7 @@ export THREADS=$(count_threads)
 # Edit these for your system:
 export ONT_FASTQ="/staging/l/lnell/dna/ont/basecalls_dorado-0.9.6_sup.fastq.gz"
 export TRIMMED_DIR="/staging/l/lnell/dna/trimmed"
+export GENOME_FULL_PATH="/staging/l/lnell/Tgraci_assembly.fasta.gz"
 export PARENT_DIR_OUT="/staging/l/lnell"
 
 # Illumina pool used for short-read polishing (high coverage, 80 haploid
@@ -49,7 +53,7 @@ export MAX_LEN=22000
 
 
 require_files tgraci-mito-bait.fasta tgraci-coi.fasta ${ONT_FASTQ} \
-    ${TRIMMED_DIR}/trimmed_${POLISH_POOL}.tar
+    ${TRIMMED_DIR}/trimmed_${POLISH_POOL}.tar ${GENOME_FULL_PATH}
 
 export OUT_DIR=Tgraci_mitogenome
 mkdir ${OUT_DIR}
@@ -74,13 +78,51 @@ pick_contig () {
     samtools faidx $1/assembly.fasta ${contig} > $2
 }
 
-#' Recruit nanopore reads that align to reference $1 over >= $2 bp;
-#' writes them to file $3.
+#' Nuclear assembly for `keep_mito`. Its contigs carrying the T. gracilentus
+#' COI barcode MZ659759.1 (>= 98% identity over >= 90% of it) are its own
+#' mitochondrial contigs (CONTIG34 in the current assembly) and are renamed
+#' `mt_<name>`, so they count as mitochondrial; all other contigs count as
+#' nuclear.
+stage_genome ${GENOME_FULL_PATH}
+GENOME=$(basename ${GENOME_FULL_PATH%.gz})
+samtools faidx tgraci-coi.fasta MZ659759.1 \
+    | minimap2 -c -x asm20 ${GENOME} - 2> /dev/null \
+    | awk '$10 / $11 >= 0.98 && $4 - $3 >= 0.9 * $2 {print $6}' \
+    | sort -u > mt_contigs.txt
+check_exit_status "find mitochondrial contigs in the assembly" $?
+echo "Assembly contigs treated as mitochondrial: $(paste -sd ' ' mt_contigs.txt)"
+awk 'NR == FNR {mt[$1]; next}
+     /^>/ {n = substr($1, 2); $0 = ">" ((n in mt) ? "mt_" : "") n} {print}' \
+    mt_contigs.txt ${GENOME} > genome_mt.fasta
+rm ${GENOME}
+
+#' Keep reads (names in file $1) whose best alignment (most matching
+#' bases; minimap2 map-ont) is to the bait $2 or to a mitochondrial
+#' assembly contig rather than to a nuclear contig; overwrites $1.
+keep_mito () {
+    awk '/^>/ {print ">mt_bait_" substr($1, 2); next} {print}' $2 \
+        | cat genome_mt.fasta - > comp.fasta
+    seqtk subseq ${ONT_FASTQ} $1 > comp_reads.fastq
+    minimap2 -x map-ont --secondary=no -t ${THREADS} comp.fasta \
+        comp_reads.fastq 2> /dev/null \
+        | awk '!($1 in m) || $10 > m[$1] {m[$1] = $10; t[$1] = $6}
+               END {for (r in t) if (t[r] ~ /^mt_/) print r}' \
+        | sort > kept.names
+    check_exit_status "minimap2 keep_mito" $?
+    echo "keep_mito: kept $(wc -l < kept.names) of $(wc -l < $1) recruited reads"
+    mv kept.names $1
+    rm comp.fasta comp_reads.fastq
+}
+
+#' Recruit nanopore reads that align to reference $1 over >= $2 bp, drop
+#' those that align better to the nuclear assembly (`keep_mito`); writes
+#' them to file $3.
 recruit () {
     minimap2 -x map-ont --secondary=no -t ${THREADS} $1 ${ONT_FASTQ} \
         2> /dev/null \
         | awk -v m=$2 '$11 >= m {print $1}' | sort -u > recruited.names
     check_exit_status "minimap2 recruit" $?
+    keep_mito recruited.names $1
     seqtk subseq ${ONT_FASTQ} recruited.names > $3
     echo "Recruited $(wc -l < recruited.names) reads to $3"
     rm recruited.names
@@ -175,7 +217,8 @@ echo "COI CHECK PASSED: ${N_PASS} of ${N_BARCODES} barcodes."
 #' ========================================================================
 
 rm -r flye1 flye2 medaka reads*.fastq ill_* medaka.fasta* draft*.fasta* \
-    trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta 2> /dev/null
+    trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta* genome_mt.fasta \
+    2> /dev/null
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/

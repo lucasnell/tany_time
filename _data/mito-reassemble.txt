@@ -1,43 +1,65 @@
-flye 2.9.6, raven 1.8.3, nextdenovo 2.5.2, smartdenovo 1.0.0, filtlong 0.3.1, minimap2 2.31, samtools 1.24, seqtk 1.5; checked 2026-10-23
-recruited reads: 61245 reads, 308502386 bp; subsample: 1480 reads, 22509389 bp, shortest 11295
+flye 2.9.6, raven 1.8.3, nextdenovo 2.5.2, smartdenovo 1.0.0, filtlong 0.3.1, minimap2 2.31, samtools 1.24, seqtk 1.5; checked 2026-10-26
+nuclear-read filter (best alignment to nuclear assembly vs bait or
+  the assembly's mitochondrial contig):
+  assembly contigs treated as mitochondrial: CONTIG34
+  dropped: 3361 reads, 32055727 bp; >= 11 kb: 1117 reads, 16893088 bp
+  kept: 57864 reads, 276265565 bp; >= 11 kb: 882 reads, 11679743 bp
+recruited reads after the filter: 57864 reads, 276265565 bp; subsample: 1966 reads, 22506510 bp, shortest 9049
 assembler flye exit 0
 assembler raven exit 0
 assembler nextdenovo exit 1
 assembler smartdenovo exit 0
-flye contigs (name length): contig_1 26072 contig_3 979 contig_4 867
-raven contigs (name length): Utg156 42525 Utg158 19009
-nextdenovo contigs (name length):smartdenovo contigs (name length): utg5 53629
+flye contigs (name length): contig_1 898 contig_2 26512 contig_3 28437
+raven contigs (name length):
+nextdenovo contigs (name length):smartdenovo contigs (name length): utg363 34177
 
-== raven_Utg156: 42525 bp, A+T 0.826
+== flye_contig_2: 26512 bp, A+T 0.785
 layout (piece start-end ~ contig start-end strand aligned-bp identity):
-  genes        0-12611 ~  26515- 39120 - 12643 0.989
-  genes    13856-14517 ~  24664- 25314 -   675 0.864
-  CR_left    851- 1963 ~  39119- 40237 -  1120 0.991
-  CR_right  1030- 1973 ~  21590- 22526 -   943 0.990
-  CR_right  4557- 5148 ~  41290- 41887 -   616 0.885
-repeat-unit copies (>= 1.5 kb aligned): 0
+  genes        0-15900 ~   9635- 25544 - 15909 0.999
+  CR_left      0-  835 ~    801-  1695 -   899 0.875
+  CR_left      0-  835 ~   3767-  4662 -   900 0.876
+  CR_left      6-  835 ~   6514-  7415 -   906 0.862
+  CR_left    994- 1963 ~  25543- 26512 -   969 1.000
+  CR_right     0- 6320 ~   3354-  9636 -  6332 0.986
+  CR_right  2220- 6320 ~    386-  4656 -  4331 0.924
+repeat-unit copies (>= 1.5 kb aligned): 2
 reads spanning +/- 1 kb of each unit boundary (position:reads):
-   0:0
-
-== smartdenovo_utg5: 53629 bp, A+T 0.828
-layout (piece start-end ~ contig start-end strand aligned-bp identity):
-  genes        0-15900 ~   9071- 24974 + 15909 0.999
-  CR_left      0- 1963 ~   7111-  9072 +  1963 0.999
-  CR_right  2220- 4135 ~  50254- 52389 +  2185 0.838
-  CR_right  2220- 5903 ~   3795-  7945 +  4313 0.799
-  CR_right     0- 6320 ~  24973- 31282 +  6343 0.988
-  CR_right  2220- 6320 ~    543-  5087 +  4659 0.847
-  CR_right  2220- 6320 ~  29976- 34039 +  4135 0.967
-  CR_right  2220- 6320 ~  32738- 36789 +  4114 0.973
-  CR_right  2220- 6320 ~  35484- 39810 +  4384 0.916
-  CR_right  2220- 6320 ~  44191- 48588 +  4468 0.895
-  CR_right  2220- 6320 ~  47267- 51578 +  4374 0.909
-repeat-unit copies (>= 1.5 kb aligned): 9
-reads spanning +/- 1 kb of each unit boundary (position:reads):
-   2300:27 16595:12677 31053:94 33817:108 36561:140 39582:117 42553:115
- 45257:95 48352:77 51154:25
+   801:0 3581:666 6140:268
 Illumina depth (all MAPQ) per unit / gene-region depth; sum:
-  gene region 683x; 0.02 0.79 0.29 0.77 0.60 0.86 0.12 0.39 0.37; sum 4.2
+  gene region 683x; 2.09 2.07; sum 4.2
+
+== flye_contig_3: 28437 bp, A+T 0.790
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  genes        0-15900 ~    968- 16867 + 15902 1.000
+  CR_left      0-  835 ~  21839- 22732 +   899 0.875
+  CR_left      0-  835 ~  24601- 25495 +   900 0.876
+  CR_left      0-  835 ~  27386- 28277 +   896 0.879
+  CR_left      6-  835 ~  19087- 19981 +   899 0.869
+  CR_left    994- 1963 ~      0-   969 +   969 1.000
+  CR_right  2220- 6063 ~  24607- 28437 +  3889 0.968
+  CR_right     0- 6320 ~  16866- 23147 +  6335 0.985
+  CR_right  2220- 6320 ~  21845- 25908 +  4124 0.974
+repeat-unit copies (>= 1.5 kb aligned): 3
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   20353:197 22919:463 25681:281 28277:0
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 683x; 0.94 1.04 1.86; sum 3.8
+
+== smartdenovo_utg363: 34177 bp, A+T 0.843
+layout (piece start-end ~ contig start-end strand aligned-bp identity):
+  CR_left      0- 1963 ~  24701- 26662 +  1969 0.987
+  CR_right  2220- 5903 ~  21179- 25538 +  4493 0.775
+  CR_right  1531- 6320 ~     16-  4777 +  4802 0.986
+  CR_right  2220- 6320 ~   9006- 13327 +  4382 0.915
+  CR_right  2220- 6320 ~  12017- 16370 +  4404 0.913
+  CR_right  2220- 6320 ~  15061- 19452 +  4451 0.901
+  CR_right  2220- 6320 ~  18153- 22474 +  4397 0.908
+  genes        0- 7513 ~  26661- 34153 +  7560 0.974
+repeat-unit copies (>= 1.5 kb aligned): 7
+reads spanning +/- 1 kb of each unit boundary (position:reads):
+   2001:109 4548:93 7338:97 10085:121 13230:138 16272:81 19223:77 22059:129
+Illumina depth (all MAPQ) per unit / gene-region depth; sum:
+  gene region 658x; 0.40 0.88 0.86 0.88 0.71 0.30 0.28; sum 4.3
 
 == next2019: 66354 bp, A+T 0.802
 layout (piece start-end ~ contig start-end strand aligned-bp identity):
@@ -53,7 +75,7 @@ layout (piece start-end ~ contig start-end strand aligned-bp identity):
 gene-region starts 44625 apart
 repeat-unit copies (>= 1.5 kb aligned): 8
 reads spanning +/- 1 kb of each unit boundary (position:reads):
-   21467:115 24041:100 26870:100 29662:116 32740:118 35827:141 39171:124
- 42542:151 45473:2896
+   21467:112 24041:97 26870:97 29662:116 32740:118 35827:141 39171:120
+ 42542:148 45473:2830
 Illumina depth (all MAPQ) per unit / gene-region depth; sum:
   gene region 424x; 0.95 0.50 0.71 1.34 1.09 1.15 0.42 0.89; sum 7.1

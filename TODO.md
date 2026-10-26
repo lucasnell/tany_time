@@ -162,6 +162,26 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             ~0.5 points higher. `mito-depth-by-length.sh`: regions now
             differ (unit from another copy; 1 left, 8 right copies), so
             depths are not comparable with the Guppy run.
+            Nuclear-read filter (2026-10-26): of the 61,245 recruited
+            reads, ~3,600 align best to nuclear contigs (many small ones,
+            CONTIG36-45; 62 long reads to CONTIG12), and among reads
+            >= 11 kb, which Filtlong keeps, nuclear outnumber mitochondrial
+            (1,050 vs 753). The assembly's own mitogenome is CONTIG34 (gene
+            region twice; carries COI MZ659759.1). Added competitive
+            mapping (`keep_mito`) to `01-mitogenome` recruitment and to
+            `mito-reassemble.sh`. Rerun (2026-10-26): kept 57,864 reads,
+            dropped 3,361 (1,117 of the 1,999 reads >= 11 kb); 20 reads with
+            no alignment in the competitive mapping are dropped and not
+            counted in `keep_mito.txt`. Flye now gives two mitochondrial
+            contigs (26.5 and 28.4 kb, full gene region at >= 99.9%, 2-3
+            unit copies); Raven gives no contigs; SMARTdenovo 34.2 kb with
+            only 7.5 kb of the gene region (97.4%) and 7 unit copies (was
+            53.6 kb, full gene region, 9 copies, unfiltered); NextDenovo
+            fails at `seed_cns`. Subsample is now 1,966 reads down to 9.0 kb
+            (was 1,480 down to 11.3 kb). The filter fixes Flye's nuclear
+            contig but no assembly resolves the repeat array; no read spans
+            the control region, so assembled lengths reflect each
+            assembler's repeat handling.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

@@ -10,6 +10,12 @@
 #'    together carry the gene region, the control-region ends, and copies
 #'    of the ~2.5-kb repeat unit (`mito-old-assemblies.sh`). Unlike round 1
 #'    of `01-mitogenome` (COI bait only), this samples the whole molecule.
+#'    Then drop reads whose best alignment (most matching bases) is to a
+#'    nuclear contig of the T. gracilentus assembly rather than to the bait
+#'    or to the assembly's own mitochondrial contig (the one carrying COI
+#'    MZ659759.1), as `keep_mito` in `01-mitogenome` does. Without this,
+#'    most reads >= 11 kb were nuclear (2026-10-23, sup reads), and Flye
+#'    assembled a nuclear contig.
 #' 2. Keep the longest, best reads up to TARGET_BP (Filtlong).
 #' 3. Assemble with Flye (`--genome-size 45k --asm-coverage 200`), Raven,
 #'    NextDenovo (genome_size 45k), and SMARTdenovo.
@@ -31,15 +37,17 @@
 #'       genome's molecules if Illumina covers the A+T-rich units as well as
 #'       the gene region (it tends to under-cover A+T-rich sequence, so the
 #'       sum is more likely low than high)
-#' Assemblies are unpolished. Requires mamba, the external drive
+#' Unfiltered reads are cached as `mito_reads_unfiltered.fastq`, filtered
+#' ones as `mito_reads.fastq`, with the filter's counts in
+#' `keep_mito.txt`. Assemblies are unpolished. Requires mamba, the external drive
 #' (`/Volumes/lan_images4/assembly/`), the cache from `mito-flye-round1.sh`, and
 #' `/Volumes/lan_images4/` (sup nanopore reads; fastp-trimmed MyKS-19-B
 #' reads, streamed from the uncompressed tar; the 2026-10-19 output used
 #' the raw Illumina reads). Takes ~2-3 h. Run from the repo root.
 #' Reads default to the Dorado sup basecalls on the external drive; outputs
 #' saved before 2026-10-23 used the Guppy 5.0.11 hac reads (deleted
-#' locally), as do reads already in `_data/mito-flye-cache/reassemble/`, which are
-#' reused if present (delete them to recruit sup reads).
+#' locally). Cached reads in `_data/mito-flye-cache/reassemble/` are reused
+#' if present (delete them to recruit again).
 #' Set ENV_DIR to reuse environments (`asm` and `smart` inside it).
 #'
 #' Output: `_data/mito-reassemble.txt`; reads and assemblies in
@@ -55,6 +63,8 @@ OLD=/Volumes/lan_images4/assembly
 ONT_FASTQ=${ONT_FASTQ:-/Volumes/lan_images4/ont/basecalls_dorado-0.9.6_sup.fastq.gz}
 ILL=/Volumes/lan_images4/ill/dna/trimmed/trimmed_MyKS-19-B_S18.tar
 ILL_PAIRS=4000000
+ASM_TG=${HOME}/_data/midgenomes/assemblies/Tgraci_assembly.fasta.gz
+COI=${ROOT}/_bash/references/tgraci-coi.fasta
 TARGET_BP=22500000  # ~500x of a 45-kb molecule
 THREADS=$(sysctl -n hw.ncpu 2> /dev/null || nproc)
 WORK=$(mktemp -d)
@@ -97,11 +107,39 @@ get_ctg ${OLD}/nextdenovo/contigs_next.fasta.gz ctg000860 next2019 > next2019.fa
 get_ctg ${OLD}/smartdenovo/contigs_smart.fasta.gz utg319 smart2019 > smart2019.fa
 cat r1c.fa next2019.fa smart2019.fa > bait.fa
 
-# ---- 1. recruit (cached)
-if [ ! -s ${RDIR}/mito_reads.fastq ]; then
+# ---- 1. recruit (cached), then drop reads that fit the nuclear assembly better
+if [ ! -s ${RDIR}/mito_reads_unfiltered.fastq ]; then
     minimap2 -x map-ont --secondary=no -t ${THREADS} bait.fa ${ONT_FASTQ} \
         2> /dev/null | awk '$11 >= 1000 {print $1}' | sort -u > mito.names
-    seqtk subseq ${ONT_FASTQ} mito.names > ${RDIR}/mito_reads.fastq
+    seqtk subseq ${ONT_FASTQ} mito.names > ${RDIR}/mito_reads_unfiltered.fastq
+fi
+if [ ! -s ${RDIR}/mito_reads.fastq ]; then
+    gunzip -c ${ASM_TG} > tg.fa
+    cp ${COI} coi.fa
+    samtools faidx coi.fa MZ659759.1 | minimap2 -c -x asm20 tg.fa - 2> /dev/null \
+        | awk '$10 / $11 >= 0.98 && $4 - $3 >= 0.9 * $2 {print $6}' \
+        | sort -u > mt_contigs.txt
+    awk 'NR == FNR {mt[$1]; next}
+         /^>/ {n = substr($1, 2); $0 = ">" ((n in mt) ? "mt_" : "") n} {print}' \
+        mt_contigs.txt tg.fa > comp.fa
+    awk '/^>/ {print ">mt_bait_" substr($1, 2); next} {print}' bait.fa >> comp.fa
+    minimap2 -x map-ont --secondary=no -t ${THREADS} comp.fa \
+        ${RDIR}/mito_reads_unfiltered.fastq 2> /dev/null \
+        | awk '!($1 in m) || $10 > m[$1] {m[$1] = $10; t[$1] = $6}
+               END {for (r in t) print r, t[r]}' > best.txt
+    awk '$2 ~ /^mt_/ {print $1}' best.txt | sort > kept.names
+    seqtk subseq ${RDIR}/mito_reads_unfiltered.fastq kept.names \
+        > ${RDIR}/mito_reads.fastq
+    awk 'NR % 4 == 1 {id = substr($1, 2); sub(/ .*/, "", id)}
+         NR % 4 == 2 {print id, length($0)}' \
+        ${RDIR}/mito_reads_unfiltered.fastq | sort > len.txt
+    sort best.txt | join len.txt - | awk -v mt="$(paste -sd ' ' mt_contigs.txt)" '
+        {k = ($3 ~ /^mt_/) ? "kept" : "dropped"; n[k]++; b[k] += $2
+         if ($2 >= 11000) {nl[k]++; bl[k] += $2}}
+        END {print "assembly contigs treated as mitochondrial: " mt
+             for (k in n) printf "%s: %d reads, %d bp; >= 11 kb: %d reads, %d bp\n",
+                 k, n[k], b[k], nl[k], bl[k]}' > ${RDIR}/keep_mito.txt
+    rm tg.fa comp.fa
 fi
 MR=${RDIR}/mito_reads.fastq
 
@@ -200,7 +238,10 @@ span_counts () {
     echo "flye 2.9.6, raven 1.8.3, nextdenovo 2.5.2, smartdenovo 1.0.0," \
         "filtlong 0.3.1, minimap2 2.31, samtools 1.24, seqtk 1.5;" \
         "checked $(date +%Y-%m-%d)"
-    echo "recruited reads: $(awk 'NR % 4 == 2 {n++; b += length($0)}
+    echo "nuclear-read filter (best alignment to nuclear assembly vs bait or"
+    echo "  the assembly's mitochondrial contig):"
+    sed 's/^/  /' ${RDIR}/keep_mito.txt
+    echo "recruited reads after the filter: $(awk 'NR % 4 == 2 {n++; b += length($0)}
         END {printf "%d reads, %d bp", n, b}' ${MR}); subsample:" \
         "$(awk 'NR % 4 == 2 {n++; b += length($0); if (length($0) < m || !m)
         m = length($0)} END {printf "%d reads, %d bp, shortest %d", n, b, m}' sub.fq)"
