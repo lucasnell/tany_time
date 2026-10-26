@@ -34,6 +34,8 @@ one job per `chunk_*.tar` on staging. The GPU settings in `02-dorado.sub`
 (https://chtc.cs.wisc.edu/uw-research-computing/gpu-jobs, checked
 2026-10-22).
 
-Not yet done: the pipeline steps that use nanopore reads (`01-mitogenome`,
-`04-ont-pi` in `00-references/`) still read the Guppy basecalls. Switching
-them to the sup basecalls also means switching medaka to a sup model.
+Status (2026-10-26): all steps done; the combined FASTQ passed
+`../tests/dorado-sup-check.sh`. The archive and chunks were deleted from
+staging after their checks, so a rerun starts by copying the archive from
+the external drive again. `01-mitogenome` and `04-ont-pi` read the sup
+basecalls (medaka model `r941_min_sup_g507`, container v2.3.0).

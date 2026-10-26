@@ -119,7 +119,7 @@ Steps marked *(parallel)* can run alongside the step before them.
       medaka tools list_models | grep  --color=always r941_min_hac_g507
       ```
 
-- [ ] **C3.** Rebuild as v2.3.0 (medaka model `r941_min_sup_g507` for the
+- [x] **C3.** Rebuild as v2.3.0 (medaka model `r941_min_sup_g507` for the
       sup reads, 2026-10-23; `bin/mito-collapse.sh`, 2026-10-26) as in C1,
       then C2 with `grep r941_min_sup_g507` and `which mito-collapse.sh`.
       Needed before F1.
@@ -149,7 +149,8 @@ submitting the rest.
 ## F. References (`00-references/`)
 
 - [ ] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
-      SN-1-08_S24 from E1). It fails by itself, writing nothing, unless
+      SN-1-08_S24 from E1; submitted 2026-10-26, running). It fails by
+      itself, writing nothing, unless
       COI barcode MZ659759.1 matches the collapsed mitogenome
       (gene region, unique control-region sides, one repeat unit) →
       `./check-step.sh 00-references/01-mitogenome`.

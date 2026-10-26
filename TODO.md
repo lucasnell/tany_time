@@ -8,9 +8,10 @@ On hold until the owner says to run them. Listed in dependency order.
 
 Follow `_bash/RERUN-CHECKLIST.md`.
 
-- [ ] **Rebuild the container** (`_bash/_apptainer/_build.sh`) as v2.3.0:
-      v2.2.0 (pins updated 2026-10-09; built, RERUN-CHECKLIST C1) plus
-      medaka model `r941_min_sup_g507` (2026-10-23; not yet built, C3). Outputs from the new image will differ
+- [x] **Rebuild the container** (`_bash/_apptainer/_build.sh`) as v2.3.0:
+      v2.2.0 (pins updated 2026-10-09) plus medaka model
+      `r941_min_sup_g507` and `bin/mito-collapse.sh`; built by the owner
+      2026-10-26 (RERUN-CHECKLIST C3). Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
 - [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
       `baypass-check-candidates.R` for the new BayPass output names
@@ -108,15 +109,15 @@ Follow `_bash/RERUN-CHECKLIST.md`.
           identical); SMARTdenovo shows ~5 copies on each side of the gene
           region. If right, the mitogenome is ~44.6 kb (unverified).
           Goal (owner, 2026-10-14): a publication-quality mitogenome.
-          - [ ] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
+          - [x] Re-basecall all nanopore reads (`_bash/00-basecall/`; set up
             2026-10-14): archive on staging, `00-setup` and `01-split-fast5`
             run, `02-dorado` submitted 2026-10-22, `03-combine` done; local
             copy in `/Volumes/lan_images4/ont/` passed
             `_bash/tests/dorado-sup-check.sh` (2026-10-23: 3,602,836 reads
             at q >= 10, 23.0 Gb, N50 7.5 kb; median predicted q +3.1 over
-            Guppy on the same reads). Delete the archive once
-            `check-step.sh 00-basecall/01-split-fast5` shows the MD5
-            matches, and the chunks once `check-step.sh 00-basecall/03-combine` passes.
+            Guppy on the same reads). FAST5 archive and chunks deleted
+            from staging by the owner after their checks (2026-10-26); the
+            raw signal remains on `/Volumes/TanyGen5TB/nanopore/`.
             Then redo the mitochondrial recruitment and assemblies on the sup
             reads (owner chose to wait for them, 2026-10-19), and switch
             `01-mitogenome` to the sup FASTQ and medaka to a sup model
