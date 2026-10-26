@@ -31,6 +31,9 @@
 #'    within species). Only MZ659759.1 is required (owner's decision
 #'    2026-10-26): MN679642.1 matches every assembled contig, the pool DNA,
 #'    and the adult RNA-seq at only ~94%, so it is reported, not required.
+#'    A possible reason (owner, 2026-10-26): MZ659759.1 is from Finland and
+#'    MN679642.1 from Canada, so the Canadian barcode may come from a
+#'    divergent lineage.
 #'
 #' Output `Tgraci_mitogenome.tar` (staging) with `Tgraci_mitogenome.fasta`
 #' (collapsed), `Tgraci_mitogenome_layout.tsv` (its pieces),

@@ -209,7 +209,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             the reassembled Flye contigs). Not run on the cluster (needs
             container v2.3.0). COI check now requires only MZ659759.1 at
             >= 98% (`REQUIRED_COI`); MN679642.1 (93.9-94.2% on every contig)
-            is reported, not required (owner's decision, 2026-10-26).
+            is reported, not required (owner's decision, 2026-10-26). A
+            possible reason for the gap (owner): MZ659759.1 is from Finland,
+            MN679642.1 from Canada, so the Canadian barcode may come from a
+            divergent lineage.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
