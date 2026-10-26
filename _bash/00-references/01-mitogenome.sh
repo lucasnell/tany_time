@@ -6,8 +6,10 @@
 #'
 #' 1. Recruit mitochondrial reads by mapping all reads to T. gracilentus
 #'    mitochondrial sequences from NCBI (`tgraci-mito-bait.fasta`).
-#' 2. Assemble them with Flye; keep the contig 13-22 kb long (preferring
-#'    one Flye reports as circular).
+#' 2. Assemble them with Flye (`--genome-size 16k --asm-coverage 150`;
+#'    default settings assemble nothing from these reads,
+#'    `_bash/tests/mito-flye-round1.sh`); keep the contig carrying the
+#'    T. gracilentus COI barcode MZ659759.1 (most matching bases).
 #'    Recruited reads that align better to the nuclear assembly than to
 #'    the bait (nuclear copies of mitochondrial DNA, and long nuclear reads
 #'    with weak A+T-rich matches) are dropped; see `keep_mito`.
@@ -17,13 +19,23 @@
 #'    `_bash/tests/medaka-model-test.sh`), then with Illumina
 #'    reads from one pool (polypolish). Pool reads give a population
 #'    consensus, which is what a mapping reference needs.
-#' 5. Validate: align published T. gracilentus COI barcodes
+#' 5. Collapse to one repeat unit (`mito-collapse.sh`): the control region
+#'    is > 22 kb and its repeat-unit copy number can't be resolved from
+#'    these reads (`_bash/tests/mito-copy-number.sh`; owner's decision
+#'    2026-10-26), so the reference is the gene region, the unique
+#'    control-region sequence on each side, and one repeat unit.
+#' 6. Validate: align published T. gracilentus COI barcodes
 #'    (`tgraci-coi.fasta`) to the result. The job fails, without writing
-#'    output, unless both align over >= MIN_COI_COV of their length at
-#'    >= MIN_COI_ID identity (allowing for COI variation within species).
+#'    output, unless each barcode in REQUIRED_COI aligns over >= MIN_COI_COV
+#'    of its length at >= MIN_COI_ID identity (allowing for COI variation
+#'    within species). Only MZ659759.1 is required (owner's decision
+#'    2026-10-26): MN679642.1 matches every assembled contig, the pool DNA,
+#'    and the adult RNA-seq at only ~94%, so it is reported, not required.
 #'
-#' Output `Tgraci_mitogenome.tar` (staging) with
-#' `Tgraci_mitogenome.fasta`, `coi-check.tsv`, and Flye assembly info.
+#' Output `Tgraci_mitogenome.tar` (staging) with `Tgraci_mitogenome.fasta`
+#' (collapsed), `Tgraci_mitogenome_layout.tsv` (its pieces),
+#' `Tgraci_mito_contig.fasta` (the polished contig before collapsing),
+#' `coi-check.tsv`, `mt_contigs.txt`, and Flye assembly info.
 #'
 
 
@@ -48,28 +60,28 @@ export SEED=2125381094
 export MEDAKA_MODEL="r941_min_sup_g507"
 export MIN_COI_COV=0.95
 export MIN_COI_ID=0.98
-export MIN_LEN=13000
-export MAX_LEN=22000
+export REQUIRED_COI="MZ659759.1"
 
 
-require_files tgraci-mito-bait.fasta tgraci-coi.fasta ${ONT_FASTQ} \
+require_files tgraci-mito-bait.fasta tgraci-coi.fasta \
+    tgraci-mito-features.fasta ${ONT_FASTQ} \
     ${TRIMMED_DIR}/trimmed_${POLISH_POOL}.tar ${GENOME_FULL_PATH}
 
 export OUT_DIR=Tgraci_mitogenome
 mkdir ${OUT_DIR}
-mv tgraci-mito-bait.fasta tgraci-coi.fasta ${OUT_DIR}/
+mv tgraci-mito-bait.fasta tgraci-coi.fasta tgraci-mito-features.fasta ${OUT_DIR}/
 cd ${OUT_DIR}
 
 
-#' Choose the assembled mitochondrial contig from Flye output dir $1:
-#' length in [MIN_LEN, MAX_LEN], circular first, then longest.
-#' Writes it to file $2.
+#' Choose the assembled mitochondrial contig from Flye output dir $1: the
+#' one MZ659759.1 aligns to with the most matching bases (any length; the
+#' control-region repeats make the length unreliable). Writes it to file $2.
 pick_contig () {
-    local contig=$(awk -v lo=${MIN_LEN} -v hi=${MAX_LEN} \
-        'NR > 1 && $2 >= lo && $2 <= hi {print $1, ($4 == "Y" ? 1 : 0), $2}' \
-        $1/assembly_info.txt | sort -k2,2nr -k3,3nr | head -n 1 | cut -d' ' -f1)
+    local contig=$(samtools faidx tgraci-coi.fasta MZ659759.1 \
+        | minimap2 -c -x asm20 --secondary=no $1/assembly.fasta - 2> /dev/null \
+        | sort -k10,10nr | awk 'NR == 1 {print $6}')
     if [ -z "${contig}" ]; then
-        echo "No contig of ${MIN_LEN}-${MAX_LEN} bp in $1" 1>&2
+        echo "No contig carrying COI MZ659759.1 in $1" 1>&2
         cat $1/assembly_info.txt 1>&2
         safe_exit 1
     fi
@@ -135,7 +147,8 @@ recruit () {
 #' ========================================================================
 
 recruit tgraci-mito-bait.fasta 300 reads1.fastq
-flye --nano-raw reads1.fastq --out-dir flye1 --threads ${THREADS}
+flye --nano-raw reads1.fastq --out-dir flye1 --threads ${THREADS} \
+    --genome-size 16k --asm-coverage 150
 check_exit_status "flye round 1" $?
 pick_contig flye1 draft1.fasta
 
@@ -178,9 +191,20 @@ polypolish filter --in1 ill_1.sam --in2 ill_2.sam \
     --out1 ill_1.filt.sam --out2 ill_2.filt.sam
 check_exit_status "polypolish filter" $?
 polypolish polish medaka.fasta ill_1.filt.sam ill_2.filt.sam \
-    | awk '/^>/ {print ">Tgraci_mitogenome"; next} {print}' \
-    > Tgraci_mitogenome.fasta
+    | awk '/^>/ {print ">Tgraci_mito_contig"; next} {print}' \
+    > Tgraci_mito_contig.fasta
 check_exit_status "polypolish polish" $?
+
+
+#' ========================================================================
+#' Collapse to one repeat unit
+#' ========================================================================
+
+mito-collapse.sh Tgraci_mito_contig.fasta tgraci-mito-features.fasta \
+    Tgraci_mitogenome
+check_exit_status "mito-collapse" $?
+echo "Collapsed layout (piece, contig start/end, output start/end, length, truncated):"
+cat Tgraci_mitogenome_layout.tsv
 
 
 #' ========================================================================
@@ -188,7 +212,7 @@ check_exit_status "polypolish polish" $?
 #' ========================================================================
 
 #' Columns: barcode, barcode length, aligned barcode bp, identity
-#' (matches / alignment length), mitogenome length.
+#' (matches / alignment length), mitogenome length (collapsed).
 MITO_LEN=$(grep -v "^>" Tgraci_mitogenome.fasta | tr -d '\n' | wc -c)
 echo -e "barcode\tbarcode_len\taligned_bp\tidentity\tmitogenome_len" \
     > coi-check.tsv
@@ -199,17 +223,22 @@ minimap2 -c -x asm20 --secondary=no Tgraci_mitogenome.fasta tgraci-coi.fasta \
         {print $1, $2, $4 - $3, $10 / $11, ml}' >> coi-check.tsv
 cat coi-check.tsv
 
-# Both barcodes must align, over enough of their length, at high identity:
-N_PASS=$(awk -v c=${MIN_COI_COV} -v i=${MIN_COI_ID} \
-    'NR > 1 && $3 / $2 >= c && $4 >= i' coi-check.tsv | cut -f 1 | sort -u | wc -l)
-N_BARCODES=$(grep -c "^>" tgraci-coi.fasta)
-if (( N_PASS < N_BARCODES )); then
-    echo "COI CHECK FAILED: ${N_PASS} of ${N_BARCODES} T. gracilentus COI" \
-        "barcodes align over >= ${MIN_COI_COV} of their length at" \
-        ">= ${MIN_COI_ID} identity (see table above). No output written." 1>&2
+# Required barcodes must align, over enough of their length, at high
+# identity (others are only reported in the table):
+N_PASS=$(awk -v c=${MIN_COI_COV} -v i=${MIN_COI_ID} -v req="${REQUIRED_COI}" \
+    'BEGIN {n = split(req, r, " "); for (k = 1; k <= n; k++) R[r[k]]}
+     NR > 1 && ($1 in R) && $3 / $2 >= c && $4 >= i' coi-check.tsv \
+    | cut -f 1 | sort -u | wc -l)
+N_REQUIRED=$(echo ${REQUIRED_COI} | wc -w)
+if (( N_PASS < N_REQUIRED )); then
+    echo "COI CHECK FAILED: ${N_PASS} of ${N_REQUIRED} required T. gracilentus" \
+        "COI barcodes (${REQUIRED_COI}) align over >= ${MIN_COI_COV} of" \
+        "their length at >= ${MIN_COI_ID} identity (see table above)." \
+        "No output written." 1>&2
     safe_exit 1
 fi
-echo "COI CHECK PASSED: ${N_PASS} of ${N_BARCODES} barcodes."
+echo "COI CHECK PASSED: ${N_PASS} of ${N_REQUIRED} required barcodes" \
+    "(${REQUIRED_COI}); others reported in the table."
 
 
 #' ========================================================================
@@ -218,7 +247,7 @@ echo "COI CHECK PASSED: ${N_PASS} of ${N_BARCODES} barcodes."
 
 rm -r flye1 flye2 medaka reads*.fastq ill_* medaka.fasta* draft*.fasta* \
     trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta* genome_mt.fasta \
-    2> /dev/null
+    tgraci-mito-features.fasta* 2> /dev/null
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/

@@ -11,9 +11,7 @@ summ_scaffs
 *.fasta.gz
 # small NCBI references that cluster jobs read from the repo clone
 !_bash/references/*.fasta
-# feature sequences for the local mito checks (_bash/tests/mito-features.sh)
-!_data/mito-features.fasta
-_data/mito-features.fasta.fai
+_bash/references/*.fai
 
 *.pdf
 

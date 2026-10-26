@@ -1,0 +1,71 @@
+minimap2 2.31-r1302; checked 2026-10-26
+
+== r1_sup: contig_1, 24181 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         1963          17862       1          15900    15900   no
+  unique_right  17863         21390       15901      19428    3528    no
+  unit          21391         23764       19429      21802    2374    no
+  unique_left   836           1962        21803      22929    1127    no
+  output 22929 bp; pieces sum 22929 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9986
+  COI MZ659759.1: 622 of 622 bp, identity 0.9904
+  COI MN679642.1: 653 of 653 bp, identity 0.9418
+
+== r1_guppy: contig_10, 29542 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         3600          19500       1          15901    15901   no
+  unique_right  19501         23073       15902      19474    3573    no
+  unit          1             2472        19475      21946    2472    no
+  unique_left   2473          3599        21947      23073    1127    no
+  output 23073 bp; pieces sum 23073 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 1.0000
+  COI MZ659759.1: 622 of 622 bp, identity 0.9871
+  COI MN679642.1: 653 of 653 bp, identity 0.9387
+
+== flye2: contig_2, 26512 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         969           16877       1          15909    15909   no
+  unique_right  16878         20372       15910      19404    3495    no
+  unit          20373         22745       19405      21777    2373    no
+  unique_left   1             968         21778      22745    968     yes
+  output 22745 bp; pieces sum 22745 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9982
+  COI MZ659759.1: 622 of 622 bp, identity 0.9904
+  COI MN679642.1: 653 of 653 bp, identity 0.9418
+
+== flye3: contig_3, 28437 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         969           16867       1          15899    15899   no
+  unique_right  16868         20353       15900      19385    3486    no
+  unit          25868         28277       19386      21795    2410    no
+  unique_left   1             968         21796      22763    968     yes
+  output 22763 bp; pieces sum 22763 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9982
+  COI MZ659759.1: 622 of 622 bp, identity 0.9904
+  COI MN679642.1: 653 of 653 bp, identity 0.9418
+
+== smart_sup: utg363, 34177 bp
+mito-collapse: no gene region covering >= 90% in smart_sup.fa
+  collapse failed
+
+== next2019: ctg000860, 66354 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         1976          17888       1          15913    15913   no
+  unique_right  17889         21467       15914      19492    3579    no
+  unit          42998         45473       19493      21968    2476    no
+  unique_left   849           1975        21969      23095    1127    no
+  output 23095 bp; pieces sum 23095 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9987
+  COI MZ659759.1: 622 of 622 bp, identity 0.9887
+  COI MN679642.1: 653 of 653 bp, identity 0.9403
+
+== smart2019: utg319, 55952 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         18332         34247       1          15916    15916   no
+  unique_right  34248         40579       15917      22248    6332    no
+  unit          14727         17204       22249      24726    2478    no
+  unique_left   17205         18331       24727      25853    1127    no
+  output 25853 bp; pieces sum 25853 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9988
+  COI MZ659759.1: 622 of 622 bp, identity 0.9904
+  COI MN679642.1: 653 of 653 bp, identity 0.9418

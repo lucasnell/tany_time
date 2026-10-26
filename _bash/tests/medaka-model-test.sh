@@ -100,7 +100,7 @@ score () {
     # sequence on one line for homopolymer checks
     awk '!/^>/ {printf "%s", $0} END {print ""}' r1c.fa > seq.txt
     # repeat-unit copies (hits of the unit covering >= 1.5 kb)
-    samtools faidx ${ROOT}/_data/mito-features.fasta unit \
+    samtools faidx ${ROOT}/_bash/references/tgraci-mito-features.fasta unit \
         | minimap2 -c -x asm20 --secondary=yes -N 50 -p 0.3 r1c.fa - 2> /dev/null \
         | awk '$4 - $3 >= 1500 {printf "%s%d-%d", (n++ ? "," : ""), $8 + 1, $9}' > units.txt
     awk -v m=${MIN_DP} -v u=$(cat units.txt) -v v=${v} -v hi=${MIN_AF} -v lo=${MIX_AF} -v gs=${GS} -v ge=${GE} \

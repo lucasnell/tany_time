@@ -196,9 +196,20 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             molecules, A+T-rich read breakage, mapping loss).
           - Decided (owner, 2026-10-26): report the mitogenome as the gene
             region plus a control region of > 22 kb whose length can't be
-            resolved with these data. `01-mitogenome`'s 13-22 kb contig
-            rule (`pick_contig`) still fails on every assembly; it needs
-            changing to match before `02-hologenome` can run.
+            resolved with these data. `01-mitogenome` changed to match
+            (2026-10-26): Flye with `--genome-size 16k --asm-coverage 150`
+            in both rounds, the contig carrying COI MZ659759.1 is kept (no
+            length rule), and after polishing `mito-collapse.sh`
+            (`_apptainer/bin/`) keeps the gene region, the unique
+            control-region sequence on each side, and one repeat unit
+            (owner chose to include one unit). On the contigs at hand
+            (`_bash/tests/mito-collapse-check.sh`) this gives 22.7-25.9 kb:
+            genes 15.9 kb, unique right 3.5 kb (6.3 kb on 2019 SMARTdenovo),
+            unit 2.37-2.48 kb, unique left 1.13 kb (0.97 kb, truncated, on
+            the reassembled Flye contigs). Not run on the cluster (needs
+            container v2.3.0). COI check now requires only MZ659759.1 at
+            >= 98% (`REQUIRED_COI`); MN679642.1 (93.9-94.2% on every contig)
+            is reported, not required (owner's decision, 2026-10-26).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

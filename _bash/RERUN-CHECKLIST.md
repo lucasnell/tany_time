@@ -120,8 +120,9 @@ Steps marked *(parallel)* can run alongside the step before them.
       ```
 
 - [ ] **C3.** Rebuild as v2.3.0 (medaka model `r941_min_sup_g507` for the
-      sup reads; 2026-10-23) as in C1, then C2 with
-      `grep r941_min_sup_g507`. Needed before F1.
+      sup reads, 2026-10-23; `bin/mito-collapse.sh`, 2026-10-26) as in C1,
+      then C2 with `grep r941_min_sup_g507` and `which mito-collapse.sh`.
+      Needed before F1.
 
 ## D. How to run and check each step
 
@@ -149,7 +150,8 @@ submitting the rest.
 
 - [ ] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
       SN-1-08_S24 from E1). It fails by itself, writing nothing, unless
-      the *T. gracilentus* COI barcodes match the assembly →
+      COI barcode MZ659759.1 matches the collapsed mitogenome
+      (gene region, unique control-region sides, one repeat unit) →
       `./check-step.sh 00-references/01-mitogenome`.
 - [ ] **F2.** `02-hologenome` (1 job). It fails by itself unless every
       species, the mitogenome, and every barcode group are present →

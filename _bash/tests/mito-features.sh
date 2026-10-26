@@ -3,8 +3,8 @@
 #' Mitogenome features for the local `mito-*.sh` checks, so they don't
 #' depend on one contig's coordinates.
 #'
-#' `_data/mito-features.fasta` holds feature sequences cut from the Guppy
-#' 5.0.11 round-1 contig (`_data/mito-flye-cache-guppy/with_opts_assembly.fasta`,
+#' `_bash/references/tgraci-mito-features.fasta` holds feature sequences
+#' cut from the Guppy 5.0.11 round-1 contig (`_data/mito-flye-cache-guppy/with_opts_assembly.fasta`,
 #' 29,542 bp), whose coordinates the checks used before 2026-10-23:
 #'   genes      3600-19500   gene region, rRNA side to ND2 side
 #'                           (`mito-contig-vs-ref.sh`)
@@ -35,7 +35,7 @@
 if [ "$1" == "make" ]; then
     G=_data/mito-flye-cache-guppy/with_opts_assembly.fasta
     [ -s ${G} ] || { echo "missing ${G}; run from the repo root" 1>&2; exit 1; }
-    python3 -I - ${G} > _data/mito-features.fasta << 'PYEOF'
+    python3 -I - ${G} > _bash/references/tgraci-mito-features.fasta << 'PYEOF'
 import sys
 seq = "".join(l.strip() for l in open(sys.argv[1]) if not l.startswith(">"))
 assert len(seq) == 29542, len(seq)
@@ -51,7 +51,7 @@ PYEOF
 fi
 
 locate_features () {
-    local F=${ROOT}/_data/mito-features.fasta
+    local F=${ROOT}/_bash/references/tgraci-mito-features.fasta
     awk '/^>/ && n++ {exit} {print}' $1 > ctg0.fa
     C=$(head -1 ctg0.fa | sed 's/^>//; s/ .*//')
     samtools faidx ctg0.fa

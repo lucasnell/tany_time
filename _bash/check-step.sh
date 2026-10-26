@@ -117,6 +117,12 @@ case "${STEP_PATH}" in
         JOB_IDS=(mitogenome)
         FILES=(${S}/Tgraci_mitogenome.tar)
         extra () {
+            echo "collapsed layout (piece, contig start/end, output start/end, length, truncated):"
+            awk '/^Collapsed layout/ {p = 1; next} p && /^(piece|genes|unique|unit)/ {print} p && !/^(piece|genes|unique|unit)/ {p = 0}' \
+                ${LOG_DIR}/mitogenome.out 2> /dev/null
+            grep -q "^unit" ${LOG_DIR}/mitogenome.out 2> /dev/null \
+                && grep -qE "^unique_(left|right).*yes$" ${LOG_DIR}/mitogenome.out 2> /dev/null \
+                && warn "a unique control-region side reached the contig's end (truncated)"
             echo "COI check (barcode, length, aligned bp, identity, mitogenome length):"
             grep -hE "^(barcode|M[NZ][0-9]+)" ${LOG_DIR}/mitogenome.out 2> /dev/null
             grep -h "COI CHECK" ${LOG_DIR}/mitogenome.{out,err} 2> /dev/null

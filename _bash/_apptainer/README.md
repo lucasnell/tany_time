@@ -56,6 +56,7 @@ Appended to `/app/.bashrc`, so scripts get them via `. /app/.bashrc`.
 | `combine-syncs.py` | Combine per-pool gSYNC files; counts by default, SNAPE info with `--snape`; `--min-pp` keeps sites polymorphic in at least one pool; `--clean-mono` assigns reads to the reference where SNAPE calls a pool monomorphic | `04-combine-syncs` |
 | `pool-qc-sync.py` | Per-pool missing-data rate, SNPs, and private SNPs from partially masked gSYNC files | `03-pool-qc` |
 | `pool-qc-files.py` | Per-pool GC, duplication, and mapping rates (including reads assigned to *T. gracilentus* vs. other species) from fastp, Picard, bamtools, and `02-bwa` outputs | `03-pool-qc` |
+| `mito-collapse.sh` | Collapse the assembled mitochondrial contig to the gene region, the unique control-region sequence on each side, and one repeat unit (needs minimap2, samtools: `mito-env`) | `00-references/01-mitogenome` |
 | `run-parallel.py` | Run a command once per item (e.g., contig) in parallel and report failures | `01-snape`, `02-npstat` |
 
 Python scripts run with whichever environment is active (`main-env` in all

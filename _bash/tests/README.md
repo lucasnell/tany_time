@@ -11,9 +11,9 @@ to rerun. Mitogenome outputs saved before then used the Guppy reads.
 
 The `mito-*.sh` checks locate the gene region, repeat unit, and other
 features on whatever round-1 contig is cached by aligning the sequences in
-`_data/mito-features.fasta` (`mito-features.sh`; cut from the Guppy
-round-1 contig, now in `_data/mito-flye-cache-guppy/`), instead of fixed
-coordinates.
+`_bash/references/tgraci-mito-features.fasta` (`mito-features.sh`; cut
+from the Guppy round-1 contig, now in `_data/mito-flye-cache-guppy/`),
+instead of fixed coordinates.
 
 | Script | Checks | Output |
 |---|---|---|
@@ -32,5 +32,6 @@ coordinates.
 | `mito-old-assemblies.sh` | Layout of the mitochondrial contigs in the 2019 whole-genome assemblies (`/Volumes/lan_images4/assembly/`): gene region, control-region pieces, repeat-unit copies | `_data/mito-old-assemblies.txt` |
 | `mito-features-check.sh` | `locate_features` (`mito-features.sh`) recovers the fixed coordinates used on the Guppy round-1 contig; feature positions on the sup round-1 contig | `_data/mito-features-check.txt` |
 | `medaka-model-test.sh` | Medaka `r941_min_hac_g507` and `r941_min_sup_g507` on the sup v3.6 reads vs no polishing: errors against Illumina (MyKS-19-B, 4M trimmed pairs cached in `_data/mito-flye-cache/ill/`) in and outside the gene region | `_data/medaka-model-test.txt` |
+| `mito-collapse-check.sh` | `_apptainer/bin/mito-collapse.sh` (used by `01-mitogenome`) on the round-1, reassembled, and 2019 contigs: layout, output length, gene-region and COI identity | `_data/mito-collapse-check.txt` |
 | `mito-copy-number.sh` | Control-region length from reads: unit copies from nanopore depth (one-unit reference), expected reads crossing the control region for each length (lower bound only), and depth along the 2019 NextDenovo contig's full control region | `_data/mito-copy-number.txt` |
 | `mito-long-reads.sh` | Whether recruited reads > 17 kb are mitochondrial (length tails, identity by length and q-score, read structure) | `_data/mito-long-reads.txt` |
