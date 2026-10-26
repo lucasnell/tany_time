@@ -182,6 +182,23 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             contig but no assembly resolves the repeat array; no read spans
             the control region, so assembled lengths reflect each
             assembler's repeat handling.
+          - Control-region length from reads (2026-10-26,
+            `_bash/tests/mito-copy-number.sh` → `_data/mito-copy-number.txt`):
+            no crossing reads give only a lower bound (5%: 18.2 kb; weaker
+            than the 22.3-kb single-read extension). Nanopore depth can't
+            count copies: along the 2019 NextDenovo contig (gene region +
+            full control region), gene-region depth falls from ~22,000x
+            (first 10 kb, rRNA side) to ~3,500x (ND2 side), and the control
+            region is 208-640x except 8,385x in the 2.1 kb next to the
+            gene region's start. The one-unit reference gives < 1 copy
+            (0.3-0.7), contradicting reads spanning 7-8 unit boundaries.
+            Cause of the uneven depth unknown (length heteroplasmy, partial
+            molecules, A+T-rich read breakage, mapping loss).
+          - Decided (owner, 2026-10-26): report the mitogenome as the gene
+            region plus a control region of > 22 kb whose length can't be
+            resolved with these data. `01-mitogenome`'s 13-22 kb contig
+            rule (`pick_contig`) still fails on every assembly; it needs
+            changing to match before `02-hologenome` can run.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
