@@ -148,8 +148,8 @@ submitting the rest.
 
 ## F. References (`00-references/`)
 
-- [ ] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
-      SN-1-08_S24 from E1; submitted 2026-10-26, running). It fails by
+- [x] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
+      SN-1-08_S24 from E1; PASS 2026-10-27, 0.9 h). It fails by
       itself, writing nothing, unless
       COI barcode MZ659759.1 matches the collapsed mitogenome
       (gene region, unique control-region sides, one repeat unit) →

@@ -214,6 +214,13 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             possible reason for the gap (owner): MZ659759.1 is from Finland,
             MN679642.1 from Canada, so the Canadian barcode may come from a
             divergent lineage.
+            Cluster run (2026-10-27, `check-step.sh`: PASS, 0.9 h): polished
+            contig 27,057 bp; collapsed mitogenome 23,361 bp = genes 15,910
+            + unique right 4,004 (runs to the contig's end, flagged
+            truncated; ~0.5 kb longer than on the local contigs, so its end
+            may be the start of a repeat unit below the 300-bp hit
+            threshold; not checked) + unit 2,320 + unique left 1,127. COI:
+            MZ659759.1 99.04%, MN679642.1 94.18%.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
