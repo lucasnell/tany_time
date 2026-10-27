@@ -1,4 +1,15 @@
-minimap2 2.31-r1302; checked 2026-10-26
+minimap2 2.31-r1302; checked 2026-10-27
+
+== cluster: Tgraci_mito_contig, 27057 bp
+  piece         contig_start  contig_end  out_start  out_end  length  truncated
+  genes         7144          23053       1          15910    15910   no
+  unique_right  23054         26594       15911      19451    3541    no
+  unit          3697          6016        19452      21771    2320    no
+  unique_left   6017          7143        21772      22898    1127    no
+  output 22898 bp; pieces sum 22898 bp: OK
+  genes feature: 15901 of 15901 bp aligned, identity 0.9968
+  COI MZ659759.1: 622 of 622 bp, identity 0.9904
+  COI MN679642.1: 653 of 653 bp, identity 0.9418
 
 == r1_sup: contig_1, 24181 bp
   piece         contig_start  contig_end  out_start  out_end  length  truncated

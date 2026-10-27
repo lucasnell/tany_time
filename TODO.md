@@ -228,10 +228,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             On the cluster contig this gives 22,898 bp (unique right 3,541,
             not truncated); other contigs unchanged
             (`mito-collapse-check.sh`). `01-mitogenome` now transfers
-            `mito-collapse.sh` from the repo; rerun it. `_data/
-            mito-collapse-check.txt` still shows the pre-fix run; rerun the
-            check with `lan_images4` mounted (the fix was checked on the
-            cluster and five local contigs without the two 2019 ones).
+            `mito-collapse.sh` from the repo; rerun it. Check rerun with all
+            eight contigs (2026-10-27): only the cluster contig changed; the
+            2019 SMARTdenovo right piece is still 6,332 bp (no unit copy
+            starts between 3.5 and 6.3 kb on that contig; not examined).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
