@@ -15,12 +15,18 @@
 #' contig is reverse-complemented if the gene region is on the minus
 #' strand. Pieces, on the contig:
 #'   genes          best hit of `genes` (must cover >= 90% of it)
-#'   unique_right   after the gene region, up to the nearest unit hit
-#'                  (>= 300 bp aligned) or the contig's end
+#'   unique_right   after the gene region, up to the start of the nearest
+#'                  unit copy (a hit >= 300 bp that begins within 100 bp of
+#'                  the unit's start) or the contig's end
 #'   unit           the unit hit with the most matching bases among those
 #'                  covering >= 90% of `unit`
-#'   unique_left    before the gene region, back to the nearest unit hit or
-#'                  the contig's start
+#'   unique_left    before the gene region, back to the end of the nearest
+#'                  unit copy (a hit >= 300 bp that ends within 100 bp of
+#'                  the unit's end) or the contig's start
+#' Unit hits are kept down to 1% of the best hit's score (`-p 0.01`), so
+#' short partial copies at a contig's end are found. Partial copies of the
+#' unit's other end (e.g., a ~0.7-kb copy of its last part ~2.5 kb past the
+#' gene region) stay in the unique pieces: they occur once per molecule.
 #' Output, in molecule order (gene region, then around the control region
 #' back to the gene region's start):
 #'   <prefix>.fasta       genes + unique_right + unit + unique_left, one
@@ -67,10 +73,12 @@ if [ -z "${GS}" ]; then
     echo "mito-collapse: no gene region covering >= 90% in ${CONTIG}" 1>&2
     rm -r ${TMP}; exit 1
 fi
-# unit hits: start, end, matches, covers >= 90% (1/0)
-minimap2 -c -x asm20 --secondary=yes -N 50 -p 0.3 ${TMP}/c.fa ${TMP}/unit.fa \
+# unit hits (same strand as the gene region): start, end, matches,
+# covers >= 90% (1/0), begins at the unit's start (1/0), ends at its end (1/0)
+minimap2 -c -x asm20 --secondary=yes -N 100 -p 0.01 ${TMP}/c.fa ${TMP}/unit.fa \
     2> /dev/null \
-    | awk '$9 - $8 >= 300 {print $8 + 1, $9, $10, ($4 - $3 >= 0.9 * $2)}' \
+    | awk '$5 == "+" && $9 - $8 >= 300 {print $8 + 1, $9, $10,
+           ($4 - $3 >= 0.9 * $2), ($3 <= 100), ($4 >= $2 - 100)}' \
     | sort -k1,1n > ${TMP}/units.txt
 read US UE <<< $(awk '$4 == 1' ${TMP}/units.txt | sort -k3,3nr \
     | awk 'NR == 1 {print $1, $2}')
@@ -78,10 +86,11 @@ if [ -z "${US}" ]; then
     echo "mito-collapse: no unit copy covering >= 90% in ${CONTIG}" 1>&2
     rm -r ${TMP}; exit 1
 fi
-# unique sides: from the gene region to the nearest unit hit
-RE=$(awk -v ge=${GE} '$1 > ge {print $1 - 1; exit}' ${TMP}/units.txt)
+# unique sides: from the gene region to the nearest unit copy's start
+# (right) or end (left)
+RE=$(awk -v ge=${GE} '$1 > ge && $5 == 1 {print $1 - 1; exit}' ${TMP}/units.txt)
 RT=no; [ -z "${RE}" ] && { RE=${L}; RT=yes; }
-LS=$(awk -v gs=${GS} '$2 < gs {s = $2 + 1} END {if (s) print s}' ${TMP}/units.txt)
+LS=$(awk -v gs=${GS} '$2 < gs && $6 == 1 {s = $2 + 1} END {if (s) print s}' ${TMP}/units.txt)
 LT=no; [ -z "${LS}" ] && { LS=1; LT=yes; }
 
 {

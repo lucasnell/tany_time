@@ -217,10 +217,21 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             Cluster run (2026-10-27, `check-step.sh`: PASS, 0.9 h): polished
             contig 27,057 bp; collapsed mitogenome 23,361 bp = genes 15,910
             + unique right 4,004 (runs to the contig's end, flagged
-            truncated; ~0.5 kb longer than on the local contigs, so its end
-            may be the start of a repeat unit below the 300-bp hit
-            threshold; not checked) + unit 2,320 + unique left 1,127. COI:
-            MZ659759.1 99.04%, MN679642.1 94.18%.
+            truncated) + unit 2,320 + unique left 1,127. COI: MZ659759.1
+            99.04%, MN679642.1 94.18%. The right piece's last 463 bp were
+            the start of a repeat unit (unit 1-455 at 96.6%, BLAST), missed
+            because `mito-collapse.sh` dropped unit hits below 30% of the
+            best hit's score. Fixed 2026-10-27: hits kept to 1%, and the
+            unique pieces end at the start (right) or end (left) of a unit
+            copy, so a ~0.7-kb partial copy of the unit's last part ~2.5 kb
+            past the gene region stays in the right piece (single-copy).
+            On the cluster contig this gives 22,898 bp (unique right 3,541,
+            not truncated); other contigs unchanged
+            (`mito-collapse-check.sh`). `01-mitogenome` now transfers
+            `mito-collapse.sh` from the repo; rerun it. `_data/
+            mito-collapse-check.txt` still shows the pre-fix run; rerun the
+            check with `lan_images4` mounted (the fix was checked on the
+            cluster and five local contigs without the two 2019 ones).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

@@ -17,7 +17,7 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 ## Reference sequences (written by `_R/get-mito-refs.R`):
-transfer_input_files = ../references/tgraci-mito-bait.fasta, ../references/tgraci-coi.fasta, ../references/tgraci-mito-features.fasta
+transfer_input_files = ../references/tgraci-mito-bait.fasta, ../references/tgraci-coi.fasta, ../references/tgraci-mito-features.fasta, ../_apptainer/bin/mito-collapse.sh
 
 request_cpus = 8
 request_memory = 32GB

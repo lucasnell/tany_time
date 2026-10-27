@@ -4,7 +4,9 @@
 #' (`_apptainer/bin/`, used by `00-references/01-mitogenome`) give the
 #' expected layout on the mitochondrial contigs at hand?
 #'
-#' Contigs: the cached round-1 contigs (sup and Guppy), the Flye and
+#' Contigs: the polished contig from the cluster run of `01-mitogenome`
+#' (`Tgraci_mito_contig.fasta` in `_data/Tgraci_mitogenome.tar`, copied from
+#' staging), the cached round-1 contigs (sup and Guppy), the Flye and
 #' SMARTdenovo contigs from `mito-reassemble.sh`, and the 2019 NextDenovo
 #' and SMARTdenovo contigs. For each, reports the layout, the output length
 #' against the sum of the pieces, how much of the `genes` feature the output
@@ -23,6 +25,7 @@ FEATS=${ROOT}/_bash/references/tgraci-mito-features.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
 COLLAPSE=${ROOT}/_bash/_apptainer/bin/mito-collapse.sh
 OLD=/Volumes/lan_images4/assembly
+MT_TAR=${ROOT}/_data/Tgraci_mitogenome.tar
 WORK=$(mktemp -d)
 [ -n "${ENV_DIR}" ] && export PATH=${ENV_DIR}/bin:${PATH}
 for t in minimap2 samtools; do
@@ -36,6 +39,7 @@ cp ${FEATS} feats.fa
 get () {  # get <fasta(.gz)> <contig> <out>
     gunzip -cf $1 | awk -v c=$2 '/^>/ {p = (substr($1, 2) == c)} p' > $3
 }
+tar -xOf ${MT_TAR} Tgraci_mitogenome/Tgraci_mito_contig.fasta > cluster.fa
 get ${CACHE}/with_opts_assembly.fasta contig_1 r1_sup.fa
 get ${CACHE}-guppy/with_opts_assembly.fasta contig_10 r1_guppy.fa
 get ${CACHE}/reassemble/asm_flye.fa contig_2 flye2.fa
@@ -46,7 +50,7 @@ get ${OLD}/smartdenovo/contigs_smart.fasta.gz utg319 smart2019.fa
 
 {
     echo "minimap2 $(minimap2 --version); checked $(date +%Y-%m-%d)"
-    for x in r1_sup r1_guppy flye2 flye3 smart_sup next2019 smart2019; do
+    for x in cluster r1_sup r1_guppy flye2 flye3 smart_sup next2019 smart2019; do
         echo
         echo "== ${x}: $(head -1 ${x}.fa | sed 's/^>//; s/ .*//')," \
             "$(awk '!/^>/ {n += length($0)} END {print n}' ${x}.fa) bp"

@@ -19,7 +19,9 @@
 #'    `_bash/tests/medaka-model-test.sh`), then with Illumina
 #'    reads from one pool (polypolish). Pool reads give a population
 #'    consensus, which is what a mapping reference needs.
-#' 5. Collapse to one repeat unit (`mito-collapse.sh`): the control region
+#' 5. Collapse to one repeat unit (`mito-collapse.sh`, transferred with the
+#'    job from `_apptainer/bin/`, so edits to it need no container rebuild;
+#'    the container's copy is not used): the control region
 #'    is > 22 kb and its repeat-unit copy number can't be resolved from
 #'    these reads (`_bash/tests/mito-copy-number.sh`; owner's decision
 #'    2026-10-26), so the reference is the gene region, the unique
@@ -67,12 +69,13 @@ export REQUIRED_COI="MZ659759.1"
 
 
 require_files tgraci-mito-bait.fasta tgraci-coi.fasta \
-    tgraci-mito-features.fasta ${ONT_FASTQ} \
+    tgraci-mito-features.fasta mito-collapse.sh ${ONT_FASTQ} \
     ${TRIMMED_DIR}/trimmed_${POLISH_POOL}.tar ${GENOME_FULL_PATH}
 
 export OUT_DIR=Tgraci_mitogenome
 mkdir ${OUT_DIR}
-mv tgraci-mito-bait.fasta tgraci-coi.fasta tgraci-mito-features.fasta ${OUT_DIR}/
+mv tgraci-mito-bait.fasta tgraci-coi.fasta tgraci-mito-features.fasta \
+    mito-collapse.sh ${OUT_DIR}/
 cd ${OUT_DIR}
 
 
@@ -203,7 +206,7 @@ check_exit_status "polypolish polish" $?
 #' Collapse to one repeat unit
 #' ========================================================================
 
-mito-collapse.sh Tgraci_mito_contig.fasta tgraci-mito-features.fasta \
+bash mito-collapse.sh Tgraci_mito_contig.fasta tgraci-mito-features.fasta \
     Tgraci_mitogenome
 check_exit_status "mito-collapse" $?
 echo "Collapsed layout (piece, contig start/end, output start/end, length, truncated):"
@@ -250,7 +253,7 @@ echo "COI CHECK PASSED: ${N_PASS} of ${N_REQUIRED} required barcodes" \
 
 rm -r flye1 flye2 medaka reads*.fastq ill_* medaka.fasta* draft*.fasta* \
     trimmed_* tgraci-mito-bait.fasta tgraci-coi.fasta* genome_mt.fasta \
-    tgraci-mito-features.fasta* 2> /dev/null
+    tgraci-mito-features.fasta* mito-collapse.sh 2> /dev/null
 cd ..
 tar -cf ${OUT_DIR}.tar ${OUT_DIR}
 mv ${OUT_DIR}.tar ${PARENT_DIR_OUT}/
