@@ -1,0 +1,6 @@
+checked 2026-10-28
+mitochondrial contig: CONTIG34
+          type sites pools median_reads
+      CONTIG34    10    17       2408.5
+ other contigs 94877    17         76.0
+BayPass candidates on CONTIG34 (of 33): 0

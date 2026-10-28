@@ -74,9 +74,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         mitogenome; it has ~4,260 Micropsectra COI records (including
         *M. lindrothi* voucher IS39, KC788724) and Tanytarsini mitogenomes
         (*Tanytarsus formosanus*, *T. verralli*, *Cladotanytarsus
-        pseudomancus*). The T. gracilentus assembly appears to lack a
-        mitogenome (CONTIG1, 16 kb, has no match to the T. gracilentus COI
-        barcode MZ659759). Decided and implemented 2026-10-12 (not yet run):
+        pseudomancus*). The T. gracilentus assembly does have a mitogenome:
+        CONTIG34 (49 kb; gene region twice; COI MZ659759.1 at 99.0%; found
+        2026-10-26). CONTIG1 (16 kb) has no match to MZ659759. Decided and implemented 2026-10-12 (not yet run):
         mitochondrial/barcode competitive mapping as a per-pool
         contamination index. `00-references/01-mitogenome` assembles
         the T. gracilentus mitogenome from the nanopore reads of one
@@ -240,6 +240,22 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             (3.0-5.8 kb, none with COI) in 3 of 3 runs; `45k` gives one
             40.3-kb contig that collapses to 22,776 bp in 3 of 3 runs.
             Round 2 now uses `45k`; rerun `01-mitogenome`.
+            Cluster run with `45k` (2026-10-28, PASS, 1.4 h): round-2 contig
+            27,975 bp (not the 40.3 kb of the local test, whose reads came
+            from the whole-molecule bait); collapsed 21,959 bp = genes
+            15,910 + unique right 2,539 (truncated: the contig ends ~1.0 kb
+            short of the 3.5 kb seen on other contigs) + unit 2,383 + unique
+            left 1,127. MZ659759.1 99.04%.
+          - [ ] **CONTIG34 in the hologenome.** `02-hologenome` adds the
+            whole T. gracilentus assembly as target contigs, including
+            CONTIG34 (its mitogenome), so mitochondrial reads would split
+            between CONTIG34 and `mt_Tgraci__` (low MAPQ) and CONTIG34
+            would stay in `target_contigs.bed` for `03-mpileup`. The
+            current time-series data have 10 CONTIG34 sites at median 2,409
+            reads vs 76 elsewhere; none are among the 33 candidates
+            (`_R/mito-contig-sites.R` → `_data/mito-contig-sites.txt`).
+            Decide before `02-hologenome`: drop CONTIG34 from the hologenome
+            or keep it out of the target BED.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
