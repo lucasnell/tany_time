@@ -283,8 +283,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             → `_bash/references/other-mitogenomes.fasta`,
             `_data/other-mitogenomes.csv`): *C. riparius* OU815687.1
             (15,666 bp; same BioProject, 849090, as the assembly) and
-            *S. aterrima* NC_069312.1 (15,747 bp, RefSeq). Not yet added to
-            `02-hologenome`.
+            *S. aterrima* NC_069312.1 (15,747 bp, RefSeq). Owner chose to
+            add them and relabel the two in-assembly ones (2026-10-28):
+            `02-hologenome` now names all four `mt_<code>__` and its check
+            expects an `mt_` group per species; rerun it before `02-bwa`.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

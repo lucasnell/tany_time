@@ -14,6 +14,12 @@
 #' 2026-10-28). Other sequences are renamed
 #' so they're easy to filter out and count by group:
 #' - `nt_<code>__<name>`: nuclear assemblies of other species
+#' - `mt_<code>__<name>`: their mitogenomes, so their mitochondrial reads
+#'   are counted apart from their nuclear reads (2026-10-28): the ones in
+#'   the C. tentans and P. akamusi assemblies (OTHER_MT, relabeled), and
+#'   NCBI mitogenomes for C. riparius and S. aterrima, whose assemblies
+#'   have none (`other-mitogenomes.fasta` from `_R/get-other-mitogenomes.R`;
+#'   `_bash/tests/other-mito-check.sh`)
 #' - `mt_Tgraci__Tgraci_mitogenome`: T. gracilentus mitogenome
 #'   (`01-mitogenome`), so mitochondrial reads don't map to nuclear copies
 #'   of mitochondrial DNA
@@ -53,18 +59,21 @@ export OTHERS=("Cripar:Cripar_assembly.fasta.gz"
                "Ctenta:Ctenta2023_assembly.fasta.gz"
                "Saterr:Saterr_assembly.fasta.gz"
                "Pakamu:Pakamu_assembly.fasta.gz")
+#' Mitogenomes inside those assemblies, as `<code>:<sequence name>`
+#' (`_bash/tests/other-mito-check.sh`):
+export OTHER_MT=("Ctenta:OY754306.1" "Pakamu:JAFFZY010000103.1")
 
 
 OTHER_FILES=()
 for x in "${OTHERS[@]}"; do OTHER_FILES+=(${OTHER_DIR}/${x#*:}); done
 require_files ${GENOME_FULL_PATH} ${OTHER_FILES[@]} ${MITO_TAR_FULL_PATH} \
-    coi-barcodes.fasta
+    coi-barcodes.fasta other-mitogenomes.fasta
 
 
 export OUT_DIR=hologenome
 export HOLO=hologenome.fasta
 mkdir ${OUT_DIR}
-mv coi-barcodes.fasta ${OUT_DIR}/
+mv coi-barcodes.fasta other-mitogenomes.fasta ${OUT_DIR}/
 cd ${OUT_DIR}
 
 
@@ -91,12 +100,20 @@ rm ${HOLO}.fai
 
 for x in "${OTHERS[@]}"; do
     code=${x%%:*}
+    mt=$(for y in "${OTHER_MT[@]}"; do [ "${y%%:*}" != "${code}" ] || echo "${y#*:}"; done)
     gunzip -c ${OTHER_DIR}/${x#*:} \
-        | awk -v pre="nt_${code}__" \
-            '{if (/^>/) {sub(/^>/, ""); print ">" pre $1} else {print}}' \
+        | awk -v code=${code} -v mt="${mt}" '
+            BEGIN {n = split(mt, m, " "); for (i = 1; i <= n; i++) M[m[i]]}
+            /^>/ {sub(/^>/, ""); print ">" (($1 in M) ? "mt_" : "nt_") code "__" $1; next}
+            {print}' \
         >> ${HOLO}
     check_exit_status "add ${code}" $?
 done
+
+# NCBI mitogenomes for the other species without one in their assembly
+# (already named `mt_<code>__<accession>`):
+cat other-mitogenomes.fasta >> ${HOLO} && rm other-mitogenomes.fasta
+check_exit_status "add other mitogenomes" $?
 
 # T. gracilentus mitogenome:
 tar -xf ${MITO_TAR_FULL_PATH} -O Tgraci_mitogenome/Tgraci_mitogenome.fasta \
@@ -138,7 +155,7 @@ cat group-summary.tsv
 
 # Check that every expected group is present (fail without output if not):
 EXPECTED=("target" "mt_Tgraci" "${BC_GROUPS[@]}")
-for x in "${OTHERS[@]}"; do EXPECTED+=("nt_${x%%:*}"); done
+for x in "${OTHERS[@]}"; do EXPECTED+=("nt_${x%%:*}" "mt_${x%%:*}"); done
 MISSING=0
 for g in "${EXPECTED[@]}"; do
     if ! awk -v g="${g}" '$1 == g && $2 > 0 {f = 1} END {exit !f}' group-summary.tsv; then

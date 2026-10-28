@@ -15,7 +15,7 @@ batch_name = "hologenome"
 should_transfer_files = YES
 
 ## COI barcodes (written by `_R/get-mito-refs.R`):
-transfer_input_files = ../references/coi-barcodes.fasta
+transfer_input_files = ../references/coi-barcodes.fasta, ../references/other-mitogenomes.fasta
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

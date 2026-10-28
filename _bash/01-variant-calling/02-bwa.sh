@@ -207,7 +207,8 @@ call_bam_stats ${UNMAPPED_BAM} "(final, unmapped)"
 
 # Reads per species in the final BAM (MAPQ >= 20, primary):
 # Groups: "target" = nuclear T. gracilentus; `nt_<code>` = other species'
-# nuclear genomes; `mt_Tgraci` = T. gracilentus mitogenome; `bc_<code>` =
+# nuclear genomes; `mt_Tgraci` = T. gracilentus mitogenome; `mt_<code>` =
+# other species' mitogenomes; `bc_<code>` =
 # COI barcodes of other taxa (see `00-references/02-hologenome`). Lengths are summed.
 samtools index ${OUT_BAM}
 check_exit_status "samtools index (final)" $?
