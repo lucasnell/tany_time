@@ -1,0 +1,5 @@
+code,accession,length,bioproject,title,chosen
+Cripar,OU815687.1,15666,849090,"Chironomus riparius genome assembly, organelle: mitochondrion",TRUE
+Cripar,LS991863.1,15467,690282,"Chironomus riparius genome assembly, organelle: mitochondrion",FALSE
+Saterr,NC_069312.1,15747,927338,"Smittia aterrima mitochondrion, complete genome",TRUE
+Saterr,ON838254.1,15747,NA,"Smittia aterrima mitochondrion, complete genome",FALSE

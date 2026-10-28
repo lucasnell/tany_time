@@ -279,6 +279,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             `05-kraken` sees none of their mitochondrial reads (mapped, not
             unmapped). Owner to decide before `02-bwa`: relabel them as
             mitochondrial, add mitogenomes for the other two, or leave.
+            NCBI has both missing ones (2026-10-28, `_R/get-other-mitogenomes.R`
+            → `_bash/references/other-mitogenomes.fasta`,
+            `_data/other-mitogenomes.csv`): *C. riparius* OU815687.1
+            (15,666 bp; same BioProject, 849090, as the assembly) and
+            *S. aterrima* NC_069312.1 (15,747 bp, RefSeq). Not yet added to
+            `02-hologenome`.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
