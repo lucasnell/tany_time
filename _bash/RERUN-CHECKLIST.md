@@ -149,8 +149,9 @@ submitting the rest.
 ## F. References (`00-references/`)
 
 - [ ] **F1.** `01-mitogenome` (1 job; needs trimmed reads of
-      SN-1-08_S24 from E1; passed 2026-10-27, to rerun after the
-      `mito-collapse.sh` fix). It fails by itself, writing nothing, unless
+      SN-1-08_S24 from E1; passed 2026-10-27; to rerun after the
+      `mito-collapse.sh` fix and the round-2 `--genome-size 45k` change,
+      2026-10-28). It fails by itself, writing nothing, unless
       COI barcode MZ659759.1 matches the collapsed mitogenome
       (gene region, unique control-region sides, one repeat unit) →
       `./check-step.sh 00-references/01-mitogenome`.

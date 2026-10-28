@@ -13,7 +13,12 @@
 #'    Recruited reads that align better to the nuclear assembly than to
 #'    the bait (nuclear copies of mitochondrial DNA, and long nuclear reads
 #'    with weak A+T-rich matches) are dropped; see `keep_mito`.
-#' 3. Re-recruit reads against that draft (same filter) and re-assemble.
+#' 3. Re-recruit reads against that draft (same filter) and re-assemble
+#'    with `--genome-size 45k --asm-coverage 150`: these reads cover the
+#'    whole molecule, and with `16k` Flye gave only fragments (3 local runs,
+#'    and one of two cluster runs), while `45k` gave a 40.3-kb contig that
+#'    collapses to 22.8 kb in 3 of 3 local runs
+#'    (`_bash/tests/mito-round2-check.sh`).
 #' 4. Polish with medaka (model r941_min_sup_g507; medaka has no model for
 #'    sup v3.6, and this one did best on the gene region in
 #'    `_bash/tests/medaka-model-test.sh`), then with Illumina
@@ -165,10 +170,10 @@ pick_contig flye1 draft1.fasta
 
 recruit draft1.fasta 1000 reads2.fastq
 flye --nano-raw reads2.fastq --out-dir flye2 --threads ${THREADS} \
-    --genome-size 16k --asm-coverage 150
+    --genome-size 45k --asm-coverage 150
 check_exit_status "flye round 2" $?
-pick_contig flye2 draft2.fasta
 cp flye2/assembly_info.txt flye-assembly-info.txt
+pick_contig flye2 draft2.fasta
 
 
 #' ========================================================================

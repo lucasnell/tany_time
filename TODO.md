@@ -232,6 +232,14 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             eight contigs (2026-10-27): only the cluster contig changed; the
             2019 SMARTdenovo right piece is still 6,332 bp (no unit copy
             starts between 3.5 and 6.3 kb on that contig; not examined).
+            Rerun with the fix (2026-10-27) failed: Flye round 2
+            (`--genome-size 16k`) gave 2 contigs, the COI one only 6.7 kb,
+            so `mito-collapse.sh` found no gene region. Local test
+            (`_bash/tests/mito-round2-check.sh`, 2026-10-28, cached filtered
+            mitochondrial reads): `16k` gives the same three fragments
+            (3.0-5.8 kb, none with COI) in 3 of 3 runs; `45k` gives one
+            40.3-kb contig that collapses to 22,776 bp in 3 of 3 runs.
+            Round 2 now uses `45k`; rerun `01-mitogenome`.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

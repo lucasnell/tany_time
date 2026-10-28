@@ -1,0 +1,32 @@
+flye 2.9.6-b1802, minimap2 2.31-r1302; checked 2026-10-28
+reads: 57864 (_data/mito-flye-cache/reassemble/mito_reads.fastq)
+
+== --genome-size 16k, run 1 (exit 0)
+  contig with COI MZ659759.1: none
+  contig_8     5809 bp,  14693x, circular N: does not collapse
+  contig_3     4330 bp,  18551x, circular N: does not collapse
+  contig_5     3034 bp,  22497x, circular N: does not collapse
+
+== --genome-size 16k, run 2 (exit 0)
+  contig with COI MZ659759.1: none
+  contig_8     5809 bp,  14693x, circular N: does not collapse
+  contig_3     4330 bp,  18551x, circular N: does not collapse
+  contig_5     3034 bp,  22497x, circular N: does not collapse
+
+== --genome-size 16k, run 3 (exit 0)
+  contig with COI MZ659759.1: none
+  contig_8     5809 bp,  14693x, circular N: does not collapse
+  contig_3     4330 bp,  18551x, circular N: does not collapse
+  contig_5     3034 bp,  22497x, circular N: does not collapse
+
+== --genome-size 45k, run 1 (exit 0)
+  contig with COI MZ659759.1: contig_1
+  contig_1    40268 bp,    160x, circular N: collapses to 22776 bp
+
+== --genome-size 45k, run 2 (exit 0)
+  contig with COI MZ659759.1: contig_1
+  contig_1    40268 bp,    160x, circular N: collapses to 22776 bp
+
+== --genome-size 45k, run 3 (exit 0)
+  contig with COI MZ659759.1: contig_1
+  contig_1    40268 bp,    160x, circular N: collapses to 22776 bp
