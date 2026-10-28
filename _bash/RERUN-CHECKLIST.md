@@ -155,8 +155,8 @@ submitting the rest.
       COI barcode MZ659759.1 matches the collapsed mitogenome
       (gene region, unique control-region sides, one repeat unit) →
       `./check-step.sh 00-references/01-mitogenome`.
-- [ ] **F2.** `02-hologenome` (1 job; first decide on CONTIG34, the
-      assembly's own mitogenome, `TODO.md`). It fails by itself unless every
+- [ ] **F2.** `02-hologenome` (1 job; drops CONTIG34, the assembly's own
+      mitogenome, listed in the `01-mitogenome` output). It fails by itself unless every
       species, the mitogenome, and every barcode group are present →
       `./check-step.sh 00-references/02-hologenome`.
 - [x] **F3.** *(parallel with F1–F2)* `03-silva-db` (1 job) →

@@ -6,7 +6,12 @@
 #' genome they match best, and only reads assigned to T. gracilentus
 #' contigs are used downstream (`03-mpileup`).
 #'
-#' T. gracilentus contig names are unchanged. Other sequences are renamed
+#' T. gracilentus contig names are unchanged, except that the assembly's own
+#' mitochondrial contigs (listed in `mt_contigs.txt` of the `01-mitogenome`
+#' output: contigs carrying COI MZ659759.1; CONTIG34, a 49-kb contig with
+#' the gene region twice) are dropped, so mitochondrial reads map only to
+#' `mt_Tgraci__` and stay out of `target_contigs.bed` (owner's decision
+#' 2026-10-28). Other sequences are renamed
 #' so they're easy to filter out and count by group:
 #' - `nt_<code>__<name>`: nuclear assemblies of other species
 #' - `mt_Tgraci__Tgraci_mitogenome`: T. gracilentus mitogenome
@@ -64,11 +69,20 @@ cd ${OUT_DIR}
 
 
 #' Target genome first, so its contigs come first in the sequence
-#' dictionary. Headers are trimmed to their first word.
+#' dictionary. Headers are trimmed to their first word; mitochondrial
+#' contigs are dropped.
+tar -xf ${MITO_TAR_FULL_PATH} -O Tgraci_mitogenome/mt_contigs.txt > mt_contigs.txt
+check_exit_status "read mt_contigs.txt" $?
+echo "Dropping the assembly's mitochondrial contigs: $(paste -sd ' ' mt_contigs.txt)"
 gunzip -c ${GENOME_FULL_PATH} \
-    | awk '{if (/^>/) {print $1} else {print}}' \
+    | awk 'NR == FNR {mt[$1]; next}
+           /^>/ {sub(/^>/, ""); n = $1; keep = !(n in mt); if (keep) print ">" n; next}
+           keep' mt_contigs.txt - \
     > ${HOLO}
 check_exit_status "add target genome" $?
+N_DROPPED=$(gunzip -c ${GENOME_FULL_PATH} | grep "^>" | sed 's/^>//; s/ .*//' \
+    | grep -cxFf mt_contigs.txt)
+echo "Dropped ${N_DROPPED} of $(wc -l < mt_contigs.txt) listed contigs"
 
 samtools faidx ${HOLO}
 check_exit_status "faidx (target)" $?

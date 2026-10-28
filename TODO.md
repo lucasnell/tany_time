@@ -11,7 +11,7 @@ Follow `_bash/RERUN-CHECKLIST.md`.
 - [x] **Rebuild the container** (`_bash/_apptainer/_build.sh`) as v2.3.0:
       v2.2.0 (pins updated 2026-10-09) plus medaka model
       `r941_min_sup_g507` and `bin/mito-collapse.sh`; built by the owner
-      2026-10-26 (RERUN-CHECKLIST C3). Outputs from the new image will differ
+      2026-10-26 (container rebuild, RERUN-CHECKLIST C3). Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
 - [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
       `baypass-check-candidates.R` for the new BayPass output names
@@ -148,7 +148,7 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             on the 24-kb contig; one site at 4,500x). Owner chose
             `r941_min_sup_g507` on the v3.6 reads (2026-10-23):
             `01-mitogenome` now reads the sup FASTQ and uses it; container
-            v2.3.0 bundles it (rebuild needed, RERUN-CHECKLIST C3).
+            v2.3.0 bundles it (container rebuild, RERUN-CHECKLIST C3).
             Reassembly on sup reads (`mito-reassemble.sh`, 2026-10-23;
             2019 assemblies now read from `/Volumes/lan_images4/assembly/`):
             61,245 reads recruited. Flye's 26.1-kb contig and Raven's Utg158
@@ -245,8 +245,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             from the whole-molecule bait); collapsed 21,959 bp = genes
             15,910 + unique right 2,539 (truncated: the contig ends ~1.0 kb
             short of the 3.5 kb seen on other contigs) + unit 2,383 + unique
-            left 1,127. MZ659759.1 99.04%.
-          - [ ] **CONTIG34 in the hologenome.** `02-hologenome` adds the
+            left 1,127. MZ659759.1 99.04%. The ~1-kb gap in the right
+            piece is left as is (owner, 2026-10-28): reads from it won't
+            map to the mitogenome reference, about 4% of its length.
+          - [x] **CONTIG34 in the hologenome.** `02-hologenome` adds the
             whole T. gracilentus assembly as target contigs, including
             CONTIG34 (its mitogenome), so mitochondrial reads would split
             between CONTIG34 and `mt_Tgraci__` (low MAPQ) and CONTIG34
@@ -254,8 +256,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             current time-series data have 10 CONTIG34 sites at median 2,409
             reads vs 76 elsewhere; none are among the 33 candidates
             (`_R/mito-contig-sites.R` → `_data/mito-contig-sites.txt`).
-            Decide before `02-hologenome`: drop CONTIG34 from the hologenome
-            or keep it out of the target BED.
+            Decided (owner, 2026-10-28): drop it. `02-hologenome` now drops
+            the contigs listed in `mt_contigs.txt` of the `01-mitogenome`
+            output (contigs carrying COI MZ659759.1; CONTIG34).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and

@@ -134,6 +134,7 @@ case "${STEP_PATH}" in
         JOB_IDS=(hologenome)
         FILES=(${S}/hologenome.tar)
         extra () {
+            grep -h "^Dropp" ${LOG_DIR}/hologenome.out 2> /dev/null
             echo "Groups (group, sequences, bp):"
             awk -F'\t' 'NF == 3 && $1 ~ /^(target|nt_|mt_|bc_)/' \
                 ${LOG_DIR}/hologenome.out 2> /dev/null
