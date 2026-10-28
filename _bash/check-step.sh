@@ -177,17 +177,19 @@ case "${STEP_PATH}" in
         done
         extra () {
             echo "Reads per group (MAPQ >= 20, primary), as shares of mapped reads:"
-            printf "%-16s %12s %8s %8s %8s %8s\n" pool mapped target nt_other mito barcode
+            printf "%-16s %12s %8s %8s %8s %8s %8s\n" pool mapped target nt_other \
+                mt_Tgraci mt_other barcode
             for p in ${JOB_IDS[@]}; do
                 [ -f ${LOG_DIR}/${p}.out ] || continue
                 awk -v p=${p} '
                     /^group\tlength\tn_reads/ {on = 1; next}
                     on && /^(target|nt_|mt_|bc_)[^\t]*\t[0-9.e+]+\t[0-9]+$/ {
-                        n[$1 ~ /^nt_/ ? "nt" : ($1 ~ /^mt_/ ? "mt" : ($1 ~ /^bc_/ ? "bc" : "target"))] += $3
+                        g = ($1 ~ /^nt_/) ? "nt" : ($1 == "mt_Tgraci") ? "mt" : ($1 ~ /^mt_/) ? "mto" : ($1 ~ /^bc_/) ? "bc" : "target"
+                        n[g] += $3
                         tot += $3; next }
                     on {on = 0}
-                    END { if (tot > 0) printf "%-16s %12d %8.4f %8.4f %8.4f %8.5f\n", p, tot,
-                          n["target"] / tot, n["nt"] / tot, n["mt"] / tot, n["bc"] / tot }
+                    END { if (tot > 0) printf "%-16s %12d %8.4f %8.4f %8.4f %8.5f %8.5f\n", p, tot,
+                          n["target"] / tot, n["nt"] / tot, n["mt"] / tot, n["mto"] / tot, n["bc"] / tot }
                 ' ${LOG_DIR}/${p}.out
             done | sort -k3,3n
         } ;;

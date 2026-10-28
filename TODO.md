@@ -259,7 +259,7 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             Decided (owner, 2026-10-28): drop it. `02-hologenome` now drops
             the contigs listed in `mt_contigs.txt` of the `01-mitogenome`
             output (contigs carrying COI MZ659759.1; CONTIG34).
-          - [ ] **Mitogenomes in the other hologenome assemblies**
+          - [x] **Mitogenomes in the other hologenome assemblies**
             (`_bash/tests/other-mito-check.sh` → `_data/other-mito-check.txt`,
             2026-10-28): *C. tentans* (2023) includes its mitogenome
             (OY754306.1, 16.1 kb, named) and *P. akamusi* has an unnamed
@@ -286,7 +286,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             *S. aterrima* NC_069312.1 (15,747 bp, RefSeq). Owner chose to
             add them and relabel the two in-assembly ones (2026-10-28):
             `02-hologenome` now names all four `mt_<code>__` and its check
-            expects an `mt_` group per species; rerun it before `02-bwa`.
+            expects an `mt_` group per species. Rerun PASS (2026-10-28):
+            17 groups; `nt_Ctenta`/`nt_Pakamu` lost exactly their
+            mitogenomes (16,094 and 22,797 bp).
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
