@@ -1,0 +1,27 @@
+blastn: 2.17.0+; checked 2026-10-28
+
+== Chironomus riparius (Cripar): 14 sequences
+  named mitochondrion:
+  sequences matching the gene region over >= 3 kb (name, length, A+T, aligned bp, gene-region bp covered of 15,901, mean identity):
+    OU895878.1         58906861 0.694  31156    259  96.6%
+    OU895879.1         53163979 0.695  39202    119  97.2%
+    OU895877.1         61357614 0.695  49343    108  97.7%
+    OU895880.1         17018963 0.673   5657    103  95.7%
+
+== Chironomus tentans (2023) (Ctenta2023): 9 sequences
+  named mitochondrion: OY754306.1 Chironomus tentans genome assembly, organelle: mitochondrion
+  sequences matching the gene region over >= 3 kb (name, length, A+T, aligned bp, gene-region bp covered of 15,901, mean identity):
+    OY754306.1            16094 0.759  14397  14117  78.0%
+    OY754305.1         23567031 0.692   8745    264  95.9%
+    OY754302.1         56502651 0.691  29213    122  96.5%
+    OY754303.1         55585213 0.689  19755    112  97.0%
+    OY754304.1         49282168 0.692  16997    109  97.1%
+
+== Smittia aterrima (Saterr): 3 sequences
+  named mitochondrion:
+  no sequence matches the gene region over >= 3 kb
+
+== Propsilocerus akamusi (Pakamu): 112 sequences
+  named mitochondrion:
+  sequences matching the gene region over >= 3 kb (name, length, A+T, aligned bp, gene-region bp covered of 15,901, mean identity):
+    JAFFZY010000103.1      22797 0.787  17227  13210  75.5%

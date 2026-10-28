@@ -188,6 +188,7 @@ on a contig) and `mito-features-check.sh`; `mito-copy-number.sh`
 (control-region length from depth and from the absence of crossing
 reads); `mito-collapse-check.sh` (`mito-collapse.sh` on the contigs at
 hand); `mito-round2-check.sh` (Flye round-2 genome-size setting);
+`other-mito-check.sh` (mitogenomes in the other hologenome assemblies);
 `medaka-model-test.sh` (medaka models on the
 sup reads vs Illumina);
 `dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);

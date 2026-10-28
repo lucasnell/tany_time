@@ -259,6 +259,26 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             Decided (owner, 2026-10-28): drop it. `02-hologenome` now drops
             the contigs listed in `mt_contigs.txt` of the `01-mitogenome`
             output (contigs carrying COI MZ659759.1; CONTIG34).
+          - [ ] **Mitogenomes in the other hologenome assemblies**
+            (`_bash/tests/other-mito-check.sh` → `_data/other-mito-check.txt`,
+            2026-10-28): *C. tentans* (2023) includes its mitogenome
+            (OY754306.1, 16.1 kb, named) and *P. akamusi* has an unnamed
+            one (JAFFZY010000103.1, 22.8 kb, A+T 0.79, covers 13.2 kb of
+            the T. gracilentus gene region at 75.5%); *C. riparius* and
+            *S. aterrima* have none (only ~100-260-bp matches on
+            chromosomes). In `02-hologenome` these two are named
+            `nt_Ctenta__`/`nt_Pakamu__`, so their mitochondrial reads count
+            as nuclear reads of those species. Downstream effect
+            (2026-10-28): allele frequencies use only `target_contigs.bed`,
+            so extra mitogenomes can only pull other species' reads away
+            from T. gracilentus contigs; the pool-selection rule
+            (`_R/pool-qc.R`) uses `target_rate`, not `nontarget_rate`; the
+            contamination index uses `bc_` vs `mt_Tgraci`. Only
+            `nontarget_rate` (reported, not in the rule) mixes in
+            mitochondrial reads for *Chironomus* and *Propsilocerus*, and
+            `05-kraken` sees none of their mitochondrial reads (mapped, not
+            unmapped). Owner to decide before `02-bwa`: relabel them as
+            mitochondrial, add mitogenomes for the other two, or leave.
             Staging (2026-10-19): ~350 GB of 1,000 used after the owner
             removed the trimmed FASTQs (archive included); the split adds
             ~340 GB. `01-mitogenome` (polishing pool SN-1-08_S24) and
