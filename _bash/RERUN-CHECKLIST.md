@@ -166,7 +166,9 @@ submitting the rest.
 - [x] **F4.** *(optional, parallel)* `04-ont-pi` (1 job) →
       `./check-step.sh 00-references/04-ont-pi` compares the new θ with
       the SNAPE prior in `02-allele-freqs/01-snape.sh` and warns if they
-      differ by more than 10%.
+      differ by more than 10%. Rerun on the sup reads 2026-10-23:
+      0.008894 (+1.1% vs the old prior 0.0088); THETA in `01-snape.sh` set
+      to this value, unrounded, 2026-10-28.
 
 ## G. Reads to pileups (`01-variant-calling/`)
 

@@ -104,8 +104,10 @@ rm *.log
 #' same as pi here.
 #'
 #' The output from this with the Guppy 5.0.11 hac reads was
-#' "0.008763051086537054" (2026-10-23 rerun). I'll use 0.0088 for my prior
-#' for SNAPE-pool.
+#' "0.008763051086537054" (2026-10-23 rerun), and with the Dorado sup reads
+#' "0.008894453055654915" (2026-10-23), which is the SNAPE-pooled prior
+#' (THETA in `02-allele-freqs/01-snape.sh`, unrounded, since 2026-10-28;
+#' was 0.0088).
 #'
 echo $(python3 << EOF
 import pandas as pd

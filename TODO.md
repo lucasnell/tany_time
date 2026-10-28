@@ -122,7 +122,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             reads (owner chose to wait for them, 2026-10-19), and switch
             `01-mitogenome` to the sup FASTQ and medaka to a sup model
             (container rebuild to bundle it). `04-ont-pi` switched
-            2026-10-23 (outputs tagged `_dorado-0.9.6_sup`; not yet run).
+            2026-10-23 (outputs tagged `_dorado-0.9.6_sup`) and run that day
+            (log `_bash/00-references/logs/04-ont-pi/ont-pi.out` on the
+            submit server): pi = 0.008894 vs 0.008763 from Guppy reads
+            (+1.5%) and the SNAPE prior 0.0088 (+1.1%). Prior set to the
+            unrounded sup value, 0.008894453055654915 (owner, 2026-10-28; SNAPE
+            not yet rerun), so it matches the log exactly.
             Medaka has no model for `dna_r9.4.1_e8_sup@v3.6`; its
             basecaller table maps `dna_r9.4.1_e8_sup@v3.3` to
             `r941_min_sup_g507` (`medaka/options.py`, checked 2026-10-23).

@@ -14,7 +14,7 @@ doi:10.1093/molbev/msab259) using its helper scripts (in the container's
 
 ## SNAPE settings (`01-snape`)
 
-- `-nchr` = 2 × `n_adults`; θ = 0.0088 (from `00-references/04-ont-pi`);
+- `-nchr` = 2 × `n_adults`; θ = 0.008894453055654915 (`00-references/04-ont-pi` on the Dorado sup reads, unrounded; was 0.0088 until 2026-10-28);
   D = 0.01; informative prior; unfolded.
 - Masking (`MaskSYNC_snape.py`) removes sites with coverage < 10 or above
   the 95th percentile of the contig, within repeats

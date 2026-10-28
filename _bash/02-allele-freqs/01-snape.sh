@@ -97,7 +97,10 @@ export GENOME_PICKLE=${GENOME%.fasta}_pickle.ref
 
 
 # Set parameters for snape:
-export THETA=0.0088
+# THETA: mean pi from `00-references/04-ont-pi` on the Dorado sup reads
+# (2026-10-23), copied exactly so it matches that job's log; was 0.0088
+# (rounded from the 2021 Guppy estimate) until 2026-10-28.
+export THETA=0.008894453055654915
 export D=0.01
 export PRIOR_TYPE="informative"
 export FOLD="unfolded"
