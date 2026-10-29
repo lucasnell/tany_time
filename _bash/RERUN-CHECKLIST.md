@@ -123,7 +123,7 @@ Steps marked *(parallel)* can run alongside the step before them.
       sup reads, 2026-10-23; `bin/mito-collapse.sh`, 2026-10-26) as in C1,
       then C2 with `grep r941_min_sup_g507` and `which mito-collapse.sh`.
       Needed before F1.
-- [ ] **C4.** Rebuild as v2.4.0 (bbmap 39.28: 40.02's BBMerge dropped or
+- [x] **C4.** Rebuild as v2.4.0 (bbmap 39.28: 40.02's BBMerge dropped or
       hung on paired reads, so read mapping (G1) produced near-empty BAMs
       or stalled; 2026-10-29) as in C1, then rerun the tool check or
       run `bbmerge.sh --version` (expect 39.28). Needed before G1.
@@ -182,7 +182,11 @@ submitting the rest.
       container v2.3.0) failed: bbmap 40.02's BBMerge kept ~1-2% of read
       pairs and exited 0 (38 jobs; near-empty BAMs on staging) or hung
       with no CPU use (24 jobs). Remove those jobs, rebuild (C4), and
-      rerun all 62; the job now fails if BBMerge loses any pair.
+      rerun all 62; the job now fails if BBMerge loses any pair. Rerun
+      submitted 2026-10-29 (v2.4.0, bbmap 39.28): first 15 jobs finished
+      OK with every pair kept. Jobs use up to ~108 GB of the 120 GB
+      `request_disk`; if any is held for disk, raise it and resubmit only
+      those pools (owner's choice, 2026-10-29).
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
       `./check-step.sh 01-variant-calling/03-mpileup`.
 - [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
