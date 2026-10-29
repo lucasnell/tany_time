@@ -71,6 +71,9 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   `kraken-env`, `mito-env`.
   Pins updated to v2.0.0 on 2026-10-09 (BayPass 3.1, fastp 1.4.0, samtools
   1.24, …); all existing outputs were made with v1.0.0 (BayPass 2.31).
+  bbmap stays at 39.28: 40.02's BBMerge silently drops or hangs on paired
+  reads (container v2.4.0, 2026-10-29). Check tool outputs, not just exit
+  status, when changing pins.
   snape-pooled is built from the DEST-bio fork (original repo deleted).
 - `_R/` — current (2025) local R analysis. Run from the repo root.
 - `_data/` — small inputs and derived datasets. `*.rds`, `*.gz`, and `*.pdf`

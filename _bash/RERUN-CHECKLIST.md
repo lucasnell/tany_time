@@ -1,7 +1,7 @@
 # Cluster rerun checklist
 
-Full rerun of the pipeline with container v2.3.0 (v2.2.0 plus the sup
-medaka model; built v2.2.0 for steps run so far). Paths are on CHTC
+Full rerun of the pipeline with container v2.4.0 (v2.3.0 with bbmap back
+to 39.28; v2.3.0 is v2.2.0 plus the sup medaka model). Paths are on CHTC
 staging (`/staging/l/lnell/`, written `$S` below) unless noted. Submit each
 step from inside its folder after `mkdir -p logs/<step>`. Details for each
 step are in that folder's `README.md`.
@@ -123,6 +123,10 @@ Steps marked *(parallel)* can run alongside the step before them.
       sup reads, 2026-10-23; `bin/mito-collapse.sh`, 2026-10-26) as in C1,
       then C2 with `grep r941_min_sup_g507` and `which mito-collapse.sh`.
       Needed before F1.
+- [ ] **C4.** Rebuild as v2.4.0 (bbmap 39.28: 40.02's BBMerge dropped or
+      hung on paired reads, so read mapping (G1) produced near-empty BAMs
+      or stalled; 2026-10-29) as in C1, then rerun the tool check or
+      run `bbmerge.sh --version` (expect 39.28). Needed before G1.
 
 ## D. How to run and check each step
 
@@ -174,7 +178,11 @@ submitting the rest.
 
 - [ ] **G1.** `02-bwa` (62 jobs) → `./check-step.sh 01-variant-calling/02-bwa`
       (also tabulates each pool's reads on *T. gracilentus*, other
-      species, the mitogenome, and barcodes).
+      species, the mitogenome, and barcodes). First run (2026-10-28,
+      container v2.3.0) failed: bbmap 40.02's BBMerge kept ~1-2% of read
+      pairs and exited 0 (38 jobs; near-empty BAMs on staging) or hung
+      with no CPU use (24 jobs). Remove those jobs, rebuild (C4), and
+      rerun all 62; the job now fails if BBMerge loses any pair.
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
       `./check-step.sh 01-variant-calling/03-mpileup`.
 - [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →

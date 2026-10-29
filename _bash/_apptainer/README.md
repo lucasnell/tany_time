@@ -1,6 +1,8 @@
 # `_apptainer/`: container
 
-`tany_time.def` builds `tany_time.sif` (v2.3.0; v2.2.0 had medaka model `r941_min_hac_g507` instead) from
+`tany_time.def` builds `tany_time.sif` (v2.4.0: bbmap back to 39.28, since
+40.02's BBMerge loses or hangs on paired reads; v2.3.0 had bbmap 40.02;
+v2.2.0 had medaka model `r941_min_hac_g507`) from
 `condaforge/miniforge3:26.7.2-0` (Ubuntu 24.04).
 
 ## Build

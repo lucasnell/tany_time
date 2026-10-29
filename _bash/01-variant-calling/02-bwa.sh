@@ -105,9 +105,22 @@ export READ_ID=$(head -n 1 ${READS1} | grep -Eo "[ATGCN]+$")
 #'
 #' Creating 3 FASTQ files here, for merged reads, unmerged reads # 1,
 #' and unmerged reads # 2
-bbmerge.sh in1=${READS1} in2=${READS2} out=${MERGED_READS} \
-    outu1=${UN_READS1} outu2=${UN_READS2}
+N_PAIRS_IN=$(( $(wc -l < ${READS1}) / 4 ))
+# (time limit: bbmap 40.02 sometimes hung here with no CPU use)
+timeout 6h bbmerge.sh in1=${READS1} in2=${READS2} out=${MERGED_READS} \
+    outu1=${UN_READS1} outu2=${UN_READS2} 2> bbmerge.log
 check_exit_status "bbmerge" $?
+cat bbmerge.log 1>&2
+# BBMerge can exit 0 after thread errors that drop most reads (bbmap 40.02,
+# 2026-10-29), so check that every pair came out merged or unmerged:
+N_PAIRS_OUT=$(( ($(wc -l < ${MERGED_READS}) + $(wc -l < ${UN_READS1})) / 4 ))
+echo "bbmerge: ${N_PAIRS_IN} pairs in, ${N_PAIRS_OUT} out (merged + unmerged)"
+if grep -q "Exception" bbmerge.log || (( N_PAIRS_IN != N_PAIRS_OUT )); then
+    echo "BBMERGE CHECK FAILED: ${N_PAIRS_IN} pairs in, ${N_PAIRS_OUT} out," \
+        "$(grep -c Exception bbmerge.log) exceptions" 1>&2
+    safe_exit 1
+fi
+rm bbmerge.log
 
 rm ${READS1} ${READS2}
 

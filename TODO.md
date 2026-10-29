@@ -6,6 +6,21 @@ On hold until the owner says to run them. Listed in dependency order.
 
 ## Before rerunning anything on the cluster
 
+- [ ] **bbmap 40.02 broke read mapping (`02-bwa`), 2026-10-29.** Its
+      BBMerge throws `AssertionError: List size mismatch` in its pair
+      reader and either exits 0 having kept ~1-2% of pairs (38 jobs:
+      e.g. Blo-19_S7 mapped 2,575 reads from an 8.7-GB tar) or hangs at
+      ~0% CPU (24 jobs, ~24 h). Reproduced locally on 100k properly paired
+      MyKS-19-B reads with bbmap 40.02 (1,411 pairs out; also with
+      `threads=1`); bbmap 39.28 keeps all 100,000 (13.1% merged). The tool
+      check missed it because it only checked the exit status. Fixed:
+      bbmap pinned back to 39.28 (container v2.4.0, not yet built),
+      `02-bwa.sh` fails unless merged + unmerged pairs equal input pairs
+      (and limits BBMerge to 6 h), and `_bash/tests/v2-tool-check.sh`
+      checks the pair count. To do on the cluster: remove the running
+      jobs (`condor_rm 12388386`), rebuild (RERUN-CHECKLIST C4), rerun
+      read mapping (G1) for all 62 pools.
+
 Follow `_bash/RERUN-CHECKLIST.md`.
 
 - [x] **Rebuild the container** (`_bash/_apptainer/_build.sh`) as v2.3.0:

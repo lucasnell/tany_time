@@ -140,6 +140,9 @@ samtools faidx ref.fa
 gunzip -c t1.fq.gz > u1.fq; gunzip -c t2.fq.gz > u2.fq
 check "bbmerge.sh $(pin main-env bbmap)" \
     bbmerge.sh in1=u1.fq in2=u2.fq out=merged.fq outu1=un1.fq outu2=un2.fq
+# bbmap 40.02 exited 0 here but kept only a fraction of the pairs:
+check "bbmerge keeps every pair (merged + unmerged = input)" \
+    bash -c "[ \$(( (\$(wc -l < merged.fq) + \$(wc -l < un1.fq)) / 4 )) -eq \$(( \$(wc -l < u1.fq) / 4 )) ]"
 minimap2 -x sr -a ref.fa un1.fq un2.fq 2> /dev/null \
     | samtools view -@ 2 -bh - > all.bam
 check "samtools view -f 0x4" samtools view -@ 2 -bh -f 0x4 all.bam -o unm.bam
