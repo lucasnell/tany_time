@@ -201,9 +201,15 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
       `./check-step.sh 01-variant-calling/03-mpileup`. Test job
       (Lei-19_S13, largest BAM at 9.6 GB) submitted 2026-10-30.
-- [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
-      `./check-step.sh 01-variant-calling/04-bam-cov`. Submitted
-      2026-10-30 (cluster 12391034).
+- [x] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
+      `./check-step.sh 01-variant-calling/04-bam-cov`. Run 2026-10-30
+      (cluster 12391034): PASS, longest 0.4 h. Spot check of the smallest
+      and largest outputs (KS-2-83, Lei-19): each covers all 44
+      *T. gracilentus* contigs end to end (91,778,304 bp); mean depth
+      0.012 and 220. Four near-empty pools (KS-2-83, KS-2-90, SN-1-82,
+      SN-2-91) have outputs under 1 MB. `_R/sample-qc.R` still reads the
+      old coverage files (`/Volumes/Lucas512`, cached in
+      `_data/bed-summs.rds`).
 - [ ] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
       `./check-step.sh 01-variant-calling/05-kraken` (pools classified so
       far, warnings). Submitted 2026-10-30 (cluster 12391035).
