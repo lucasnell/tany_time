@@ -215,9 +215,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       CONTIG37:2,739,348 reach 0.66-2.2 million reads (SN-2-96,
       KS-1-15-B); `samtools mpileup` caps depth at 8,000 and `01-snape`
       masks each pool's sites above its 95th coverage percentile.
-- [ ] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
+- [x] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
       `./check-step.sh 01-variant-calling/05-kraken` (pools classified so
-      far, warnings). Submitted 2026-10-30 (cluster 12391035).
+      far, warnings). Run 2026-10-30 (cluster 12391035): PASS, 1.2 h, all
+      62 pools classified with both databases. Summarized with
+      `_R/kraken-summary.R` → `_data/kraken-*.csv`,
+      `_plots/kraken-groups.pdf`. The SILVA host denominator is empty (see
+      `TODO.md`, Parasites with Kraken2); replaced by reads per million
+      unmapped and per million total reads.
 
 ## H. Allele frequencies (`02-allele-freqs/`)
 
@@ -226,6 +231,8 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 - [ ] **H2.** *(parallel)* `02-npstat` (62 jobs) →
       `./check-step.sh 02-allele-freqs/02-npstat`.
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
+      Since 2026-10-30 it reads every candidate pool's whole BAM to count
+      reads on the CONTIG37 stretch, so it runs longer than before.
 - [ ] **H4.** Locally: download `$S/dna/pool-qc/pool-qc.tar` and extract it
       to `~/_data/_tany-time/pool-qc/`; run `Rscript _R/pool-qc.R` (writes
       `_bash/samples/{time,space}-pools.txt` by the pre-set outlier rule)

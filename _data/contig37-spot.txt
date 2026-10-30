@@ -1,0 +1,19 @@
+blastn: 2.17.0+; checked 2026-10-30
+
+== blastn: CONTIG37:2,739,300-2,739,650 (query 1 = 2,739,300) vs mitogenome (e-value <= 1e-10)
+subject qstart qend sstart send length pident evalue
+Tgraci_mito_contig 51 197 1191 1337 147 99.320 6.93e-74
+Tgraci_mitogenome 51 204 18724 18573 154 98.052 6.93e-74
+Tgraci_mito_contig 51 197 24360 24507 148 98.649 3.23e-72
+Tgraci_mito_contig 51 197 21393 21534 149 87.919 7.23e-44
+Tgraci_mitogenome 51 197 21883 21742 149 87.919 7.23e-44
+
+== Share of nuclear read bases in CONTIG37:2,739,300-2,739,700, and maximum depth there
+SN-1-96_S60    0.1353 923835
+SN-2-96_S36    0.1295 2156336
+H-2-06_S44     0.0549 769658
+SN-2-98_S66    0.0402 815532
+SN-1-13_S56    0.0373 1401520
+KS-1-15-B_S12  0.0263 656184
+SN-2-97_S37    0.0128 388495
+Lei-19_S13     0.0004 58915

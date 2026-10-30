@@ -104,7 +104,7 @@ are written by `_R/make-job-lists.R`.
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |
-| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`01-variant-calling/05-kraken`): PlusPF composition (bacteria, fungi, human, etc.; top genera; plot) and SILVA parasite groups relative to host rRNA (top non-insect eukaryotes) → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`, `_data/kraken-silva-groups.csv`, `_data/kraken-silva-top-eukaryotes.csv`; not yet run |
+| `kraken-summary.R` | Summarizes Kraken2 reports of unmapped reads (`01-variant-calling/05-kraken`): PlusPF composition (bacteria, fungi, human, etc.; top genera; plot) and SILVA parasite groups per million unmapped and per million total reads (top non-insect eukaryotes) → `_data/kraken-groups.csv`, `_data/kraken-top-genera.csv`, `_plots/kraken-groups.pdf`, `_data/kraken-silva-groups.csv`, `_data/kraken-silva-top-eukaryotes.csv`; first run 2026-10-30 (reports not kept locally) |
 | `mito-contam.R` | Per-pool mitochondrial contamination index per trap taxon from `02-bwa` read counts → `_data/mito-contam.csv`; not yet run |
 | `get-other-mitogenomes.R` | Fetch NCBI mitogenomes for the hologenome species whose assemblies lack one → `_bash/references/other-mitogenomes.fasta`, `_data/other-mitogenomes.csv` |
 | `mito-contig-sites.R` | Sites on CONTIG34 (the assembly's mitochondrial contig) in the time-series allele frequencies and candidates → `_data/mito-contig-sites.txt` |
@@ -191,6 +191,8 @@ on a contig) and `mito-features-check.sh`; `mito-copy-number.sh`
 reads); `mito-collapse-check.sh` (`mito-collapse.sh` on the contigs at
 hand); `mito-round2-check.sh` (Flye round-2 genome-size setting);
 `other-mito-check.sh` (mitogenomes in the other hologenome assemblies);
+`contig37-spot.sh` (mitochondrial reads piling up on CONTIG37;
+→ `_data/contig37-spot.txt`);
 `medaka-model-test.sh` (medaka models on the
 sup reads vs Illumina);
 `dorado-r941-test.sh` (Dorado 0.9.6 sup on the 2019 FAST5 data);

@@ -42,7 +42,7 @@ Nunez et al. 2025). `03-pool-qc` computes, for the candidate pools in
 | Number of SNPs and private SNPs (P ≥ 0.9 only in that pool, among the set's candidates) | partially masked gSYNC (`pool-qc-sync.py`) |
 | Duplication rate | Picard MarkDuplicates report (`03-mpileup`); fastp estimate also reported |
 | GC content | fastp (`01-fastp`) |
-| Mapping rate to *T. gracilentus* (`target_rate`: reads assigned to its contigs, MAPQ ≥ 20, primary / all records); rate to other species, any-genome mapping rate, and usable rate are also reported | `bamtools stats` and species counts (`02-bwa`) |
+| Mapping rate to *T. gracilentus* (`target_rate`: reads assigned to its contigs, MAPQ ≥ 20, primary / all records, excluding mitochondrial reads on the CONTIG37 stretch in `../references/mito-like-nuclear.bed`, reported as `mitolike_rate`); rate to other species, any-genome mapping rate, and usable rate are also reported | `bamtools stats` and species counts (`02-bwa`); the stretch's reads are counted from each BAM (`samtools view -c -L`) |
 
 pN/pS isn't used because the *T. gracilentus* annotation isn't good enough.
 `_R/pool-qc.R` excludes pools that are outliers in a robust PCA of the five

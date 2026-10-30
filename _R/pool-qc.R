@@ -46,7 +46,9 @@ qc_dir <- "~/_data/_tany-time/pool-qc"
 #' QC metrics used in the rule (definitions in `03-pool-qc.sh` and
 #' `pool-qc-files.py`). The mapping rate is `target_rate`: reads assigned to
 #' T. gracilentus contigs (MAPQ >= 20, primary) under competitive mapping,
-#' over all reads.
+#' over all reads, excluding reads on a mitochondrial-like stretch of
+#' CONTIG37 (`mitolike_rate`; decided 2026-10-30, before any QC metrics
+#' existed, because they are mitochondrial reads).
 metrics <- c("prop_missing", "n_private", "picard_dup", "fastp_gc",
              "target_rate")
 
@@ -66,7 +68,7 @@ samp_df <- read_csv("_data/full-sample-info.csv", col_types = "cDccidd") |>
     mutate(n_haps = 2L * n_adults)
 
 files_df <- read_tsv(file.path(qc_dir, "pool-qc-files.tsv"),
-                     col_types = "cddddddd", na = "NA")
+                     col_types = "cdddddddd", na = "NA")
 
 qc_df <- c("time", "space") |>
     map(\(s) {
@@ -83,7 +85,7 @@ qc_df <- c("time", "space") |>
     left_join(samp_df, by = "pool") |>
     select(set, pool, n_haps, prop_missing, n_snps, n_private, picard_dup,
            fastp_dup, fastp_gc, target_rate, nontarget_rate, map_rate,
-           usable_rate)
+           usable_rate, mitolike_rate)
 
 
 

@@ -10,7 +10,10 @@
 #' - From upstream outputs (`pool-qc-files.py`): GC content and duplication
 #'   rate from fastp, duplication rate from Picard MarkDuplicates, mapping
 #'   rates from `bamtools stats`, and reads assigned to T. gracilentus vs.
-#'   other species in the combined reference (`02-bwa`).
+#'   other species in the combined reference (`02-bwa`). Reads in
+#'   `mito-like-nuclear.bed` (a mitochondrial-like stretch of CONTIG37 that
+#'   control-region reads map to; `_bash/tests/contig37-spot.sh`) are
+#'   counted from each pool's BAM and removed from T. gracilentus reads.
 #'
 #' Candidate pools come from `time-pools-candidates.txt` and
 #' `space-pools-candidates.txt` (transferred from `_bash/samples/`; written
@@ -35,13 +38,15 @@ export PARENT_DIR_OUT="/staging/l/lnell/dna/pool-qc"
 export MIN_PP=0.9
 
 
-require_files time-pools-candidates.txt space-pools-candidates.txt
+require_files time-pools-candidates.txt space-pools-candidates.txt \
+    mito-like-nuclear.bed pool-qc-files.py
 export TIME_SAMPS=($(cat time-pools-candidates.txt))
 export SPACE_SAMPS=($(cat space-pools-candidates.txt))
 
 export OUT_DIR=pool-qc
 mkdir ${OUT_DIR}
-mv time-pools-candidates.txt space-pools-candidates.txt ./${OUT_DIR}/
+mv time-pools-candidates.txt space-pools-candidates.txt \
+    mito-like-nuclear.bed pool-qc-files.py ./${OUT_DIR}/
 cd ${OUT_DIR}
 
 
@@ -50,7 +55,9 @@ cd ${OUT_DIR}
 #' Metrics from upstream outputs (one row per pool)
 #' ========================================================================
 
-pool-qc-files.py --header > pool-qc-files.tsv
+# (`pool-qc-files.py` is transferred from the repo: it's newer than the
+# container's copy)
+python3 pool-qc-files.py --header > pool-qc-files.tsv
 mkdir species-counts
 
 for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
@@ -66,11 +73,22 @@ for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
     tar -xzf ${DNA_DIR}/mpileup/${samp}_mpileup.tar.gz -C tmp \
         ${samp}_mpileup/${samp}_bwa_nodups_report.txt \
         || echo "WARNING: no MarkDuplicates report for ${samp}" 1>&2
-    pool-qc-files.py --pool ${samp} \
+    # Records in the final BAM (all MAPQ >= 20, primary) overlapping the
+    # mitochondrial-like stretch; reads the whole BAM (no index):
+    ML_ARG=""
+    if [ -f ${DNA_DIR}/bwa/${samp}_bwa.bam ]; then
+        N_ML=$(samtools view -c -@ 2 -L mito-like-nuclear.bed \
+            ${DNA_DIR}/bwa/${samp}_bwa.bam)
+        check_exit_status "count mito-like reads (${samp})" $?
+        ML_ARG="--mito-like ${N_ML}"
+    else
+        echo "WARNING: no BAM for ${samp}" 1>&2
+    fi
+    python3 pool-qc-files.py --pool ${samp} \
         --fastp tmp/trimmed_${samp}/fastp.json \
         --bwa-dir tmp/${samp}_bwa \
         --markdup tmp/${samp}_mpileup/${samp}_bwa_nodups_report.txt \
-        >> pool-qc-files.tsv
+        ${ML_ARG} >> pool-qc-files.tsv
     check_exit_status "pool-qc-files.py (${samp})" $?
     if [ -f tmp/${samp}_bwa/${samp}_species-counts.tsv ]; then
         cp tmp/${samp}_bwa/${samp}_species-counts.tsv species-counts/

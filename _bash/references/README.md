@@ -11,6 +11,13 @@ Choices are logged in `_data/coi-barcode-selection.csv`.
 | `other-mitogenomes.fasta` | Mitogenomes of *C. riparius* (OU815687.1) and *S. aterrima* (NC_069312.1), whose assemblies lack one; named `mt_<code>__<accession>`; from `_R/get-other-mitogenomes.R` | `00-references/02-hologenome` |
 | `coi-barcodes.fasta` | One COI barcode per abundant trap taxon, named `bc_<code>__<accession>`: *Micropsectra lindrothi*, *M. atrofasciata* (Icelandic specimens), *Cricotopus sylvestris*, *Chironomus islandicus*, *Eukiefferiella minor*, *Simulium vittatum*, and 7 Fennoscandian *Procladius* species as a genus-level proxy (`bc_Procla`; *P. islandicus* has no NCBI sequences) | `00-references/02-hologenome` (mitochondrial contamination index) |
 
+Not from NCBI: `mito-like-nuclear.bed` (BED, 0-based) marks CONTIG37
+2,739,350-2,739,503 (1-based), a stretch matching the mitochondrial control
+region (99.3%), where control-region reads map at MAPQ ≥ 20
+(`_bash/tests/contig37-spot.sh` → `_data/contig37-spot.txt`). Used by
+`02-allele-freqs/03-pool-qc` to remove those reads from *T. gracilentus*
+read counts.
+
 Taxa follow Einarsson et al. 2026 (*Aquatic Ecology* 60:58, Table 1).
 Barcode rule: COI 600–700 bp; prefer Icelandic specimens; then longest;
 then lowest accession.

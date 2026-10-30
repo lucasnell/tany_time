@@ -17,7 +17,7 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 ## Candidate pool lists (written by `_R/make-job-lists.R`):
-transfer_input_files = ../samples/time-pools-candidates.txt, ../samples/space-pools-candidates.txt
+transfer_input_files = ../samples/time-pools-candidates.txt, ../samples/space-pools-candidates.txt, ../references/mito-like-nuclear.bed, ../_apptainer/bin/pool-qc-files.py
 
 request_cpus = 2
 request_memory = 4GB

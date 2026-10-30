@@ -55,8 +55,11 @@ N_TOP <- 10  # genera per pool in the top-genera table
 read_report <- function(fn) {
     read_tsv(fn, col_names = c("percent", "clade_reads", "direct_reads",
                                "rank", "taxid", "name"),
-             col_types = "dddcic", trim_ws = FALSE, progress = FALSE) |>
-        mutate(depth = (nchar(name) - nchar(str_trim(name, "left"))) %/% 2,
+             col_types = "cddcic", trim_ws = FALSE, progress = FALSE) |>
+        # (percent is space-padded, so it's read as text; trim_ws = FALSE
+        # keeps the indentation of `name`, which gives the taxon's depth)
+        mutate(percent = as.numeric(percent),
+               depth = (nchar(name) - nchar(str_trim(name, "left"))) %/% 2,
                name = str_trim(name))
 }
 
@@ -100,7 +103,7 @@ groups_df <- crossing(pool = unique(rep_df$pool), groups) |>
     select(pool, label, clade_reads, n_reads, percent)
 
 if (file.exists(qc_files)) {
-    map_df <- read_tsv(qc_files, col_types = "cddddddd", na = "NA") |>
+    map_df <- read_tsv(qc_files, col_types = "cdddddddd", na = "NA") |>
         select(pool, map_rate)
     groups_df <- groups_df |>
         left_join(map_df, by = "pool") |>
@@ -172,9 +175,15 @@ ggsave("_plots/kraken-groups.pdf", p, width = 9, height = 8)
 #' The script reports which names matched nothing in any report, so
 #' unmatched groups aren't mistaken for absences.
 #'
-#' Host rRNA (Chironomidae) is the denominator: parasite reads per host
-#' rRNA read compare infection signal among pools with different read
-#' numbers. Parasite DNA may come from other specimens in the same trap
+#' Rates, to compare pools with different read numbers:
+#'   per_m_unmapped  reads per million unmapped reads (all of them went to
+#'                   SILVA)
+#'   per_m_total     reads per million total reads: per_m_unmapped *
+#'                   (1 - map_rate); needs pool QC metrics (as above)
+#' Host rRNA (Chironomidae) can't be the denominator: it maps to the
+#' assembly, so no unmapped read is Chironomidae (first run, 2026-10-30).
+#' The host group is still reported. Parasite DNA may come from other
+#' specimens in the same trap
 #' preservative, so detection is not proof that T. gracilentus was infected.
 silva_groups <- tribble(
     ~label,                ~names,
@@ -220,14 +229,25 @@ if (nrow(silva_df) == 0) {
         summarize(clade_reads = sum(clade_reads), .groups = "drop") |>
         left_join(silva_tot, by = "pool")
 
-    host_df <- silva_groups_df |>
-        filter(label == "Chironomidae (host)") |>
-        select(pool, host_reads = clade_reads)
+    #' `map_rate` per pool, or NA without pool QC metrics:
+    silva_map_df <- if (file.exists(qc_files)) {
+        read_tsv(qc_files, col_types = "cdddddddd", na = "NA") |>
+            select(pool, map_rate)
+    } else {
+        tibble(pool = character(0), map_rate = numeric(0))
+    }
+    add_rates <- function(.df) {
+        .df |>
+            left_join(silva_tot, by = "pool") |>
+            left_join(silva_map_df, by = "pool") |>
+            mutate(per_m_unmapped = 1e6 * clade_reads / n_reads,
+                   per_m_total = per_m_unmapped * (1 - map_rate)) |>
+            select(-map_rate)
+    }
 
     silva_groups_df <- silva_groups_df |>
-        left_join(host_df, by = "pool") |>
-        mutate(per_host_read = ifelse(host_reads > 0,
-                                      clade_reads / host_reads, NA_real_))
+        select(-n_reads) |>
+        add_rates()
 
     write_csv(silva_groups_df, "_data/kraken-silva-groups.csv")
 
@@ -245,14 +265,12 @@ if (nrow(silva_df) == 0) {
                insect = in_lineage(name, depth, "Insecta")) |>
         ungroup() |>
         filter(rank == "G", euk, !insect) |>
-        left_join(silva_tot, by = "pool") |>
-        left_join(host_df, by = "pool") |>
-        mutate(per_host_read = ifelse(host_reads > 0,
-                                      clade_reads / host_reads, NA_real_)) |>
+        add_rates() |>
         group_by(pool) |>
         slice_max(clade_reads, n = N_TOP, with_ties = FALSE) |>
         ungroup() |>
-        select(pool, genus = name, taxid, clade_reads, per_host_read)
+        select(pool, genus = name, taxid, clade_reads, per_m_unmapped,
+               per_m_total)
 
     write_csv(silva_top, "_data/kraken-silva-top-eukaryotes.csv")
 }

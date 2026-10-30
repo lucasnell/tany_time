@@ -383,6 +383,42 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       (Chironomidae) rRNA reads, by `_R/kraken-summary.R`. Check its
       warning about SILVA names that matched nothing. Caveat: parasite DNA
       may come from other specimens in the trap preservative.
+      - [x] **Host denominator is empty (first run, 2026-10-30).** No
+        unmapped read in any pool is classified as Chironomidae (1,173
+        Diptera reads across all 62 pools): host rRNA maps to the
+        assembly, so it never reaches the unmapped reads. `per_host_read`
+        is NA everywhere. Replaced (owner's choice, 2026-10-30) by both
+        reads per million unmapped reads (`per_m_unmapped`) and per million
+        total reads (`per_m_total`, NA until `pool-qc-files.tsv` exists).
+        Largest signals: fungal rRNA in H-2-10 (149k reads; *Candida*,
+        *Trichosporon*), *Monocystis* (gregarine, Apicomplexa) in KS-2-13
+        (2.6k), microsporidia in KS-1-13 (4.6k; *Binucleata*, *Senoma*),
+        *Entomophthora* in SN-2-96 (1.2k).
+
+- [ ] **Mitochondrial reads counted as T. gracilentus nuclear at
+      CONTIG37:2,739,350-2,739,503** (found 2026-10-30;
+      `_bash/tests/contig37-spot.sh` → `_data/contig37-spot.txt`). This ~150 bp of
+      CONTIG37 matches the mitogenome's control region (99.3% to repeat
+      copy at 1,191-1,337 of `Tgraci_mito_contig.fasta`, which
+      `mito-collapse.sh` drops; 98.1% to the copy kept at 18,573-18,724 of
+      `Tgraci_mitogenome.fasta`, in `unique_right`). Reads from those
+      control-region copies map here at MAPQ >= 20, reaching up to 2.2
+      million reads deep. Share of each pool's nuclear read bases in
+      2,739,300-2,739,700 (from `bam-cov`): SN-1-96 13.5%, SN-2-96 13.0%,
+      H-2-06 5.5%, SN-2-98 4.0%, SN-1-13 3.7%, KS-1-15-B 2.6%, SN-2-97
+      1.3%, Lei-19 under 0.1%. Effects: inflates `target` in the 02-bwa
+      table and `target_rate` in pool QC for high-mitochondrial pools;
+      allele frequencies are not affected (mpileup caps depth at 8,000;
+      `01-snape` masks sites above each pool's 95th coverage percentile).
+      Options: (a) hard-mask the window in `02-hologenome` and rerun
+      `02-bwa` onward; (b) exclude the window when counting `target`
+      reads (`02-bwa` table, `pool-qc-files.py`); (c) leave and note.
+      **Owner chose (b) 2026-10-30; implemented, not yet run:**
+      `_bash/references/mito-like-nuclear.bed`; `03-pool-qc` counts each
+      pool's reads there and `pool-qc-files.py` subtracts them from
+      `target_rate` (new column `mitolike_rate`); `check-step.sh` notes it
+      under the 02-bwa table and prints both rates for 03-pool-qc. The
+      02-bwa table itself (from the jobs' own counts) is unchanged.
 
 ## Review steps
 

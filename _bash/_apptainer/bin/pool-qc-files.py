@@ -17,14 +17,18 @@ Columns:
   target_rate      records in the final filtered BAM on nuclear
                    T. gracilentus contigs / total records in the unfiltered
                    alignments (from `<pool>_species-counts.tsv`; competitive
-                   mapping)
+                   mapping), minus the --mito-like records
   nontarget_rate   same, for other species' nuclear genomes (`nt_*` groups;
                    mitogenome and COI barcode groups are not included)
+  mitolike_rate    --mito-like / total records: records in the final BAM
+                   on mitochondrial-like stretches of nuclear contigs
+                   (`mito-like-nuclear.bed`), which mitochondrial reads
+                   reach; NA if not given
 
 usage:
 pool-qc-files.py --header
 pool-qc-files.py --pool P --fastp fastp.json --bwa-dir <dir with .stats> \\
-    --markdup <MarkDuplicates report>
+    --markdup <MarkDuplicates report> [--mito-like N]
 
 """
 
@@ -98,10 +102,11 @@ if __name__ == "__main__":
     parser.add_argument("--fastp")
     parser.add_argument("--bwa-dir")
     parser.add_argument("--markdup")
+    parser.add_argument("--mito-like", type = int)
     args = parser.parse_args()
 
     cols = ["pool", "fastp_gc", "fastp_dup", "picard_dup", "map_rate",
-            "usable_rate", "target_rate", "nontarget_rate"]
+            "usable_rate", "target_rate", "nontarget_rate", "mitolike_rate"]
     if args.header:
         print("\t".join(cols))
         sys.exit(0)
@@ -113,6 +118,7 @@ if __name__ == "__main__":
     pdup = picard_dup(args.markdup)
 
     map_rate = usable_rate = target_rate = nontarget_rate = None
+    mitolike_rate = None
     if args.bwa_dir is not None:
         p = os.path.join(args.bwa_dir, args.pool)
         tm = [bamtools_counts(os.path.join(args.bwa_dir, "all_" + args.pool +
@@ -127,12 +133,17 @@ if __name__ == "__main__":
                 if final_total is not None:
                     usable_rate = final_total / total
                 sp = species_counts(p + "_species-counts.tsv")
+                n_ml = args.mito_like
+                if n_ml is not None:
+                    mitolike_rate = n_ml / total
                 if sp is not None:
-                    target_rate = sp.get("target", 0) / total
+                    target_rate = (sp.get("target", 0) -
+                                   (n_ml or 0)) / total
                     nontarget_rate = sum(v for k, v in sp.items()
                                          if k.startswith("nt_")) / total
 
     print("\t".join([args.pool] + [fmt(x) for x in (gc, fdup, pdup, map_rate,
                                                      usable_rate, target_rate,
-                                                     nontarget_rate)]))
+                                                     nontarget_rate,
+                                                     mitolike_rate)]))
     sys.exit(0)
