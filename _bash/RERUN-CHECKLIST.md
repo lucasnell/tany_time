@@ -176,17 +176,20 @@ submitting the rest.
 
 ## G. Reads to pileups (`01-variant-calling/`)
 
-- [ ] **G1.** `02-bwa` (62 jobs) → `./check-step.sh 01-variant-calling/02-bwa`
+- [x] **G1.** `02-bwa` (62 jobs) → `./check-step.sh 01-variant-calling/02-bwa`
       (also tabulates each pool's reads on *T. gracilentus*, other
       species, the mitogenome, and barcodes). First run (2026-10-28,
       container v2.3.0) failed: bbmap 40.02's BBMerge kept ~1-2% of read
       pairs and exited 0 (38 jobs; near-empty BAMs on staging) or hung
       with no CPU use (24 jobs). Remove those jobs, rebuild (C4), and
       rerun all 62; the job now fails if BBMerge loses any pair. Rerun
-      submitted 2026-10-29 (v2.4.0, bbmap 39.28): first 15 jobs finished
-      OK with every pair kept. Jobs use up to ~108 GB of the 120 GB
-      `request_disk`; if any is held for disk, raise it and resubmit only
-      those pools (owner's choice, 2026-10-29).
+      submitted 2026-10-29 (v2.4.0, bbmap 39.28): all 62 finished OK
+      (2026-10-30; longest 3.7 h), none held, every pool kept all its
+      read pairs, 124 of 124 outputs on staging. Per-pool reads by group:
+      `_data/02-bwa-check.txt`. The *T. gracilentus* mitogenome takes
+      over half of the mapped reads in 6 pools (SN-1-96 88%, SN-2-96
+      85%, SN-2-98 75%, H-2-06 72%, KS-1-15-B 57%, SN-1-13 56%); other
+      species' nuclear genomes take 43% in SN-2-09 and 20% in H-2-10.
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
       `./check-step.sh 01-variant-calling/03-mpileup`.
 - [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
