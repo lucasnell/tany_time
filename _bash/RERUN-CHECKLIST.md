@@ -210,8 +210,8 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       submitted 2026-10-30 (cluster 12392440) with `request_disk` raised
       to 60 GB. The deletion also removed the `trimmed_<pool>.tar.gz`
       fastp reports, which `03-pool-qc` (H3) reads for `fastp.json`
-      (GC content is a rule metric): put them back in `$S/dna/trimmed/`
-      before H3.
+      (GC content is a rule metric); the owner restored them from
+      lan_images4 the same day (62 files, all fastp 1.4.0, readable).
 - [x] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
       `./check-step.sh 01-variant-calling/04-bam-cov`. Run 2026-10-30
       (cluster 12391034): PASS, longest 0.4 h. Spot check of the smallest
