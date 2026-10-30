@@ -157,6 +157,9 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 ## E. Trimming (`01-variant-calling/`)
 
 - [x] **E1.** `01-fastp` (62 jobs) → `./check-step.sh 01-variant-calling/01-fastp`.
+      The trimmed reads (`.tar`) were deleted from staging on 2026-10-30
+      after G1 (copies on lan_images4), so this check now reports them
+      missing.
 
 ## F. References (`00-references/`)
 
