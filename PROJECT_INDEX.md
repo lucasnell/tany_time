@@ -92,6 +92,7 @@ are written by `_R/make-job-lists.R`.
 | `tidy-freq-data.R` | Biallelic, ≥ 500 bp-thinned SNAPE frequencies with effective sample size → `allele-freqs-time.rds` |
 | `snape-helpers.cpp` | Rcpp parsers for SNAPE/count sync strings, distance thinning |
 | `crash-test.R` | Legacy: earlier binomial GLMM approach (lme4), superseded by BayPass |
+| `data-dir.R` | `tany_dir()`: path in the local data folder (`tany_time/` on lan_images4, else LAN_4TB_SSD; see `CLAUDE.md`) |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |
 | `baypass-utils.R` | BayPass v3.1 R utilities (`simulate.baypass`, `fmd.dist`, `concatenate_res`, …) with local `concatenate_res` edits |
 | `baypass-check-omegas.R` | Ω consistency across subsamples |

@@ -21,7 +21,8 @@
 
 library(tidyverse)
 
-qc_dir <- "~/_data/_tany-time/pool-qc"
+source("_R/data-dir.R")
+qc_dir <- tany_dir("pool-qc")
 
 counts_df <- list.files(file.path(qc_dir, "species-counts"),
                         "_species-counts.tsv$", full.names = TRUE) |>

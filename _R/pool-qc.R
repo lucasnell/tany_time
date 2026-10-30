@@ -41,7 +41,8 @@
 library(tidyverse)
 library(patchwork)
 
-qc_dir <- "~/_data/_tany-time/pool-qc"
+source("_R/data-dir.R")
+qc_dir <- tany_dir("pool-qc")
 
 #' QC metrics used in the rule (definitions in `03-pool-qc.sh` and
 #' `pool-qc-files.py`). The mapping rate is `target_rate`: reads assigned to

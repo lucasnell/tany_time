@@ -26,8 +26,9 @@
 
 library(tidyverse)
 
-kraken_dir <- "~/_data/_tany-time/kraken"
-qc_files <- "~/_data/_tany-time/pool-qc/pool-qc-files.tsv"
+source("_R/data-dir.R")
+kraken_dir <- tany_dir("kraken")
+qc_files <- tany_dir("pool-qc", "pool-qc-files.tsv")
 
 #' Groups to report, as (label, rank code, name). Fungi are a kingdom in
 #' NCBI taxonomy; Homo sapiens is reported because handling contamination

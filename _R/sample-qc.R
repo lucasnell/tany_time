@@ -61,8 +61,8 @@ theme_set(theme_classic() %+replace%
 if (!file.exists("_data/bed-summs.rds")) {
     # Coverage from `_bash/01-variant-calling/04-bam-cov` (2026-10-30 run),
     # copied from staging:
-    bed_dir <- "/Volumes/lan_images4/tany_time/bam-cov"
-    if (!dir.exists(bed_dir)) stop("Connect drive lan_images4!")
+    source("_R/data-dir.R")
+    bed_dir <- tany_dir("bam-cov")
     # Takes ~ 30 min
     bed_summs <- bed_dir |>
         list.files(".bed.gz$", full.names = TRUE) |>

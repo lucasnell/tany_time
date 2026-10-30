@@ -234,11 +234,12 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before.
 - [ ] **H4.** Locally: download `$S/dna/pool-qc/pool-qc.tar` and extract it
-      to `~/_data/_tany-time/pool-qc/`; run `Rscript _R/pool-qc.R` (writes
+      to `pool-qc/` in the local data folder (`_R/data-dir.R`; see
+      `CLAUDE.md`); run `Rscript _R/pool-qc.R` (writes
       `_bash/samples/{time,space}-pools.txt` by the pre-set outlier rule)
-      and `Rscript _R/mito-contam.R`. After G4, download
-      `$S/dna/kraken/kraken.tar` to `~/_data/_tany-time/kraken/` and run
-      `Rscript _R/kraken-summary.R`. Commit and push the pool lists.
+      and `Rscript _R/mito-contam.R`. After G4, extract
+      `$S/dna/kraken/kraken.tar` to `kraken/` in the local data folder and
+      run `Rscript _R/kraken-summary.R`. Commit and push the pool lists.
 - [ ] **H5.** On the submit server, `git pull` (gets the pool lists).
 - [ ] **H6.** `04-combine-syncs` (1 job) →
       `./check-step.sh 02-allele-freqs/04-combine-syncs`.

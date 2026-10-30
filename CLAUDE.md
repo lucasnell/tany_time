@@ -93,6 +93,18 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 
 Scripts read large files by absolute path; none are in git.
 
+**Local data folder** (owner's rule, 2026-10-30): cluster outputs that
+local analyses need are copied, as soon as they exist, into
+`/Volumes/lan_images4/tany_time/<output>/` (e.g., `bam-cov/`, `kraken/`,
+`pool-qc/`); if only `LAN_4TB_SSD` is connected, into
+`/Volumes/LAN_4TB_SSD/tany_time/` instead. Whenever both drives are
+connected, sync the two folders both ways so each holds everything (both
+exFAT; add, never delete):
+`rsync -rt --update --modify-window=1 /Volumes/lan_images4/tany_time/ /Volumes/LAN_4TB_SSD/tany_time/`,
+then the same with the two paths swapped. R scripts find the folder with
+`_R/data-dir.R` (`tany_dir()`). Outputs from before this rule (SNAPE,
+BLAST, trimmed reports) stay in `~/_data/_tany-time/` until rerun.
+
 | Path | Contents |
 |---|---|
 | `~/_data/_tany-time/snape/{snape,count}_masked_{time,space,all}/` | Combined SNAPE frequency and read-count sync files |
@@ -101,7 +113,7 @@ Scripts read large files by absolute path; none are in git.
 | `~/_data/Tgraci_genes.gff3` | Gene annotation |
 | `~/_data/_tany-time/blast/` | Protein FASTA (`Tgraci_proteins.faa`), candidate-gene proteins (`Tgraci-funct.faa`), and BLASTP output (`Tgraci-funct-Dmel.csv`) used in `baypass-analysis.R` and `make-time-series-plot.R` (moved from `~/Desktop` 2026-10-13); BLAST database in `~/blastdb/` |
 | `~/_data/_tany-time/trimmed/trimmed_reports/` | fastp/FastQC per-sample reports and `multiqc_data/` (`sample-qc.R` still points to the old `~/_data/trimmed_reports`) |
-| `/Volumes/lan_images4/tany_time/bam-cov/` | Per-pool coverage on *T. gracilentus* contigs (`<pool>_bwa_cov.bed.gz`, from `04-bam-cov`, 2026-10-30 run; read by `_R/sample-qc.R`). Older coverage files (previous mapping) are on `/Volumes/Lucas512` |
+| Local data folder (`tany_time/` on lan_images4 or LAN_4TB_SSD; above) | `bam-cov/`: per-pool coverage on *T. gracilentus* contigs (`<pool>_bwa_cov.bed.gz`, from `04-bam-cov`, 2026-10-30 run; read by `_R/sample-qc.R`; older coverage from the previous mapping is on `/Volumes/Lucas512`). `kraken/`: Kraken2 reports from `05-kraken` (`_R/kraken-summary.R`). `pool-qc/`: `03-pool-qc` output (`_R/pool-qc.R`, `_R/mito-contam.R`) |
 | `/Volumes/lan_images4/` (external drive, exFAT) | `ont/`: Dorado sup basecalls and summary (`00-basecall/03-combine`); `assembly/{flye,necat,nextdenovo,smartdenovo}/contigs_*.fasta.gz`: 2019 whole-genome assemblies (copied from `/Volumes/TanyGen5TB/assembly/` 2026-10-23, MD5s match); `ill/dna/trimmed/` and `rna/trimmed/`: fastp-trimmed DNA-seq pools and RNA-seq (TanyAdult_S1, TanyJuven_S2) as `trimmed_<sample>.tar` (uncompressed) and `.tar.gz`. Guppy 5.0.11 basecalls and raw Illumina reads were deleted from `~/_data/{ont,midgenomes/_sra}/` on 2026-10-23; the owner keeps copies elsewhere |
 | Cluster: `/staging/l/lnell/` (was `/staging/lnell/` until 2026-10-13) | Cluster inputs and outputs. Older outputs also exist on ResearchDrive (`pelican://chtc.wisc.edu/researchdrive/arives/CHTC/`); jobs no longer write there (2026-10-14) |
 | Cluster: `/home/lnell/tany_time` | Clone of this repo on the submit server; jobs are submitted from it. Edit locally, push, then `git pull` there (`_bash/**/logs/` is git-ignored) |
