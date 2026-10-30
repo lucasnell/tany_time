@@ -19,6 +19,6 @@ requirements = (HasCHTCStaging == true)
 
 request_cpus = 4
 request_memory = 32GB
-request_disk = 50GB
+request_disk = 60GB
 
 queue readbase from ../samples/all-pools.txt

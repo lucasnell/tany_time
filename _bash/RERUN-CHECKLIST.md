@@ -200,7 +200,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       species' nuclear genomes take 43% in SN-2-09 and 20% in H-2-10.
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
       `./check-step.sh 01-variant-calling/03-mpileup`. Test job
-      (Lei-19_S13, largest BAM at 9.6 GB) submitted 2026-10-30.
+      (Lei-19_S13, largest BAM at 9.6 GB) finished 2026-10-30: 4.7 h,
+      3.8 CPUs, 9.0 of 32 GB memory, 45.8 of 50 GB disk; duplicates 19%
+      (109.7 million records after removal, same after realignment); no
+      errors. Outputs 10.2 GB (pileup 3.3 GB, tar.gz with the realigned
+      BAM 6.8 GB). Scaled by BAM size, all 62 need ~280 GB; staging held
+      719 of 1,000 GB; the owner deleted `$S/dna/trimmed/` (359 GB;
+      only `02-bwa` reads the trimmed reads) and the other 61 were
+      submitted with `request_disk` raised to 60 GB.
 - [x] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
       `./check-step.sh 01-variant-calling/04-bam-cov`. Run 2026-10-30
       (cluster 12391034): PASS, longest 0.4 h. Spot check of the smallest
