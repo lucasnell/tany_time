@@ -207,9 +207,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       and largest outputs (KS-2-83, Lei-19): each covers all 44
       *T. gracilentus* contigs end to end (91,778,304 bp); mean depth
       0.012 and 220. Four near-empty pools (KS-2-83, KS-2-90, SN-1-82,
-      SN-2-91) have outputs under 1 MB. `_R/sample-qc.R` still reads the
-      old coverage files (`/Volumes/Lucas512`, cached in
-      `_data/bed-summs.rds`).
+      SN-2-91) have outputs under 1 MB. Copied to
+      `/Volumes/lan_images4/tany_time/bam-cov/` (62 files, `gzip -t` OK);
+      `_data/bed-summs.rds` rebuilt from them (`_R/sample-qc.R`): median
+      depth 0-231 (time series coverage-30 pools 36-163). In the pools
+      with the most mitochondrial reads, ~150-270 bp at
+      CONTIG37:2,739,348 reach 0.66-2.2 million reads (SN-2-96,
+      KS-1-15-B); `samtools mpileup` caps depth at 8,000 and `01-snape`
+      masks each pool's sites above its 95th coverage percentile.
 - [ ] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
       `./check-step.sh 01-variant-calling/05-kraken` (pools classified so
       far, warnings). Submitted 2026-10-30 (cluster 12391035).

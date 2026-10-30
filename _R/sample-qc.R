@@ -59,9 +59,12 @@ theme_set(theme_classic() %+replace%
 
 
 if (!file.exists("_data/bed-summs.rds")) {
-    if (!dir.exists("/Volumes/Lucas512")) stop("Insert flash drive!")
+    # Coverage from `_bash/01-variant-calling/04-bam-cov` (2026-10-30 run),
+    # copied from staging:
+    bed_dir <- "/Volumes/lan_images4/tany_time/bam-cov"
+    if (!dir.exists(bed_dir)) stop("Connect drive lan_images4!")
     # Takes ~ 30 min
-    bed_summs <- "/Volumes/Lucas512/other/reads/illumina/dna/bwa" |>
+    bed_summs <- bed_dir |>
         list.files(".bed.gz$", full.names = TRUE) |>
         map(\(x) {
             x_bed_summ <- x |>
@@ -84,7 +87,7 @@ if (!file.exists("_data/bed-summs.rds")) {
                          format = paste("{cli::pb_bar} {cli::pb_percent}",
                                         "[{cli::pb_elapsed}] | ETA: {cli::pb_eta}"))) |>
         list_rbind()
-    write_rds(bed_summs, "_data/bed-summs.rds")
+    write_rds(bed_summs, "_data/bed-summs.rds", compress = "gz")
 } else {
     bed_summs <- read_rds("_data/bed-summs.rds")
 }
