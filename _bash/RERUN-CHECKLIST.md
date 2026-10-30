@@ -142,9 +142,17 @@ cd /home/lnell/tany_time/_bash
 It reports finished, failed, running, and unsubmitted jobs; the longest
 run time (warning above 54 h; CHTC's limit is 72 h); outputs missing from
 staging; and a step-specific summary. Go on only after `RESULT: PASS`.
-For steps marked "one first", submit a single job (e.g., by temporarily
-keeping only one line of the job list) and check its run time before
-submitting the rest.
+For steps marked "one first", submit a single job and check its run time
+and disk use before submitting the rest. Pick the largest input (worst
+case). `condor_submit -queue` fails on a submit file that has its own
+`queue` line, so rewrite that line and pipe the result in, e.g. for
+`03-mpileup` (the `.sub` file is unchanged):
+
+```
+sed 's/^queue readbase from .*/queue readbase in (Lei-19_S13)/' 03-mpileup.sub | condor_submit -
+grep -v '^Lei-19_S13$' ../samples/all-pools.txt > logs/03-mpileup/rest.txt
+sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03-mpileup.sub | condor_submit -
+```
 
 ## E. Trimming (`01-variant-calling/`)
 
@@ -191,12 +199,14 @@ submitting the rest.
       85%, SN-2-98 75%, H-2-06 72%, KS-1-15-B 57%, SN-1-13 56%); other
       species' nuclear genomes take 43% in SN-2-09 and 20% in H-2-10.
 - [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
-      `./check-step.sh 01-variant-calling/03-mpileup`.
+      `./check-step.sh 01-variant-calling/03-mpileup`. Test job
+      (Lei-19_S13, largest BAM at 9.6 GB) submitted 2026-10-30.
 - [ ] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
-      `./check-step.sh 01-variant-calling/04-bam-cov`.
+      `./check-step.sh 01-variant-calling/04-bam-cov`. Submitted
+      2026-10-30 (cluster 12391034).
 - [ ] **G4.** *(parallel with G2)* `05-kraken` (1 job, all pools) →
       `./check-step.sh 01-variant-calling/05-kraken` (pools classified so
-      far, warnings).
+      far, warnings). Submitted 2026-10-30 (cluster 12391035).
 
 ## H. Allele frequencies (`02-allele-freqs/`)
 
