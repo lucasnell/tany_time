@@ -200,7 +200,32 @@ case "${STEP_PATH}" in
         JOB_IDS=($(pools))
         for p in ${JOB_IDS[@]}; do
             FILES+=(${S}/dna/mpileup/${p}_mpileup.txt.gz ${S}/dna/mpileup/${p}_mpileup.tar.gz)
-        done ;;
+        done
+        extra () {
+            # bamtools stats prints "Total reads:" after duplicate removal,
+            # then after indel realignment, which shouldn't change it.
+            echo "Reads after duplicate removal and after realignment; pileup size:"
+            printf "%-16s %12s %12s %10s\n" pool nodups realigned pileup_MB
+            local p n1 n2 mb rows="" small="" msgs=()
+            for p in ${JOB_IDS[@]}; do
+                [ -f ${LOG_DIR}/${p}.out ] || continue
+                read n1 n2 <<< $(awk '/^Total reads:/ {printf "%s ", $3}' ${LOG_DIR}/${p}.out)
+                mb=NA
+                [ -f ${S}/dna/mpileup/${p}_mpileup.txt.gz ] \
+                    && mb=$(( $(stat -c %s ${S}/dna/mpileup/${p}_mpileup.txt.gz 2> /dev/null || stat -f %z ${S}/dna/mpileup/${p}_mpileup.txt.gz) / 1000000 ))
+                rows+=$(printf "%-16s %12s %12s %10s" ${p} ${n1:-NA} ${n2:-NA} ${mb})$'\n'
+                if [ -z "${n2}" ]; then
+                    msgs+=("${p}: read counts missing from ${p}.out")
+                elif [ "${n1}" != "${n2}" ] || [ "${n2}" = 0 ]; then
+                    msgs+=("${p}: reads changed in realignment or are zero")
+                fi
+                [ "${mb}" = 0 ] && small+=" ${p}"
+            done
+            printf "%s" "${rows}" | sort -k3,3n
+            for m in "${msgs[@]}"; do problem "${m}"; done
+            # Near-empty pools (e.g., KS-2-83) are expected; pool QC drops them.
+            [ -n "${small}" ] && warn "pileups under 1 MB:${small}"
+        } ;;
 
     01-variant-calling/04-bam-cov)
         JOB_IDS=($(pools))

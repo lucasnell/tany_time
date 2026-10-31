@@ -201,8 +201,10 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       over half of the mapped reads in 6 pools (SN-1-96 88%, SN-2-96
       85%, SN-2-98 75%, H-2-06 72%, KS-1-15-B 57%, SN-1-13 56%); other
       species' nuclear genomes take 43% in SN-2-09 and 20% in H-2-10.
-- [ ] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
-      `./check-step.sh 01-variant-calling/03-mpileup`. Test job
+- [x] **G2.** `03-mpileup` (62 jobs, 9+ h each; one first) →
+      `./check-step.sh 01-variant-calling/03-mpileup` (also tabulates
+      reads after duplicate removal and after realignment, which must
+      match, and pileup sizes; added 2026-10-31). Test job
       (Lei-19_S13, largest BAM at 9.6 GB) finished 2026-10-30: 4.7 h,
       3.8 CPUs, 9.0 of 32 GB memory, 45.8 of 50 GB disk; duplicates 19%
       (109.7 million records after removal, same after realignment); no
@@ -215,6 +217,9 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       fastp reports, which `03-pool-qc` (H3) reads for `fastp.json`
       (GC content is a rule metric); the owner restored them from
       lan_images4 the same day (62 files, all fastp 1.4.0, readable).
+      All 62 finished OK (2026-10-31): PASS, longest 4.7 h (Lei-19_S13),
+      124 of 124 outputs on staging (checked before the read-count
+      table was added).
 - [x] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
       `./check-step.sh 01-variant-calling/04-bam-cov`. Run 2026-10-30
       (cluster 12391034): PASS, longest 0.4 h. Spot check of the smallest
