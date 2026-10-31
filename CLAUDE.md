@@ -45,9 +45,10 @@ See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
   `_bash/README.md`. Each step is a `.sh` + `.sub` pair, numbered in run
   order. Runs inside the Apptainer image built from
   `_bash/_apptainer/tany_time.def` (`/staging/l/lnell/tany_time.sif`).
-  Shared shell functions are in `_bash/_apptainer/helpers.sh`; shared
-  scripts are in `_bash/_apptainer/bin/` (installed on the container's
-  `PATH`). Small reference sequences for jobs are in `_bash/references/`
+  Shared shell functions (`helpers.sh`) and scripts are in `_bash/bin/`,
+  not in the container: every job transfers that folder and sources
+  `bin/helpers.sh`, which puts it first on `PATH` (owner's rule,
+  2026-10-31: one copy of each script, in the repo). Small reference sequences for jobs are in `_bash/references/`
   (from `_R/get-mito-refs.R`). Job lists in `_bash/samples/` come from `_R/make-job-lists.R`,
   except the included-pool lists (`time-pools.txt`, `space-pools.txt`),
   which come from `_R/pool-qc.R`.

@@ -7,7 +7,8 @@ Jobs run inside the Apptainer container built from `_apptainer/`, except
 
 | Folder | Contents |
 |---|---|
-| `_apptainer/` | Container definition, conda environments, shared shell functions, and shared scripts |
+| `_apptainer/` | Container definition and conda environments (software only) |
+| `bin/` | Shared shell functions and scripts; each job transfers this folder from the repo |
 | `samples/` | Job lists (pool names, pool sizes, QC-passing pools) |
 | `references/` | Small reference sequences (mitochondrial bait, COI barcodes) |
 | `tests/` | Local checks of pipeline behavior (results in `_data/`) |
@@ -80,8 +81,9 @@ Each folder's `README.md` lists inputs, outputs, and parameters.
 - CHTC's default run limit is 72 h per job. The longest steps are
   `03-mpileup` (indel realignment, 9+ h) and BayPass (~25–50 h with
   `NVAL=5000`; see `03-select-time/README.md`).
-- Every `.sh` starts with `. /app/.bashrc` (loads the functions in
-  `_apptainer/helpers.sh`) and `conda activate <env>`.
+- Every `.sh` starts with `. /app/.bashrc` (conda), `. bin/helpers.sh ||
+  exit 1` (shell functions; puts the job's copy of `bin/` first on
+  `PATH`), and `conda activate <env>`. Every `.sub` transfers `../bin`.
 
 ## Conventions
 

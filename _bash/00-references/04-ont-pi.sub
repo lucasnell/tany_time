@@ -13,6 +13,7 @@ executable = 04-ont-pi.sh
 batch_name = "ont-pi"
 
 should_transfer_files = YES
+transfer_input_files = ../bin
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

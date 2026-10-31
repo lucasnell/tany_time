@@ -22,6 +22,7 @@
 
 
 . /app/.bashrc
+. bin/helpers.sh || exit 1
 conda activate kraken-env
 
 export THREADS=$(count_threads)

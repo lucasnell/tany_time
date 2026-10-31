@@ -1,6 +1,16 @@
 #'
-#' Helper functions used numerous times throughout:
+#' Helper functions used numerous times throughout.
 #'
+#' Jobs transfer `_bash/bin/` from the repo and source this file after
+#' `. /app/.bashrc` (`. bin/helpers.sh`). Sourcing it puts this folder first
+#' on `PATH`, so the job runs the repo's scripts. No project scripts are in
+#' the container.
+#'
+
+_BIN_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+chmod +x "${_BIN_DIR}"/*
+export PATH="${_BIN_DIR}:${PATH}"
+unset _BIN_DIR
 
 
 #' Find the number of threads on CHTC cluster and print to stdout.

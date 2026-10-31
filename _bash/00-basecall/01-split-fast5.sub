@@ -13,6 +13,7 @@ executable = 01-split-fast5.sh
 batch_name = "split-fast5"
 
 should_transfer_files = YES
+transfer_input_files = ../bin
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

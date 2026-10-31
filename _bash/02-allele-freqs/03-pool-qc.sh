@@ -27,6 +27,7 @@
 
 
 . /app/.bashrc
+. bin/helpers.sh || exit 1
 conda activate main-env
 
 
@@ -39,14 +40,14 @@ export MIN_PP=0.9
 
 
 require_files time-pools-candidates.txt space-pools-candidates.txt \
-    mito-like-nuclear.bed pool-qc-files.py
+    mito-like-nuclear.bed
 export TIME_SAMPS=($(cat time-pools-candidates.txt))
 export SPACE_SAMPS=($(cat space-pools-candidates.txt))
 
 export OUT_DIR=pool-qc
 mkdir ${OUT_DIR}
 mv time-pools-candidates.txt space-pools-candidates.txt \
-    mito-like-nuclear.bed pool-qc-files.py ./${OUT_DIR}/
+    mito-like-nuclear.bed ./${OUT_DIR}/
 cd ${OUT_DIR}
 
 
@@ -55,9 +56,7 @@ cd ${OUT_DIR}
 #' Metrics from upstream outputs (one row per pool)
 #' ========================================================================
 
-# (`pool-qc-files.py` is transferred from the repo: it's newer than the
-# container's copy)
-python3 pool-qc-files.py --header > pool-qc-files.tsv
+pool-qc-files.py --header > pool-qc-files.tsv
 mkdir species-counts
 
 for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
@@ -84,7 +83,7 @@ for samp in "${TIME_SAMPS[@]}" "${SPACE_SAMPS[@]}"; do
     else
         echo "WARNING: no BAM for ${samp}" 1>&2
     fi
-    python3 pool-qc-files.py --pool ${samp} \
+    pool-qc-files.py --pool ${samp} \
         --fastp tmp/trimmed_${samp}/fastp.json \
         --bwa-dir tmp/${samp}_bwa \
         --markdup tmp/${samp}_mpileup/${samp}_bwa_nodups_report.txt \

@@ -2,8 +2,7 @@
 
 mpileup files → SNAPE-pooled allele frequencies, masked allele counts, and
 diversity statistics. Follows the DEST pipeline (Kapun et al. 2021,
-doi:10.1093/molbev/msab259) using its helper scripts (in the container's
-`/app/bin`).
+doi:10.1093/molbev/msab259) using its helper scripts (in `../bin/`).
 
 | Step | Does | Jobs | Output (`/staging/l/lnell/dna/`) |
 |---|---|---|---|

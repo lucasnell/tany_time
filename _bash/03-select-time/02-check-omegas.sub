@@ -13,6 +13,7 @@ executable = 02-check-omegas.sh
 batch_name = "check-omegas"
 
 should_transfer_files = YES
+transfer_input_files = ../bin
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

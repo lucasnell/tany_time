@@ -1,6 +1,7 @@
 # `_apptainer/`: container
 
-`tany_time.def` builds `tany_time.sif` (v2.4.0: bbmap back to 39.28, since
+`tany_time.def` builds `tany_time.sif` (v2.5.0, not yet built: project
+scripts and shell functions removed from the image; v2.4.0: bbmap back to 39.28, since
 40.02's BBMerge loses or hangs on paired reads; v2.3.0 had bbmap 40.02;
 v2.2.0 had medaka model `r941_min_hac_g507`) from
 `condaforge/miniforge3:26.7.2-0` (Ubuntu 24.04).
@@ -11,7 +12,7 @@ v2.2.0 had medaka model `r941_min_hac_g507`) from
 # From the cluster (after updating via `git pull`):
 cd /home/lnell/tany_time/_bash/_apptainer
 mkdir -p /staging/l/lnell/_apptainer/
-cp -r *.yml helpers.sh *.def bin _build.sh /staging/l/lnell/_apptainer/
+cp -r *.yml *.def _build.sh /staging/l/lnell/_apptainer/
 # On the cluster, in an interactive build job:
 cd /staging/l/lnell/_apptainer && chmod +x ./_build.sh && ./_build.sh     # moves tany_time.sif to /staging/l/lnell/
 ```
@@ -34,32 +35,6 @@ channel priority; channels conda-forge then bioconda).
 Also built from source: `snape-pooled` (DEST-bio fork, commit `284bfe0`;
 the original repo was deleted) and `npstat` (commit `dc230fb`).
 
-## Shared shell functions (`helpers.sh`)
-
-Appended to `/app/.bashrc`, so scripts get them via `. /app/.bashrc`.
-
-| Function | Purpose |
-|---|---|
-| `count_threads` | Number of CPUs assigned by HTCondor |
-| `safe_exit` | Exit; in batch jobs also clears the scratch directory |
-| `check_exit_status` | Exit with logs if the previous command failed |
-| `require_files` | Exit if any listed input file is missing |
-| `stage_genome` | Copy and decompress a FASTA (`upper` removes softmasking) |
-| `contig_names` | Sequence names from a FASTA, in order |
-| `split_by_contig` | Split a file into one file per contig, checking names against `CONTIG_NAMES` |
-| `read_tar_name` | Name of read file 1 or 2 inside a tar |
-| `call_bam_stats` | `bamtools stats` on a BAM (needs `main-env`) |
-
-## Shared scripts (`bin/`, on `PATH` as `/app/bin`)
-
-| Script | Purpose | Used by |
-|---|---|---|
-| `PickleRef.py`, `Mpileup2Sync.py`, `SNAPE2SYNC.py`, `MaskSYNC_snape.py` | SNAPE helper scripts from DEST (Kapun et al. 2021); see `02-allele-freqs/README.md` for local edits | `01-snape` |
-| `combine-syncs.py` | Combine per-pool gSYNC files; counts by default, SNAPE info with `--snape`; `--min-pp` keeps sites polymorphic in at least one pool; `--clean-mono` assigns reads to the reference where SNAPE calls a pool monomorphic | `04-combine-syncs` |
-| `pool-qc-sync.py` | Per-pool missing-data rate, SNPs, and private SNPs from partially masked gSYNC files | `03-pool-qc` |
-| `pool-qc-files.py` | Per-pool GC, duplication, and mapping rates (including reads assigned to *T. gracilentus* vs. other species) from fastp, Picard, bamtools, and `02-bwa` outputs | `03-pool-qc` |
-| `mito-collapse.sh` | Collapse the assembled mitochondrial contig to the gene region, the unique control-region sequence on each side, and one repeat unit (needs minimap2, samtools: `mito-env`). The job transfers this file from the repo and runs it, so the container's copy (v2.3.0, before the 2026-10-27 fix) is unused | `00-references/01-mitogenome` |
-| `run-parallel.py` | Run a command once per item (e.g., contig) in parallel and report failures | `01-snape`, `02-npstat` |
-
-Python scripts run with whichever environment is active (`main-env` in all
-current uses).
+Project scripts and shell functions are not in the image; they are in
+`_bash/bin/` (see its `README.md`), and each job transfers them from the
+repo, so editing them needs no rebuild.

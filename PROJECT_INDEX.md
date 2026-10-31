@@ -37,7 +37,7 @@ are written by `_R/make-job-lists.R`.
    is not recorded. The script's report path (`~/_data/trimmed_reports`) is
    stale; reports are now in `~/_data/_tany-time/trimmed/trimmed_reports/`.
 4. `_bash/02-allele-freqs/` (cluster; SNAPE helper scripts, now in
-   `_bash/_apptainer/bin/`, come from DEST freeze1 and match DESTv3 except
+   `_bash/bin/`, come from DEST freeze1 and match DESTv3 except
    for uncompressed output and the P(polymorphic) filter in
    `MaskSYNC_snape.py`, which keeps only sites with P ≥ 0.9; DESTv3 masks
    only 0.1 < P < 0.9): `01-snape` (SNAPE-pooled → masked gSYNC; undoes

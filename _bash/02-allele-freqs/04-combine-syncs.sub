@@ -17,7 +17,7 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 ## Pool lists (written by `_R/pool-qc.R`):
-transfer_input_files = ../samples/time-pools.txt, ../samples/space-pools.txt
+transfer_input_files = ../samples/time-pools.txt, ../samples/space-pools.txt, ../bin
 
 request_cpus = 2
 request_memory = 4GB

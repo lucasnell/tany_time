@@ -16,6 +16,7 @@
 #'
 
 . /app/.bashrc
+. bin/helpers.sh || exit 1
 conda activate baypass-env
 
 export THREADS=$(count_threads)

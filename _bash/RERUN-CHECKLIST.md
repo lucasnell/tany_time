@@ -127,6 +127,21 @@ Steps marked *(parallel)* can run alongside the step before them.
       hung on paired reads, so read mapping (G1) produced near-empty BAMs
       or stalled; 2026-10-29) as in C1, then rerun the tool check or
       run `bbmerge.sh --version` (expect 39.28). Needed before G1.
+- [ ] **C5.** Rebuild as v2.5.0 (2026-10-31): project scripts and
+      `helpers.sh` moved from the image to `_bash/bin/`, which every job
+      transfers from the repo, so there is one copy of each. Until this
+      is built, the v2.4.0 image still holds old copies in `/app/bin`
+      and `/app/.bashrc` (jobs that source `bin/helpers.sh` don't use
+      them). Build only when no jobs are idle or running, and `git pull`
+      on the submit server only then too: jobs read their `.sh` from the
+      submit server when they start, so idle jobs submitted before the
+      pull would run the new `.sh` without `bin/` and stop. Check
+      afterward: `ls /app/bin` fails, and `type require_files` in a bare
+      `. /app/.bashrc` shell reports nothing.
+      MD5s on 2026-10-31: v2.4.0's `/app/bin` matches the repo for all
+      scripts except `pool-qc-files.py` (image copy predates the
+      2026-10-30 CONTIG37 change; `03-pool-qc` already transferred the
+      repo copy), so the running `01-snape` uses the repo's scripts.
 
 ## D. How to run and check each step
 

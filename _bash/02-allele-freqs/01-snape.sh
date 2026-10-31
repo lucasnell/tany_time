@@ -6,7 +6,7 @@
 #'
 #' Note #1:
 #' The SNAPE helper scripts (PickleRef.py, Mpileup2Sync.py, SNAPE2SYNC.py,
-#' MaskSYNC_snape.py) are installed in the container (/app/bin).
+#' MaskSYNC_snape.py) are in `_bash/bin/`, transferred with the job.
 #' For many of them, the `output` argument is supposed to be a prefix only.
 #' Hence, there are multiple instances below where I remove the extension
 #' to the final file names for input to this argument.
@@ -52,6 +52,7 @@
 
 
 . /app/.bashrc
+. bin/helpers.sh || exit 1
 conda activate main-env
 
 export THREADS=$(count_threads)

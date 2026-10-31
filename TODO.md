@@ -223,7 +223,7 @@ Follow `_bash/RERUN-CHECKLIST.md`.
             (2026-10-26): Flye with `--genome-size 16k --asm-coverage 150`
             in both rounds, the contig carrying COI MZ659759.1 is kept (no
             length rule), and after polishing `mito-collapse.sh`
-            (`_apptainer/bin/`) keeps the gene region, the unique
+            (`_bash/bin/`) keeps the gene region, the unique
             control-region sequence on each side, and one repeat unit
             (owner chose to include one unit). On the contigs at hand
             (`_bash/tests/mito-collapse-check.sh`) this gives 22.7-25.9 kb:

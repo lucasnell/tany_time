@@ -11,7 +11,7 @@
 #'
 #' cd /home/lnell/tany_time && git pull
 #' mkdir -p /staging/l/lnell/_apptainer/
-#' cp -r _bash/_apptainer/{*.yml,helpers.sh,*.def,bin,_build.sh} /staging/l/lnell/_apptainer/
+#' cp -r _bash/_apptainer/{*.yml,*.def,_build.sh} /staging/l/lnell/_apptainer/
 #'
 
 
@@ -21,7 +21,7 @@ export OUT_SIF=tany_time.sif
 
 mkdir working
 
-mv *.sh *.yml *.def bin ./working/
+mv *.sh *.yml *.def ./working/
 
 cd working
 

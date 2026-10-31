@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #' Local check (not a cluster job): does `mito-collapse.sh`
-#' (`_apptainer/bin/`, used by `00-references/01-mitogenome`) give the
+#' (`bin/`, used by `00-references/01-mitogenome`) give the
 #' expected layout on the mitochondrial contigs at hand?
 #'
 #' Contigs: the polished contig from the cluster run of `01-mitogenome`
@@ -23,7 +23,7 @@ OUT=${ROOT}/_data/mito-collapse-check.txt
 CACHE=${ROOT}/_data/mito-flye-cache
 FEATS=${ROOT}/_bash/references/tgraci-mito-features.fasta
 COI=${ROOT}/_bash/references/tgraci-coi.fasta
-COLLAPSE=${ROOT}/_bash/_apptainer/bin/mito-collapse.sh
+COLLAPSE=${ROOT}/_bash/bin/mito-collapse.sh
 OLD=/Volumes/lan_images4/assembly
 MT_TAR=${ROOT}/_data/Tgraci_mitogenome.tar
 WORK=$(mktemp -d)

@@ -5,8 +5,8 @@
 #' reads (quality filtering is in `03-combine`).
 #'
 #' Runs without the container: the Dorado release bundles its own CUDA
-#' libraries and only needs the GPU driver of the execution point, so the
-#' helper functions in `_apptainer/helpers.sh` are not available here.
+#' libraries and only needs the GPU driver of the execution point. It
+#' doesn't use the shell functions in `bin/helpers.sh`.
 #' Software comes from `00-setup.sh`.
 #'
 #' Output (`/staging/l/lnell/dna/ont/dorado/`): `<chunk>.bam` (unaligned,

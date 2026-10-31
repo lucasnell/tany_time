@@ -14,6 +14,7 @@ arguments = $(readbase)
 batch_name = "bwa"
 
 should_transfer_files = YES
+transfer_input_files = ../bin
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

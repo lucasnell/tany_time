@@ -17,7 +17,7 @@
 
 ROOT=$(pwd)
 OUT=${ROOT}/_data/v2-tool-check.txt
-BIN=${ROOT}/_bash/_apptainer/bin
+BIN=${ROOT}/_bash/bin
 YML=${ROOT}/_bash/_apptainer
 WORK=$(mktemp -d)
 ENV_DIR=${ENV_DIR:-${WORK}/envs}
