@@ -247,7 +247,8 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 
 - [ ] **H1.** `01-snape` (62 jobs) → `./check-step.sh 02-allele-freqs/01-snape`
       (also lists contigs where SNAPE reported errors).
-- [ ] **H2.** *(parallel)* `02-npstat` (62 jobs) →
+- [ ] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
+      pool's `snape/<pool>_snape.tar`; can run alongside H3–H6) →
       `./check-step.sh 02-allele-freqs/02-npstat`.
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
