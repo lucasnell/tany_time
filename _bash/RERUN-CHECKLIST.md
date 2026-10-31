@@ -218,8 +218,13 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       (GC content is a rule metric); the owner restored them from
       lan_images4 the same day (62 files, all fastp 1.4.0, readable).
       All 62 finished OK (2026-10-31): PASS, longest 4.7 h (Lei-19_S13),
-      124 of 124 outputs on staging (checked before the read-count
-      table was added).
+      124 of 124 outputs on staging. Reads after duplicate removal equal
+      reads after realignment in every pool (6,173 in KS-2-83 to 109.7
+      million in Lei-19; counts include reads on other species and the
+      mitogenome). Pileups 1 MB (KS-2-83) to 3.3 GB (Lei-19); the pools
+      with the most mitochondrial reads (SN-1-96, SN-2-96, SN-2-98,
+      H-2-06, KS-1-15-B) have smaller pileups than pools with similar
+      read counts.
 - [x] **G3.** *(parallel with G2)* `04-bam-cov` (62 jobs) →
       `./check-step.sh 01-variant-calling/04-bam-cov`. Run 2026-10-30
       (cluster 12391034): PASS, longest 0.4 h. Spot check of the smallest
@@ -246,7 +251,8 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 ## H. Allele frequencies (`02-allele-freqs/`)
 
 - [ ] **H1.** `01-snape` (62 jobs) → `./check-step.sh 02-allele-freqs/01-snape`
-      (also lists contigs where SNAPE reported errors).
+      (also lists contigs where SNAPE reported errors). Submitted
+      2026-10-31.
 - [ ] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
       pool's `snape/<pool>_snape.tar`; can run alongside H3–H6) →
       `./check-step.sh 02-allele-freqs/02-npstat`.
