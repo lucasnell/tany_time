@@ -275,7 +275,7 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       (SN-2-07), median ~4 h. Pileup size only loosely predicts run
       time: KS-2-90 (11 MB pileup) took 2.0 h, like H-2-10 (170 MB),
       and Lei-19 (largest, 3.3 GB) took 5.2 h.
-- [ ] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
+- [x] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
       pool's `snape/<pool>_snape.tar`; can run alongside H3–H6) →
       `./check-step.sh 02-allele-freqs/02-npstat`. Submitted 2026-11-02
       (first jobs with `_bash/bin/` transferred from the repo; no
@@ -301,6 +301,10 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       only on CONTIG34), > 99% of windows with S > 0; the 10
       low-coverage pools have 0-7 contigs and almost no S > 0; KS-1-15-B,
       SN-1-00, and SN-1-96 have S > 0 in only 77-84% of windows.
+      Lei-19 and MyKS-19-B reran with 100 GB (2026-11-02): PASS, all 62
+      OK, both with 44 contigs (all but CONTIG34) and no npstat errors.
+      (The pool QC job's slot disk is an LVM volume with a hard size,
+      consistent with a full disk, not a hold, ending those two jobs.)
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before. Submitted
