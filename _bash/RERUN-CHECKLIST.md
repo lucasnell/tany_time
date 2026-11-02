@@ -288,7 +288,10 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       2026-11-02, a contig with no SNPs in a pool gets its windows with
       S = 0 (empty SNP file; `tests/npstat-empty-snp.sh`) instead of none,
       matching windows without SNPs on other contigs. Rerun all 62 with
-      the fix (running jobs removed by the owner).
+      the fix (running jobs removed by the owner). Rerun 2026-11-02
+      (cluster 12397444): 61 of 62 finished (largest reported disk use
+      40 GB, MyBR-19); Blik-19 held for going over its 50-GB disk
+      request. `request_disk` raised to 100 GB.
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before. Submitted

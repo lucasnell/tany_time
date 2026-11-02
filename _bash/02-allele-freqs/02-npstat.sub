@@ -23,6 +23,9 @@ requirements =              (HasCHTCStaging == true)
 
 request_cpus =      16
 request_memory =    16GB
-request_disk =      50GB
+# The pileup made from the sync file and its per-contig copies coexist
+# while splitting; Blik-19 went over 49 GB (2026-11-02), and other large
+# pools reported up to 40 GB.
+request_disk =      100GB
 
 queue readbase,n_adults from ../samples/all-pools-n-adults.txt
