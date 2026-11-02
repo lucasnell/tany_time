@@ -305,10 +305,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       OK, both with 44 contigs (all but CONTIG34) and no npstat errors.
       (The pool QC job's slot disk is an LVM volume with a hard size,
       consistent with a full disk, not a hold, ending those two jobs.)
-- [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
+- [x] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before. Submitted
-      2026-11-02.
+      2026-11-02; PASS, 3.4 h (SNP metrics: time set 55 min, space set
+      ~40 min), empty `.err`, 48 candidate pools. Lowest *T. gracilentus*
+      share of reads: SN-2-91, SN-1-82, SN-2-13-B, SN-2-09 (< 2%; < 11%
+      of reads mapped); SN-1-96, SN-2-10, SN-2-96 (8-9%: mitochondrial in
+      SN-1-96 and SN-2-96, unmapped in SN-2-10, 14% mapped).
 - [ ] **H4.** Locally: download `$S/dna/pool-qc/pool-qc.tar` and extract it
       to `pool-qc/` in the local data folder (`_R/data-dir.R`; see
       `CLAUDE.md`); run `Rscript _R/pool-qc.R` (writes

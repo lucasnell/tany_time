@@ -293,7 +293,7 @@ case "${STEP_PATH}" in
             tar -xOf ${S}/dna/pool-qc/pool-qc.tar pool-qc/pool-qc-files.tsv 2> /dev/null \
                 | awk -F'\t' 'NR == 1 {for (i = 1; i <= NF; i++) c[$i] = i
                        printf "%-16s %9s %9s %9s\n", "pool", "map_rate", "target", "mitolike"; next}
-                     {printf "%-16s %9s %9s %9s\n", $c["pool"], $c["map_rate"],
+                     {printf "%-16s %9.4f %9.4f %9.5f\n", $c["pool"], $c["map_rate"],
                          $c["target_rate"], $c["mitolike_rate"]}' \
                 | { read -r h; echo "$h"; sort -k3,3g; }
         } ;;
