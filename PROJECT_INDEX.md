@@ -102,6 +102,7 @@ are written by `_R/make-job-lists.R`.
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
 | `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
 | `pool-qc.R` | Chooses pools from `03-pool-qc` metrics: ROBPCA outlier rule with bootstrap-calibrated threshold (blind to abundance and allele frequencies) → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_plots/pool-qc-*.pdf`; needs `rrcov` |
+| `pool-qc-diagnose.R` | Why the first pool-QC run kept degraded time pools: counts extreme pools per metric and refits ROBPCA with `alpha = 0.5` (diagnostic; doesn't change the lists) → `_data/pool-qc-diagnose.txt` |
 | `pool-qc-rule-sim.R` | Simulates false-positive and detection rates of outlier-rule variants on clean and planted data → `_data/pool-qc-rule-sim.csv`, `_data/pool-qc-rule-sim-calibrated.csv` |
 | `coverage-cutoff-check.R` | Per-pool coverage, duplication, and GC for SN pools with abundance → `_data/coverage-cutoff-check.csv` |
 | `get-mito-refs.R` | Fetches T. gracilentus mitochondrial bait/COI and trap-taxon COI barcodes from NCBI → `_bash/references/*.fasta`, `_data/coi-barcode-selection.csv` |

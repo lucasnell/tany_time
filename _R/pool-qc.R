@@ -52,6 +52,11 @@ qc_dir <- tany_dir("pool-qc")
 #' existed, because they are mitochondrial reads).
 metrics <- c("prop_missing", "n_private", "picard_dup", "fastp_gc",
              "target_rate")
+#' Metrics used for each set. Private SNPs are dropped from the space set
+#' (owner's decision, 2026-11-02): across lakes they also measure how
+#' differentiated a population is, not only data quality.
+set_metrics <- list(time = metrics,
+                    space = setdiff(metrics, "n_private"))
 
 #' Rule parameters (fixed before seeing any metrics; see above):
 FP_TARGET <- 0.025     # per-pool false-positive rate under the clean model
@@ -117,10 +122,11 @@ robpca_scores <- function(Z) {
 
 #' Returns a tibble with one row per pool in `d`. Pools with any missing
 #' metric get NA (excluded later).
-robust_pca_outliers <- function(d) {
+robust_pca_outliers <- function(d, s) {
     set.seed(RULE_SEED)
-    complete <- complete.cases(d[, metrics])
-    Z <- robust_z(as.matrix(d[complete, metrics]))
+    m <- set_metrics[[s]]
+    complete <- complete.cases(d[, m])
+    Z <- robust_z(as.matrix(d[complete, m]))
     n <- nrow(Z)
     obs <- robpca_scores(Z)
     # Parametric bootstrap under a clean multivariate normal model:
@@ -131,7 +137,8 @@ robust_pca_outliers <- function(d) {
     }) |>
         unlist()
     threshold <- quantile(boot, 1 - FP_TARGET, names = FALSE)
-    out <- tibble(pool = d$pool, k = obs$k, score = NA_real_,
+    out <- tibble(pool = d$pool, missing_metric = !complete, k = obs$k,
+                  score = NA_real_,
                   sd_dist = NA_real_, od_dist = NA_real_,
                   threshold = threshold, pc1 = NA_real_, pc2 = NA_real_)
     out$score[complete] <- obs$score
@@ -144,10 +151,10 @@ robust_pca_outliers <- function(d) {
 
 qc_df <- qc_df |>
     group_by(set) |>
-    group_modify(\(d, g) left_join(d, robust_pca_outliers(d), by = "pool")) |>
+    group_modify(\(d, g) left_join(d, robust_pca_outliers(d, g$set),
+                                   by = "pool")) |>
     ungroup() |>
-    mutate(missing_metric = !complete.cases(pick(all_of(metrics))),
-           outlier = !missing_metric & score > threshold,
+    mutate(outlier = !missing_metric & score > threshold,
            include = !missing_metric & !outlier,
            exclude_reasons = case_when(missing_metric ~ "missing metric",
                                        outlier ~ "robust PCA outlier",
@@ -164,8 +171,8 @@ qc_df <- qc_df |>
 plot_set <- function(s) {
     d <- qc_df |> filter(set == s)
     p1 <- d |>
-        select(pool, include, all_of(metrics)) |>
-        pivot_longer(all_of(metrics), names_to = "metric") |>
+        select(pool, include, all_of(set_metrics[[s]])) |>
+        pivot_longer(all_of(set_metrics[[s]]), names_to = "metric") |>
         ggplot(aes(value, reorder(pool, value), color = include)) +
         geom_point() +
         facet_wrap(~ metric, scales = "free_x", nrow = 1) +

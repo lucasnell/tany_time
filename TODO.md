@@ -487,6 +487,32 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         per pool; gross outliers (6 SD on 2 metrics) caught 94% (18 pools)
         and 99% (30 pools); a moderate outlier (4 SD on 1 metric) caught
         30% and 61%.
+      - [ ] **First run fails on the time set (2026-11-02;
+        `_data/pool-qc-run.txt`).** It keeps 27 of 30 time pools,
+        including SN-2-09 and SN-2-13-B (every site masked, 0 private
+        SNPs) and SN-1-00, SN-1-96, and SN-2-10 (80-90% masked); it
+        drops SN-1-82, SN-1-88, and SN-2-91, and Tjornin from the space
+        set. Cause (`_R/pool-qc-diagnose.R` → `_data/pool-qc-diagnose.txt`):
+        13 of 30 time pools (43%) are > 5 robust SDs out on
+        `prop_missing`, but ROBPCA's default `alpha = 0.75` fits its PCs
+        to the 75% least outlying pools, so it tolerates ~25% outliers;
+        its single PC (eigenvalue 474) is the degradation axis, along
+        which the degraded pools fit. With `alpha = 0.5` (k = 2), the 12
+        pools with `prop_missing` ≥ 0.34 score 3.5-16 times ROBPCA's own
+        cutoff and the rest ≤ 0.84, except SN-1-95 (1.26). The
+        simulations behind the rule tested one outlier per set, not 40%.
+        The space set has no extreme metric; Tjornin's score (2.41 vs.
+        threshold 1.84) came mainly from few private SNPs, which in a
+        spatial set also measures differentiation between lakes, not
+        only data quality. Decided 2026-11-02: private SNPs dropped from
+        the space-set metrics (`set_metrics` in `_R/pool-qc.R`). Rerun:
+        Tjornin is still excluded (2.10 vs. 1.86), now from an unusual
+        combination (lowest `target_rate`, 0.876 vs. 0.881-0.903, with
+        low missing data; no metric beyond 2.6 robust SDs), not one
+        extreme metric. Owner to decide the time-set rule (e.g., `alpha = 0.5`
+        with recalibration, or a missing-data limit applied before the
+        PCA, as DEST 1.0 did at 7%) before H5; pool lists written by this
+        run are not committed.
       - Report the 2025 set (median coverage ≥ 30; `*-pools-cov30.txt`)
         as a sensitivity analysis.
       - Missing data per pool allowed in BayPass (masked pools → 0 counts;

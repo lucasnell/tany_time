@@ -320,6 +320,16 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       and `Rscript _R/mito-contam.R`. After G4, extract
       `$S/dna/kraken/kraken.tar` to `kraken/` in the local data folder and
       run `Rscript _R/kraken-summary.R`. Commit and push the pool lists.
+      Run 2026-11-02 (`_data/pool-qc-run.txt`): the rule keeps 27 of 30
+      time pools, including four with every site masked (SN-2-09,
+      SN-2-13-B: 0 private SNPs) and four with 80-90% masked, and drops
+      Tjornin from the space set. Cause (`_R/pool-qc-diagnose.R` →
+      `_data/pool-qc-diagnose.txt`): 13 of 30 time pools (43%) are
+      extreme on `prop_missing`, beyond the ~25% that ROBPCA's default
+      `alpha = 0.75` tolerates, so its single PC is the degradation axis.
+      Space set: private SNPs dropped from its metrics (owner, 2026-11-02);
+      Tjornin still excluded (2.10 vs. 1.86). Pool lists not committed;
+      the owner decides how to change the time-set rule before H5.
 - [ ] **H5.** On the submit server, `git pull` (gets the pool lists).
 - [ ] **H6.** `04-combine-syncs` (1 job) →
       `./check-step.sh 02-allele-freqs/04-combine-syncs`.

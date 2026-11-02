@@ -1,0 +1,119 @@
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning message:
+Removed 30 rows containing missing values or values outside the scale range
+(`geom_text()`).
+# A tibble: 48 × 11
+   set   pool           prop_missing n_private picard_dup fastp_gc target_rate
+   <chr> <chr>                 <dbl>     <int>      <dbl>    <dbl>       <dbl>
+ 1 space Ash-19_S5             0.175    275353      0.161    0.324     0.898
+ 2 space Blik-19_S6            0.181    286607      0.171    0.327     0.903
+ 3 space Blo-19_S7             0.173    265199      0.163    0.324     0.896
+ 4 space Ellid-19_S8           0.168    335053      0.197    0.323     0.897
+ 5 space Hrisatjorn_S11        0.169    349998      0.181    0.325     0.886
+ 6 space Lei-19_S13            0.182    295498      0.190    0.324     0.897
+ 7 space Lys-19_S14            0.176    339862      0.192    0.326     0.901
+ 8 space Mik-19_S15            0.176    347239      0.181    0.323     0.890
+ 9 space MikW-19_S16           0.174    265796      0.186    0.328     0.892
+10 space MyBR-19_S17           0.176    329452      0.168    0.323     0.889
+11 space MyKS-19-B_S18         0.179    180030      0.173    0.323     0.887
+12 space MySN-19_S19           0.174    375359      0.177    0.322     0.881
+13 space Ola-19_S20            0.174    301516      0.177    0.324     0.902
+14 space Pernuvatn_S21         0.169    271619      0.172    0.325     0.903
+15 space Skj-19_S22            0.177    314724      0.186    0.324     0.889
+16 space Sva-19_S39            0.175    358473      0.174    0.325     0.892
+17 space Tjornin_S40           0.170    181736      0.180    0.325     0.876
+18 space Vik-19_S41            0.171    354266      0.166    0.323     0.894
+19 time  SN-1-00_S53           0.904     20114      0.415    0.395     0.252
+20 time  SN-1-01_S54           0.485    104017      0.279    0.301     0.714
+21 time  SN-1-02_S55           0.173    326797      0.385    0.304     0.808
+22 time  SN-1-07_S23           0.169    164033      0.221    0.291     0.638
+23 time  SN-1-08_S24           0.172    380113      0.204    0.317     0.866
+24 time  SN-1-09_S25           0.172    441193      0.204    0.316     0.830
+25 time  SN-1-10_S26           0.168    220803      0.206    0.316     0.748
+26 time  SN-1-13_S56           0.171    135298      0.600    0.264     0.333
+27 time  SN-1-14_S27           0.170    357399      0.268    0.301     0.785
+28 time  SN-1-82_S57           1             0      0.237    0.629     0.00141
+29 time  SN-1-88_S58           1.000         8      0.329    0.522     0.240
+30 time  SN-1-95_S59           0.237    259051      0.328    0.319     0.685
+31 time  SN-1-96_S60           0.880     19513      0.775    0.236     0.0789
+32 time  SN-1-97_S61           0.175    388261      0.472    0.292     0.632
+33 time  SN-1-99_S28           0.166    167971      0.379    0.275     0.553
+34 time  SN-2-00_S29           0.163    231253      0.265    0.326     0.680
+35 time  SN-2-01_S62           0.659     59571      0.257    0.320     0.695
+36 time  SN-2-02_S30           0.171    359757      0.244    0.315     0.821
+37 time  SN-2-07_S31           0.171    371152      0.172    0.318     0.872
+38 time  SN-2-08_S32           0.168    342398      0.183    0.314     0.796
+39 time  SN-2-09_S63           1.000         0      0.277    0.357     0.0195
+40 time  SN-2-10_S33           0.796     36016      0.212    0.371     0.0897
+41 time  SN-2-13-B_S64         1             0      0.282    0.461     0.0125
+42 time  SN-2-15_S34           0.172    232731      0.370    0.291     0.595
+43 time  SN-2-91_S65           1             0      0.316    0.636     0.00111
+44 time  SN-2-92_S35           0.172    351609      0.278    0.308     0.821
+45 time  SN-2-96_S36           0.465    131749      0.772    0.227     0.0928
+46 time  SN-2-97_S37           0.163    176484      0.436    0.279     0.521
+47 time  SN-2-98_S66           0.343    128215      0.704    0.255     0.202
+48 time  SN-2-99_S38           0.172    380558      0.209    0.312     0.861
+   score threshold include exclude_reasons
+   <dbl>     <dbl> <lgl>   <chr>
+ 1 0.639      1.86 TRUE    ""
+ 2 1.24       1.86 TRUE    ""
+ 3 0.459      1.86 TRUE    ""
+ 4 1.35       1.86 TRUE    ""
+ 5 1.55       1.86 TRUE    ""
+ 6 0.667      1.86 TRUE    ""
+ 7 0.634      1.86 TRUE    ""
+ 8 0.303      1.86 TRUE    ""
+ 9 1.80       1.86 TRUE    ""
+10 0.379      1.86 TRUE    ""
+11 0.520      1.86 TRUE    ""
+12 0.616      1.86 TRUE    ""
+13 0.537      1.86 TRUE    ""
+14 0.616      1.86 TRUE    ""
+15 0.380      1.86 TRUE    ""
+16 0.446      1.86 TRUE    ""
+17 2.10       1.86 FALSE   "robust PCA outlier"
+18 0.409      1.86 TRUE    ""
+19 0.939      1.36 TRUE    ""
+20 0.317      1.36 TRUE    ""
+21 0.217      1.36 TRUE    ""
+22 0.269      1.36 TRUE    ""
+23 0.333      1.36 TRUE    ""
+24 0.343      1.36 TRUE    ""
+25 0.292      1.36 TRUE    ""
+26 0.737      1.36 TRUE    ""
+27 0.222      1.36 TRUE    ""
+28 2.23       1.36 FALSE   "robust PCA outlier"
+29 1.48       1.36 FALSE   "robust PCA outlier"
+30 0.134      1.36 TRUE    ""
+31 0.903      1.36 TRUE    ""
+32 0.351      1.36 TRUE    ""
+33 0.270      1.36 TRUE    ""
+34 0.235      1.36 TRUE    ""
+35 0.550      1.36 TRUE    ""
+36 0.238      1.36 TRUE    ""
+37 0.393      1.36 TRUE    ""
+38 0.337      1.36 TRUE    ""
+39 1.09       1.36 TRUE    ""
+40 0.769      1.36 TRUE    ""
+41 1.10       1.36 TRUE    ""
+42 0.218      1.36 TRUE    ""
+43 2.24       1.36 FALSE   "robust PCA outlier"
+44 0.220      1.36 TRUE    ""
+45 1.06       1.36 TRUE    ""
+46 0.345      1.36 TRUE    ""
+47 0.890      1.36 TRUE    ""
+48 0.311      1.36 TRUE    ""
+# A tibble: 2 × 4
+  set   n_candidates n_included     k
+  <chr>        <int>      <int> <int>
+1 space           18         17     3
+2 time            30         27     1
