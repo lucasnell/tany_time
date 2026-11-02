@@ -278,7 +278,17 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 - [ ] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
       pool's `snape/<pool>_snape.tar`; can run alongside H3–H6) →
       `./check-step.sh 02-allele-freqs/02-npstat`. Submitted 2026-11-02
-      (first jobs with `_bash/bin/` transferred from the repo).
+      (first jobs with `_bash/bin/` transferred from the repo; no
+      `helpers.sh` errors). The first 19 outputs had a broken header:
+      it was copied from CONTIG1's output, which is missing when CONTIG1
+      has no SNPs in a pool (18 of 19), so the first data row was joined
+      to `sequence`. Fixed 2026-11-02 (fixed header; contigs without
+      output skipped; `check-step.sh` checks the header and tabulates
+      contigs, windows, and windows with S > 0 per pool). Also since
+      2026-11-02, a contig with no SNPs in a pool gets its windows with
+      S = 0 (empty SNP file; `tests/npstat-empty-snp.sh`) instead of none,
+      matching windows without SNPs on other contigs. Rerun all 62 with
+      the fix (running jobs removed by the owner).
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before. Submitted

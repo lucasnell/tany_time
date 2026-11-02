@@ -1,0 +1,23 @@
+npstat commit: dc230fba3ac434ed6526ab7cd63a67d69d34b7d6
+toy pileup: 50 kb, coverage 40-150, n = 80, 10-kb windows;
+414 variant sites, none in window 3
+exit status, SNP file: 0; empty SNP file: 0
+
+== snps (columns kept by 02-npstat.sh)
+window	length	read_depth	S	Watterson	Pi	Tajima_D	var_S	var_Watterson
+1	9525	95.235276	117	0.002710	0.004463	2.266232	1164.430903	0.000001
+2	9522	94.890884	106	0.002457	0.004155	2.413458	966.468154	0.000001
+3	9517	94.790375	0	0.000000	0.000000	nan	0.000000	0.000000
+4	9486	94.965001	85	0.001978	0.003626	2.886251	638.286168	0.000000
+5	9542	95.397611	106	0.002451	0.004130	2.392272	965.720063	0.000001
+
+== empty (columns kept by 02-npstat.sh)
+window	length	read_depth	S	Watterson	Pi	Tajima_D	var_S	var_Watterson
+1	9525	95.235276	0	0.000000	0.000000	nan	0.000000	0.000000
+2	9522	94.890884	0	0.000000	0.000000	nan	0.000000	0.000000
+3	9517	94.790375	0	0.000000	0.000000	nan	0.000000	0.000000
+4	9486	94.965001	0	0.000000	0.000000	nan	0.000000	0.000000
+5	9542	95.397611	0	0.000000	0.000000	nan	0.000000	0.000000
+
+window 3 (no SNPs either way) identical in both runs: yes
+window, length, outgroup length, and read depth identical in all windows: yes

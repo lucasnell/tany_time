@@ -236,10 +236,15 @@ rm ${SNP}
 cat << EOF > one_npstat.sh
 #!/bin/bash
 export contig=\${1}
-if [ ! -f \${contig}.pileup ] || [ ! -f \${contig}.snp ]; then
-    rm \${contig}.pileup \${contig}.snp 2> /dev/null
+# No covered sites on this contig in this pool:
+if [ ! -f \${contig}.pileup ]; then
+    rm \${contig}.snp 2> /dev/null
     exit 1
 fi
+# No SNPs on this contig: an empty SNP file gives each window S = 0 with
+# the same length and depth as with SNPs, like a window without SNPs on a
+# contig with SNPs (\`_bash/tests/npstat-empty-snp.sh\`).
+[ -f \${contig}.snp ] || touch \${contig}.snp
 # npstat precomputes tables for every coverage up to -maxcov, at a cost
 # that grows with maxcov squared, so use this contig's actual maximum
 # coverage (at least 4, npstat's default minimum coverage). Output is
@@ -267,21 +272,28 @@ chmod +x one_npstat.sh
 
 
 # Takes ~1 hr with 16 threads.
-# Return codes from `one_npstat.sh`: 1 = contig not found, 2 = npstat failed
-# (see <contig>_npstat.out). Failures are reported but don't stop the job.
+# Return codes from `one_npstat.sh`: 1 = no covered sites on the contig
+# (always CONTIG34, the assembly's mitogenome, which isn't in the combined
+# reference), 2 = npstat failed (see <contig>_npstat.out). These are
+# reported but don't stop the job.
 run-parallel.py -t ${THREADS} -c './one_npstat.sh {}' ${CONTIG_NAMES[@]}
 
 rm one_npstat.sh
 
 
 
-# Combine output files.
-# Add header from one output file (all are the same) to the final output.
-echo -ne "sequence\t" > ${OUT_FILE}
-head -n 1 ${CONTIG_NAMES[0]}.stats >> ${OUT_FILE}
-# I'm using `CONTIG_NAMES` so that the combined file is in the same order
-# as the reference.
+# Combine output files, in the same order as the reference.
+# The header is fixed (columns kept by `cut` in `one_npstat.sh`), so it's
+# written even when a contig, or every contig, has no output; the job
+# stops if npstat's header differs from it.
+HEADER="window\tlength\tread_depth\tS\tWatterson\tPi\tTajima_D\tvar_S\tvar_Watterson"
+echo -e "sequence\t${HEADER}" > ${OUT_FILE}
 for contig in ${CONTIG_NAMES[@]}; do
+    [ -f ${contig}.stats ] || continue
+    if [ "$(head -n 1 ${contig}.stats)" != "$(echo -e ${HEADER})" ]; then
+        echo "Unexpected npstat header for ${contig}: $(head -n 1 ${contig}.stats)" 1>&2
+        safe_exit 1
+    fi
     # remove header, add the contig column, then add this to main output file
     tail -n+2 ${contig}.stats \
         | awk -v CONTIG_NAME="${contig}" '{print CONTIG_NAME"\t"$0}' - \

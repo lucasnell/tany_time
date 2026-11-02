@@ -256,9 +256,32 @@ case "${STEP_PATH}" in
         JOB_IDS=($(pools))
         for p in ${JOB_IDS[@]}; do FILES+=(${S}/dna/npstat/${p}_npstat_10kb.stat.gz); done
         extra () {
-            local f=$(grep -l "Command failed for" ${LOG_DIR}/*.err 2> /dev/null)
-            [ -n "${f}" ] && warn "contigs where npstat failed (1 = contig missing, 2 = npstat error):" \
-                && grep -h "Command failed for" ${LOG_DIR}/*.err | sort | uniq -c
+            # Return codes from `one_npstat.sh`: 1 = no covered sites (always
+            # CONTIG34, not in the combined reference), 2 = npstat error
+            # (a problem).
+            local p f hdr n2 rows="" bad="" nohdr=""
+            hdr=$(printf "sequence\twindow\tlength\tread_depth\tS\tWatterson\tPi\tTajima_D\tvar_S\tvar_Watterson")
+            echo "Contigs with windows; contigs skipped (no covered sites, npstat error); windows with S > 0:"
+            printf "%-16s %8s %6s %6s %8s %8s\n" pool contigs no_cov error windows S_gt_0
+            for p in ${JOB_IDS[@]}; do
+                f=${LOG_DIR}/${p}${LOG_SUFFIX}.err
+                [ -f ${f} ] || continue
+                n2=$(grep -c "Command failed for .* (return code 2)" ${f})
+                (( n2 > 0 )) && bad+=" ${p}"
+                local out=${S}/dna/npstat/${p}_npstat_10kb.stat.gz
+                if [ -f ${out} ]; then
+                    [ "$(gzip -dc ${out} | head -n 1)" = "${hdr}" ] || nohdr+=" ${p}"
+                    rows+=$(printf "%-16s %8s %6s %6s %8s %8s" ${p} \
+                        $(gzip -dc ${out} | awk 'NR > 1 {c[$1]} END {print length(c)}') \
+                        $(grep -c "(return code 1)" ${f}) ${n2} \
+                        $(gzip -dc ${out} | awk 'NR > 1 {n++; if ($5 > 0) s++}
+                            END {print n + 0, s + 0}'))$'\n'
+                fi
+            done
+            printf "%s" "${rows}" | sort -k2,2n
+            [ -n "${bad}" ] && problem "npstat errors (see <contig>_npstat.out):${bad}"
+            [ -n "${nohdr}" ] && problem "outputs without the expected header:${nohdr}"
+            echo "(S = 0 in low-coverage pools reflects SNAPE's power, not diversity; pool QC drops them)"
         } ;;
 
     02-allele-freqs/03-pool-qc)

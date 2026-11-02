@@ -18,6 +18,7 @@ instead of fixed coordinates.
 | Script | Checks | Output |
 |---|---|---|
 | `npstat-maxcov.sh` | npstat output is identical when `-maxcov` is lowered to the maximum coverage present, and how much faster that is (`02-allele-freqs/02-npstat` relies on this) | `_data/npstat-maxcov-check.txt` |
+| `npstat-empty-snp.sh` | npstat with an empty `-snpfile` exits 0 and reports every window with S = 0 and the same length and depth as with SNPs; a window without SNPs is identical either way (`02-npstat` relies on this for contigs without SNPs) | `_data/npstat-empty-snp-check.txt` |
 | `v2-tool-check.sh` | Each pipeline tool call works with the versions pinned in `_apptainer/*.yml` (run after changing pins); Python-script, π, and BayPass outputs match or are read as expected | `_data/v2-tool-check.txt` |
 | `mito-flye-round1.sh` | Flye round 1 of `00-references/01-mitogenome` as written and with `--genome-size 16k --asm-coverage 150`; caches recruited reads and assembly in `_data/mito-flye-cache/` | `_data/mito-flye-round1-check.txt` |
 | `dorado-r941-test.sh` | Dorado 0.9.6 basecalls the 2019 R9.4.1 FAST5 data with the sup model; predicted quality vs Guppy 5.0.11 hac on the same reads | `_data/dorado-r941-test.txt` |
