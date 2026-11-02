@@ -487,32 +487,50 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         per pool; gross outliers (6 SD on 2 metrics) caught 94% (18 pools)
         and 99% (30 pools); a moderate outlier (4 SD on 1 metric) caught
         30% and 61%.
-      - [ ] **First run fails on the time set (2026-11-02;
-        `_data/pool-qc-run.txt`).** It keeps 27 of 30 time pools,
-        including SN-2-09 and SN-2-13-B (every site masked, 0 private
-        SNPs) and SN-1-00, SN-1-96, and SN-2-10 (80-90% masked); it
-        drops SN-1-82, SN-1-88, and SN-2-91, and Tjornin from the space
-        set. Cause (`_R/pool-qc-diagnose.R` → `_data/pool-qc-diagnose.txt`):
-        13 of 30 time pools (43%) are > 5 robust SDs out on
-        `prop_missing`, but ROBPCA's default `alpha = 0.75` fits its PCs
-        to the 75% least outlying pools, so it tolerates ~25% outliers;
-        its single PC (eigenvalue 474) is the degradation axis, along
-        which the degraded pools fit. With `alpha = 0.5` (k = 2), the 12
-        pools with `prop_missing` ≥ 0.34 score 3.5-16 times ROBPCA's own
-        cutoff and the rest ≤ 0.84, except SN-1-95 (1.26). The
-        simulations behind the rule tested one outlier per set, not 40%.
-        The space set has no extreme metric; Tjornin's score (2.41 vs.
-        threshold 1.84) came mainly from few private SNPs, which in a
-        spatial set also measures differentiation between lakes, not
-        only data quality. Decided 2026-11-02: private SNPs dropped from
-        the space-set metrics (`set_metrics` in `_R/pool-qc.R`). Rerun:
-        Tjornin is still excluded (2.10 vs. 1.86), now from an unusual
-        combination (lowest `target_rate`, 0.876 vs. 0.881-0.903, with
-        low missing data; no metric beyond 2.6 robust SDs), not one
-        extreme metric. Owner to decide the time-set rule (e.g., `alpha = 0.5`
-        with recalibration, or a missing-data limit applied before the
-        PCA, as DEST 1.0 did at 7%) before H5; pool lists written by this
-        run are not committed.
+      - [x] **First run failed on the time set (2026-11-02).** It kept
+        27 of 30 time pools, including SN-2-09 and SN-2-13-B (every site
+        masked). Cause (`_R/pool-qc-diagnose.R` →
+        `_data/pool-qc-diagnose.txt`): 13 of 30 time pools (43%) are > 5
+        robust SDs out on `prop_missing`, more than the ~25% outliers
+        ROBPCA's default `alpha = 0.75` tolerates, so its single PC was
+        the degradation axis. Revised (owner, 2026-11-02): exclude time
+        pools with `prop_missing` > 0.5 first, then ROBPCA with
+        `alpha = 0.5`, recalibrated. Spatial pools get no QC (processed
+        right after collection, not stored with other species), so all
+        18 are included, Tjornin too (it was a weak outlier). Result
+        (`_data/pool-qc-run.txt`): 17 time pools, the same 17 as the
+        2025 coverage-30 set; 9 excluded by the limit, 4 by the PCA
+        (SN-1-01, SN-1-95, SN-2-96, SN-2-98). The 17 are the same with
+        limits of 2 x median (0.35) or median + 0.25 (0.42), and with
+        `alpha = 0.75` after the limit (`_data/pool-qc-sensitivity.csv`).
+        SN-1-95 (24% masked vs. ~17% typical; other metrics unremarkable)
+        scores 10 x the threshold because `prop_missing` varies so little
+        among good pools that a 7-point difference is many robust SDs.
+        Simulation of the calibrated rule (`_R/pool-qc-rule-sim-alpha.R`
+        → `_data/pool-qc-rule-sim-alpha.csv`; 200 reps): false-positive
+        rate per pool 3.2% (n = 21) and 2.4% (n = 30) at `alpha = 0.5`,
+        vs. 2.2% and 2.9% at 0.75. With 30% of pools as gross outliers,
+        `alpha = 0.5` catches 62% (n = 21) and 82% (n = 30) of them, 0.75
+        only 13% and 3%. The cost is power against a single moderate
+        outlier (4 SD on 1 metric): 18% vs. 39% at n = 21.
+      - [ ] Later: analyses of the spatial pools with and without Tjornin
+        (owner, 2026-11-02; time series first). `04-combine-syncs` makes
+        `time`, `space`, and `all` sets; a set without Tjornin needs its
+        own combine (sites polymorphic only in Tjornin would otherwise
+        stay), e.g., extra `space` and `all` sets in the same script.
+      - [x] **SN-1-95** (decided 2026-11-02: included by the owner's
+        override, `OVERRIDE_INCLUDE` in `_R/pool-qc.R`; the rule's
+        17-pool list, `include_rule`, is reported as a sensitivity
+        analysis). The rule excluded it only for
+        `prop_missing` (0.237 vs. 0.163-0.175 in the other kept pools;
+        its other metrics are within the kept pools' range). Making
+        the PCA leave missing data to the 0.5 limit (drop `prop_missing`
+        from the PCA) would also bring back SN-1-01 (49% masked), SN-2-96,
+        and SN-2-98 (47% and 34% masked, 9% and 20% of reads on
+        T. gracilentus, duplication 0.77 and 0.70): 21 pools
+        (`_data/pool-qc-sensitivity.csv`).
+      - [ ] Sensitivity analyses to run later on the time series: the
+        rule's 17 pools (without SN-1-95; same as the coverage-30 set).
       - Report the 2025 set (median coverage ≥ 30; `*-pools-cov30.txt`)
         as a sensitivity analysis.
       - Missing data per pool allowed in BayPass (masked pools → 0 counts;

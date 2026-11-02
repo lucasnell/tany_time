@@ -44,10 +44,14 @@ Nunez et al. 2025). `03-pool-qc` computes, for the candidate pools in
 | Mapping rate to *T. gracilentus* (`target_rate`: reads assigned to its contigs, MAPQ ≥ 20, primary / all records, excluding mitochondrial reads on the CONTIG37 stretch in `../references/mito-like-nuclear.bed`, reported as `mitolike_rate`); rate to other species, any-genome mapping rate, and usable rate are also reported | `bamtools stats` and species counts (`02-bwa`); the stretch's reads are counted from each BAM (`samtools view -c -L`) |
 
 pN/pS isn't used because the *T. gracilentus* annotation isn't good enough.
-`_R/pool-qc.R` excludes pools that are outliers in a robust PCA of the five
-metrics (ROBPCA, with a threshold calibrated by parametric bootstrap for a
-2.5% per-pool false-positive rate; see the script) or that lack a metric,
-and writes `../samples/{time,space}-pools.txt`. The 2025 inclusion rule (median
+`_R/pool-qc.R` excludes time-series pools that lack a metric, have more
+than half their sites masked, or are outliers in a robust PCA of the five
+metrics (ROBPCA fitted to the 50% least outlying pools, with a threshold
+calibrated by parametric bootstrap for a 2.5% per-pool false-positive rate;
+see the script), and writes `../samples/{time,space}-pools.txt`. SN-1-95,
+which the rule excludes, is included by the owner's override (2026-11-02).
+Spatial pools get no QC (processed right after collection) and are all
+included. The 2025 inclusion rule (median
 coverage ≥ 30) is kept as `../samples/*-pools-cov30.txt` for sensitivity
 analyses.
 
