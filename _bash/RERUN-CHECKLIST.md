@@ -291,7 +291,16 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       the fix (running jobs removed by the owner). Rerun 2026-11-02
       (cluster 12397444): 61 of 62 finished (largest reported disk use
       40 GB, MyBR-19); Blik-19 held for going over its 50-GB disk
-      request. `request_disk` raised to 100 GB.
+      request. `request_disk` raised to 100 GB. Blik-19 released with
+      100 GB and finished. Lei-19 and MyKS-19-B (two of the three
+      largest) exited 2 with an empty `.err` right after the pileup
+      conversion: most likely the scratch disk filled while splitting
+      the pileup (the split's `awk` exits 2, and a full disk leaves no
+      room for the error message); rerun both with 100 GB. Of the other
+      60: 44 contigs and ~9,185 windows in most pools (no covered sites
+      only on CONTIG34), > 99% of windows with S > 0; the 10
+      low-coverage pools have 0-7 contigs and almost no S > 0; KS-1-15-B,
+      SN-1-00, and SN-1-96 have S > 0 in only 77-84% of windows.
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
       reads on the CONTIG37 stretch, so it runs longer than before. Submitted
