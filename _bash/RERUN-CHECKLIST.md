@@ -127,7 +127,7 @@ Steps marked *(parallel)* can run alongside the step before them.
       hung on paired reads, so read mapping (G1) produced near-empty BAMs
       or stalled; 2026-10-29) as in C1, then rerun the tool check or
       run `bbmerge.sh --version` (expect 39.28). Needed before G1.
-- [ ] **C5.** Rebuild as v2.5.0 (2026-10-31): project scripts and
+- [x] **C5.** Rebuild as v2.5.0 (2026-10-31): project scripts and
       `helpers.sh` moved from the image to `_bash/bin/`, which every job
       transfers from the repo, so there is one copy of each. Until this
       is built, the v2.4.0 image still holds old copies in `/app/bin`
@@ -142,6 +142,9 @@ Steps marked *(parallel)* can run alongside the step before them.
       scripts except `pool-qc-files.py` (image copy predates the
       2026-10-30 CONTIG37 change; `03-pool-qc` already transferred the
       repo copy), so the running `01-snape` uses the repo's scripts.
+      Rebuilt by the owner 2026-11-02 after `01-snape` finished and the
+      submit server pulled `3917bd8`: labels report v2.5.0, `/app/bin`
+      is gone, and `/app/.bashrc` defines no project functions.
 
 ## D. How to run and check each step
 
@@ -267,13 +270,19 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 
 - [ ] **H1.** `01-snape` (62 jobs) → `./check-step.sh 02-allele-freqs/01-snape`
       (also lists contigs where SNAPE reported errors). Submitted
-      2026-10-31.
+      2026-10-31; PASS 2026-11-02: 62 of 62 OK, 62 outputs, no contigs
+      with SNAPE errors listed. Run times 0.2 h (KS-2-83) to 7.0 h
+      (SN-2-07), median ~4 h. Pileup size only loosely predicts run
+      time: KS-2-90 (11 MB pileup) took 2.0 h, like H-2-10 (170 MB),
+      and Lei-19 (largest, 3.3 GB) took 5.2 h.
 - [ ] **H2.** `02-npstat` (62 jobs; after H1, since it reads each
       pool's `snape/<pool>_snape.tar`; can run alongside H3–H6) →
-      `./check-step.sh 02-allele-freqs/02-npstat`.
+      `./check-step.sh 02-allele-freqs/02-npstat`. Submitted 2026-11-02
+      (first jobs with `_bash/bin/` transferred from the repo).
 - [ ] **H3.** `03-pool-qc` (1 job) → `./check-step.sh 02-allele-freqs/03-pool-qc`.
       Since 2026-10-30 it reads every candidate pool's whole BAM to count
-      reads on the CONTIG37 stretch, so it runs longer than before.
+      reads on the CONTIG37 stretch, so it runs longer than before. Submitted
+      2026-11-02.
 - [ ] **H4.** Locally: download `$S/dna/pool-qc/pool-qc.tar` and extract it
       to `pool-qc/` in the local data folder (`_R/data-dir.R`; see
       `CLAUDE.md`); run `Rscript _R/pool-qc.R` (writes
