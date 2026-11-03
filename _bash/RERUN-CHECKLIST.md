@@ -345,6 +345,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       from 8 to 24 GB (8.1 million input sites). Note the SNPs kept per
       setting before I2: BayPass run time grows with the number of SNPs,
       and the 25-50 h estimate came from 433,360 SNPs.
+      Run 2026-11-03 (cluster 12398878): PASS, longest 0.3 h, peak memory
+      6.1 GB. 1,989,893 SNPs read (18 pools); with data in >= 50/75/100%
+      of pools: 1,831,055 / 1,684,550 / 901,915; kept (mean reference
+      proportion in (0.1, 0.9)): mp050 1,023,857, mp075 955,748, mp100
+      528,372 (thinned subsamples ~341k, ~319k, ~176k). `.err` showed
+      `min_prop_pools: command not found`: a backtick in an R comment
+      inside the unquoted heredoc was run by bash; harmless (comment
+      text only), removed.
 
 - [ ] **I2.** `01-baypass-init` (6 jobs, 25–50 h each; one first) →
       `./check-step.sh 03-select-time/01-baypass-init`.

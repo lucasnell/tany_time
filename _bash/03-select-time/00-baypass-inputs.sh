@@ -147,7 +147,8 @@ pool_dat <- popsync2pooldata(sync.file = in_files[["counts"]],
 #'
 cat("Filtering pool data...\n")
 #' Means are over pools with data at that SNP. Also requires data in at
-#' least `min_prop_pools` of pools.
+#' least min_prop_pools of pools. (No backticks in this heredoc: bash would
+#' run them as commands.)
 # Create a logical vector for which SNPs aren't near fixation:
 has_data <- pool_dat@readcoverage > 0
 ref_probs <- pool_dat@refallele.readcount / pool_dat@readcoverage

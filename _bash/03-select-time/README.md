@@ -1,7 +1,7 @@
 # `03-select-time/`: BayPass
 
 Tests for SNPs whose allele frequencies covary with *T. gracilentus*
-abundance across the 17 time-series pools. Runs in `baypass-env`
+abundance across the 18 time-series pools (`../samples/time-pools.txt`). Runs in `baypass-env`
 (BayPass 3.1 in the v2.2.0 container; existing results used 2.31).
 
 Everything runs for a grid of missing-data settings: the minimum proportion
