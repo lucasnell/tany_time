@@ -92,7 +92,8 @@ for kind in snape count; do
         OUT_NAMES=${OUT_BASE}.names.gz
         OUT_NOBLANKS=${OUT_BASE}_noblanks.sync.gz
 
-        # Combine sync files (takes ~17 min)
+        # Combine sync files (1.3-4.9 h each on 2026-11-02; the whole
+        # job took 15.9 h)
         combine-syncs.py ${COMB_FLAG} --min-pp ${MIN_PP} -o ${OUT%.gz} \
             ${SAMPS[@]/%/.sync.gz}
         check_exit_status "combine-syncs.py ($kind, $type)" $?

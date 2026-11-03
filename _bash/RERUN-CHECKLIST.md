@@ -326,15 +326,26 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
       QC). Lists: 18 time pools (the rule's 17, which equal
       `time-pools-cov30.txt`, plus SN-1-95 by the owner's override) and
       all 18 spatial pools.
-- [ ] **H5.** On the submit server, `git pull` (gets the pool lists).
-- [ ] **H6.** `04-combine-syncs` (1 job) →
+- [x] **H5.** On the submit server, `git pull` (gets the pool lists).
+- [x] **H6.** `04-combine-syncs` (1 job) →
       `./check-step.sh 02-allele-freqs/04-combine-syncs`.
+      Run 2026-11-02 (cluster 12397925): PASS, 15.9 h (the script's old
+      ~17-min estimate per combine was far off). Sites polymorphic
+      (P >= 0.9) in at least one pool: time 8,143,198, space 8,111,855,
+      all 13,180,371 of 91,827,299; SNAPE and count files agree. Pools:
+      18 time (with SN-1-95), 18 space (with Tjornin), 36 all. Time
+      sites with data in all 18 pools (`_noblanks`): 4,273,858 (52%).
 
 ## I. BayPass (`03-select-time/`)
 
 - [ ] **I1.** `00-baypass-inputs` (3 jobs) →
       `./check-step.sh 03-select-time/00-baypass-inputs` (fails if a
       setting keeps no SNPs).
+      Before the first run on the new SNP set: `request_memory` raised
+      from 8 to 24 GB (8.1 million input sites). Note the SNPs kept per
+      setting before I2: BayPass run time grows with the number of SNPs,
+      and the 25-50 h estimate came from 433,360 SNPs.
+
 - [ ] **I2.** `01-baypass-init` (6 jobs, 25–50 h each; one first) →
       `./check-step.sh 03-select-time/01-baypass-init`.
 - [ ] **I3.** `02-check-omegas` (1 job) →
