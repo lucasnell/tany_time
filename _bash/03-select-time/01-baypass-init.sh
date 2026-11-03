@@ -36,7 +36,7 @@ export MP_TAG=$1
 export SUBSAMPLE=$2
 export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}.tar.gz"
 
-if (( SUBSAMPLE < 0 )) || (( SUBSAMPLE > 3 )); then
+if [[ ! "${SUBSAMPLE}" =~ ^[0-3]$ ]]; then
     echo "Second arg (subsample) to 01-baypass-init.sh must be >= 0 and <= 3." 1>&2
     safe_exit 1
 fi

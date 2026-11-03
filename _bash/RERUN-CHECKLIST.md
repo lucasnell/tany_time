@@ -172,6 +172,16 @@ grep -v '^Lei-19_S13$' ../samples/all-pools.txt > logs/03-mpileup/rest.txt
 sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03-mpileup.sub | condor_submit -
 ```
 
+For submit files that queue several variables, write the chosen lines
+to a file in the same format as the job list and queue from it; an inline
+`in (a b)` list splits on spaces into separate jobs. E.g., for one
+`01-baypass-init` job:
+
+```
+grep '^mp050,0$' baypass_init_info.txt > logs/01-baypass-init/first.txt
+sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass-init/first.txt|' 01-baypass-init.sub | condor_submit -
+```
+
 ## E. Trimming (`01-variant-calling/`)
 
 - [x] **E1.** `01-fastp` (62 jobs) → `./check-step.sh 01-variant-calling/01-fastp`.
@@ -356,6 +366,14 @@ sed 's|^queue readbase from .*|queue readbase from logs/03-mpileup/rest.txt|' 03
 
 - [ ] **I2.** `01-baypass-init` (6 jobs, 25–50 h each; one first) →
       `./check-step.sh 03-select-time/01-baypass-init`.
+      Test job 2026-11-03 (cluster 12398989): submitted with
+      `queue ... in (mp050 0)`, which made two jobs. Job .0 got
+      `mp050` and an empty subsample: it runs the right analysis
+      (all SNPs, the sub0 seed) but names its output
+      `baypass-init-mp050-sub`; used to time the full-set run. Job .1
+      (`0`, no subsample) fails at `require_files`. The script now
+      rejects a subsample other than 0-3.
+
 - [ ] **I3.** `02-check-omegas` (1 job) →
       `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on Ω
       consistency; covariate runs use the all-SNP Ω either way).
