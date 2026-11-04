@@ -373,6 +373,13 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       `baypass-init-mp050-sub`; used to time the full-set run. Job .1
       (`0`, no subsample) fails at `require_files`. The script now
       rejects a subsample other than 0-3.
+      Progress after 19.9 h (2026-11-04, `condor_ssh_to_job`): pilot runs
+      took ~3.2 min per 100 iterations; MCMC sampling at 26% (~28,000 of
+      102,000 iterations done), BayPass ETA 2 d 2.7 h more: ~71 h total
+      (~2.5 s per iteration on 1,023,857 SNPs, 7.5 of 8 CPUs busy).
+      That is at CHTC's 72-h limit. Scaled by SNPs: mp075 ~66 h,
+      mp100 ~37 h, thinned subsamples (~176k-341k SNPs) ~13-24 h, all
+      for the core (Ω) model. Owner to choose the plan before more jobs.
 
 - [ ] **I3.** `02-check-omegas` (1 job) →
       `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on Ω
