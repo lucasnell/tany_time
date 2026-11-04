@@ -16,7 +16,7 @@
 #' by `_R/pool-qc.R` from QC metrics (`02-allele-freqs/03-pool-qc`).
 #'   _bash/03-select-time/baypass_inputs_info.txt  tag,min_prop_pools
 #'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
-#'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag
+#'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample
 #'
 
 library(tidyverse)
@@ -83,19 +83,23 @@ mp_df |>
     write_csv("_bash/03-select-time/baypass_inputs_info.txt",
               col_names = FALSE)
 
-#' Omega runs: all SNPs (subsample 0) for every setting; thinned
-#' subsamples 1-3 (Omega consistency check) for the main setting only.
-bind_rows(tibble(tag = mp_df$tag, subsample = 0L),
-          tibble(tag = MAIN_TAG, subsample = 1:3)) |>
+#' BayPass runs on the 3 thinned subsamples of each setting, each with its
+#' own Omega (owner, 2026-11-04): a full-set run took ~71 h for mp050
+#' (1.02 million SNPs), at CHTC's 72-h limit; subsamples have ~176k-341k
+#' SNPs. Results are combined across subsamples locally.
+#' Omega runs: subsamples 1-3 for every setting.
+crossing(tag = mp_df$tag, subsample = 1:3) |>
     write_csv("_bash/03-select-time/baypass_init_info.txt", col_names = FALSE)
 
-#' Covariate runs: Ising beta of 0 and 1, 10 runs each, for every setting.
+#' Covariate runs: Ising beta of 0 and 1, 10 runs each, for every setting
+#' and subsample.
 #' Seeds reproduce those of the 2025 runs (originally written via
 #' `clipr::write_clip`) and are the same across settings, so settings can
-#' be compared run by run.
+#' be compared run by run (the subsamples hold different SNPs, so sharing
+#' seeds across them doesn't correlate their results).
 set.seed(1323829402)
 x <- expand.grid(beta = 0:1, run = 1:10)
 x[["seed"]] <- sample.int(2^31-1, nrow(x))
-crossing(as_tibble(x), tag = mp_df$tag) |>
-    arrange(tag, run, beta) |>
+crossing(as_tibble(x), tag = mp_df$tag, subsample = 1:3) |>
+    arrange(tag, subsample, run, beta) |>
     write_csv("_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)

@@ -56,15 +56,18 @@ are written by `_R/make-job-lists.R`.
    - `00-baypass-inputs`: poolfstat filtering, drops SNPs with mean
      reference-allele read proportion outside (0.1, 0.9), writes genotype,
      pool-size, and logN covariate files. 433,360 SNPs.
-   - `01-baypass-init`: Ω (population covariance matrix) from all SNPs
-     (`sub0`) and 3 subsamples. Existing Ω is from BayPass 2.31 with 8
-     threads, affected by an Ω-update bug fixed in 2.4 (see `TODO.md`).
+   - `01-baypass-init`: Ω (population covariance matrix) on each of 3
+     thinned subsamples per setting (since 2026-11-04; a full-set run
+     takes ~71 h). Existing Ω is from BayPass 2.31 with 8 threads,
+     affected by an Ω-update bug fixed in 2.4 (see `TODO.md`).
    - All three steps run for a grid of missing-data settings
      (`MIN_PROP_POOLS` 0.5, 0.75, 1.0; tags `mp050`/`mp075`/`mp100`;
      0.75 main; since 2026-10-13).
-   - `02-check-omegas`: FMD between subsample Ω matrices for `mp075`
-     (diagnostic; PASS/WARN).
-   - `03-baypass-beta`: covariate model with Ω from all SNPs; 10 runs with
+   - `02-check-omegas`: FMD between subsample Ω matrices within each
+     setting (diagnostic; PASS/WARN).
+   - `03-baypass-beta`: covariate model on each subsample with that
+     subsample's Ω (since 2026-11-04; the 2025 runs used Ω from all SNPs);
+     results combined locally; 10 runs with
      different seeds; Ising β given as an argument. Current runs use
      `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),
      because the assembly is not chromosome-level (contig-to-contig

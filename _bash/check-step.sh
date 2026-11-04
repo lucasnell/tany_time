@@ -339,13 +339,13 @@ case "${STEP_PATH}" in
         JOB_IDS=(check-omegas)
         FILES=(${S}/dna/baypass/init/omega-check.tsv)
         extra () {
-            grep -hE "^ *sub[0-9]|OMEGA CHECK" ${LOG_DIR}/check-omegas.out 2> /dev/null
+            grep -hE "^ *mp[0-9]+ +sub[0-9]|OMEGA CHECK" ${LOG_DIR}/check-omegas.out 2> /dev/null
         } ;;
 
     03-select-time/03-baypass-beta)
-        while IFS=, read -r b r seed t; do
-            JOB_IDS+=(${t}-beta${b}-run${r})
-            FILES+=(${S}/dna/baypass/beta/baypass-${t}-beta${b}-run${r}.tar)
+        while IFS=, read -r b r seed t k; do
+            JOB_IDS+=(${t}-sub${k}-beta${b}-run${r})
+            FILES+=(${S}/dna/baypass/beta/baypass-${t}-sub${k}-beta${b}-run${r}.tar)
         done < ${ST}/baypass_beta_info.txt ;;
 
     *)

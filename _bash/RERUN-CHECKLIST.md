@@ -364,8 +364,11 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       inside the unquoted heredoc was run by bash; harmless (comment
       text only), removed.
 
-- [ ] **I2.** `01-baypass-init` (6 jobs, 25–50 h each; one first) →
-      `./check-step.sh 03-select-time/01-baypass-init`.
+- [ ] **I2.** `01-baypass-init` (9 jobs: 3 settings x 3 thinned
+      subsamples, each with its own Ω; ~13-24 h each) →
+      `./check-step.sh 03-select-time/01-baypass-init`. Switched from
+      full SNP sets to subsamples 2026-11-04 (owner), after the test
+      below.
       Test job 2026-11-03 (cluster 12398989): submitted with
       `queue ... in (mp050 0)`, which made two jobs. Job .0 got
       `mp050` and an empty subsample: it runs the right analysis
@@ -382,14 +385,16 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       for the core (Ω) model. Owner to choose the plan before more jobs.
 
 - [ ] **I3.** `02-check-omegas` (1 job) →
-      `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on Ω
-      consistency; covariate runs use the all-SNP Ω either way).
-- [ ] **I4.** `03-baypass-beta` (60 jobs, 25–50 h each; one first) →
+      `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on
+      FMD between subsample Ωs within each setting; diagnostic only).
+- [ ] **I4.** `03-baypass-beta` (180 jobs: 3 settings x 3 subsamples x
+      2 Ising β x 10 runs; one first, as its speed isn't measured) →
       `./check-step.sh 03-select-time/03-baypass-beta`.
 
 ## J. After the rerun
 
 - [ ] **J1.** Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`,
-      and `baypass-check-candidates.R` for the new output names and the
-      missing-data grid.
+      and `baypass-check-candidates.R` for the new output names, the
+      missing-data grid, and combining the 3 subsamples (positions from
+      each job's `snpdet.sub<k>`).
 - [ ] **J2.** Continue with the review steps in `TODO.md`.

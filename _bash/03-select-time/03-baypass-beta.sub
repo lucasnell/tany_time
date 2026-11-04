@@ -4,12 +4,12 @@
 
 container_image = file:///staging/l/lnell/tany_time.sif
 
-log = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).log
-error = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).err
-output = logs/03-baypass-beta/$(MpTag)-beta$(IsingBeta)-run$(RunNumber).out
+log = logs/03-baypass-beta/$(MpTag)-sub$(Subsample)-beta$(IsingBeta)-run$(RunNumber).log
+error = logs/03-baypass-beta/$(MpTag)-sub$(Subsample)-beta$(IsingBeta)-run$(RunNumber).err
+output = logs/03-baypass-beta/$(MpTag)-sub$(Subsample)-beta$(IsingBeta)-run$(RunNumber).out
 
 executable = 03-baypass-beta.sh
-arguments = $(IsingBeta) $(RunNumber) $(RNGSeed) $(MpTag)
+arguments = $(IsingBeta) $(RunNumber) $(RNGSeed) $(MpTag) $(Subsample)
 
 batch_name = "baypass-beta"
 
@@ -24,5 +24,5 @@ request_disk = 50GB
 
 #' `baypass_beta_info.txt` (ising_beta,run,seed,tag) is written by
 #' `_R/make-job-lists.R`.
-queue IsingBeta,RunNumber,RNGSeed,MpTag from baypass_beta_info.txt
+queue IsingBeta,RunNumber,RNGSeed,MpTag,Subsample from baypass_beta_info.txt
 

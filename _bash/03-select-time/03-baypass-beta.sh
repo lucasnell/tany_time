@@ -26,15 +26,18 @@ export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/beta"
 #' up to 20 pilot runs of 500; <= 35,000 iterations) took 9–12 h with 8
 #' CPUs. With 3.1 defaults otherwise (thin 20, burn-in 1,000, 10 pilot runs
 #' of 100), 5,000 samples is ~102,000 iterations, i.e., ~3–4x longer:
-#' roughly 25–50 h per job if speed per iteration is unchanged (not yet
-#' checked for 3.1). CHTC's default run limit is 72 h, so check the first
-#' job's progress (log file) before submitting the rest.
+#' roughly 25–50 h per job if speed per iteration is unchanged. Measured
+#' 2026-11-04 for the core model: ~2.5 s per iteration on 1.02 million SNPs
+#' (~71 h), so jobs run on thinned subsamples (~176k-341k SNPs; ~13-24 h
+#' for the core model). The covariate model's speed isn't measured yet, so
+#' check the first job's progress before submitting the rest.
 export NVAL=5000
 
 #'
-#' Note: Because the Omega matrices based on sub-sampling did not match
-#' between subsamples, I am using the one based on all SNPs, despite
-#' this not being as computationally efficient.
+#' Each job runs on one thinned subsample (1-3) with that subsample's own
+#' Omega from `01-baypass-init` (owner, 2026-11-04); results are combined
+#' across subsamples locally. (The 2025 runs used Omega from all SNPs
+#' because subsample Omegas disagreed; see `02-check-omegas`.)
 #'
 
 
@@ -46,11 +49,13 @@ export ISING_BETA=$1
 export RUN_NUM=$2
 export SEED=$3
 #' Missing-data setting tag (e.g., `mp075`; see `00-baypass-inputs.sh`).
-#' Inputs and Ω (from all SNPs, `sub0`) are those of this setting.
 export MP_TAG=$4
-export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}.tar.gz"
-export BP_INIT_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/init/baypass-init-${MP_TAG}-sub0.tar.gz"
-export OMEGA_FILE="tany-init-${MP_TAG}-sub0_mat_omega.out"
+#' Thinned subsample (1-3); inputs and Ω are those of this setting and
+#' subsample.
+export SUBSAMPLE=$5
+export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}_3.tar.gz"
+export BP_INIT_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/init/baypass-init-${MP_TAG}-sub${SUBSAMPLE}.tar.gz"
+export OMEGA_FILE="tany-init-${MP_TAG}-sub${SUBSAMPLE}_mat_omega.out"
 
 
 if ! awk -v b="${ISING_BETA}" 'BEGIN { exit !(b ~ /^[0-9.]+$/ && b >= 0 && b <= 1) }'; then
@@ -65,6 +70,10 @@ if (( SEED < 1 )) || (( SEED > 2147483647 )); then
     echo "SEED must be >= 1 and <= 2147483647" 1>&2
     safe_exit 3
 fi
+if [[ ! "${SUBSAMPLE}" =~ ^[1-3]$ ]]; then
+    echo "SUBSAMPLE must be 1, 2, or 3." 1>&2
+    safe_exit 4
+fi
 
 
 
@@ -78,10 +87,11 @@ fi
 require_files ${INPUTS_TAR_FULL_PATH} ${BP_INIT_TAR_FULL_PATH}
 
 
-export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%.tar.gz})
+# The `_3` tar holds a folder named without `_3`:
+export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%_3.tar.gz})
 
-export OUT_DIR="baypass-${MP_TAG}-beta${ISING_BETA}-run${RUN_NUM}"
-export OUT_FILE_PREFIX="tany-${MP_TAG}-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_DIR="baypass-${MP_TAG}-sub${SUBSAMPLE}-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_FILE_PREFIX="tany-${MP_TAG}-sub${SUBSAMPLE}-beta${ISING_BETA}-run${RUN_NUM}"
 
 
 mkdir ${OUT_DIR}
@@ -105,7 +115,7 @@ check_exit_status "cp, extract omega" $?
 #' ========================================================================
 
 
-export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass')
+export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
 export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
 export E_FILE=$(find ${INPUTS_DIR} -type f -name '*-log_n.txt')
 
@@ -134,6 +144,9 @@ check_exit_status "baypass" $?
 #' ========================================================================
 
 
+# Keep this subsample's SNP details (positions) for combining results:
+mv ${INPUTS_DIR}/*.snpdet.sub${SUBSAMPLE} ./
+check_exit_status "keep SNP details" $?
 # These aren't necessary to keep for downstream:
 rm -r ${INPUTS_DIR} ${OMEGA_FILE}
 

@@ -545,8 +545,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         filters cut power. Missingness here tracks coverage, so it isn't
         random with respect to abundance. Decided 2026-10-13: grid of 0.5,
         0.75, 1.0 (tags `mp050`, `mp075`, `mp100`), all reported, 0.75 main;
-        implemented in `_bash/03-select-time/` (6 Ω jobs, 60 covariate
-        jobs).
+        implemented in `_bash/03-select-time/` (since 2026-11-04 on 3
+        thinned subsamples per setting, each with its own Ω: 9 Ω jobs,
+        180 covariate jobs; a full-set Ω run took ~71 h for `mp050`).
       - Background (`_R/coverage-cutoff-check.R` → `_data/coverage-cutoff-check.csv`):
         5 pools failed outright (median 0–4), including 1988a (N = 76),
         2009b, and 2013b; 1982a, 1988a, 1991b, and 2013b have GC 46–63%

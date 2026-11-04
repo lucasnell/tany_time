@@ -23,15 +23,17 @@ export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/init"
 #' up to 20 pilot runs of 500; <= 35,000 iterations) took 9–12 h with 8
 #' CPUs. With 3.1 defaults otherwise (thin 20, burn-in 1,000, 10 pilot runs
 #' of 100), 5,000 samples is ~102,000 iterations, i.e., ~3–4x longer:
-#' roughly 25–50 h per job if speed per iteration is unchanged (not yet
-#' checked for 3.1). CHTC's default run limit is 72 h, so check the first
-#' job's progress (log file) before submitting the rest.
+#' roughly 25–50 h per job if speed per iteration is unchanged. Measured
+#' 2026-11-04: ~2.5 s per iteration on all 1.02 million mp050 SNPs (~71 h,
+#' at CHTC's 72-h limit), so jobs run on the thinned subsamples (~176k-341k
+#' SNPs; ~13-24 h).
 export NVAL=5000
 
 #' Arguments (from `baypass_init_info.txt`, written by `_R/make-job-lists.R`):
 #' 1. Missing-data setting tag (e.g., `mp075`; see `00-baypass-inputs.sh`).
-#' 2. Subsample: 0 = all SNPs; 1-3 = thinned subsamples (only run for the
-#'    main setting, to check Ω consistency).
+#' 2. Subsample: 1-3 = thinned subsamples, each with its own Ω, used by
+#'    `03-baypass-beta` for the same subsample (owner, 2026-11-04); 0 = all
+#'    SNPs (no longer in the job list; ~71 h for mp050).
 export MP_TAG=$1
 export SUBSAMPLE=$2
 export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}.tar.gz"
