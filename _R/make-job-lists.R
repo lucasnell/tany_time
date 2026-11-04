@@ -91,8 +91,11 @@ mp_df |>
 crossing(tag = mp_df$tag, subsample = 1:3) |>
     write_csv("_bash/03-select-time/baypass_init_info.txt", col_names = FALSE)
 
-#' Covariate runs: Ising beta of 0 and 1, 10 runs each, for every setting
-#' and subsample.
+#' Covariate runs: Ising beta of 0 only (beta = 1 dropped by the owner,
+#' 2026-11-04: it assumes associated SNPs cluster through LD, and LD extent
+#' in T. gracilentus is unknown), 10 runs each, for every setting and
+#' subsample. Seeds are still drawn for beta 0 and 1, so beta-0 seeds match
+#' the 2025 runs.
 #' Seeds reproduce those of the 2025 runs (originally written via
 #' `clipr::write_clip`) and are the same across settings, so settings can
 #' be compared run by run (the subsamples hold different SNPs, so sharing
@@ -101,5 +104,6 @@ set.seed(1323829402)
 x <- expand.grid(beta = 0:1, run = 1:10)
 x[["seed"]] <- sample.int(2^31-1, nrow(x))
 crossing(as_tibble(x), tag = mp_df$tag, subsample = 1:3) |>
+    filter(beta == 0) |>
     arrange(tag, subsample, run, beta) |>
     write_csv("_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)

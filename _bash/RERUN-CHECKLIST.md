@@ -387,8 +387,8 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
 - [ ] **I3.** `02-check-omegas` (1 job) →
       `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on
       FMD between subsample Ωs within each setting; diagnostic only).
-- [ ] **I4.** `03-baypass-beta` (180 jobs: 3 settings x 3 subsamples x
-      2 Ising β x 10 runs; one first, as its speed isn't measured) →
+- [ ] **I4.** `03-baypass-beta` (90 jobs: 3 settings x 3 subsamples x
+      10 runs, Ising β = 0 only; one first, as its speed isn't measured) →
       `./check-step.sh 03-select-time/03-baypass-beta`.
 
 ## J. After the rerun

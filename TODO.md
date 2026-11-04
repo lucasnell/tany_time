@@ -453,10 +453,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        - covariate scaling (manual §2.3.3 strongly recommends it; current
          2.31 runs used raw logN, mean 8.67, SD 1.59; scaled by default in
          3.1);
-       - Ising β = 0 and 1 (β = 1 only links SNPs adjacent in the input file;
+       - Ising β = 0 only (decided 2026-11-04: β = 1 dropped; it assumes
+         associated SNPs cluster through LD, whose extent here is unknown,
+         and neighbours in a thinned subsample are ~270 bp apart; contig
+         junctions affect only 43 of ~320k neighbour pairs.
+         Was: β = 0 and 1; β = 1 only links SNPs adjacent in the input file;
          ~44 contig junctions);
        - covariates: logN, lagged logN, and a crash-specific covariate
-         (crashes are the main question).
+         (crashes are the main question). Drafts (2026-11-04; abundances
+         only): `_R/crash-covariate-drafts.R` →
+         `_data/crash-covariate-drafts.{csv,txt}`; owner to choose.
        Report all settings, not the best one. 1–2 days; cluster.
 5. [ ] **Neutral variation through time:** read the `02-npstat` output
        (currently unused in `_R/`); per-pool diversity with pool-size-aware
@@ -547,7 +553,8 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         0.75, 1.0 (tags `mp050`, `mp075`, `mp100`), all reported, 0.75 main;
         implemented in `_bash/03-select-time/` (since 2026-11-04 on 3
         thinned subsamples per setting, each with its own Ω: 9 Ω jobs,
-        180 covariate jobs; a full-set Ω run took ~71 h for `mp050`).
+        90 covariate jobs with β = 0; a full-set Ω run took ~71 h for
+        `mp050`).
       - Background (`_R/coverage-cutoff-check.R` → `_data/coverage-cutoff-check.csv`):
         5 pools failed outright (median 0–4), including 1988a (N = 76),
         2009b, and 2013b; 1982a, 1988a, 1991b, and 2013b have GC 46–63%
