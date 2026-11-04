@@ -16,7 +16,7 @@
 #' by `_R/pool-qc.R` from QC metrics (`02-allele-freqs/03-pool-qc`).
 #'   _bash/03-select-time/baypass_inputs_info.txt  tag,min_prop_pools
 #'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
-#'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample
+#'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample,covariate
 #'
 
 library(tidyverse)
@@ -103,7 +103,11 @@ crossing(tag = mp_df$tag, subsample = 1:3) |>
 set.seed(1323829402)
 x <- expand.grid(beta = 0:1, run = 1:10)
 x[["seed"]] <- sample.int(2^31-1, nrow(x))
-crossing(as_tibble(x), tag = mp_df$tag, subsample = 1:3) |>
+#' Covariates (`_R/baypass-covariates.R`; owner, 2026-11-04): hm_logN_6 is
+#' primary, logN and logN_lag1 are sensitivity analyses. Seeds are shared
+#' across covariates.
+crossing(as_tibble(x), tag = mp_df$tag, subsample = 1:3,
+         covariate = c("hm_logN_6", "logN", "logN_lag1")) |>
     filter(beta == 0) |>
-    arrange(tag, subsample, run, beta) |>
+    arrange(tag, subsample, covariate, run, beta) |>
     write_csv("_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)

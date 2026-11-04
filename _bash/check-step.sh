@@ -343,9 +343,9 @@ case "${STEP_PATH}" in
         } ;;
 
     03-select-time/03-baypass-beta)
-        while IFS=, read -r b r seed t k; do
-            JOB_IDS+=(${t}-sub${k}-beta${b}-run${r})
-            FILES+=(${S}/dna/baypass/beta/baypass-${t}-sub${k}-beta${b}-run${r}.tar)
+        while IFS=, read -r b r seed t k cv; do
+            JOB_IDS+=(${t}-sub${k}-${cv}-beta${b}-run${r})
+            FILES+=(${S}/dna/baypass/beta/baypass-${t}-sub${k}-${cv}-beta${b}-run${r}.tar)
         done < ${ST}/baypass_beta_info.txt ;;
 
     *)

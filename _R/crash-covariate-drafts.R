@@ -11,11 +11,18 @@
 #'                     recent crash episode (time to recover from it)
 #'   recovering        1 if the pool was sampled after a crash episode and
 #'                     before N first returned above RECOVERED_N, else 0
-#'   min_logN_<k>      lowest logN in the k generations before the pool
-#'                     (depth of the most recent bottleneck); k = 6, 10
-#'   hm_logN_<k>       log of the harmonic mean of (N + 1) over the same k
-#'                     generations (the long-run effective size of a
-#'                     fluctuating population is near the harmonic mean)
+#'   hm_logN_<k>       log of the harmonic mean of (N + 1) over the k
+#'                     generations before the pool, k = 6, 10 (the long-run
+#'                     effective size of a fluctuating population is near
+#'                     the harmonic mean)
+#'
+#' Decided 2026-11-04 (owner): hm_logN_6 is the primary crash covariate,
+#' with logN and lag-1 logN as sensitivity analyses
+#' (`_R/baypass-covariates.R` writes the files used). Not used:
+#' gens_since_crash (no population-genetic basis for a transform, and
+#' r = 0.81 with hm_logN_6), recovering (3 pools), and the minimum logN
+#' over k generations (dropped: rests on a single small, noisy count, and
+#' is more sensitive to the log offset than hm_logN).
 #'
 #' Also reported: each draft's correlation with logN across the 18 pools,
 #' and the crash episodes for a range of CRASH_N values.
@@ -62,15 +69,13 @@ draft_df <- pools |>
         recovered_since = any(abund$N[abund$g > last_end & abund$g < g] >
                                   RECOVERED_N),
         recovering = as.integer(!recovered_since & N <= RECOVERED_N),
-        min_logN_6 = min(abund$logN[abund$g >= g - 6 & abund$g < g]),
-        min_logN_10 = min(abund$logN[abund$g >= g - 10 & abund$g < g]),
         hm_logN_6 = log(1 / mean(1 / (abund$N[abund$g >= g - 6 &
                                                   abund$g < g] + 1))),
         hm_logN_10 = log(1 / mean(1 / (abund$N[abund$g >= g - 10 &
                                                    abund$g < g] + 1)))) |>
     ungroup() |>
     select(pool, year, gen, N, logN, gens_since_crash, recovering,
-           starts_with("min_logN"), starts_with("hm_logN"))
+           starts_with("hm_logN"))
 
 write_csv(draft_df, "_data/crash-covariate-drafts.csv")
 
@@ -91,4 +96,38 @@ draft_df |>
     pivot_longer(everything(), names_to = "draft", values_to = "r_logN") |>
     mutate(r_logN = round(r_logN, 2)) |>
     print()
+
+#' Offset sensitivity of hm_logN (owner's concern, 2026-11-04): trap counts
+#' are an abundance index, and log(N + c) depends on the arbitrary c where
+#' counts are small (crash generations, including a count of 0). Pool
+#' values recomputed with c = 0.5, 1, 10, 100, compared by Spearman
+#' and Pearson correlation with c = 1 (ranks vs. spacing; BayPass's
+#' regression uses the values, so spacing matters) and by their range.
+cat("\nOffset sensitivity (c in log(N + c)):\n")
+offset_df <- map(c(0.5, 1, 10, 100), \(cc) {
+    pools |>
+        rowwise() |>
+        mutate(c = cc,
+               hm_6 = log(1 / mean(1 / (abund$N[abund$g >= g - 6 &
+                                                    abund$g < g] + cc))),
+               hm_10 = log(1 / mean(1 / (abund$N[abund$g >= g - 10 &
+                                                     abund$g < g] + cc)))) |>
+        ungroup() |>
+        select(pool, c, hm_6, hm_10)
+}) |>
+    list_rbind()
+base <- filter(offset_df, c == 1)
+offset_df |>
+    group_by(c) |>
+    summarize(spearman_hm_6 = cor(hm_6, base$hm_6, method = "spearman"),
+              pearson_hm_6 = cor(hm_6, base$hm_6),
+              hm_6_range = sprintf("%.2f-%.2f", min(hm_6), max(hm_6)),
+              spearman_hm_10 = cor(hm_10, base$hm_10, method = "spearman"),
+              pearson_hm_10 = cor(hm_10, base$hm_10),
+              hm_10_range = sprintf("%.2f-%.2f", min(hm_10), max(hm_10)),
+              .groups = "drop") |>
+    mutate(across(starts_with(c("spearman", "pearson")), \(x) round(x, 2))) |>
+    print(width = Inf)
+cat("Harmonic mean of (N + c) over a window with a count of 0 is at most",
+    "k * c, whatever the other counts are.\n")
 sink()

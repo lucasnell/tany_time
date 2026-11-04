@@ -15,7 +15,7 @@ with respect to abundance, and published thresholds vary widely.
 | `00-baypass-inputs` | Read `count_masked_time.sync.gz` with poolfstat (`popsync2pooldata`, default filters), with masked pools as 0 counts (BayPass treats these as missing data, manual v3.1 §2.2.1); keep SNPs with data in ≥ `MIN_PROP_POOLS` of pools and mean reference-allele read proportion (over pools with data) in (0.1, 0.9); write genotype, pool-size, SNP-detail, and logN covariate files, for all SNPs and as 3 thinned subsamples | one per setting (3; `baypass_inputs_info.txt`) | `baypass-inputs_<tag>.tar.gz`, `baypass-inputs_<tag>_3.tar.gz` |
 | `01-baypass-init` | Core model to estimate Ω (population covariance matrix) on each of the 3 thinned subsamples (`sub1`–`sub3`) of each setting | 9 (`baypass_init_info.txt`) | `init/baypass-init-<tag>-sub<k>.tar.gz` |
 | `02-check-omegas` | FMD distances (Förstner and Moonen 2003) between the subsamples' Ω within each setting; reports PASS if all pairs are < 0.5 (Gautier 2015), else WARN. Diagnostic only | 1 | `init/omega-check.tsv` |
-| `03-baypass-beta` | Covariate model (`-auxmodel`) on each subsample with that subsample's Ω, with Ising β = 0 (β = 1 dropped 2026-11-04: LD extent unknown), runs 1–10; keeps the subsample's `snpdet` file for combining | 90 (`baypass_beta_info.txt`) | `beta/baypass-<tag>-sub<k>-beta<β>-run<r>.tar` |
+| `03-baypass-beta` | Covariate model (`-auxmodel`) on each subsample with that subsample's Ω, one covariate per job (`covariates/`: `hm_logN_6` primary, `logN` and `logN_lag1` sensitivity), with Ising β = 0 (β = 1 dropped 2026-11-04: LD extent unknown), runs 1–10; keeps the subsample's `snpdet` file for combining | 270 (`baypass_beta_info.txt`) | `beta/baypass-<tag>-sub<k>-beta<β>-run<r>.tar` |
 
 Subsamples (owner, 2026-11-04): `00-baypass-inputs` deals SNPs in genome
 order to 3 subsamples in turn (poolfstat thinning), so they don't overlap
@@ -32,8 +32,18 @@ apart (`mp050`), so subsamples still carry LD.
   `snape/count_masked_time.tar` from `02-allele-freqs/04-combine-syncs`.
 - Job lists `baypass_inputs_info.txt` (`tag,min_prop_pools`),
   `baypass_init_info.txt` (`tag,subsample`), and `baypass_beta_info.txt`
-  (`ising_beta,run,seed,tag,subsample`) are written by
-  `_R/make-job-lists.R`. Seeds reproduce the 2025 runs and are shared
+  (`ising_beta,run,seed,tag,subsample,covariate`) are written by
+  `_R/make-job-lists.R`. Covariate files (`covariates/<name>.txt`, one
+  value per pool in `../samples/time-pools.txt` order) are written by
+  `_R/baypass-covariates.R` (owner's choices, 2026-11-04):
+  - `hm_logN_6` (primary): log harmonic mean of (N + 1) over the 6
+    generations before the pool (effective size over the recent past,
+    including crashes);
+  - `logN`: log(1 + N) in the pool's generation (the 2025 covariate);
+  - `logN_lag1`: log(1 + N) one generation earlier.
+
+  Each runs in its own job, because the AUX model with several covariates
+  in one file fits a multiple regression (manual v3.1, §6.2). Seeds reproduce the 2025 runs and are shared
   across settings and subsamples.
 - Seeds for `01-baypass-init` are fixed in the script.
 

@@ -459,10 +459,17 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          junctions affect only 43 of ~320k neighbour pairs.
          Was: β = 0 and 1; β = 1 only links SNPs adjacent in the input file;
          ~44 contig junctions);
-       - covariates: logN, lagged logN, and a crash-specific covariate
-         (crashes are the main question). Drafts (2026-11-04; abundances
-         only): `_R/crash-covariate-drafts.R` →
-         `_data/crash-covariate-drafts.{csv,txt}`; owner to choose.
+       - covariates (decided 2026-11-04): primary `hm_logN_6`, the log
+         harmonic mean of (N + 1) over the 6 generations before each pool
+         (effective size over the recent past; crashes are the main
+         question); sensitivity: logN and lag-1 logN. One covariate per
+         job (the AUX model with several covariates fits a multiple
+         regression). Files: `_R/baypass-covariates.R` →
+         `_bash/03-select-time/covariates/`. Drafts and why the others
+         weren't used: `_R/crash-covariate-drafts.R` →
+         `_data/crash-covariate-drafts.{csv,txt}` (offset c in log(N + c)
+         from 0.5 to 100 keeps `hm_logN_6`'s pool ranks; Pearson r with
+         c = 1 is >= 0.97).
        Report all settings, not the best one. 1–2 days; cluster.
 5. [ ] **Neutral variation through time:** read the `02-npstat` output
        (currently unused in `_R/`); per-pool diversity with pool-size-aware
@@ -553,8 +560,8 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         0.75, 1.0 (tags `mp050`, `mp075`, `mp100`), all reported, 0.75 main;
         implemented in `_bash/03-select-time/` (since 2026-11-04 on 3
         thinned subsamples per setting, each with its own Ω: 9 Ω jobs,
-        90 covariate jobs with β = 0; a full-set Ω run took ~71 h for
-        `mp050`).
+        270 covariate jobs: β = 0, 3 covariates; a full-set Ω run took
+        ~71 h for `mp050`).
       - Background (`_R/coverage-cutoff-check.R` → `_data/coverage-cutoff-check.csv`):
         5 pools failed outright (median 0–4), including 1988a (N = 76),
         2009b, and 2013b; 1982a, 1988a, 1991b, and 2013b have GC 46–63%

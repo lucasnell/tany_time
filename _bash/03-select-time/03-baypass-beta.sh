@@ -53,6 +53,12 @@ export MP_TAG=$4
 #' Thinned subsample (1-3); inputs and Ω are those of this setting and
 #' subsample.
 export SUBSAMPLE=$5
+#' Covariate: name of a file in `covariates/` (transferred with the job;
+#' written by `_R/baypass-covariates.R`): `hm_logN_6` (primary), `logN`,
+#' or `logN_lag1`. One covariate per job: the AUX model with several
+#' covariates in one file fits a multiple regression (manual v3.1, 6.2).
+export COV=$6
+export E_FILE=$(pwd)/${COV}.txt
 export INPUTS_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/baypass-inputs_${MP_TAG}_3.tar.gz"
 export BP_INIT_TAR_FULL_PATH="${INPUTS_PARENT_DIR}/init/baypass-init-${MP_TAG}-sub${SUBSAMPLE}.tar.gz"
 export OMEGA_FILE="tany-init-${MP_TAG}-sub${SUBSAMPLE}_mat_omega.out"
@@ -74,6 +80,10 @@ if [[ ! "${SUBSAMPLE}" =~ ^[1-3]$ ]]; then
     echo "SUBSAMPLE must be 1, 2, or 3." 1>&2
     safe_exit 4
 fi
+if [[ ! "${COV}" =~ ^(hm_logN_6|logN|logN_lag1)$ ]]; then
+    echo "Unknown covariate: ${COV}" 1>&2
+    safe_exit 5
+fi
 
 
 
@@ -84,14 +94,14 @@ fi
 #' ========================================================================
 
 
-require_files ${INPUTS_TAR_FULL_PATH} ${BP_INIT_TAR_FULL_PATH}
+require_files ${INPUTS_TAR_FULL_PATH} ${BP_INIT_TAR_FULL_PATH} ${E_FILE}
 
 
 # The `_3` tar holds a folder named without `_3`:
 export INPUTS_DIR=$(basename ${INPUTS_TAR_FULL_PATH%_3.tar.gz})
 
-export OUT_DIR="baypass-${MP_TAG}-sub${SUBSAMPLE}-beta${ISING_BETA}-run${RUN_NUM}"
-export OUT_FILE_PREFIX="tany-${MP_TAG}-sub${SUBSAMPLE}-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_DIR="baypass-${MP_TAG}-sub${SUBSAMPLE}-${COV}-beta${ISING_BETA}-run${RUN_NUM}"
+export OUT_FILE_PREFIX="tany-${MP_TAG}-sub${SUBSAMPLE}-${COV}-beta${ISING_BETA}-run${RUN_NUM}"
 
 
 mkdir ${OUT_DIR}
@@ -117,14 +127,15 @@ check_exit_status "cp, extract omega" $?
 
 export G_FILE=$(find ${INPUTS_DIR} -type f -name '*.genobaypass.sub'${SUBSAMPLE})
 export S_FILE=$(find ${INPUTS_DIR} -type f -name '*.poolsize')
-export E_FILE=$(find ${INPUTS_DIR} -type f -name '*-log_n.txt')
+# (The inputs' own `tany-log_n.txt` is the same as `covariates/logN.txt`.)
+cp ${E_FILE} ./
 
 
 # Covariates are scaled (mean 0, SD 1) by default since BayPass 2.4
 # (`-nocovscaling` turns this off), as the manual recommends (§2.3.3).
 g_baypass -gfile ${G_FILE} \
     -poolsizefile ${S_FILE} \
-    -efile ${E_FILE} \
+    -efile ${COV}.txt \
     -omegafile ${OMEGA_FILE} \
     -auxmodel \
     -isingbeta ${ISING_BETA} \
