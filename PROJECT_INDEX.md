@@ -55,7 +55,8 @@ are written by `_R/make-job-lists.R`.
 6. `_bash/03-select-time/` (cluster):
    - `00-baypass-inputs`: poolfstat filtering, drops SNPs with mean
      reference-allele read proportion outside (0.1, 0.9), writes genotype,
-     pool-size, and logN covariate files. 433,360 SNPs.
+     pool-size, and logN covariate files. 433,360 SNPs in 2025; 528,372-
+     1,023,857 by setting in the 2026-11 rerun (18 pools).
    - `01-baypass-init`: Ω (population covariance matrix) on each of 3
      thinned subsamples per setting (since 2026-11-04; a full-set run
      takes ~71 h). Existing Ω is from BayPass 2.31 with 8 threads,
@@ -67,15 +68,15 @@ are written by `_R/make-job-lists.R`.
      setting (diagnostic; PASS/WARN).
    - `03-baypass-beta`: covariate model on each subsample with that
      subsample's Ω (since 2026-11-04; the 2025 runs used Ω from all SNPs);
-     results combined locally; 10 runs with
-     different seeds; Ising β given as an argument. Current runs use
-     `-auxmodel` with β = 0 (no dependency between neighbouring SNPs),
-     because the assembly is not chromosome-level (contig-to-contig
-     linkage is unknown). 1,000 retained MCMC samples per run. The covariate
-     is raw logN (not `-scalecov`), though the BayPass manual (§2.3.3)
-     strongly recommends scaling.
-7. `_R/baypass-check-omegas.R`: subsample Ω matrices disagree (FMD
-   distance > 3.7 for subsample 3), so the all-SNP Ω is used.
+     results combined locally; 10 runs with different seeds; `-auxmodel`
+     with Ising β = 0 (β = 1 dropped 2026-11-04: LD extent unknown); one
+     covariate per job (`covariates/`: `hm_logN_6` primary, `logN`,
+     `logN_lag1`); 5,000 retained MCMC samples; covariates scaled (3.1
+     default). The 2025 runs used Ω from all SNPs, raw logN, β = 0, and
+     1,000 samples.
+7. `_R/baypass-check-omegas.R` (2025 runs): subsample Ω matrices
+   disagreed (FMD distance > 3.7 for subsample 3), so the all-SNP Ω was
+   used. The 2026-11 rerun checks this again in `02-check-omegas`.
 8. `_R/baypass-analysis.R`: median Bayes factor (dB) across 10 `beta0` runs;
    candidates at ≥ 30 dB → `_data/candi_df.rds`; nearest gene within 5 kb →
    `_data/candi_funcs_df.rds`; BLASTP of candidate genes against

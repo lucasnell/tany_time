@@ -4,7 +4,8 @@ Pool-seq population genomics of the midge *Tanytarsus gracilentus* at Mývatn,
 Iceland. Two sample sets:
 
 - **Time series**: archived emergence-trap samples from site Syðri Neslönd
-  (SN), 17 pools spanning 1992–2015, two generations per year (`a` = before
+  (SN), 30 pools sequenced, 18 kept after QC (`_bash/samples/time-pools.txt`;
+  2026-11-02), spanning 1992–2015, two generations per year (`a` = before
   mid-July, `b` = after).
 - **Space**: 18 pools from Mývatn sites and other Icelandic lakes, 2019.
 
@@ -13,10 +14,13 @@ evolution and neutral genetic variation. Crashes specifically are the main
 interest; association with abundance in general is secondary.
 
 Current analysis: SNPs whose allele frequencies covary with abundance
-(log(1 + N)) across the time series, tested with BayPass, then matched to
-genes, BLASTed to *D. melanogaster*, and passed to a time-series analysis
-aimed at balancing selection. A 2026-10 review found this candidate set is
-not yet interpretable (see `TODO.md`).
+across the time series, tested with BayPass, then matched to genes,
+BLASTed to *D. melanogaster*, and passed to a time-series analysis aimed at
+balancing selection. The 2025 candidates (covariate log(1 + N)) were found
+not yet interpretable by a 2026-10 review (see `TODO.md`). The rerun
+(2026-11) uses the log harmonic mean of N over the previous 6 generations
+as the primary covariate, with log(1 + N) and its lag as sensitivity
+analyses, on 3 thinned SNP subsamples per missing-data setting.
 
 ## Study facts (from the owner)
 
