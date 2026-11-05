@@ -30,9 +30,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       `r941_min_sup_g507` and `bin/mito-collapse.sh`; built by the owner
       2026-10-26 (container rebuild, RERUN-CHECKLIST C3). Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
-- [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
-      `baypass-check-candidates.R` for the new BayPass output names
-      (missing-data tag) and to compare settings.
+- [ ] Update `_R/baypass-analysis.R` and `baypass-check-candidates.R`
+      for the new BayPass output names (missing-data tag) and to compare
+      settings (`baypass-check-omegas.R` done 2026-11-05).
 - [x] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
       `-nthreads 8`; BayPass 2.4 fixed a bug in the Ω update "introduced with
       parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but

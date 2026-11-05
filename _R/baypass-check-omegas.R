@@ -1,33 +1,58 @@
-
 #'
-#' Check consistency of Omega matrices across runs.
+#' Check consistency of Omega (population covariance) matrices from
+#' `01-baypass-init`: 3 thinned subsamples for each of 3 missing-data
+#' settings (2026-11 rerun).
 #'
-#' First download, extract baypass-init runs into directory `baypass_init_dir`.
+#' Within a setting, the cluster step `02-check-omegas` already reports
+#' pairwise FMD; this recomputes it (should match `omega-check.tsv`) and
+#' adds pairs across settings. Settings differ in their SNP sets, so FMD
+#' across settings shows how much the missing-data setting itself changes
+#' Omega, compared with the subsample-to-subsample noise within a setting.
+#'
+#' Reads the `baypass-init-<tag>-sub<k>.tar.gz` outputs in the local data
+#' folder (`tany_dir("baypass-init")`). Writes `_data/baypass-omega-fmd.csv`.
 #'
 
 library(tidyverse)
 library(geigen) # geigen function inside fmd.dist
 
+source("_R/data-dir.R")
 
-baypass_init_dir <- "~/_data/_baypass/init"
+
+init_dir <- tany_dir("baypass-init")
+mp_tags <- c("mp050", "mp075", "mp100")
 
 
-n_omegas <- list.dirs(baypass_init_dir) |>
-    keep(\(x) str_detect(x, "-sub")) |>
-    discard(\(x) str_detect(x, "-sub0")) |>
-    length()
 
-omegas <- sprintf(paste0(baypass_init_dir, "/baypass-init-sub%i/",
-                         "tany-init-sub%i_mat_omega.out"), 1:n_omegas, 1:n_omegas) |>
-    map(\(fn) {
-        fn |>
-            read_table(col_names = paste0("samp_", 1:17), col_types = cols()) |>
+# =============================================================================*
+# ---- read Omegas ----
+# =============================================================================*
+
+
+omega_df <- crossing(tag = mp_tags, sub = 1:3) |>
+    mutate(name = sprintf("%s-sub%i", tag, sub))
+
+#' Extract only the Omega file from each archive.
+omegas <- omega_df$name |>
+    set_names() |>
+    map(\(nm) {
+        fn <- sprintf("baypass-init-%s/tany-init-%s_mat_omega.out", nm, nm)
+        untar(file.path(init_dir, sprintf("baypass-init-%s.tar.gz", nm)),
+              files = fn, exdir = tempdir())
+        file.path(tempdir(), fn) |>
+            read_table(col_names = FALSE, col_types = cols()) |>
             as.matrix() |>
             unname()
     })
 
-# Should be true:
-all(map_lgl(omegas, isSymmetric))
+# Should be TRUE (all 18 x 18 and symmetric):
+all(map_lgl(omegas, \(x) isSymmetric(x) && all(dim(x) == 18)))
+
+
+
+# =============================================================================*
+# ---- FMD ----
+# =============================================================================*
 
 
 #' From baypass `utils` folder
@@ -42,44 +67,39 @@ fmd.dist <- function(mat1, mat2) {
     return(sqrt(sum(log(geigen(mat1,mat2)$values)**2)))
 }
 
-fmd_df <- crossing(a = 1:length(omegas), b = 1:length(omegas)) |>
-    filter(a > b) |>
-    mutate(fmd = map2_dbl(a, b, \(i, j) fmd.dist(omegas[[i]], omegas[[j]]))) |>
-    arrange(desc(fmd))
+fmd_df <- combn(omega_df$name, 2) |>
+    t() |>
+    as_tibble(.name_repair = \(x) c("a", "b")) |>
+    mutate(tag_a = str_remove(a, "-sub.*"),
+           tag_b = str_remove(b, "-sub.*"),
+           pair = ifelse(tag_a == tag_b, "within", "across"),
+           fmd = map2_dbl(a, b, \(i, j) fmd.dist(omegas[[i]], omegas[[j]])))
 
-range(fmd_df$fmd)
-# [1] 0.2724682 3.7849116
-
-fmd_df
-
-# # A tibble: 3 × 3
-#       a     b   fmd
-#   <int> <int> <dbl>
-# 1     3     1 3.78
-# 2     3     2 3.77
-# 3     2     1 0.272
+write_csv(fmd_df, "_data/baypass-omega-fmd.csv")
 
 
-#'
-#' Because sub-sample 3 is quite dissimilar to the other ones (FMD > 3.7),
-#' then we have to use the single covariance matrix
-#'
+#' Within-setting pairs should match the cluster's `omega-check.tsv`.
+fmd_df |>
+    filter(pair == "within") |>
+    select(a, b, fmd)
 
+fmd_df |>
+    group_by(pair, tag_a, tag_b) |>
+    summarize(min = min(fmd), median = median(fmd), max = max(fmd),
+              .groups = "drop")
 
-#'
-#' I'm going to use the one based on all SNPs, but out of curiosity,
-#' let's check for how similar these sub-samples are
-#' to the omega matrix calculated using all SNPs.
-#'
-omega0 <- paste0(baypass_init_dir,
-                 "/baypass-init-sub0/tany-init-sub0_mat_omega.out") |>
-    read_table(col_names = paste0("samp_", 1:17), col_types = cols()) |>
-    as.matrix() |>
-    unname()
-
-map_dbl(1:3, \(i) fmd.dist(omega0, omegas[[i]]))
-# [1] 0.5697506 0.6034402 4.1120763
+#   pair   tag_a tag_b   min median   max
+# 1 across mp050 mp075 0.283  0.320 0.391
+# 2 across mp050 mp100 0.557  0.593 0.637
+# 3 across mp075 mp100 0.432  0.456 0.518
+# 4 within mp050 mp050 0.222  0.282 0.288
+# 5 within mp075 mp075 0.254  0.288 0.318
+# 6 within mp100 mp100 0.285  0.330 0.334
 
 #'
-#' Looks like it's #3 that's the problem. < shrug >
+#' (2026-11-05) Within-setting values match `omega-check.tsv`. mp050 and
+#' mp075 Omegas differ about as much as subsamples within a setting do;
+#' mp100 (data required in all pools) differs from mp050 by more
+#' (0.56-0.64) than any within-setting pair, so the missing-data setting
+#' changes Omega, not just the SNP count.
 #'

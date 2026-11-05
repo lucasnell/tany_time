@@ -74,9 +74,12 @@ are written by `_R/make-job-lists.R`.
      `logN_lag1`); 5,000 retained MCMC samples; covariates scaled (3.1
      default). The 2025 runs used Ω from all SNPs, raw logN, β = 0, and
      1,000 samples.
-7. `_R/baypass-check-omegas.R` (2025 runs): subsample Ω matrices
-   disagreed (FMD distance > 3.7 for subsample 3), so the all-SNP Ω was
-   used. The 2026-11 rerun checks this again in `02-check-omegas`.
+7. `_R/baypass-check-omegas.R`: FMD distance between the 9 Ω matrices
+   from the 2026-11 rerun (`tany_dir("baypass-init")`), within and across
+   missing-data settings → `_data/baypass-omega-fmd.csv`. Within settings
+   0.22-0.33 (same as `02-check-omegas`); mp050 vs. mp100 0.56-0.64. The
+   2025 subsample Ωs disagreed (FMD > 3.7 for subsample 3), so the 2025
+   runs used the all-SNP Ω.
 8. `_R/baypass-analysis.R`: median Bayes factor (dB) across 10 `beta0` runs;
    candidates at ≥ 30 dB → `_data/candi_df.rds`; nearest gene within 5 kb →
    `_data/candi_funcs_df.rds`; BLASTP of candidate genes against
