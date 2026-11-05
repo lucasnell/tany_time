@@ -397,6 +397,11 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       3 covariates x 10 runs, Ising β = 0 only; one first, as its speed
       isn't measured) →
       `./check-step.sh 03-select-time/03-baypass-beta`.
+      Timing job submitted 2026-11-05 (cluster 12427786): first line of
+      `baypass_beta_info.txt` (mp050, sub1, `hm_logN_6`, run 1), queued
+      from `logs/03-baypass-beta/first.txt`. Check its ETA with
+      `condor_ssh_to_job` after ~1 day; if near 72 h, lower `NVAL` or
+      the subsample size before submitting the other 269.
 
 ## J. After the rerun
 
