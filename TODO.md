@@ -482,6 +482,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
 
 ## Other analysis items
 
+- [ ] **Ω depends on the SNPs' read depth** (`_R/baypass-omega-differences.R`,
+      2026-11-05). mp050 and mp100 Ωs differ because SNPs with missing pools
+      differ in divergence structure, not because of missing data itself;
+      part of that is depth: in complete SNPs too, pairwise divergence is
+      ~20% lower at sites with depth > 1.2x the pool median and ~26% higher
+      below 0.8x. High-depth sites may be duplicated regions collapsed in
+      the assembly (max-depth mask is each pool's 95th percentile). Open:
+      whether a stricter or depth-matched SNP set changes candidates; the
+      three missing-data settings already serve as one sensitivity check.
+
 - [ ] **Pool inclusion** (decided 2026-10-10: QC-metric protocol instead of a
       median-coverage cutoff; implemented, not yet run).
       - Metrics: missing-data rate after masking, private SNPs, duplication

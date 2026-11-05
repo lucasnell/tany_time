@@ -79,7 +79,10 @@ are written by `_R/make-job-lists.R`.
    missing-data settings → `_data/baypass-omega-fmd.csv`. Within settings
    0.22-0.33 (same as `02-check-omegas`); mp050 vs. mp100 0.56-0.64. The
    2025 subsample Ωs disagreed (FMD > 3.7 for subsample 3), so the 2025
-   runs used the all-SNP Ω.
+   runs used the all-SNP Ω. `_R/baypass-omega-differences.R` →
+   `_data/baypass-omega-diffs.txt`: why mp050 and mp100 Ωs differ (which
+   SNPs are kept, partly their read depth; SN-1-95_S59 contributes most),
+   using BayPass inputs in `tany_dir("baypass-inputs")`.
 8. `_R/baypass-analysis.R`: median Bayes factor (dB) across 10 `beta0` runs;
    candidates at ≥ 30 dB → `_data/candi_df.rds`; nearest gene within 5 kb →
    `_data/candi_funcs_df.rds`; BLASTP of candidate genes against

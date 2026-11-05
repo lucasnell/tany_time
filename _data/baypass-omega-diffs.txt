@@ -1,0 +1,219 @@
+
+== 1. Scale: generalized eigenvalues, matched subsamples
+# A tibble: 9 × 9
+  a     b         k   fmd mean_log_lam lam_min lam_max trace_ratio scaled_fmd
+  <chr> <chr> <int> <dbl>        <dbl>   <dbl>   <dbl>       <dbl>      <dbl>
+1 mp050 mp075     1 0.321      0.00180   0.889    1.29       0.996      0.322
+2 mp050 mp075     2 0.312     -0.00422   0.858    1.26       0.997      0.312
+3 mp050 mp075     3 0.314      0.00575   0.883    1.27       0.997      0.315
+4 mp050 mp100     1 0.589     -0.0334    0.675    1.40       0.974      0.573
+5 mp050 mp100     2 0.605     -0.0329    0.678    1.47       0.977      0.590
+6 mp050 mp100     3 0.602     -0.0379    0.658    1.41       0.977      0.584
+7 mp075 mp100     1 0.450     -0.0353    0.709    1.17       0.978      0.427
+8 mp075 mp100     2 0.446     -0.0287    0.727    1.22       0.980      0.430
+9 mp075 mp100     3 0.500     -0.0436    0.678    1.20       0.980      0.475
+
+Eigenvalues (sorted), sub1 of each pair:
+      a     b
+1 mp050 mp075
+2 mp050 mp100
+3 mp075 mp100
+                                                                                     lam
+1 0.89 0.92 0.93 0.96 0.97 0.98 0.98 0.99 0.99 0.99 1 1.01 1.01 1.03 1.03 1.05 1.08 1.29
+2   0.67 0.85 0.88 0.9 0.92 0.94 0.95 0.96 0.97 0.97 0.98 0.98 1 1.02 1.03 1.03 1.09 1.4
+3  0.71 0.86 0.9 0.92 0.94 0.95 0.95 0.97 0.98 0.98 0.99 0.99 1 1.02 1.03 1.05 1.06 1.17
+
+Squared loadings on the smallest / largest eigenvector (mp050 vs. mp100):
+# A tibble: 18 × 3
+   pool        load_min load_max
+   <chr>          <dbl>    <dbl>
+ 1 SN-1-95_S59    0.463    0.413
+ 2 SN-1-10_S26    0.106    0.04
+ 3 SN-2-07_S31    0.1      0.298
+ 4 SN-1-13_S56    0.075    0.017
+ 5 SN-1-07_S23    0.065    0.027
+ 6 SN-2-15_S34    0.05     0.023
+ 7 SN-2-97_S37    0.037    0.002
+ 8 SN-1-09_S25    0.018    0.008
+ 9 SN-1-97_S61    0.016    0.011
+10 SN-1-14_S27    0.015    0.008
+11 SN-2-00_S29    0.014    0.032
+12 SN-2-08_S32    0.011    0.003
+13 SN-1-99_S28    0.009    0.024
+14 SN-2-92_S35    0.008    0.024
+15 SN-2-99_S38    0.007    0.033
+16 SN-1-08_S24    0.004    0.001
+17 SN-1-02_S55    0.002    0.027
+18 SN-2-02_S30    0.001    0.009
+
+== 2. Pools (means over 3 subsamples)
+FMD mp050 vs. mp100 with all pools: 0.599
+# A tibble: 18 × 10
+   pool          hap missing_mp050 missing_mp075 depth_mp050 depth_mp100
+   <chr>       <int>         <dbl>         <dbl>       <dbl>       <dbl>
+ 1 SN-1-13_S56    28        0.0704        0.0581        25          24
+ 2 SN-1-10_S26    80        0.053         0.0411        86          87
+ 3 SN-1-07_S23    80        0.0777        0.0551        61          58.7
+ 4 SN-1-95_S59    80        0.138         0.121         18          17
+ 5 SN-2-07_S31    80        0.054         0.0349        95          94
+ 6 SN-2-15_S34    80        0.0626        0.0483        45          43
+ 7 SN-2-97_S37    38        0.0593        0.0361        30          29
+ 8 SN-2-00_S29    80        0.0498        0.0299        53          52
+ 9 SN-1-09_S25    80        0.0608        0.0447        96          97
+10 SN-2-99_S38    80        0.0629        0.0369        99          97
+11 SN-1-99_S28    80        0.0524        0.0288        49          47
+12 SN-2-08_S32    80        0.0558        0.041         82          82
+13 SN-1-02_S55    80        0.0675        0.0347        87          83
+14 SN-1-14_S27    80        0.0602        0.0379        73          70
+15 SN-2-92_S35    80        0.0528        0.032         80.7        80
+16 SN-1-97_S61    48        0.0651        0.035        104         100
+17 SN-2-02_S30    80        0.0594        0.034         90          87.3
+18 SN-1-08_S24    80        0.0634        0.0403       110         108
+   omega_diag_mp050 omega_diag_mp100 diag_ratio fmd_drop
+              <dbl>            <dbl>      <dbl>    <dbl>
+ 1          0.0691           0.0752       0.92     0.427
+ 2          0.0433           0.044        0.983    0.427
+ 3          0.0505           0.0527       0.959    0.446
+ 4          0.00837          0.00913      0.917    0.456
+ 5          0.0129           0.0127       1.02     0.508
+ 6          0.0223           0.0228       0.979    0.524
+ 7          0.00866          0.00892      0.971    0.569
+ 8          0.0117           0.0113       1.03     0.571
+ 9          0.0161           0.0162       0.998    0.574
+10          0.00645          0.00618      1.04     0.582
+11          0.00857          0.00843      1.02     0.582
+12          0.0183           0.0184       0.996    0.583
+13          0.00909          0.00893      1.02     0.583
+14          0.011            0.011        0.999    0.584
+15          0.00955          0.00916      1.04     0.585
+16          0.00821          0.00807      1.02     0.586
+17          0.0102           0.00977      1.04     0.591
+18          0.00815          0.00793      1.03     0.592
+
+== 3. Pairwise divergence (Delta) by SNP set
+SNPs per set (sub1, sub2, sub3):
+             [,1]   [,2]   [,3]
+all        341286 341286 341285
+complete   176352 176255 175765
+incomplete 164934 165031 165520
+mp100      176124 176124 176124
+
+mp050 sub1: SNPs by number of pools missing:
+
+     0      1      2      3      4      5      6      7      8      9
+176352  75753  35659  19192  11714   7716   5472   4014   3021   2393
+
+BayPass Omegas converted to Delta, D:
+# A tibble: 6 × 3
+  pair                            d_min   d_max
+  <chr>                           <dbl>   <dbl>
+1 mp050 subsamples              0.00429 0.00590
+2 mp050 vs. mp075 (matched sub) 0.0108  0.0136
+3 mp050 vs. mp100 (matched sub) 0.0443  0.0460
+4 mp075 subsamples              0.00492 0.00582
+5 mp075 vs. mp100 (matched sub) 0.0321  0.0358
+6 mp100 subsamples              0.00679 0.00756
+
+Delta by SNP set, D (over 3 subsamples; a = b rows are subsample noise):
+# A tibble: 15 × 4
+   a                     b                       d_min   d_max
+   <chr>                 <chr>                   <dbl>   <dbl>
+ 1 mp050_complete        complete_with_missing 0.00475 0.00562
+ 2 mp050_complete        mp100                 0.00506 0.00648
+ 3 mp050_all             mp050_all             0.00577 0.00731
+ 4 mp050_complete        mp050_complete        0.00681 0.00806
+ 5 mp100                 complete_with_missing 0.00710 0.00819
+ 6 mp100                 mp100                 0.00778 0.00867
+ 7 complete_with_missing complete_with_missing 0.0101  0.0112
+ 8 mp050_incomplete      mp050_incomplete      0.0108  0.0118
+ 9 mp050_all             complete_with_missing 0.0291  0.0308
+10 mp050_all             mp100                 0.0292  0.0318
+11 mp050_all             mp050_complete        0.0295  0.0315
+12 mp050_all             mp050_incomplete      0.0460  0.0493
+13 mp050_incomplete      mp100                 0.0722  0.0765
+14 mp050_incomplete      complete_with_missing 0.0728  0.0767
+15 mp050_complete        mp050_incomplete      0.0773  0.0829
+
+Delta from reads vs. from BayPass Omega, correlation over pairs:
+# A tibble: 3 × 3
+      k mp050 mp100
+  <int> <dbl> <dbl>
+1     1 0.996 0.996
+2     2 0.996 0.996
+3     3 0.996 0.996
+
+Mean Delta ratio over pairs (mean of subsamples):
+# A tibble: 1 × 3
+  incomplete_vs_complete complete_with_missing_vs_complete baypass_050_vs_100
+                   <dbl>                             <dbl>              <dbl>
+1                  0.998                              1.01              0.967
+
+Per pool, mean Delta ratio over its pairs:
+# A tibble: 18 × 3
+   pool        incompl_vs_compl baypass_050_vs_100
+   <chr>                  <dbl>              <dbl>
+ 1 SN-2-99_S38            1.13               0.96
+ 2 SN-1-95_S59            1.08               0.962
+ 3 SN-1-97_S61            1.02               0.966
+ 4 SN-2-92_S35            1.02               0.977
+ 5 SN-2-02_S30            1.02               0.977
+ 6 SN-1-99_S28            0.998              0.96
+ 7 SN-2-07_S31            0.995              0.981
+ 8 SN-1-08_S24            0.993              0.962
+ 9 SN-1-02_S55            0.992              0.962
+10 SN-1-10_S26            0.988              0.986
+11 SN-2-00_S29            0.987              0.963
+12 SN-1-14_S27            0.986              0.967
+13 SN-2-08_S32            0.978              0.971
+14 SN-2-15_S34            0.968              0.971
+15 SN-1-09_S25            0.967              0.967
+16 SN-2-97_S37            0.966              0.963
+17 SN-1-07_S23            0.954              0.965
+18 SN-1-13_S56            0.901              0.942
+
+== 4. Complete vs. incomplete mp050 SNPs (sub1)
+# A tibble: 4 × 6
+  group      n rel_dep_q10 rel_dep_median rel_dep_q90 maf_median
+  <chr>  <int>       <dbl>          <dbl>       <dbl>      <dbl>
+1 0     176352       0.818           1.02        1.20      0.269
+2 1-2   111412       0.761           1.08        1.26      0.265
+3 3-5    38622       0.859           1.17        1.33      0.259
+4 6-9    14900       0.795           1.18        1.38      0.251
+
+SNPs with exactly 1 missing pool: share by pool
+# A tibble: 18 × 2
+   pool        share_of_1missing
+   <chr>                   <dbl>
+ 1 SN-1-95_S59             0.295
+ 2 SN-1-10_S26             0.071
+ 3 SN-1-09_S25             0.064
+ 4 SN-1-07_S23             0.063
+ 5 SN-2-08_S32             0.056
+ 6 SN-2-07_S31             0.05
+ 7 SN-1-08_S24             0.044
+ 8 SN-1-14_S27             0.042
+ 9 SN-2-92_S35             0.039
+10 SN-1-13_S56             0.039
+11 SN-2-99_S38             0.037
+12 SN-2-02_S30             0.037
+13 SN-2-00_S29             0.037
+14 SN-1-97_S61             0.032
+15 SN-2-97_S37             0.028
+16 SN-2-15_S34             0.024
+17 SN-1-02_S55             0.024
+18 SN-1-99_S28             0.018
+
+Incomplete SNPs split by relative depth: D from complete SNPs
+# A tibble: 3 × 4
+  bin           n      d mean_ratio
+  <fct>     <int>  <dbl>      <dbl>
+1 (0,0.8]   19176 0.238       1.64
+2 (0.8,1.2] 98615 0.0476      0.977
+3 (1.2,Inf] 47143 0.225       0.817
+Complete SNPs split the same way:
+# A tibble: 3 × 4
+  bin            n      d mean_ratio
+  <fct>      <int>  <dbl>      <dbl>
+1 (0,0.8]    14317 0.0993      1.26
+2 (0.8,1.2] 144852 0.0158      0.999
+3 (1.2,Inf]  17183 0.201       0.790
