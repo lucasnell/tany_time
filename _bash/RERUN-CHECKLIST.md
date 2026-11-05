@@ -390,9 +390,12 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       mp100 ~37 h, thinned subsamples (~176k-341k SNPs) ~13-24 h, all
       for the core (Ω) model.
 
-- [ ] **I3.** `02-check-omegas` (1 job) →
+- [x] **I3.** `02-check-omegas` (1 job) →
       `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on
       FMD between subsample Ωs within each setting; diagnostic only).
+      PASS 2026-11-05: pairwise FMD mp050 0.22-0.29, mp075 0.25-0.32,
+      mp100 0.29-0.33 (all < 0.5). `omega-check.tsv` copied to the local
+      data folder (`baypass-init/`).
 - [ ] **I4.** `03-baypass-beta` (270 jobs: 3 settings x 3 subsamples x
       3 covariates x 10 runs, Ising β = 0 only; one first, as its speed
       isn't measured) →
