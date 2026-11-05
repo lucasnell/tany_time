@@ -364,9 +364,15 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       inside the unquoted heredoc was run by bash; harmless (comment
       text only), removed.
 
-- [ ] **I2.** `01-baypass-init` (9 jobs: 3 settings x 3 thinned
-      subsamples, each with its own Ω; ~13-24 h each) →
-      `./check-step.sh 03-select-time/01-baypass-init`. Switched from
+- [x] **I2.** `01-baypass-init` (9 jobs: 3 settings x 3 thinned
+      subsamples, each with its own Ω) →
+      `./check-step.sh 03-select-time/01-baypass-init`. PASS 2026-11-05
+      (cluster 12414001): 9 of 9 exit 0, empty `.err`, every BayPass log
+      reached "Analysis completed". BayPass time per job: mp050 19.3,
+      20.3, and 31.8 h; mp075 18.2-20.3 h; mp100 9.9-10.4 h (above the
+      13-24 h scaled from SNP counts; mp050-sub3 ran 50% longer than
+      its siblings on the same input size, so node speed varies).
+      Switched from
       full SNP sets to subsamples 2026-11-04 (owner), after the test
       below.
       Test job 2026-11-03 (cluster 12398989): submitted with
@@ -382,7 +388,7 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       (~2.5 s per iteration on 1,023,857 SNPs, 7.5 of 8 CPUs busy).
       That is at CHTC's 72-h limit. Scaled by SNPs: mp075 ~66 h,
       mp100 ~37 h, thinned subsamples (~176k-341k SNPs) ~13-24 h, all
-      for the core (Ω) model. Owner to choose the plan before more jobs.
+      for the core (Ω) model.
 
 - [ ] **I3.** `02-check-omegas` (1 job) →
       `./check-step.sh 03-select-time/02-check-omegas` (PASS or WARN on

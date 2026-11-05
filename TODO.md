@@ -33,11 +33,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
 - [ ] Update `_R/baypass-analysis.R`, `baypass-check-omegas.R`, and
       `baypass-check-candidates.R` for the new BayPass output names
       (missing-data tag) and to compare settings.
-- [ ] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
+- [x] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
       `-nthreads 8`; BayPass 2.4 fixed a bug in the Ω update "introduced with
       parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but
       all current candidates rest on this Ω. Rerun `01-baypass-init` with 3.1
-      before any new covariate runs.
+      before any new covariate runs. Done 2026-11-05 on 3 thinned
+      subsamples per missing-data setting (RERUN-CHECKLIST I2).
 - [x] `-nval` set explicitly (`NVAL=5000`) in `01-baypass-init.sh` and
       `03-baypass-beta.sh` (3.1 default is 250). Expect ~25–50 h per job
       (estimate from 2.31 run times; see the scripts); CHTC's default run

@@ -28,8 +28,9 @@ export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/beta"
 #' of 100), 5,000 samples is ~102,000 iterations, i.e., ~3–4x longer:
 #' roughly 25–50 h per job if speed per iteration is unchanged. Measured
 #' 2026-11-04 for the core model: ~2.5 s per iteration on 1.02 million SNPs
-#' (~71 h), so jobs run on thinned subsamples (~176k-341k SNPs; ~13-24 h
-#' for the core model). The covariate model's speed isn't measured yet, so
+#' (~71 h), so jobs run on thinned subsamples (~176k-341k SNPs; core model
+#' measured 2026-11-05: mp050 19-32 h, mp075 18-20 h, mp100 10 h per job,
+#' longer than the 13-24 h scaled from SNP counts). The covariate model's speed isn't measured yet, so
 #' check the first job's progress before submitting the rest.
 export NVAL=5000
 

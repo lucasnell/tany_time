@@ -26,7 +26,8 @@ export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/init"
 #' roughly 25–50 h per job if speed per iteration is unchanged. Measured
 #' 2026-11-04: ~2.5 s per iteration on all 1.02 million mp050 SNPs (~71 h,
 #' at CHTC's 72-h limit), so jobs run on the thinned subsamples (~176k-341k
-#' SNPs; ~13-24 h).
+#' SNPs). Measured 2026-11-05 (BayPass time per job): mp050 19-32 h, mp075
+#' 18-20 h, mp100 10 h.
 export NVAL=5000
 
 #' Arguments (from `baypass_init_info.txt`, written by `_R/make-job-lists.R`):
