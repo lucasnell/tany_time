@@ -219,7 +219,9 @@ pool_df |>
 #' This is not BayPass's estimator; it compares SNP sets with one method.
 #' The same Delta computed from each BayPass Omega checks that the method
 #' sees the mp050 vs. mp100 difference.
-pair_delta <- function(ref, alt, hap) {
+#' Optional SNP weights `w` (section 5) multiply each SNP's terms in both
+#' sums.
+pair_delta <- function(ref, alt, hap, w = rep(1, nrow(ref))) {
     dep <- ref + alt
     has <- dep > 0
     p <- ifelse(has, ref / pmax(dep, 1), NA_real_)
@@ -233,8 +235,9 @@ pair_delta <- function(ref, alt, hap) {
         for (l in (j + 1):J) {
             b <- has[, j] & has[, l]
             out[j, l] <- out[l, j] <-
-                sum((p[b, j] - p[b, l])^2 - v[b] * (cc[b, j] + cc[b, l])) /
-                sum(v[b])
+                sum(w[b] * ((p[b, j] - p[b, l])^2 -
+                                v[b] * (cc[b, j] + cc[b, l]))) /
+                sum(w[b] * v[b])
         }
     }
     out
@@ -454,6 +457,149 @@ tibble(bin = cut(rel_dep[cmp], brks)) |>
               .groups = "drop") |>
     print()
 
+
+
+# =============================================================================*
+# ---- 5. depth-matched comparison ----
+# =============================================================================*
+
+
+#' Does depth explain the difference between incomplete and complete SNPs?
+#' Complete SNPs are reweighted to match the incomplete SNPs' distribution
+#' of relative depth (20 quantile bins), or of relative depth x minor
+#' allele frequency (20 x 5 bins): weight = share of incomplete SNPs in the
+#' bin / share of complete SNPs in the bin. If depth (and MAF) explain the
+#' difference, D(incomplete, reweighted complete) falls to subsample noise.
+#' The same is done with all mp050 SNPs as the target, compared with mp100
+#' (the BayPass comparison). n_eff = (sum w)^2 / sum w^2 (effective number
+#' of SNPs after weighting).
+snp_info <- function(cnt) {
+    dep <- cnt$ref + cnt$alt
+    has <- dep > 0
+    complete <- rowSums(!has) == 0
+    med <- apply(dep[complete, ], 2, median)
+    rel_dep <- rowSums(sweep(dep, 2, med, "/") * has) / rowSums(has)
+    e <- rowSums(ifelse(has, cnt$ref / pmax(dep, 1), 0)) / rowSums(has)
+    tibble(complete = complete, rel_dep = rel_dep, maf = pmin(e, 1 - e))
+}
+match_weights <- function(bin, from, to) {
+    #' weights for SNPs `from` so their bin shares equal those of `to`
+    p_to <- table(factor(bin[to], levels = levels(bin))) / sum(to)
+    p_from <- table(factor(bin[from], levels = levels(bin))) / sum(from)
+    w <- as.numeric(p_to / p_from)[as.integer(bin[from])]
+    w[!is.finite(w)] <- 0
+    w
+}
+n_eff <- function(w) sum(w)^2 / sum(w^2)
+
+dm <- map(1:3, \(k) {
+    c050 <- counts$cnt[[which(counts$tag == "mp050" & counts$k == k)]]
+    c100 <- counts$cnt[[which(counts$tag == "mp100" & counts$k == k)]]
+    si <- snp_info(c050)
+    s100 <- snp_info(c100)
+    dep_bin <- cut(si$rel_dep, unique(quantile(si$rel_dep, 0:20 / 20)),
+                   include.lowest = TRUE)
+    maf_bin <- cut(si$maf, unique(quantile(si$maf, 0:5 / 5)),
+                   include.lowest = TRUE)
+    dm_bin <- interaction(dep_bin, maf_bin, drop = FALSE)
+    cmp <- si$complete
+    inc <- !cmp
+    all_ <- rep(TRUE, length(cmp))
+    #' mp100 SNPs binned on the mp050 breaks
+    dep100 <- cut(s100$rel_dep, unique(quantile(si$rel_dep, 0:20 / 20)),
+                  include.lowest = TRUE)
+    maf100 <- cut(s100$maf, unique(quantile(si$maf, 0:5 / 5)),
+                  include.lowest = TRUE)
+    dm100 <- interaction(dep100, maf100, drop = FALSE)
+    w100 <- function(b050, b100) {
+        p_to <- table(b050) / length(b050)
+        p_from <- table(b100) / length(b100)
+        w <- as.numeric(p_to / p_from)[as.integer(b100)]
+        w[!is.finite(w)] <- 0
+        w
+    }
+    rc <- c050$ref[cmp, ]
+    ac <- c050$alt[cmp, ]
+    w_d <- match_weights(dep_bin, cmp, inc)
+    w_dm <- match_weights(dm_bin, cmp, inc)
+    w100_d <- w100(dep_bin, dep100)
+    w100_dm <- w100(dm_bin, dm100)
+    list(
+        n_eff = c(compl_depth = n_eff(w_d), compl_depth_maf = n_eff(w_dm),
+                  mp100_depth = n_eff(w100_d), mp100_depth_maf = n_eff(w100_dm)),
+        delta = list(
+            incomplete = mom[[k]]$delta$mp050_incomplete,
+            complete = mom[[k]]$delta$mp050_complete,
+            complete_w_depth = pair_delta(rc, ac, c050$hap, w_d),
+            complete_w_depth_maf = pair_delta(rc, ac, c050$hap, w_dm),
+            mp050_all = mom[[k]]$delta$mp050_all,
+            mp100 = mom[[k]]$delta$mp100,
+            mp100_w_depth = pair_delta(c100$ref, c100$alt, c100$hap, w100_d),
+            mp100_w_depth_maf = pair_delta(c100$ref, c100$alt, c100$hap,
+                                           w100_dm)))
+})
+
+cat("\n== 5. Depth-matched comparison\n")
+cat("Effective SNPs after weighting (sub1-3):\n")
+print(sapply(dm, \(x) round(x$n_eff)))
+
+dm_pairs <- tribble(
+    ~a,           ~b,
+    "incomplete", "complete",
+    "incomplete", "complete_w_depth",
+    "incomplete", "complete_w_depth_maf",
+    "mp050_all",  "mp100",
+    "mp050_all",  "mp100_w_depth",
+    "mp050_all",  "mp100_w_depth_maf")
+cat("\nD between sets, matched subsamples:\n")
+dm_pairs |>
+    mutate(d = map2(a, b, \(i, j) {
+        map_dbl(1:3, \(k) dist_off(dm[[k]]$delta[[i]], dm[[k]]$delta[[j]]))
+    }),
+    d_min = map_dbl(d, min), d_max = map_dbl(d, max)) |>
+    select(-d) |>
+    print(width = Inf)
+cat("\nSubsample noise (D between subsamples of the same set):\n")
+tibble(set = names(dm[[1]]$delta)) |>
+    mutate(d = map(set, \(s) {
+        map_dbl(list(c(1, 2), c(1, 3), c(2, 3)), \(x) {
+            dist_off(dm[[x[1]]]$delta[[s]], dm[[x[2]]]$delta[[s]])
+        })
+    }),
+    d_min = map_dbl(d, min), d_max = map_dbl(d, max)) |>
+    select(-d) |>
+    print(width = Inf)
+
+#' Sensitivity to the number of depth bins (depth only).
+cat("\nD after depth matching, by number of depth bins (min-max over subsamples):\n")
+crossing(n_bins = c(10, 20, 40), k = 1:3) |>
+    mutate(d = map2(n_bins, k, \(nb, k) {
+        c050 <- counts$cnt[[which(counts$tag == "mp050" & counts$k == k)]]
+        c100 <- counts$cnt[[which(counts$tag == "mp100" & counts$k == k)]]
+        si <- snp_info(c050)
+        s100 <- snp_info(c100)
+        brk <- unique(quantile(si$rel_dep, 0:nb / nb))
+        b050 <- cut(si$rel_dep, brk, include.lowest = TRUE)
+        b100 <- cut(s100$rel_dep, brk, include.lowest = TRUE)
+        w_c <- match_weights(b050, si$complete, !si$complete)
+        p_to <- table(b050) / length(b050)
+        p_from <- table(b100) / length(b100)
+        w_1 <- as.numeric(p_to / p_from)[as.integer(b100)]
+        w_1[!is.finite(w_1)] <- 0
+        cmp <- si$complete
+        c(inc_vs_compl = dist_off(
+              dm[[k]]$delta$incomplete,
+              pair_delta(c050$ref[cmp, ], c050$alt[cmp, ], c050$hap, w_c)),
+          all_vs_mp100 = dist_off(
+              dm[[k]]$delta$mp050_all,
+              pair_delta(c100$ref, c100$alt, c100$hap, w_1)))
+    })) |>
+    unnest_wider(d) |>
+    group_by(n_bins) |>
+    summarize(across(c(inc_vs_compl, all_vs_mp100),
+                     list(min = min, max = max))) |>
+    print(width = Inf)
+
 sink()
 #' Printed tibbles pad lines with spaces; strip them.
 read_lines(out_file) |>
@@ -481,4 +627,12 @@ read_lines(out_file) |>
 #'    0.79), higher at < 0.8 (1.26). Mid-depth incomplete SNPs still differ
 #'    from complete ones (D 0.048 vs. 0.016 for mid-depth complete SNPs),
 #'    so depth explains part of the difference, not all.
+#' 5. Reweighting to match depth: all mp050 SNPs vs. mp100 drops from
+#'    D 0.029-0.032 to 0.009-0.011, the same as subsample noise
+#'    (0.008-0.010); incomplete vs. complete drops from 0.073-0.078 to
+#'    0.027-0.030, still above noise (0.009-0.012). Matching MAF as well
+#'    changes nothing; 10, 20, or 40 depth bins give the same result. So
+#'    the mp050 vs. mp100 difference in divergence is explained by the
+#'    depth of the SNPs each keeps (shown for read-based divergence, not
+#'    BayPass's Omega itself).
 #'

@@ -217,3 +217,43 @@ Complete SNPs split the same way:
 1 (0,0.8]    14317 0.0993      1.26
 2 (0.8,1.2] 144852 0.0158      0.999
 3 (1.2,Inf]  17183 0.201       0.790
+
+== 5. Depth-matched comparison
+Effective SNPs after weighting (sub1-3):
+                  [,1]   [,2]   [,3]
+compl_depth     108979 109261 108510
+compl_depth_maf 108287 108610 107888
+mp100_depth     153656 153166 154807
+mp100_depth_maf 153278 152804 154528
+
+D between sets, matched subsamples:
+# A tibble: 6 × 4
+  a          b                      d_min  d_max
+  <chr>      <chr>                  <dbl>  <dbl>
+1 incomplete complete             0.0726  0.0777
+2 incomplete complete_w_depth     0.0265  0.0300
+3 incomplete complete_w_depth_maf 0.0257  0.0294
+4 mp050_all  mp100                0.0292  0.0318
+5 mp050_all  mp100_w_depth        0.00947 0.0111
+6 mp050_all  mp100_w_depth_maf    0.00962 0.0110
+
+Subsample noise (D between subsamples of the same set):
+# A tibble: 8 × 3
+  set                    d_min   d_max
+  <chr>                  <dbl>   <dbl>
+1 incomplete           0.0108  0.0118
+2 complete             0.00681 0.00806
+3 complete_w_depth     0.00910 0.0125
+4 complete_w_depth_maf 0.00892 0.0125
+5 mp050_all            0.00577 0.00731
+6 mp100                0.00778 0.00867
+7 mp100_w_depth        0.00816 0.00965
+8 mp100_w_depth_maf    0.00819 0.00952
+
+D after depth matching, by number of depth bins (min-max over subsamples):
+# A tibble: 3 × 5
+  n_bins inc_vs_compl_min inc_vs_compl_max all_vs_mp100_min all_vs_mp100_max
+   <dbl>            <dbl>            <dbl>            <dbl>            <dbl>
+1     10           0.0281           0.0325          0.0102            0.0117
+2     20           0.0265           0.0300          0.00947           0.0111
+3     40           0.0252           0.0290          0.00894           0.0109
