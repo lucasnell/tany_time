@@ -421,9 +421,13 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
 
 ## J. After the rerun
 
-- [ ] **J1.** Update `_R/baypass-analysis.R` and
+- [x] **J1.** Update `_R/baypass-analysis.R` and
       `baypass-check-candidates.R` (`baypass-check-omegas.R` done
       2026-11-05) for the new output names, the
       missing-data grid, and combining the 3 subsamples (positions from
-      each job's `snpdet.sub<k>`).
+      each job's `snpdet.sub<k>`). Done 2026-11-06; tested with
+      `allow_partial <- TRUE` on the timing job (88 candidates, as on the
+      cluster). To run: copy all 270 `.tar` to `tany_dir("baypass-beta")`,
+      then `baypass-analysis.R` (up to the BLAST section) and
+      `baypass-check-candidates.R`.
 - [ ] **J2.** Continue with the review steps in `TODO.md`.

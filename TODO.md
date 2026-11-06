@@ -30,9 +30,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       `r941_min_sup_g507` and `bin/mito-collapse.sh`; built by the owner
       2026-10-26 (container rebuild, RERUN-CHECKLIST C3). Outputs from the new image will differ
       from existing ones (old pins: `git show ca25cfc:_bash/_apptainer/`).
-- [ ] Update `_R/baypass-analysis.R` and `baypass-check-candidates.R`
+- [x] Update `_R/baypass-analysis.R` and `baypass-check-candidates.R`
       for the new BayPass output names (missing-data tag) and to compare
-      settings (`baypass-check-omegas.R` done 2026-11-05).
+      settings (`baypass-check-omegas.R` done 2026-11-05; the other two
+      2026-11-06, tested on the one finished run). BLAST and enrichment
+      still use the 2025 candidates; which sets go through them is decided
+      after the results (owner, 2026-11-06).
 - [x] **Re-estimate Ω.** Current Ω came from BayPass 2.31 with
       `-nthreads 8`; BayPass 2.4 fixed a bug in the Ω update "introduced with
       parallelisation in version 2.3x" (CHANGELOG). Effect size unknown, but
@@ -481,6 +484,21 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        exceed what genome-wide Ne implies. After 2–4.
 
 ## Other analysis items
+
+- [ ] **Bayes factor cutoff for candidates.** `baypass-analysis.R` uses
+      median BF ≥ 30 dB over 10 runs, taken from Gautier et al. 2018 (a
+      convention, "decisive" on Jeffreys' scale), not calibrated to these
+      data. Related: review step 4 (POD-based null threshold via
+      `simulate.baypass()` with real Ω, pool sizes, and coverages); the
+      2025 single runs gave 178-235 SNPs ≥ 30 dB but only 33 by the median;
+      the ceiling is now 59.96 dB (5,000 samples; was 52.96), and the
+      2026 timing run had 28 SNPs at it. Decide the cutoff (or the
+      calibration that sets it) before reading the 2026 candidate results,
+      so the choice can't follow them (2026-11-06).
+- [ ] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
+      R 4.6.** Needed by the BLAST and enrichment sections of
+      `_R/baypass-analysis.R`; not in the current R library (2026-11-06).
+      Outside the project folder, so ask first.
 
 - [ ] **Ω depends on the SNPs' read depth** (`_R/baypass-omega-differences.R`,
       2026-11-05). mp050 and mp100 Ωs differ because SNPs with missing pools

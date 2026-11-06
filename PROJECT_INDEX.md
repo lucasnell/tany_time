@@ -83,10 +83,17 @@ are written by `_R/make-job-lists.R`.
    `_data/baypass-omega-diffs.txt`: why mp050 and mp100 Ωs differ (the
    read depth of the SNPs each keeps; SN-1-95_S59 contributes most),
    using BayPass inputs in `tany_dir("baypass-inputs")`.
-8. `_R/baypass-analysis.R`: median Bayes factor (dB) across 10 `beta0` runs;
-   candidates at ≥ 30 dB → `_data/candi_df.rds`; nearest gene within 5 kb →
-   `_data/candi_funcs_df.rds`; BLASTP of candidate genes against
-   *D. melanogaster* UniProt; GO over-representation with `clusterProfiler`.
+8. `_R/baypass-analysis.R`: reads the 270 rerun outputs from
+   `tany_dir("baypass-beta")`; median Bayes factor (dB) over 10 runs per
+   SNP, setting, and covariate (subsamples stacked) →
+   `_data/baypass-bf.rds`; candidates at ≥ 30 dB →
+   `_data/baypass-candidates.rds`; nearest gene within 5 kb →
+   `_data/baypass-candidate-genes.rds`. BLASTP against *D. melanogaster*
+   UniProt and GO over-representation (`clusterProfiler`) still use the
+   2025 candidates (`candi_funcs_df.rds`) until the owner picks which sets
+   go through them (decided 2026-11-06: after the results).
+   `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`:
+   run consistency, BF ceiling, and overlap among settings and covariates.
 9. `_R/make-time-series-data.R` → `_data/timeseries-data.csv` (candidate SNP
    frequencies × pools, with abundance).
 10. `_R/make-time-series-plot.R`: frequency-vs-abundance plots,
@@ -107,7 +114,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-utils.R` | BayPass v3.1 R utilities (`simulate.baypass`, `fmd.dist`, `concatenate_res`, …) with local `concatenate_res` edits |
 | `baypass-check-omegas.R` | Ω consistency across subsamples |
 | `baypass-analysis.R` | Candidate SNPs, gene matching, BLAST, enrichment |
-| `baypass-check-candidates.R` | Confirms `candi_df.rds` matches local BayPass output; per-candidate run consistency → `_data/baypass-check-candidates.txt` |
+| `baypass-check-candidates.R` | Per setting x covariate: candidates, run consistency, BF ceiling, overlap among settings and covariates (from `baypass-bf.rds`) → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
 | `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
@@ -141,12 +148,16 @@ Tracked CSVs (column descriptions for the two sample sheets are in
 
 Local-only (`.rds`, git-ignored): `bed-summs.rds`, `allele-freqs-time.rds`,
 `allele-freqs-time-crash.rds`, `crash-mod{1,3}-cV.rds`, `candi_df.rds`,
-`candi_funcs_df.rds`, `goall_map.rds`.
+`candi_funcs_df.rds` (2025 candidates; no longer written by any script,
+still read by the BLAST section and the time-series scripts),
+`baypass-bf.rds`, `baypass-candidates.rds`, `baypass-candidate-genes.rds`
+(2026 rerun), `goall_map.rds`.
 
 ## Current numbers
 
-From `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`
-(run 2026-10-09):
+2025 runs, from the 2025 version of `_R/baypass-check-candidates.R`
+(`_data/baypass-check-candidates.txt`, run 2026-10-09; overwritten when the
+2026 version runs):
 
 - 433,360 SNPs tested; 33 candidates (median ≥ 30 dB); saved
   `candi_df.rds` matches.
