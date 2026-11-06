@@ -410,6 +410,14 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       5.4 h: ~24 h total, ~1.25x the same subsample's core-model run
       (19.3 h). Scaled from I2: mp050 ~24-40 h, mp075 ~23-25 h, mp100
       ~12-13 h, all under 72 h.
+      Finished 2026-11-06 (23.7 h BayPass time; exit 0; empty `.err`).
+      Output checked: `_summary_betai.out.gz` has 341,286 SNPs (all of
+      sub1) with `BF(dB)` column; covariate in the archive and
+      `_covariate.std` match `_data/baypass-covariates.csv` in pool
+      order; acceptance rates after the last pilot run 0.25-0.56.
+      Results of this run: 409 SNPs ≥ 20 dB, 88 ≥ 30 dB, 28 at the
+      ceiling 59.96 dB (PIP = 1 in every sample; 52.96 dB with 1,000
+      samples); P(delta) mean 0.010.
 
 ## J. After the rerun
 
