@@ -405,6 +405,11 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       from `logs/03-baypass-beta/first.txt`. Check its ETA with
       `condor_ssh_to_job` after ~1 day; if near 72 h, lower `NVAL` or
       the subsample size before submitting the other 269.
+      Progress 2026-11-06 08:52 (`condor_ssh_to_job`): 18.7 h running,
+      MCMC sampling (step 3/3) at 77%, ~14 min per 1%, BayPass ETA
+      5.4 h: ~24 h total, ~1.25x the same subsample's core-model run
+      (19.3 h). Scaled from I2: mp050 ~24-40 h, mp075 ~23-25 h, mp100
+      ~12-13 h, all under 72 h.
 
 ## J. After the rerun
 
