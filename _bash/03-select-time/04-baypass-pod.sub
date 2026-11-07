@@ -1,0 +1,30 @@
+# baypass-pod.sub
+
+# baypass on pseudo-observed data (PODs) to calibrate the Bayes factor cutoff
+
+container_image = file:///staging/l/lnell/tany_time.sif
+
+log = logs/04-baypass-pod/$(MpTag)-$(Covariate)-run$(RunNumber).log
+error = logs/04-baypass-pod/$(MpTag)-$(Covariate)-run$(RunNumber).err
+output = logs/04-baypass-pod/$(MpTag)-$(Covariate)-run$(RunNumber).out
+
+executable = 04-baypass-pod.sh
+arguments = $(RunNumber) $(RNGSeed) $(MpTag) $(Covariate)
+
+batch_name = "baypass-pod"
+
+should_transfer_files = YES
+#' CovFile is the covariate's file in `covariates/`; core-model jobs list
+#' `hm_logN_6` there (transferred, unused), as `covariates/core.txt`
+#' doesn't exist.
+transfer_input_files = ../bin, covariates/$(CovFile).txt
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+request_cpus = 8
+request_memory = 20GB
+request_disk = 20GB
+
+#' `baypass_pod_info.txt` (run,seed,tag,covariate,covariate file) is
+#' written by `_R/make-job-lists.R`.
+queue RunNumber,RNGSeed,MpTag,Covariate,CovFile from baypass_pod_info.txt

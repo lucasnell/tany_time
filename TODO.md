@@ -495,10 +495,30 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       2026 timing run had 28 SNPs at it. Decide the cutoff (or the
       calibration that sets it) before reading the 2026 candidate results,
       so the choice can't follow them (2026-11-06).
-- [ ] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
-      R 4.6.** Needed by the BLAST and enrichment sections of
-      `_R/baypass-analysis.R`; not in the current R library (2026-11-06).
-      Outside the project folder, so ask first.
+      - POD calibration written 2026-11-07 (RERUN-CHECKLIST I5):
+        `_R/baypass-pod-inputs.R` → `04-baypass-pod` →
+        `_R/baypass-pod-threshold.R` (null quantiles of single-run and
+        median-of-10 BF; expected false positives per cutoff for each
+        setting's SNP count). π is resampled from the real core-model
+        estimates rather than drawn from the fitted Beta, to keep the real
+        frequency spectrum (checked in `_data/baypass-pod-inputs.txt`).
+      - Open: the rule that turns this into a cutoff, to be fixed before
+        `compare_real <- TRUE` (estimated FDR with real counts). Options:
+        expected false positives ≤ a set number (POD only), or estimated
+        FDR ≤ a set level, or keep 30 dB and report its expected false
+        positives.
+      - Limits: PODs follow the BayPass model, so the null has no LD
+        between SNPs and none of the depth-related structure in the real
+        SNPs (`_R/baypass-omega-differences.R`); SNAPE ascertainment isn't
+        mimicked.
+- [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
+      R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
+      4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
+      because `GO.db` installed after it). The BLAST and enrichment
+      sections now run on the 2025 candidates, but don't reproduce the
+      2025 comments: 17 UniProt hits pass the filter (comment: 8) and 2 GO
+      biological-process terms (comment: 35). Not yet explained; possibly
+      a changed `Tgraci-funct-Dmel.csv` or annotation updates.
 
 - [ ] **Ω depends on the SNPs' read depth** (`_R/baypass-omega-differences.R`,
       2026-11-05). mp050 and mp100 Ωs differ because SNPs with missing pools

@@ -418,6 +418,28 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       Results of this run: 409 SNPs ≥ 20 dB, 88 ≥ 30 dB, 28 at the
       ceiling 59.96 dB (PIP = 1 in every sample; 52.96 dB with 1,000
       samples); P(delta) mean 0.010.
+- [ ] **I5.** `04-baypass-pod` (93 jobs: 3 settings x 3 covariates x 10
+      runs on 200,000-SNP PODs, ~14 h each, plus 3 core-model runs, ~11 h;
+      ~10,000 CPU-hours) for the BF cutoff (`TODO.md`). Written
+      2026-11-07; tested locally on stand-in inputs only (POD generation
+      and the threshold script); the job script has not run.
+      1. With a data drive connected: `Rscript _R/baypass-pod-inputs.R`
+         (~1 min; seeded) and read `_data/baypass-pod-inputs.txt` (POD vs.
+         real missing data, depth, and frequency spectrum).
+      2. Upload: `rsync -t /Volumes/lan_images4/tany_time/baypass-pod/baypass-pod-inputs.tar.gz login.chtc:/staging/l/lnell/dna/baypass/`.
+      3. On the submit server, one job first (mp100, `hm_logN_6`, run 1):
+         ```
+         cd ~/tany_time && git pull && cd _bash/03-select-time
+         mkdir -p logs/04-baypass-pod
+         grep '^1,[0-9]*,mp100,hm_logN_6,' baypass_pod_info.txt > logs/04-baypass-pod/first.txt
+         sed 's|^queue \(.*\) from .*|queue \1 from logs/04-baypass-pod/first.txt|' 04-baypass-pod.sub | condor_submit -
+         ```
+         and once it passes, the other 92 (`grep -v -x -F -f
+         logs/04-baypass-pod/first.txt baypass_pod_info.txt >
+         logs/04-baypass-pod/rest.txt`, same `sed` with `rest.txt`).
+      4. `./check-step.sh 03-select-time/04-baypass-pod`; copy the `.tar`
+         files to `tany_dir("baypass-pod")`; `Rscript
+         _R/baypass-pod-threshold.R`.
 
 ## J. After the rerun
 

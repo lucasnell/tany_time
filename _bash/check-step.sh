@@ -348,6 +348,12 @@ case "${STEP_PATH}" in
             FILES+=(${S}/dna/baypass/beta/baypass-${t}-sub${k}-${cv}-beta${b}-run${r}.tar)
         done < ${ST}/baypass_beta_info.txt ;;
 
+    03-select-time/04-baypass-pod)
+        while IFS=, read -r r seed t cv cf; do
+            JOB_IDS+=(${t}-${cv}-run${r})
+            FILES+=(${S}/dna/baypass/pod/baypass-pod-${t}-${cv}-run${r}.tar)
+        done < ${ST}/baypass_pod_info.txt ;;
+
     *)
         echo "Unknown step ${STEP_PATH}" 1>&2
         exit 2 ;;

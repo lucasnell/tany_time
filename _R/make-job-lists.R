@@ -17,6 +17,7 @@
 #'   _bash/03-select-time/baypass_inputs_info.txt  tag,min_prop_pools
 #'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
 #'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample,covariate
+#'   _bash/03-select-time/baypass_pod_info.txt     run,seed,tag,covariate,covariate_file
 #'
 
 library(tidyverse)
@@ -111,3 +112,20 @@ crossing(as_tibble(x), tag = mp_df$tag, subsample = 1:3,
     filter(beta == 0) |>
     arrange(tag, subsample, covariate, run, beta) |>
     write_csv("_bash/03-select-time/baypass_beta_info.txt", col_names = FALSE)
+
+#' POD runs (`04-baypass-pod`, BF cutoff calibration; 2026-11-07): for each
+#' setting, the covariate model on that setting's POD for every covariate,
+#' 10 runs with the beta-0 seeds of the real runs (so the median over runs
+#' is calibrated with the same seeds), plus one core-model run (seed of
+#' `01-baypass-init` subsample 1) to check the Omega re-estimated from the
+#' POD. Last column: the covariate file transferred (`hm_logN_6`, unused,
+#' for core-model jobs).
+bind_rows(
+    crossing(as_tibble(x) |> filter(beta == 0) |> select(run, seed),
+             tag = mp_df$tag,
+             covariate = c("hm_logN_6", "logN", "logN_lag1")),
+    tibble(run = 1L, seed = 1141272491L, tag = mp_df$tag, covariate = "core")) |>
+    mutate(cov_file = ifelse(covariate == "core", "hm_logN_6", covariate)) |>
+    arrange(tag, covariate, run) |>
+    select(run, seed, tag, covariate, cov_file) |>
+    write_csv("_bash/03-select-time/baypass_pod_info.txt", col_names = FALSE)

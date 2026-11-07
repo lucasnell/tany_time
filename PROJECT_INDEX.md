@@ -94,6 +94,8 @@ are written by `_R/make-job-lists.R`.
    go through them (decided 2026-11-06: after the results).
    `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`:
    run consistency, BF ceiling, and overlap among settings and covariates.
+   BF cutoff calibration (not run yet): `_R/baypass-pod-inputs.R` →
+   `04-baypass-pod` → `_R/baypass-pod-threshold.R`.
 9. `_R/make-time-series-data.R` → `_data/timeseries-data.csv` (candidate SNP
    frequencies × pools, with abundance).
 10. `_R/make-time-series-plot.R`: frequency-vs-abundance plots,
@@ -113,6 +115,9 @@ are written by `_R/make-job-lists.R`.
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |
 | `baypass-utils.R` | BayPass v3.1 R utilities (`simulate.baypass`, `fmd.dist`, `concatenate_res`, …) with local `concatenate_res` edits |
 | `baypass-check-omegas.R` | Ω consistency across subsamples |
+| `baypass-omega-differences.R` | Why Ω differs among missing-data settings → `_data/baypass-omega-diffs.txt` |
+| `baypass-pod-inputs.R` | Simulates PODs (null SNPs) per setting for BF cutoff calibration → `tany_dir("baypass-pod")`, checks in `_data/baypass-pod-inputs.txt` |
+| `baypass-pod-threshold.R` | Null BF quantiles and expected false positives per cutoff from `04-baypass-pod` → `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-null.csv` |
 | `baypass-analysis.R` | Candidate SNPs, gene matching, BLAST, enrichment |
 | `baypass-check-candidates.R` | Per setting x covariate: candidates, run consistency, BF ceiling, overlap among settings and covariates (from `baypass-bf.rds`) → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
