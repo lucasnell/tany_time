@@ -15,13 +15,21 @@
 #'   3. the null probability that the median BF reaches each of a grid of
 #'      cutoffs, and the expected number of null SNPs passing it among the
 #'      SNPs the real analysis tests (expected false positives).
-#' Steps 1-3 use no real BF results. Comparing with the real candidate
-#' counts (estimated false discovery rate) runs only with
-#' `compare_real <- TRUE`, after the rule for choosing the cutoff is fixed
-#' (`TODO.md`).
+#' Steps 1-4 use no real BF results. Step 5 (`compare_real <- TRUE`)
+#' applies the rule fixed by the owner (2026-11-07): empirical p-value of
+#' each real SNP's median BF against the POD medians of the same setting
+#' and covariate (no pooling), Storey's q-values (`qvalue`), and candidates
+#' at q <= 0.05 and q <= 0.10, both reported.
 #'
-#' Reads `tany_dir("baypass-pod")`. Writes `_data/baypass-pod-threshold.txt`
-#' and `_data/baypass-pod-null.csv` (step 3 table).
+#' Step 4: generalized Pareto fit to the POD tail (sensitivity analysis for
+#' p-values below 1 / (n_pod + 1)); step 5 reports its q-values next to
+#' the empirical ones.
+#'
+#' Reads `tany_dir("baypass-pod")` (and `_data/baypass-bf.rds` for step 5).
+#' Writes `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-null.csv`
+#' (step 3 table), `_data/baypass-pod-gpd.csv` (step 4 fits),
+#' `_plots/baypass-pod-gpd-qq.pdf`, and `_data/baypass-qvalues.rds` (step
+#' 5: per real SNP, empirical and GPD p and q).
 #'
 
 library(tidyverse)
@@ -145,7 +153,7 @@ bind_rows(q_tbl(null_df, "single run"), q_tbl(med_df, "median of 10")) |>
 
 
 #' p_null = proportion of POD SNPs with median BF >= cutoff (0 if none: an
-#' upper bound is then ~3 / 200,000, the 95% bound for zero events);
+#' upper bound is then ~3 / n_pod, the 95% bound for zero events);
 #' expected_fp = p_null x SNPs tested in the real setting.
 exceed_df <- crossing(med_df |> distinct(tag, covariate), cutoff = cutoffs) |>
     mutate(n_pod = map2_int(tag, covariate, \(t, cv) {
@@ -172,24 +180,183 @@ exceed_df |>
 
 
 # =============================================================================*
-# ---- 4. comparison with real candidates (after the rule is fixed) ----
+# ---- 4. tail fit (sensitivity) ----
 # =============================================================================*
 
 
-#' Estimated false discovery rate at each cutoff: expected false positives
-#' / real SNPs with median BF >= cutoff (`_data/baypass-bf.rds`).
+#' The empirical p can't go below 1 / (n_pod + 1). As a sensitivity
+#' analysis (owner, 2026-11-07; not used for candidates), the upper tail of
+#' each setting x covariate's POD median BFs is fitted with a generalized
+#' Pareto distribution (GPD; peaks over threshold, as for permutation
+#' p-values in Knijnenburg et al. 2009, doi:10.1093/bioinformatics/btp211):
+#' for exceedances y = x - u over threshold u,
+#'   P(Y > y) = (1 + xi y / sigma)^(-1 / xi)   (exp(-y / sigma) if xi = 0),
+#' with shape xi and scale sigma by maximum likelihood. For xi < 0 the tail
+#' ends at u - sigma / xi (BFs have a ceiling, so xi < 0 is expected).
+#' Tail p of a value x > u: (share of POD above u) x P(Y > x - u).
+#'
+#' Thresholds: POD quantiles 0.99 (primary: 4,000 exceedances at 400,000
+#' SNPs), 0.995, and 0.999. The fit "works" (criteria fixed 2026-11-07,
+#' before any POD results) if, for each setting x covariate:
+#'   (a) the 95% confidence intervals of xi at the 3 thresholds overlap;
+#'   (b) at the primary threshold, the POD exceedance counts at the 0.999,
+#'       0.9999 quantiles and the maximum's level are inside the 95%
+#'       Poisson interval of the counts the fit predicts.
+#' If not, the plan is a second 400,000-SNP POD (`TODO.md`).
+gpd_nll <- function(par, y) {
+    s <- exp(par[1])
+    xi <- par[2]
+    if (abs(xi) < 1e-8) return(length(y) * log(s) + sum(y) / s)
+    z <- 1 + xi * y / s
+    if (any(z <= 0)) return(1e10)
+    length(y) * log(s) + (1 / xi + 1) * sum(log(z))
+}
+gpd_fit <- function(y) {
+    o <- optim(c(log(mean(y)), 0.1), gpd_nll, y = y, hessian = TRUE)
+    se <- tryCatch(sqrt(diag(solve(o$hessian))), error = \(e) c(NA, NA))
+    list(sigma = exp(o$par[1]), xi = o$par[2], se_xi = se[2],
+         converged = o$convergence == 0)
+}
+gpd_surv <- function(y, sigma, xi) {
+    if (abs(xi) < 1e-8) return(exp(-y / sigma))
+    z <- pmax(1 + xi * y / sigma, 0)
+    z^(-1 / xi)
+}
+
+u_probs <- c(0.99, 0.995, 0.999)
+gpd_df <- crossing(med_df |> distinct(tag, covariate), u_prob = u_probs) |>
+    mutate(fit = pmap(list(tag, covariate, u_prob), \(t, cv, up) {
+        x <- med_df$bf_db[med_df$tag == t & med_df$covariate == cv]
+        u <- unname(quantile(x, up))
+        f <- gpd_fit(x[x > u] - u)
+        tibble(u = u, n_u = sum(x > u), n_pod = length(x), sigma = f$sigma,
+               xi = f$xi, se_xi = f$se_xi, converged = f$converged,
+               endpoint = ifelse(f$xi < 0, u - f$sigma / f$xi, Inf))
+    })) |>
+    unnest(fit)
+
+#' (b): observed vs. predicted POD exceedances at the primary threshold.
+gof_df <- gpd_df |>
+    filter(u_prob == u_probs[1]) |>
+    mutate(chk = pmap(list(tag, covariate, u, n_u, sigma, xi), \(t, cv, u, n_u, s, xi) {
+        x <- med_df$bf_db[med_df$tag == t & med_df$covariate == cv]
+        lv <- c(quantile(x, c(0.999, 0.9999)), max = max(x))
+        obs <- map_int(lv, \(l) sum(x >= l))
+        pred <- n_u * gpd_surv(lv - u, s, xi)
+        tibble(level = names(lv), bf_db = unname(lv), observed = obs,
+               predicted = pred,
+               lo = qpois(0.025, pred), hi = qpois(0.975, pred),
+               inside = obs >= lo & obs <= hi)
+    })) |>
+    select(tag, covariate, chk) |>
+    unnest(chk)
+
+works_df <- gpd_df |>
+    group_by(tag, covariate) |>
+    summarize(xi_overlap = max(xi - 1.96 * se_xi) <= min(xi + 1.96 * se_xi),
+              converged = all(converged), .groups = "drop") |>
+    left_join(gof_df |>
+                  group_by(tag, covariate) |>
+                  summarize(gof_inside = all(inside), .groups = "drop"),
+              by = c("tag", "covariate")) |>
+    mutate(works = xi_overlap & converged & gof_inside)
+
+write_csv(gpd_df, "_data/baypass-pod-gpd.csv")
+
+cat("\n== 4. GPD tail fit of POD median BFs (sensitivity)\n")
+gpd_df |>
+    mutate(across(c(u, sigma, xi, se_xi, endpoint), \(x) round(x, 3))) |>
+    as.data.frame() |>
+    print()
+cat("\nObserved vs. predicted POD exceedances (threshold at quantile 0.99):\n")
+gof_df |>
+    mutate(across(c(bf_db, predicted), \(x) round(x, 2))) |>
+    as.data.frame() |>
+    print()
+cat("\nDoes the fit work? (criteria in the script)\n")
+print(as.data.frame(works_df))
+
+#' QQ plots: exceedances over the primary threshold vs. fitted GPD.
+gpd_qq <- gpd_df |>
+    filter(u_prob == u_probs[1]) |>
+    mutate(qq = pmap(list(tag, covariate, u, sigma, xi), \(t, cv, u, s, xi) {
+        y <- sort(med_df$bf_db[med_df$tag == t & med_df$covariate == cv])
+        y <- y[y > u] - u
+        pp <- (seq_along(y) - 0.5) / length(y)
+        fitted <- if (abs(xi) < 1e-8) -s * log(1 - pp) else
+            s / xi * ((1 - pp)^(-xi) - 1)
+        tibble(empirical = y + u, fitted = fitted + u)
+    })) |>
+    select(tag, covariate, qq) |>
+    unnest(qq)
+dir.create("_plots", showWarnings = FALSE)
+p_qq <- gpd_qq |>
+    ggplot(aes(fitted, empirical)) +
+    geom_abline(linetype = 2, color = "gray50") +
+    geom_point(size = 0.5) +
+    facet_grid(covariate ~ tag) +
+    labs(x = "GPD quantile (dB)", y = "POD median BF (dB)") +
+    theme_bw()
+ggsave("_plots/baypass-pod-gpd-qq.pdf", p_qq, width = 7, height = 6)
+
+
+
+# =============================================================================*
+# ---- 5. q-values for the real SNPs ----
+# =============================================================================*
+
+
+#' Empirical p = (1 + POD SNPs with median BF >= the real SNP's) /
+#' (POD SNPs + 1), so the smallest possible p is 1 / (n_pod + 1). Storey's
+#' q-values with `qvalue` defaults (null proportion pi0 estimated by
+#' smoother over lambda). Also the same with the GPD tail p (section 4,
+#' primary threshold) for values above the threshold: `p_gpd`, `q_gpd`
+#' (sensitivity only). A value beyond the fitted endpoint gets p_gpd = 0;
+#' how many do is reported.
 if (compare_real) {
     bf_df <- read_rds("_data/baypass-bf.rds")
     stopifnot(all(bf_df$n_runs == n_runs))
-    cat("\n== 4. Estimated FDR with real candidate counts\n")
-    exceed_df |>
-        mutate(n_real_pass = pmap_int(list(tag, covariate, cutoff), \(t, cv, ct) {
-            sum(bf_df$bf_db[bf_df$tag == t & bf_df$covariate == cv] >= ct - 1e-3)
-        }),
-        fdr = expected_fp / pmax(n_real_pass, 1)) |>
-        mutate(cutoff = round(cutoff, 2), expected_fp = round(expected_fp, 1),
-               fdr = round(fdr, 3)) |>
-        select(tag, covariate, cutoff, expected_fp, n_real_pass, fdr) |>
+    q_df <- bf_df |>
+        group_by(tag, covariate) |>
+        group_split() |>
+        map(\(x) {
+            null <- sort(med_df$bf_db[med_df$tag == x$tag[[1]] &
+                                          med_df$covariate == x$covariate[[1]]])
+            n_ge <- length(null) - findInterval(x$bf_db - 1e-9, null)
+            p <- (1 + n_ge) / (length(null) + 1)
+            qv <- qvalue::qvalue(p)
+            g <- gpd_df |>
+                filter(tag == x$tag[[1]], covariate == x$covariate[[1]],
+                       u_prob == u_probs[1])
+            p_gpd <- ifelse(x$bf_db > g$u,
+                            g$n_u / g$n_pod * gpd_surv(x$bf_db - g$u, g$sigma, g$xi),
+                            p)
+            qg <- qvalue::qvalue(p_gpd)
+            x |>
+                select(tag, covariate, sub, mrk, contig, pos, bf_db) |>
+                mutate(p_emp = p, q = qv$qvalues, pi0 = qv$pi0,
+                       p_gpd = p_gpd, q_gpd = qg$qvalues,
+                       beyond_endpoint = bf_db >= g$endpoint)
+        }) |>
+        list_rbind()
+    write_rds(q_df, "_data/baypass-qvalues.rds", compress = "gz")
+
+    cat("\n== 5. Candidates by Storey's q-value (q: empirical p; q_gpd: GPD tail p)\n")
+    q_df |>
+        group_by(tag, covariate) |>
+        summarize(snps = n(),
+                  pi0 = pi0[[1]],
+                  min_p = min(p_emp),
+                  q05 = sum(q <= 0.05),
+                  q10 = sum(q <= 0.10),
+                  q05_gpd = sum(q_gpd <= 0.05),
+                  q10_gpd = sum(q_gpd <= 0.10),
+                  beyond_endpoint = sum(beyond_endpoint),
+                  min_bf_db_q05 = suppressWarnings(min(bf_db[q <= 0.05])),
+                  min_bf_db_q10 = suppressWarnings(min(bf_db[q <= 0.10])),
+                  .groups = "drop") |>
+        mutate(across(c(pi0, min_bf_db_q05, min_bf_db_q10), \(x) round(x, 3)),
+               min_p = signif(min_p, 3)) |>
         as.data.frame() |>
         print()
 }

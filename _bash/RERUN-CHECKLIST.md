@@ -419,8 +419,10 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       ceiling 59.96 dB (PIP = 1 in every sample; 52.96 dB with 1,000
       samples); P(delta) mean 0.010.
 - [ ] **I5.** `04-baypass-pod` (93 jobs: 3 settings x 3 covariates x 10
-      runs on 200,000-SNP PODs, ~14 h each, plus 3 core-model runs, ~11 h;
-      ~10,000 CPU-hours) for the BF cutoff (`TODO.md`). Written
+      runs on 400,000-SNP PODs, ~28 h each (up to ~46 h on a slow node),
+      plus 3 core-model runs, ~22 h; ~21,000 CPU-hours) for the BF cutoff
+      (`TODO.md`). Memory request 24 GB (20 GB for the 341,286-SNP real
+      jobs; their actual use is in the job logs, not yet checked). Written
       2026-11-07; tested locally on stand-in inputs only (POD generation
       and the threshold script); the job script has not run.
       1. With a data drive connected: `Rscript _R/baypass-pod-inputs.R`

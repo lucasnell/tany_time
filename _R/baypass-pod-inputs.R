@@ -20,10 +20,13 @@
 #' data in (0.1, 0.9). (The real SNPs were also called polymorphic by SNAPE
 #' in at least one pool; that step isn't mimicked.)
 #'
-#' `n_pod` = 200,000 SNPs per setting: the real settings test 0.53-1.02
-#' million SNPs, so a null tail probability of 1e-4 (~100 false positives
-#' among 1 million SNPs) is estimated from ~20 POD SNPs. At the measured
-#' ~24 h per 341,286 SNPs for the covariate model, a POD job takes ~14 h.
+#' `n_pod` = 400,000 SNPs per setting (owner, 2026-11-07), shared by the
+#' 3 covariates; each covariate's null comes from its own runs (no
+#' pooling). Candidates are called by Storey's q-values from empirical
+#' p-values against the POD, and the smallest empirical p is
+#' 1 / (n_pod + 1) ~ 2.5e-6: among ~1 million tests, q ~ 0.05 needs ~50
+#' real SNPs at least that extreme (q ~ 0.10: ~25). At the measured ~24 h
+#' per 341,286 SNPs for the covariate model, a POD job takes ~28 h.
 #'
 #' Reads `tany_dir("baypass-init")` and `tany_dir("baypass-inputs")`.
 #' Writes `tany_dir("baypass-pod", "baypass-pod-inputs.tar.gz")` (upload to
@@ -39,7 +42,7 @@ out_file <- "_data/baypass-pod-inputs.txt"
 sink(out_file, split = TRUE)
 
 mp_tags <- c("mp050", "mp075", "mp100")
-n_pod <- 200000L
+n_pod <- 400000L
 #' Simulated per batch, before filtering (most pass):
 n_batch <- 100000L
 

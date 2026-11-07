@@ -506,7 +506,29 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         `compare_real <- TRUE` (estimated FDR with real counts). Options:
         expected false positives ≤ a set number (POD only), or estimated
         FDR ≤ a set level, or keep 30 dB and report its expected false
-        positives.
+        positives. BayPass manual v3.1 (§5.2-5.3): 20 dB is "decisive"
+        on Jeffreys' rule; PODs "can be used to compute empirical
+        p-values and to derive q-values ... to control for multiple
+        testing" (Storey and Tibshirani 2003). Decided 2026-11-07
+        (owner): estimated FDR via Storey's q-values from POD empirical
+        p-values, reporting both q ≤ 0.05 and q ≤ 0.10; no pooling of
+        the covariates' PODs; 400,000 POD SNPs per setting. Resolution
+        limit: the smallest empirical p is 1 / 400,001 ~ 2.5e-6, so among
+        ~1 million tests q ~ 0.05 needs ~50 real SNPs at least that extreme
+        (q ~ 0.10: ~25; fewer for mp100, and somewhat fewer when Storey's
+        estimated null proportion is below 1).
+      - Sensitivity (owner, 2026-11-07): generalized Pareto fit to each
+        POD tail (`_R/baypass-pod-threshold.R` step 4) for p below
+        1 / 400,001, reported next to the empirical q-values, not used for
+        candidates. Criteria for whether the fit works are fixed in the
+        script (shape estimates agree across 3 thresholds; predicted POD
+        exceedances match observed). If it doesn't work, run a second
+        400,000-SNP POD per setting. Known weakness: a fitted shape < 0
+        gives the tail an end point, and real BFs beyond it get p = 0
+        (counted in the output).
+      - Then: switch the candidate rule in `_R/baypass-analysis.R` (now
+        median ≥ 30 dB) to the q-values from `_R/baypass-pod-threshold.R`
+        (`_data/baypass-qvalues.rds`).
       - Limits: PODs follow the BayPass model, so the null has no LD
         between SNPs and none of the depth-related structure in the real
         SNPs (`_R/baypass-omega-differences.R`); SNAPE ascertainment isn't

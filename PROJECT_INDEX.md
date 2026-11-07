@@ -117,7 +117,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-check-omegas.R` | Ω consistency across subsamples |
 | `baypass-omega-differences.R` | Why Ω differs among missing-data settings → `_data/baypass-omega-diffs.txt` |
 | `baypass-pod-inputs.R` | Simulates PODs (null SNPs) per setting for BF cutoff calibration → `tany_dir("baypass-pod")`, checks in `_data/baypass-pod-inputs.txt` |
-| `baypass-pod-threshold.R` | Null BF quantiles and expected false positives per cutoff from `04-baypass-pod` → `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-null.csv` |
+| `baypass-pod-threshold.R` | From `04-baypass-pod`: null BF quantiles, expected false positives per cutoff, GPD tail fit (sensitivity), and, with `compare_real <- TRUE`, Storey's q-values for the real SNPs → `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-{null,gpd}.csv`, `_data/baypass-qvalues.rds`, `_plots/baypass-pod-gpd-qq.pdf` |
 | `baypass-analysis.R` | Candidate SNPs, gene matching, BLAST, enrichment |
 | `baypass-check-candidates.R` | Per setting x covariate: candidates, run consistency, BF ceiling, overlap among settings and covariates (from `baypass-bf.rds`) → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |

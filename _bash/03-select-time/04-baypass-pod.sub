@@ -22,7 +22,7 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 request_cpus = 8
-request_memory = 20GB
+request_memory = 24GB
 request_disk = 20GB
 
 #' `baypass_pod_info.txt` (run,seed,tag,covariate,covariate file) is

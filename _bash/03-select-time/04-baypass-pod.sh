@@ -26,8 +26,9 @@ export THREADS=$(count_threads)
 export INPUTS_PARENT_DIR="/staging/l/lnell/dna/baypass"
 export PARENT_DIR_OUT="/staging/l/lnell/dna/baypass/pod"
 
-#' Same as `03-baypass-beta.sh`. Expected run time: ~14 h for 200,000 SNPs
-#' (covariate model measured at ~24 h per 341,286 SNPs, 2026-11-06).
+#' Same as `03-baypass-beta.sh`. Expected run time: ~28 h for 400,000 SNPs
+#' (covariate model measured at ~24 h per 341,286 SNPs, 2026-11-06; up to
+#' ~46 h on a node as slow as the slowest `01-baypass-init` job).
 export NVAL=5000
 
 
