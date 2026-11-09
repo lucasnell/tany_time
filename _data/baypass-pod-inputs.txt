@@ -1,0 +1,27 @@
+== Simulation parameters (from 01-baypass-init, subsample 1)
+    tag a_beta_pi b_beta_pi simulated passed_filters   kept
+1 mp050  1.676154  1.799581    500000         488019 400000
+2 mp075  1.683227  1.812715    500000         488363 400000
+3 mp100  1.698336  1.828619    500000         488743 400000
+
+Real SNPs (subsample 1) passing the filters (should be 1):
+mp050 mp075 mp100
+    1     1     1
+
+== Real (subsample 1) vs. POD SNPs
+    tag  set   snps prop_missing median_depth mean_ref_q10 mean_ref_q50
+1 mp050 real 341286       0.0646           74        0.150        0.464
+2 mp050  pod 400000       0.0644           74        0.160        0.467
+3 mp075 real 318583       0.0439           74        0.151        0.464
+4 mp075  pod 400000       0.0439           74        0.160        0.466
+5 mp100 real 176124       0.0000           74        0.152        0.464
+6 mp100  pod 400000       0.0000           74        0.160        0.465
+  mean_ref_q90 maf_q50
+1        0.835   0.266
+2        0.826   0.273
+3        0.834   0.267
+4        0.825   0.273
+5        0.833   0.270
+6        0.823   0.277
+
+Wrote /Volumes/lan_images4/tany_time/baypass-pod/baypass-pod-inputs.tar.gz

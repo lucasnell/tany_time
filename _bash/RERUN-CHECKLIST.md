@@ -396,7 +396,7 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       PASS 2026-11-05: pairwise FMD mp050 0.22-0.29, mp075 0.25-0.32,
       mp100 0.29-0.33 (all < 0.5). `omega-check.tsv` copied to the local
       data folder (`baypass-init/`).
-- [ ] **I4.** `03-baypass-beta` (270 jobs: 3 settings x 3 subsamples x
+- [x] **I4.** `03-baypass-beta` (270 jobs: 3 settings x 3 subsamples x
       3 covariates x 10 runs, Ising β = 0 only; one first, as its speed
       isn't measured) →
       `./check-step.sh 03-select-time/03-baypass-beta`.
@@ -418,6 +418,9 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       Results of this run: 409 SNPs ≥ 20 dB, 88 ≥ 30 dB, 28 at the
       ceiling 59.96 dB (PIP = 1 in every sample; 52.96 dB with 1,000
       samples); P(delta) mean 0.010.
+      All 270 PASS 2026-11-09 (`check-step.sh`): exit 0, 270 of 270
+      outputs on staging (55 GB); longest 30.7 h
+      (mp050-sub2-logN_lag1-beta0-run3).
 - [ ] **I5.** `04-baypass-pod` (93 jobs: 3 settings x 3 covariates x 10
       runs on 400,000-SNP PODs, ~28 h each (up to ~46 h on a slow node),
       plus 3 core-model runs, ~22 h; ~21,000 CPU-hours) for the BF cutoff
@@ -427,7 +430,13 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       and the threshold script); the job script has not run.
       1. With a data drive connected: `Rscript _R/baypass-pod-inputs.R`
          (~1 min; seeded) and read `_data/baypass-pod-inputs.txt` (POD vs.
-         real missing data, depth, and frequency spectrum).
+         real missing data, depth, and frequency spectrum). Done
+         2026-11-09: 400,000 SNPs per setting (of 500,000 simulated, ~98%
+         passed filters); missing-data rate and median depth match the real
+         SNPs; frequencies slightly less extreme (10% quantile of mean
+         reference proportion 0.160 vs. 0.150-0.152; median minor-allele
+         frequency 0.273-0.277 vs. 0.266-0.270). Archive (45 MB, MD5
+         57875bff5683e94e3f2a44d7d7cddf9b) on both drives.
       2. Upload: `rsync -t /Volumes/lan_images4/tany_time/baypass-pod/baypass-pod-inputs.tar.gz login.chtc:/staging/l/lnell/dna/baypass/`.
       3. On the submit server, one job first (mp100, `hm_logN_6`, run 1):
          ```
