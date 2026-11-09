@@ -449,8 +449,8 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          and once it passes, the other 92 (`grep -v -x -F -f
          logs/04-baypass-pod/first.txt baypass_pod_info.txt >
          logs/04-baypass-pod/rest.txt`, same `sed` with `rest.txt`).
-         Test job submitted 2026-11-09 (cluster 12441040; ~20 h expected
-         for mp100 at 400,000 SNPs if per-SNP speed matches mp050). It
+         Test job submitted 2026-11-09 (cluster 12441040; ~28 h expected
+         at 400,000 SNPs; per-SNP speed was the same across settings in I2). It
          tests the covariate path only; the 3 core-model jobs run untested
          with the rest.
       4. `./check-step.sh 03-select-time/04-baypass-pod`; copy the `.tar`
