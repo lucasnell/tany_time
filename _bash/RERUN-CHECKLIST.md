@@ -420,7 +420,9 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       samples); P(delta) mean 0.010.
       All 270 PASS 2026-11-09 (`check-step.sh`): exit 0, 270 of 270
       outputs on staging (55 GB); longest 30.7 h
-      (mp050-sub2-logN_lag1-beta0-run3).
+      (mp050-sub2-logN_lag1-beta0-run3). Copied 2026-11-09 to
+      `baypass-beta/` on both drives via `transfer.chtc` (MD5s match
+      staging).
 - [ ] **I5.** `04-baypass-pod` (93 jobs: 3 settings x 3 covariates x 10
       runs on 400,000-SNP PODs, ~28 h each (up to ~46 h on a slow node),
       plus 3 core-model runs, ~22 h; ~21,000 CPU-hours) for the BF cutoff
