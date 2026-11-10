@@ -36,7 +36,9 @@ samp_df |>
 
 #'
 #' Candidate pools: all time-series pools from site SN (generation 1 or 2)
-#' and all spatial pools (collected in 2019).
+#' and all spatial pools (collected in 2019). Time-series pools from other
+#' Mývatn sites (KS, H) are excluded (owner, 2026-11-10): the covariate is
+#' the SN trap count, and their years differ from SN's (see `TODO.md`).
 #'
 samp_df |>
     filter(str_detect(biotech_id, "^SN-[12]-")) |>

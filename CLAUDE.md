@@ -6,7 +6,9 @@ Iceland. Two sample sets:
 - **Time series**: archived emergence-trap samples from site Syðri Neslönd
   (SN), 30 pools sequenced, 18 kept after QC (`_bash/samples/time-pools.txt`;
   2026-11-02), spanning 1992–2015, two generations per year (`a` = before
-  mid-July, `b` = after).
+  mid-July, `b` = after). The 14 time-series pools from other Mývatn
+  sites (KS, H) are excluded from BayPass (owner, 2026-11-10; reasons in
+  `TODO.md`).
 - **Space**: 18 pools from Mývatn sites and other Icelandic lakes, 2019.
 
 Goal: understand how population crashes affect *T. gracilentus* adaptive

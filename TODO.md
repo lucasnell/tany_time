@@ -556,6 +556,23 @@ Follow `_bash/RERUN-CHECKLIST.md`.
       missing-data settings serve as the sensitivity check (a stricter
       depth filter was declined by the owner, 2026-11-05).
 
+- [x] **Time-series pools from site SN only** (owner, 2026-11-10;
+      carried over from the 2025 `sample-qc.R` filter, now decided). The
+      14 other Mývatn time-series pools (9 KS, 5 H; 1977–2015) are left
+      out of BayPass because:
+      - the covariate is the SN trap count (`tany-abundances.csv`), and no
+        data show KS or H abundance tracking SN;
+      - site is tied to year (H only 2005–2011, KS the only pre-1992
+        pool), so site differences could line up with abundance, and Ω
+        can't separate the two;
+      - at most 5 have median coverage ≥ 30 (2025 mapping,
+        `_data/bed-summs.rds`): H-1-11 167, H-1-06 103, KS-2-09-B 77,
+        KS-1-77 55, KS-1-11 45; the rest 0–17.
+      Only KS-1-13 is from the same generation as an SN pool that passed
+      QC (SN-1-13, same day; KS-1-13 median coverage 12). Using KS and H
+      pools outside BayPass (e.g., frequencies at candidate SNPs around
+      the 2005 and 2011 crashes) stays open.
+
 - [ ] **Pool inclusion** (decided 2026-10-10: QC-metric protocol instead of a
       median-coverage cutoff; implemented, not yet run).
       - Metrics: missing-data rate after masking, private SNPs, duplication
