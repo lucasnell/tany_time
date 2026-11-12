@@ -480,6 +480,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        estimators; Ne through time from allele-frequency change between
        consecutive pools. Use an unascertained SNP set (the BayPass set drops
        mean frequency outside 0.1–0.9). Independent of 1–4. 3–5 days; local.
+       Extended (2026-11-10) to an ABC test of crashes vs. crashes plus
+       immigration from an unsampled source: design in `_R/abc-design.md`
+       (approved 2026-11-12, before any diversity result was read). Next:
+       copy `npstat` and per-pool `snape` outputs for the 18 SN pools to
+       the data drives; write the simulator, the shared statistics
+       function, and the `sim-env` container env; pilot.
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes
        exceed what genome-wide Ne implies. After 2–4.
 

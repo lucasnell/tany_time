@@ -22,8 +22,9 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 request_cpus = 8
-request_memory = 24GB
-request_disk = 20GB
+#' The test job (400,000 SNPs) used 1.5 GB memory and 3.9 GB disk.
+request_memory = 4GB
+request_disk = 8GB
 
 #' `baypass_pod_info.txt` (run,seed,tag,covariate,covariate file) is
 #' written by `_R/make-job-lists.R`.

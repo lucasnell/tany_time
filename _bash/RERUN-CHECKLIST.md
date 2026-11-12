@@ -426,10 +426,9 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
 - [ ] **I5.** `04-baypass-pod` (93 jobs: 3 settings x 3 covariates x 10
       runs on 400,000-SNP PODs, ~28 h each (up to ~46 h on a slow node),
       plus 3 core-model runs, ~22 h; ~21,000 CPU-hours) for the BF cutoff
-      (`TODO.md`). Memory request 24 GB (20 GB for the 341,286-SNP real
-      jobs; their actual use is in the job logs, not yet checked). Written
-      2026-11-07; tested locally on stand-in inputs only (POD generation
-      and the threshold script); the job script has not run.
+      (`TODO.md`). Memory request 4 GB (the test job used 1.5 GB).
+      Written 2026-11-07; tested locally on stand-in inputs only (POD
+      generation and the threshold script) until the test job below.
       1. With a data drive connected: `Rscript _R/baypass-pod-inputs.R`
          (~1 min; seeded) and read `_data/baypass-pod-inputs.txt` (POD vs.
          real missing data, depth, and frequency spectrum). Done
@@ -455,6 +454,12 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          at 400,000 SNPs; per-SNP speed was the same across settings in I2). It
          tests the covariate path only; the 3 core-model jobs run untested
          with the rest.
+         Test job PASS (2026-11-12 check): 32.8 h, exit 0, empty `.err`;
+         archive has `_summary_betai.out.gz` (400,000 SNPs, `BF(dB)`
+         column), `_summary_pi_xtx.out.gz` (400,000), `Pdelta`, beta
+         params, covariate, and the sub1 Ω. Memory used 1.5 GB of 24 GB,
+         disk 3.9 GB of 20 GB; requests lowered to 4 GB and 8 GB for the
+         other 92.
       4. `./check-step.sh 03-select-time/04-baypass-pod`; copy the `.tar`
          files to `tany_dir("baypass-pod")`; `Rscript
          _R/baypass-pod-threshold.R`.

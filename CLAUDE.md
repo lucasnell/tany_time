@@ -42,6 +42,10 @@ analyses, on 3 thinned SNP subsamples per missing-data setting.
   years; some were stored poorly (some dried out), which likely degraded
   DNA. Older samples were probably more affected, but quality doesn't track
   year reliably.
+- Four nearby lakes are well connected to Mývatn and site SN (F_ST close
+  to 0) and at times have large populations, though far smaller than
+  Mývatn's. Mývatn's census size may reach ~1.3e13 adults (owner's rough
+  estimate). Mating is in large swarms, so Mývatn is probably panmictic.
 
 See `PROJECT_INDEX.md` for the file map and `TODO.md` for open items.
 
