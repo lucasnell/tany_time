@@ -460,6 +460,9 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          params, covariate, and the sub1 Ω. Memory used 1.5 GB of 24 GB,
          disk 3.9 GB of 20 GB; requests lowered to 4 GB and 8 GB for the
          other 92.
+         Other 92 submitted 2026-11-12 (cluster 12454572); all 92 running
+         before the container was rebuilt as v2.6.0, so every POD job ran
+         on v2.5.0.
       4. `./check-step.sh 03-select-time/04-baypass-pod`; copy the `.tar`
          files to `tany_dir("baypass-pod")`; `Rscript
          _R/baypass-pod-threshold.R`.
