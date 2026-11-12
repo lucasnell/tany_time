@@ -1,0 +1,30 @@
+# abc-sims.sub
+
+# ABC simulations (or observed statistics) for crashes vs. immigration
+
+container_image = file:///staging/l/lnell/tany_time.sif
+
+log = logs/01-abc-sims/$(Variant)-$(Model)-b$(Batch).log
+error = logs/01-abc-sims/$(Variant)-$(Model)-b$(Batch).err
+output = logs/01-abc-sims/$(Variant)-$(Model)-b$(Batch).out
+
+executable = 01-abc-sims.sh
+arguments = $(Variant) $(Model) $(Batch) $(Seed0) $(NSims)
+
+batch_name = "abc-sims"
+
+should_transfer_files = YES
+transfer_input_files = ../bin
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+#' msprime and R are single-threaded. Memory: read depths for the 2,000
+#' windows (360 MB) plus up to ~6 million simulated sites x 18 pools (a
+#' local sample of 60 prior draws, 2026-11-12); check use in the pilot.
+request_cpus = 1
+request_memory = 12GB
+request_disk = 6GB
+
+#' `abc_info.txt` (variant,model,batch,seed,n_sims) is written by
+#' `_R/make-job-lists.R`.
+queue Variant,Model,Batch,Seed0,NSims from abc_info.txt

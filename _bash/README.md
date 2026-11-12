@@ -17,6 +17,7 @@ Jobs run inside the Apptainer container built from `_apptainer/`, except
 | `01-variant-calling/` | Reads → trimmed reads → BAM → mpileup |
 | `02-allele-freqs/` | mpileup → SNAPE allele frequencies, counts, and diversity statistics |
 | `03-select-time/` | BayPass: allele frequencies vs. abundance through time |
+| `04-diversity/` | ABC test of crashes vs. crashes plus immigration on neutral diversity |
 
 ## Run order
 

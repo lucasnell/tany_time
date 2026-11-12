@@ -1,0 +1,10 @@
+name: sim-env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - msprime=1.4.4
+  - numpy=2.5.3
+  - python=3.14.8
+  - tskit=1.0.3
+prefix: /opt/conda/envs/sim-env

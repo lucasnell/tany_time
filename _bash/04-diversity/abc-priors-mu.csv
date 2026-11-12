@@ -1,0 +1,12 @@
+param,lo,hi
+scale,1,1e7
+floor,10,1e9
+Ne_c,1e3,1e12
+Ne_anc,4e4,4e6
+Ne_s,4e4,4e7
+T_s,1e2,1e7
+m,1e-5,0.5
+I,1,1e9
+b,0.1,1
+Ne_old,1.1e4,1.1e8
+T_old,1e2,1e5

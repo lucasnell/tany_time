@@ -34,6 +34,8 @@ it also puts this folder first on `PATH`.
 | `pool-qc-files.py` | Per-pool GC, duplication, and mapping rates (including reads assigned to *T. gracilentus* vs. other species) from fastp, Picard, bamtools, and `02-bwa` outputs | `03-pool-qc` |
 | `mito-collapse.sh` | Collapse the assembled mitochondrial contig to the gene region, the unique control-region sequence on each side, and one repeat unit (needs minimap2, samtools: `mito-env`). | `00-references/01-mitogenome` |
 | `run-parallel.py` | Run a command once per item (e.g., contig) in parallel and report failures | `01-snape`, `02-npstat` |
+| `abc-sim.py` | One ABC simulation: draws a model's parameters from the priors, simulates the SN time series with msprime, writes derived-allele counts per pool (needs `sim-env`) | `04-diversity/01-abc-sims` |
+| `abc-stats.R` | ABC summary statistics, the same code for observed and simulated data; drives batches of simulations (pool-seq reads at the observed depths) | `04-diversity/01-abc-sims` |
 
 Python scripts run with whichever environment is active (`main-env` in all
 current uses).

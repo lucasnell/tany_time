@@ -482,10 +482,18 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        mean frequency outside 0.1–0.9). Independent of 1–4. 3–5 days; local.
        Extended (2026-11-10) to an ABC test of crashes vs. crashes plus
        immigration from an unsampled source: design in `_R/abc-design.md`
-       (approved 2026-11-12, before any diversity result was read). Next:
-       copy `npstat` and per-pool `snape` outputs for the 18 SN pools to
-       the data drives; write the simulator, the shared statistics
-       function, and the `sim-env` container env; pilot.
+       (approved 2026-11-12, before any diversity result was read). Code
+       written 2026-11-12 and checked locally (`_bash/tests/abc-*-check.R`);
+       see the design note's "Changes after approval" (approved
+       2026-11-12). Inputs built 2026-11-12 (`_R/abc-inputs.R` →
+       `tany_dir("abc")`, `_data/abc-inputs.txt`; sequencing error 0.00023,
+       now used instead of 0.002) and uploaded to `/staging/l/lnell/dna/abc/`.
+       Next:
+       - rebuild the container as v2.6.0 (`sim-env`);
+       - pilot (`_bash/04-diversity/README.md`): observed statistics and
+         batch 1 of each model; then the rest (1,300 jobs, mean ~3-10 min per
+         simulation);
+       - write the `abcrf` analysis script; install `abcrf` locally.
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes
        exceed what genome-wide Ne implies. After 2–4.
 

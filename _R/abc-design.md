@@ -105,8 +105,10 @@ site.
 **Reads in simulations.**
 - Reference reads at each site ~ Binomial(depth, p), where p is the
   sample frequency in the pool.
-- Errors: each read is flipped with probability e = 0.002. Base quality
-  ≥ 25 caps the error rate at 0.0032.
+- Errors: each read is flipped with probability e = 0.00023, estimated
+  from reads of a third or fourth base at the observed sites (pools
+  0.00019-0.00029; `_data/abc-inputs.txt`); was 0.002 (see "Changes after
+  approval").
 - Filters as in `01-snape` masking: coverage ≥ 10 and ≤ the pool's 95th
   percentile, already applied through the observed masks.
 - A site counts as segregating in a pool if the minor allele has ≥ 2
@@ -117,7 +119,8 @@ site.
    (c / (c − 1)) × (n / (n − 1)) × 2p(1 − p), averaged over sites.
 2. Watterson's θ with the pool-seq correction of Kofler et al. 2011
    (PoPoolation; doi:10.1371/journal.pone.0015925).
-3. Tajima's D from items 1 and 2, as in Kofler et al. 2011.
+3. Tajima's D from items 1 and 2, as in Kofler et al. 2011 (now
+   π / θ_W − 1; see "Changes after approval").
 4. Rare-allele share: among segregating sites, the proportion with minor
    allele frequency < 0.05.
 
@@ -175,4 +178,43 @@ estimator of Hivert et al. 2018 (doi:10.1534/genetics.118.300900; as in
 
 ## Changes after approval
 
-(none yet)
+2026-11-12, while writing the code (`_R/abc-inputs.R`,
+`_bash/bin/abc-sim.py`, `_bash/bin/abc-stats.R`); none uses observed
+statistics, which haven't been computed. Items 1-2 and 9 change approved
+choices (approved by the owner, 2026-11-12); 3-8 are implementation
+details.
+
+1. Tajima's D is replaced by π / θ_W − 1 (same sign; no variance
+   normalization). The pool-seq variance of D (Kofler et al. 2011) isn't
+   implemented; since the same code runs on observed and simulated data,
+   the normalization adds no information for the ABC.
+2. Temporal F uses sites covered in both pools and segregating (minor
+   allele ≥ 2 reads) in either, not Jónás et al.'s rule (polymorphic in the
+   first sample). With no drift, their rule gave F of −0.012 to −0.0007
+   (bias from conditioning on the first sample); this rule gives +0.0001
+   to +0.0038, largest at low depth (`_bash/tests/abc-stats-check.R` →
+   `_data/abc-stats-check.txt`). Either bias cancels in the ABC; it
+   matters for F converted to Ne.
+3. 258 statistics, not 259: the first-to-second pool pair is already a
+   consecutive pair, so there are 16 first-to-later pairs.
+4. Ancestry model: discrete-time Wright-Fisher (exact for small sizes) in
+   generations where SN's size is < 1e4, the standard coalescent
+   otherwise. Wright-Fisher's cost grows with population size (5 s per
+   locus at 1e7 vs. 0.02 s for the coalescent); the two agree when the
+   size is much larger than the sample (1,314 genomes). In Wright-Fisher
+   generations the source's size is capped at 1e5 (lineages there coalesce
+   with probability < 78 / 2e5 per pair over the trap record either way).
+5. Loci are simulated one at a time (in one sequence, unlinked loci made
+   the coalescent's cost grow with the square of the number of loci).
+6. Sites that don't segregate but show ≥ 2 error reads of one base are
+   simulated too, as the observed data contain them.
+7. Depths > 255 are treated as masked in both observed and simulated
+   data (depths are stored as one byte).
+8. Observed alleles at a site: the two bases with the most reads summed
+   over pools; reads of the other two bases are dropped and used to
+   estimate the sequencing error rate (`_data/abc-inputs.txt`).
+9. Sequencing error rate 0.00023 instead of 0.002: the rate estimated
+   from third- and fourth-base reads in the observed windows
+   (`_R/abc-inputs.R` → `_data/abc-inputs.txt`; pools 0.00019-0.00029).
+   With 0.002, simulations would carry ~9x more error reads than the
+   data, inflating θ_W and the rare-allele share in simulations only.

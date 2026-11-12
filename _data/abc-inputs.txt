@@ -1,0 +1,79 @@
+== Pools (gen: 0 = 1977a, 77 = 2015b)
+          pool gen n_adults
+1  SN-2-92_S35  31       40
+2  SN-1-95_S59  36       40
+3  SN-1-97_S61  40       24
+4  SN-2-97_S37  41       19
+5  SN-1-99_S28  44       40
+6  SN-2-99_S38  45       40
+7  SN-2-00_S29  47       40
+8  SN-1-02_S55  50       40
+9  SN-2-02_S30  51       40
+10 SN-1-07_S23  60       40
+11 SN-2-07_S31  61       40
+12 SN-1-08_S24  62       40
+13 SN-2-08_S32  63       40
+14 SN-1-09_S25  64       40
+15 SN-1-10_S26  66       40
+16 SN-1-13_S56  72       14
+17 SN-1-14_S27  74       40
+18 SN-2-15_S34  77       40
+
+Windows with >= 5000 unmasked sites in all pools: 8487 of 9190
+Windows per contig:
+
+ CONTIG4  CONTIG7  CONTIG8  CONTIG9 CONTIG11 CONTIG12 CONTIG13 CONTIG14
+       1        2        5        3        7        2        5       10
+CONTIG15 CONTIG16 CONTIG17 CONTIG18 CONTIG19 CONTIG20 CONTIG21 CONTIG22
+       7       14       11       21       17       16       11       11
+CONTIG23 CONTIG24 CONTIG25 CONTIG26 CONTIG27 CONTIG28 CONTIG29 CONTIG30
+      20       16       18       22       20       22       19       18
+CONTIG31 CONTIG32 CONTIG33 CONTIG35 CONTIG36 CONTIG37 CONTIG38 CONTIG39
+      32       50       41       24      116      142      131      112
+CONTIG40 CONTIG41 CONTIG42 CONTIG43 CONTIG44 CONTIG45
+     148      100       96      192      267      251
+SN-2-92_S35: 16992869 unmasked sites
+SN-1-95_S59: 15761709 unmasked sites
+SN-1-97_S61: 16885098 unmasked sites
+SN-2-97_S37: 17219628 unmasked sites
+SN-1-99_S28: 17119152 unmasked sites
+SN-2-99_S38: 16953015 unmasked sites
+SN-2-00_S29: 17186338 unmasked sites
+SN-1-02_S55: 16965110 unmasked sites
+SN-2-02_S30: 16996632 unmasked sites
+SN-1-07_S23: 17096197 unmasked sites
+SN-2-07_S31: 16998590 unmasked sites
+SN-1-08_S24: 16973149 unmasked sites
+SN-2-08_S32: 17052299 unmasked sites
+SN-1-09_S25: 16973653 unmasked sites
+SN-1-10_S26: 17055262 unmasked sites
+SN-1-13_S56: 17106142 unmasked sites
+SN-1-14_S27: 17028167 unmasked sites
+SN-2-15_S34: 17019133 unmasked sites
+
+== Third/fourth-base reads (sequencing error check; design e = 0.002)
+          pool    reads  other over_max median_depth other_share    e_est
+1  SN-2-92_S35 1.36e+09 218000 0.00e+00           80    0.000160 0.000240
+2  SN-1-95_S59 2.89e+08  54600 0.00e+00           17    0.000189 0.000283
+3  SN-1-97_S61 1.69e+09 269000 0.00e+00          101    0.000159 0.000239
+4  SN-2-97_S37 5.10e+08  85600 0.00e+00           29    0.000168 0.000252
+5  SN-1-99_S28 8.33e+08 119000 0.00e+00           48    0.000143 0.000215
+6  SN-2-99_S38 1.62e+09 210000 0.00e+00           97    0.000129 0.000194
+7  SN-2-00_S29 8.95e+08 153000 0.00e+00           52    0.000171 0.000256
+8  SN-1-02_S55 1.41e+09 183000 0.00e+00           83    0.000130 0.000195
+9  SN-2-02_S30 1.49e+09 202000 0.00e+00           88    0.000135 0.000203
+10 SN-1-07_S23 1.01e+09 144000 3.69e-05           55    0.000143 0.000214
+11 SN-2-07_S31 1.60e+09 257000 0.00e+00           96    0.000160 0.000241
+12 SN-1-08_S24 1.83e+09 230000 3.00e-05          109    0.000126 0.000189
+13 SN-2-08_S32 1.38e+09 232000 0.00e+00           82    0.000168 0.000251
+14 SN-1-09_S25 1.61e+09 233000 0.00e+00           96    0.000145 0.000217
+15 SN-1-10_S26 1.46e+09 201000 0.00e+00           87    0.000137 0.000206
+16 SN-1-13_S56 4.56e+08  85500 0.00e+00           25    0.000188 0.000281
+17 SN-1-14_S27 1.21e+09 221000 0.00e+00           71    0.000183 0.000275
+18 SN-2-15_S34 8.03e+08 157000 0.00e+00           43    0.000195 0.000292
+Pooled e estimate: 0.000227
+
+Observed sites with >= 2 second-allele reads in some pool: 1843435
+[1] TRUE TRUE
+
+Wrote /Volumes/lan_images4/tany_time/abc/abc-inputs and /Volumes/lan_images4/tany_time/abc/abc-inputs.tar.gz

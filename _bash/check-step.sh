@@ -354,6 +354,40 @@ case "${STEP_PATH}" in
             FILES+=(${S}/dna/baypass/pod/baypass-pod-${t}-${cv}-run${r}.tar)
         done < ${ST}/baypass_pod_info.txt ;;
 
+    04-diversity/01-abc-sims)
+        while IFS=, read -r v m b s0 n; do
+            JOB_IDS+=(${v}-${m}-b${b})
+            if [ "${m}" == "observed" ]; then
+                FILES+=(${S}/dna/abc/abc-observed-stats.tsv)
+            else
+                FILES+=(${S}/dna/abc/sims/abc-${v}-${m}-b${b}.tsv.gz)
+            fi
+        done < ${BASH_DIR}/04-diversity/abc_info.txt
+        extra () {
+            # Rows per output (header + one per simulation) and time per
+            # simulation (column t_all), by model:
+            local n_bad=0
+            while IFS=, read -r v m b s0 n; do
+                f=${S}/dna/abc/sims/abc-${v}-${m}-b${b}.tsv.gz
+                [ "${m}" == "observed" ] || [ ! -f "${f}" ] && continue
+                rows=$(gzip -dc "${f}" | wc -l)
+                if (( rows != n + 1 )); then
+                    n_bad=$((n_bad + 1))
+                    (( n_bad <= 10 )) && echo "  ${f}: ${rows} rows (expected $((n + 1)))"
+                fi
+            done < ${BASH_DIR}/04-diversity/abc_info.txt
+            (( n_bad > 0 )) && problem "${n_bad} outputs with the wrong number of rows"
+            for m in M1 M2 M3 M4 M5; do
+                ls ${S}/dna/abc/sims/abc-*-${m}-b*.tsv.gz > /dev/null 2>&1 || continue
+                gzip -dc ${S}/dna/abc/sims/abc-*-${m}-b*.tsv.gz | awk -F'\t' -v m=${m} '
+                    $1 == "model" { for (i = 1; i <= NF; i++) if ($i == "t_all") c = i; next }
+                    { n++; s += $c; if ($c > mx) mx = $c }
+                    END { if (n) printf "%s: %d simulations, mean %.0f s, max %.0f s each\n", m, n, s / n, mx }'
+            done
+            local obs=${S}/dna/abc/abc-observed-stats.tsv
+            [ -f "${obs}" ] && echo "Observed statistics: $(($(wc -l < ${obs}) - 1)) (expected 258)"
+        } ;;
+
     *)
         echo "Unknown step ${STEP_PATH}" 1>&2
         exit 2 ;;

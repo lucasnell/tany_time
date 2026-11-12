@@ -18,6 +18,7 @@
 #'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
 #'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample,covariate
 #'   _bash/03-select-time/baypass_pod_info.txt     run,seed,tag,covariate,covariate_file
+#'   _bash/04-diversity/abc_info.txt               variant,model,batch,seed0,n_sims
 #'
 
 library(tidyverse)
@@ -131,3 +132,26 @@ bind_rows(
     arrange(tag, covariate, run) |>
     select(run, seed, tag, covariate, cov_file) |>
     write_csv("_bash/03-select-time/baypass_pod_info.txt", col_names = FALSE)
+
+#' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`,
+#' 2026-11-12): batches of 100 simulations (mean ~3-10 min each, up to
+#' ~1 h; ~5-20 h per batch, under the 72-h limit). Reference table: 25,000 per model (250 batches); held-out
+#' sets for parameter recovery: 1,000 per model (10 batches); one job for
+#' the observed statistics. Simulation i of a batch uses seed
+#' seed0 + i, with seed0 = 1e8 x model + 1e7 x variant + 100 x (batch - 1)
+#' + 1, so seeds are unique. Sensitivity runs are added once the main run's
+#' cost is known.
+abc_variants <- c(main = 0L, holdout = 1L)
+bind_rows(
+    tibble(variant = "main", model = "observed", batch = 0L, seed0 = 0L,
+           n_sims = 0L),
+    crossing(variant = "main", model = paste0("M", 1:5), batch = 1:250),
+    crossing(variant = "holdout", model = paste0("M", 1:5), batch = 1:10)) |>
+    mutate(n_sims = ifelse(model == "observed", 0L, 100L),
+           m = suppressWarnings(as.integer(str_remove(model, "^M"))),
+           seed0 = ifelse(model == "observed", 0L,
+                          1e8 * m + 1e7 * abc_variants[variant] +
+                              100L * (batch - 1L) + 1L),
+           seed0 = as.integer(seed0)) |>
+    select(variant, model, batch, seed0, n_sims) |>
+    write_csv("_bash/04-diversity/abc_info.txt", col_names = FALSE)

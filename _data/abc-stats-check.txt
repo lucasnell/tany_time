@@ -1,0 +1,28 @@
+theta = 0.01 ; pools: 28, 38, 48, 80, 80, 80 haploid; mean depths: 15, 30, 60, 100, 150, 200
+
+== No sequencing error
+  pi_p1   pi_p2   pi_p3   pi_p4   pi_p5   pi_p6  thw_p1  thw_p2  thw_p3  thw_p4
+ 0.0100  0.0100  0.0100  0.0100  0.0100  0.0100  0.0100  0.0100  0.0100  0.0100
+ thw_p5  thw_p6  tdr_p1  tdr_p2  tdr_p3  tdr_p4  tdr_p5  tdr_p6 rare_p1 rare_p2
+ 0.0100  0.0100  0.0004  0.0013  0.0012  0.0004 -0.0014  0.0020  0.0000  0.0052
+rare_p3 rare_p4 rare_p5 rare_p6
+ 0.1728  0.2800  0.3382  0.3641
+fc_p1_p2 fc_p2_p3 fc_p3_p4 fc_p4_p5 fc_p5_p6 fc_p1_p3 fc_p1_p4 fc_p1_p5
+  0.0037   0.0008   0.0010   0.0004   0.0002   0.0002  -0.0009  -0.0003
+fc_p1_p6
+ -0.0012
+
+== Sequencing error e = 0.002 (bias expected; same in observed data)
+  pi_p1   pi_p2   pi_p3   pi_p4   pi_p5   pi_p6  thw_p1  thw_p2  thw_p3  thw_p4
+ 0.0100  0.0101  0.0102  0.0103  0.0103  0.0105  0.0101  0.0102  0.0106  0.0114
+ thw_p5  thw_p6  tdr_p1  tdr_p2  tdr_p3  tdr_p4  tdr_p5  tdr_p6 rare_p1 rare_p2
+ 0.0128  0.0146 -0.0039 -0.0133 -0.0421 -0.1024 -0.1937 -0.2837  0.0000  0.0064
+rare_p3 rare_p4 rare_p5 rare_p6
+ 0.2166  0.3690  0.4838  0.5657
+Error-only sites added: 65610
+
+== Temporal F with no drift (mean and SE of 8 replicates)
+haploid 28/38, depth 15/30: segregating in either 0.0038 (SE 0.00026); polymorphic in first -0.012 (SE 0.00034)
+haploid 80/80, depth 30/30: segregating in either 0.0021 (SE 0.00021); polymorphic in first -0.0033 (SE 0.00018)
+haploid 80/80, depth 100/100: segregating in either 0.00013 (SE 6.2e-05); polymorphic in first -0.00069 (SE 6.2e-05)
+haploid 28/80, depth 15/100: segregating in either 0.00056 (SE 0.00024); polymorphic in first -0.0082 (SE 0.00026)

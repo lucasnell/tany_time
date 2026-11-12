@@ -10,6 +10,7 @@ From: condaforge/miniforge3:26.7.2-0
     qc-env.yml /app/qc-env.yml
     kraken-env.yml /app/kraken-env.yml
     mito-env.yml /app/mito-env.yml
+    sim-env.yml /app/sim-env.yml
 
 %post -c /bin/bash
     export HOME=/app
@@ -45,6 +46,9 @@ From: condaforge/miniforge3:26.7.2-0
         conda clean --all -y
     conda env create -q -f /app/kraken-env.yml && \
         rm /app/kraken-env.yml && \
+        conda clean --all -y
+    conda env create -q -f /app/sim-env.yml && \
+        rm /app/sim-env.yml && \
         conda clean --all -y
     # medaka downloads models at run time; jobs may lack internet, so fetch
     # the model for the nanopore reads (R9.4.1, Dorado 0.9.6 sup v3.6; medaka
@@ -94,4 +98,4 @@ From: condaforge/miniforge3:26.7.2-0
     Author Lucas Nell
     ContactEmail lucnell@gmail.com
     Name tany_time
-    Version v2.5.0
+    Version v2.6.0

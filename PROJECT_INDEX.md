@@ -100,6 +100,16 @@ are written by `_R/make-job-lists.R`.
    frequencies × pools, with abundance).
 10. `_R/make-time-series-plot.R`: frequency-vs-abundance plots,
     focal genes sox21b and SNF4Aγ → `_plots/focal-freqs.pdf`.
+11. Crashes vs. immigration (ABC; design `_R/abc-design.md`, approved
+    2026-11-12; not run yet): `_R/abc-inputs.R` (2,000 random 10-kb
+    windows with ≥ 5,000 unmasked sites in all 18 SN pools; read depths and
+    second-allele counts from the per-pool `01-snape` partially masked
+    syncs in `tany_dir("snape")`; window choice uses only npstat's
+    `length`) → `tany_dir("abc", "abc-inputs.tar.gz")` and
+    `_data/abc-inputs.txt` → `_bash/04-diversity/01-abc-sims` (msprime
+    simulations and the observed statistics, `_bash/bin/abc-sim.py`,
+    `_bash/bin/abc-stats.R`) → ABC by random forests (`abcrf`; script not
+    written yet).
 
 ## `_R/`
 
@@ -112,6 +122,7 @@ are written by `_R/make-job-lists.R`.
 | `snape-helpers.cpp` | Rcpp parsers for SNAPE/count sync strings, distance thinning |
 | `crash-test.R` | Legacy: earlier binomial GLMM approach (lme4), superseded by BayPass |
 | `data-dir.R` | `tany_dir()`: path in the local data folder (`tany_time/` on lan_images4, else LAN_4TB_SSD; see `CLAUDE.md`) |
+| `abc-inputs.R` | ABC inputs: pools, trap counts, 2,000 windows, read depths, observed second-allele counts → `tany_dir("abc")`, checks in `_data/abc-inputs.txt` |
 | `abc-design.md` | Design of the ABC test of crashes vs. crashes plus immigration (models, priors, statistics, decision rule); approved by the owner 2026-11-12, before any diversity result was read |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |
 | `baypass-utils.R` | BayPass v3.1 R utilities (`simulate.baypass`, `fmd.dist`, `concatenate_res`, …) with local `concatenate_res` edits |
@@ -123,7 +134,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-check-candidates.R` | Per setting x covariate: candidates, run consistency, BF ceiling, overlap among settings and covariates (from `baypass-bf.rds`) → `_data/baypass-check-candidates.txt` |
 | `make-time-series-data.R` | Builds `timeseries-data.csv` |
 | `make-time-series-plot.R` | Candidate frequency vs. abundance plots |
-| `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets) and `_bash/03-select-time/baypass_beta_info.txt` (reproduces the 2025 BayPass seeds) |
+| `make-job-lists.R` | Writes HTCondor job lists in `_bash/samples/` (all pools, candidate pools, coverage-30 sets), `_bash/03-select-time/` (BayPass; reproduces the 2025 seeds), and `_bash/04-diversity/abc_info.txt` (ABC simulation batches) |
 | `pool-qc.R` | Chooses time-series pools from `03-pool-qc` metrics: missing-data limit (0.5), then ROBPCA (`alpha = 0.5`) outlier rule with bootstrap-calibrated threshold (blind to abundance and allele frequencies); spatial pools all included → `_bash/samples/{time,space}-pools.txt`, `_data/pool-qc.csv`, `_data/pool-qc-sensitivity.csv`, `_plots/pool-qc-time.pdf`; needs `rrcov` |
 | `baypass-covariates.R` | BayPass covariate files: `hm_logN_6` (primary), `logN`, `logN_lag1` → `_bash/03-select-time/covariates/`, `_data/baypass-covariates.csv` |
 | `crash-covariate-drafts.R` | Draft crash covariates for BayPass from abundances only (generations since crash, recovery phase, harmonic-mean logN over the preceding 6 or 10 generations; crash = N < 100), with offset sensitivity → `_data/crash-covariate-drafts.{csv,txt}` |
@@ -198,6 +209,12 @@ at e < 1e-4 (listed with annotations in `baypass-analysis.R`).
 
 ## `_bash/tests/`
 
+ABC checks (R; results in `_data/`): `abc-stats-check.R` (statistics on
+pools with known diversity: π and θ_W recover θ; temporal F with no drift
+by site rule → `_data/abc-stats-check.txt`) and `abc-sim-check.R`
+(simulator and statistics with fixed parameters: constant size, a size
+drop, immigration, sequencing error → `_data/abc-sim-check.txt`; needs a
+python with msprime in `ABC_PYTHON`).
 Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
 `-maxcov` to the observed maximum leaves output unchanged; →
 `_data/npstat-maxcov-check.txt`) and `v2-tool-check.sh` (every tool call

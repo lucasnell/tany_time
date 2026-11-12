@@ -1,7 +1,8 @@
 # `_apptainer/`: container
 
-`tany_time.def` builds `tany_time.sif` (v2.5.0, not yet built: project
-scripts and shell functions removed from the image; v2.4.0: bbmap back to 39.28, since
+`tany_time.def` builds `tany_time.sif` (v2.6.0, not yet built: adds
+`sim-env`; v2.5.0: project scripts and shell functions removed from the
+image; v2.4.0: bbmap back to 39.28, since
 40.02's BBMerge loses or hangs on paired reads; v2.3.0 had bbmap 40.02;
 v2.2.0 had medaka model `r941_min_hac_g507`) from
 `condaforge/miniforge3:26.7.2-0` (Ubuntu 24.04).
@@ -30,6 +31,7 @@ channel priority; channels conda-forge then bioconda).
 | `gatk3-env` | GATK 3.8 (IndelRealigner) | `03-mpileup` |
 | `baypass-env` | BayPass 3.1, R with poolfstat and tidyverse | `03-select-time/` |
 | `kraken-env` | Kraken2 2.17.2, samtools, seqtk | `00-references/03-silva-db`, `01-variant-calling/05-kraken` |
+| `sim-env` | msprime 1.4.4, tskit 1.0.3 | `04-diversity/01-abc-sims` |
 | `mito-env` | Flye 2.9.6, medaka 2.2.2 (R9.4.1 model `r941_min_sup_g507` downloaded at build), minimap2, bwa, polypolish 0.7.1, samtools, seqtk | `00-references/01-mitogenome` |
 
 Also built from source: `snape-pooled` (DEST-bio fork, commit `284bfe0`;
