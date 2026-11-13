@@ -222,10 +222,10 @@ def main():
         if ts.num_sites == 0:
             continue
         G = ts.genotype_matrix().astype(np.int32)  # sites x samples
-        all_counts.append(G @ ind)
+        all_counts.append((G @ ind).astype(np.int16))
         all_pos.append(i * W + ts.tables.sites.position.astype(np.int64))
     if all_counts:
-        counts = np.concatenate(all_counts).astype(np.int16)
+        counts = np.concatenate(all_counts)
         out_pos = np.concatenate(all_pos).astype(np.int32)
     else:
         counts = np.zeros((0, len(pools)), dtype=np.int16)

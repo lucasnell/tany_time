@@ -491,7 +491,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        Next:
        - rebuild the container as v2.6.0 (`sim-env`);
        - pilot (`_bash/04-diversity/README.md`): observed statistics and
-         batch 1 of each model; then the rest (1,300 jobs, mean ~3-10 min per
+         batch 1 of each model; submitted 2026-11-12 (cluster 12454873);
+         the 5 simulation jobs went over 12 GB memory and were held
+         (2026-11-13); `abc-stats.R` made leaner and requests raised to
+         20 GB memory, 12 GB disk; release them after `git pull`; then the rest (1,300 jobs, mean ~3-10 min per
          simulation);
        - write the `abcrf` analysis script; install `abcrf` locally.
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes

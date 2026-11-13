@@ -135,13 +135,21 @@ temporal_pairs <- function(P) {
 compute_stats <- function(alt, dep, setup) {
     P <- setup$P
     nm <- setup$pools$pool
-    has <- dep > 0L
-    m <- pmin(alt, dep - alt)
-    seg <- has & m >= B_MIN
-    h <- ifelse(seg, 2 * m * (dep - m) / (dep * pmax(dep - 1L, 1L)), 0)
-    pi_ <- colSums(h) / setup$d_pi
-    thw <- colSums(seg) / setup$d_w
-    rare <- colSums(seg & m < RARE * dep) / colSums(seg)
+    #' Per pool, one column at a time (memory: simulations can have > 10
+    #' million sites):
+    seg <- matrix(FALSE, nrow(alt), P)
+    pi_ <- thw <- rare <- numeric(P)
+    for (j in seq_len(P)) {
+        d <- dep[, j]
+        m <- pmin(alt[, j], d - alt[, j])
+        sj <- d > 0L & m >= B_MIN
+        seg[, j] <- sj
+        pi_[j] <- sum(2 * m[sj] * (d[sj] - m[sj]) / (d[sj] * (d[sj] - 1))) /
+            setup$d_pi[j]
+        thw[j] <- sum(sj) / setup$d_w[j]
+        rare[j] <- sum(m[sj] < RARE * d[sj]) / sum(sj)
+    }
+    rm(d, m, sj)
     out <- c(setNames(pi_, paste0("pi_", nm)),
              setNames(thw, paste0("thw_", nm)),
              setNames(pi_ / thw - 1, paste0("tdr_", nm)),
@@ -157,7 +165,7 @@ compute_stats <- function(alt, dep, setup) {
     #' to Ne at low depth is biased.
     fc <- apply(setup$pairs_t, 2, \(ab) {
         a <- ab[1]; b <- ab[2]
-        ok <- has[, a] & has[, b] & (seg[, a] | seg[, b])
+        ok <- dep[, a] > 0L & dep[, b] > 0L & (seg[, a] | seg[, b])
         x <- alt[ok, a] / dep[ok, a]
         y <- alt[ok, b] / dep[ok, b]
         z <- (x + y) / 2
@@ -287,13 +295,28 @@ sim_reads <- function(prefix, setup, e) {
     cnt <- matrix(cnt, ncol = P, byrow = TRUE)
     locus <- pos %/% W + 1L
     offset <- pos %% W
+    rm(pos)
     dep <- site_depths(locus, offset, setup)
-    p <- sweep(cnt, 2, setup$n_hap, "/")
-    q <- p * (1 - e) + (1 - p) * e / 3
-    alt <- matrix(rbinom(length(dep), dep, q), ncol = P)
-    #' Error-only sites, unless the site already segregates:
+    #' Reads, one pool at a time (memory):
+    alt <- matrix(0L, nrow(cnt), P)
+    for (j in seq_len(P)) {
+        p <- cnt[, j] / setup$n_hap[j]
+        alt[, j] <- rbinom(nrow(cnt), dep[, j], p * (1 - e) + (1 - p) * e / 3)
+    }
+    rm(cnt, p)
+    #' Keep only sites where some pool has >= 2 minor-allele reads (no
+    #' other site adds to any statistic):
+    keep <- logical(nrow(alt))
+    for (j in seq_len(P)) {
+        keep <- keep | pmin(alt[, j], dep[, j] - alt[, j]) >= B_MIN
+    }
+    alt <- alt[keep, , drop = FALSE]
+    dep <- dep[keep, , drop = FALSE]
+    key <- (locus * W + offset)[keep]
+    rm(locus, offset, keep)
+    #' Error-only sites, unless the site already segregates in the sample
+    #' (their minor allele has >= 2 reads by construction):
     es <- error_sites(setup, e)
-    key <- locus * W + offset
     es <- es[!(es$locus * W + es$offset) %in% key, ]
     if (nrow(es) > 0) {
         ekey <- es$locus * W + es$offset
@@ -305,8 +328,6 @@ sim_reads <- function(prefix, setup, e) {
         alt <- rbind(alt, e_alt)
         dep <- rbind(dep, e_dep)
     }
-    storage.mode(alt) <- "integer"
-    alt[dep == 0L] <- 0L
     list(alt = alt, dep = dep)
 }
 
