@@ -133,25 +133,29 @@ bind_rows(
     select(run, seed, tag, covariate, cov_file) |>
     write_csv("_bash/03-select-time/baypass_pod_info.txt", col_names = FALSE)
 
-#' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`,
-#' 2026-11-12): batches of 100 simulations (mean ~3-10 min each, up to
-#' ~1 h; ~5-20 h per batch, under the 72-h limit). Reference table: 25,000 per model (250 batches); held-out
-#' sets for parameter recovery: 1,000 per model (10 batches); one job for
-#' the observed statistics. Simulation i of a batch uses seed
-#' seed0 + i, with seed0 = 1e8 x model + 1e7 x variant + 100 x (batch - 1)
-#' + 1, so seeds are unique. Sensitivity runs are added once the main run's
-#' cost is known.
+#' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`):
+#' 10,000 per model for the reference table and 1,000 per model held out
+#' for parameter recovery (owner, 2026-11-16: the pilot took 9-34 min per
+#' simulation by model, so 25,000 per model would cost ~40,000 CPU-hours;
+#' the design allows 10,000). Batches of 25 simulations (M5's 100-simulation
+#' pilot batch took 56.6 h, near CHTC's 72-h limit). The pilot batches
+#' (batch 1, 100 simulations, seeds 1-100 of each model) are kept as part
+#' of the reference table, so main batches 2-4 don't exist and main runs
+#' from batch 5. Simulation i of a batch uses seed seed0 + i, with seed0 =
+#' 1e8 x model + 1e7 x variant + 25 x (batch - 1) + 1 (so seeds are unique
+#' and continue the pilot's), plus one job for the observed statistics.
 abc_variants <- c(main = 0L, holdout = 1L)
 bind_rows(
-    tibble(variant = "main", model = "observed", batch = 0L, seed0 = 0L,
-           n_sims = 0L),
-    crossing(variant = "main", model = paste0("M", 1:5), batch = 1:250),
-    crossing(variant = "holdout", model = paste0("M", 1:5), batch = 1:10)) |>
-    mutate(n_sims = ifelse(model == "observed", 0L, 100L),
+    tibble(variant = "main", model = "observed", batch = 0L),
+    crossing(variant = "main", model = paste0("M", 1:5), batch = c(1L, 5:400)),
+    crossing(variant = "holdout", model = paste0("M", 1:5), batch = 1:40)) |>
+    mutate(n_sims = case_when(model == "observed" ~ 0L,
+                              variant == "main" & batch == 1L ~ 100L,
+                              TRUE ~ 25L),
            m = suppressWarnings(as.integer(str_remove(model, "^M"))),
            seed0 = ifelse(model == "observed", 0L,
                           1e8 * m + 1e7 * abc_variants[variant] +
-                              100L * (batch - 1L) + 1L),
+                              25L * (batch - 1L) + 1L),
            seed0 = as.integer(seed0)) |>
     select(variant, model, batch, seed0, n_sims) |>
     write_csv("_bash/04-diversity/abc_info.txt", col_names = FALSE)

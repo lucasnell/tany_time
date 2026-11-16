@@ -218,3 +218,9 @@ details.
    (`_R/abc-inputs.R` → `_data/abc-inputs.txt`; pools 0.00019-0.00029).
    With 0.002, simulations would carry ~9x more error reads than the
    data, inflating θ_W and the rare-allele share in simulations only.
+10. 10,000 simulations per model for the reference table, not 25,000
+    (owner, 2026-11-16; the design's fallback). The pilot (100 per model)
+    took a mean of 9, 22, 15, 13, and 34 min per simulation for M1-M5
+    (msprime 79-91% of it), so 25,000 per model would cost ~40,000
+    CPU-hours; 10,000 costs ~17,000. Held-out sets stay at 1,000 per
+    model.

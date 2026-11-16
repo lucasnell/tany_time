@@ -489,13 +489,17 @@ Follow `_bash/RERUN-CHECKLIST.md`.
        `tany_dir("abc")`, `_data/abc-inputs.txt`; sequencing error 0.00023,
        now used instead of 0.002) and uploaded to `/staging/l/lnell/dna/abc/`.
        Next:
-       - rebuild the container as v2.6.0 (`sim-env`);
+       - container rebuilt as v2.6.0 (`sim-env`; 2026-11-12);
        - pilot (`_bash/04-diversity/README.md`): observed statistics and
          batch 1 of each model; submitted 2026-11-12 (cluster 12454873);
          the 5 simulation jobs went over 12 GB memory and were held
          (2026-11-13); `abc-stats.R` made leaner and requests raised to
-         20 GB memory, 12 GB disk; release them after `git pull`; then the rest (1,300 jobs, mean ~3-10 min per
-         simulation);
+         20 GB memory, 12 GB disk; released, all 5 finished (2026-11-16;
+         mean 9-34 min per simulation by model). The observed job failed
+         (pool names mangled when read; fixed in `964c336`), resubmit it.
+         10,000 simulations per model instead of 25,000 (owner,
+         2026-11-16; ~17,000 CPU-hours), in batches of 25; then the rest
+         (2,180 jobs; commands in `_bash/04-diversity/README.md`);
        - write the `abcrf` analysis script; install `abcrf` locally.
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes
        exceed what genome-wide Ne implies. After 2–4.

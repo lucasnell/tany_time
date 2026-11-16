@@ -9,7 +9,7 @@ statistics and the observed data use R (`baypass-env`, for poolfstat).
 
 | Step | Does | Jobs | Output (`/staging/l/lnell/dna/abc/`) |
 |---|---|---|---|
-| `01-abc-sims` | One batch of 100 simulations for one model (`../bin/abc-sim.py` → `../bin/abc-stats.R`: pool-seq reads at the observed depths, then the 258 statistics), or the observed statistics (model `observed`) | 1,301 (`abc_info.txt`): observed; 250 reference batches and 10 held-out batches per model (M1-M5) | `sims/abc-<variant>-<model>-b<batch>.tsv.gz`; `abc-observed-stats.tsv` |
+| `01-abc-sims` | One batch of 25 simulations for one model (`../bin/abc-sim.py` → `../bin/abc-stats.R`: pool-seq reads at the observed depths, then the 258 statistics), or the observed statistics (model `observed`) | 2,186 (`abc_info.txt`): observed; per model (M1-M5), the 100-simulation pilot batch, 396 more reference batches (10,000 simulations), and 40 held-out batches (1,000) | `sims/abc-<variant>-<model>-b<batch>.tsv.gz`; `abc-observed-stats.tsv` |
 
 ## Inputs
 
@@ -31,11 +31,17 @@ time per simulation by model, observed statistic count).
 
 ## Run
 
-Pilot first: the observed job and batch 1 of each model (6 jobs), then the
-rest:
+Pilot first: the observed job and batch 1 of each model (6 jobs; done
+2026-11-16, 100 simulations each, mean 9-34 min per simulation by model):
 ```
 cd ~/tany_time && git pull && cd _bash/04-diversity
 mkdir -p logs/01-abc-sims
 grep -E '^main,(observed,0|M[1-5],1),' abc_info.txt > logs/01-abc-sims/first.txt
 sed 's|^queue \(.*\) from .*|queue \1 from logs/01-abc-sims/first.txt|' 01-abc-sims.sub | condor_submit -
+```
+
+Then the rest (everything but the pilot batches and the observed job):
+```
+grep -v -E '^main,(observed,0|M[1-5],1),' abc_info.txt > logs/01-abc-sims/rest.txt
+sed 's|^queue \(.*\) from .*|queue \1 from logs/01-abc-sims/rest.txt|' 01-abc-sims.sub | condor_submit -
 ```

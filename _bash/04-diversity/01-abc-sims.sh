@@ -14,10 +14,10 @@
 #'   4. first seed (simulation i uses first seed + i)
 #'   5. number of simulations
 #'
-#' Expected run time per simulation (2,000 loci), projected from 12 prior
-#' draws per model with 20 loci on a laptop (2026-11-12): mean 3-10 min by
-#' model, up to ~1 h with a large source population (M5 slowest), so ~5-20 h
-#' per batch of 100; measured in the pilot (first job per model).
+#' Run time per simulation (2,000 loci), measured in the pilot (2026-11-16;
+#' 100 per model): mean 9 (M1), 22 (M2), 15 (M3), 13 (M4), and 34 (M5) min,
+#' up to 7.7 h with a large source population; msprime takes 79-91% of it.
+#' Batches of 25 simulations: ~4-14 h each on average.
 #'
 
 
