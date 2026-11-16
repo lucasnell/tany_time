@@ -220,7 +220,8 @@ pairwise_fst <- function(alt, dep, seg, setup) {
 
 
 observed_stats <- function(in_dir, setup) {
-    obs <- read.delim(gzfile(file.path(in_dir, "obs-sites.tsv.gz")))
+    obs <- read.delim(gzfile(file.path(in_dir, "obs-sites.tsv.gz")),
+                      check.names = FALSE)
     alt <- as.matrix(obs[, setup$pools$pool])
     storage.mode(alt) <- "integer"
     dep <- site_depths(obs$locus, obs$offset, setup)
