@@ -500,7 +500,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          10,000 simulations per model instead of 25,000 (owner,
          2026-11-16; ~17,000 CPU-hours), in batches of 25; then the rest
          (2,180 jobs; commands in `_bash/04-diversity/README.md`);
-       - write the `abcrf` analysis script; install `abcrf` locally.
+       - `_R/abc-analysis.R` written 2026-11-16 (`abcrf` 2.0 installed
+         locally), tested on stand-in data only. When the simulations
+         finish: copy `/staging/l/lnell/dna/abc/sims/` and
+         `abc-observed-stats.tsv` to `tany_dir("abc")`, then run it;
+       - posterior-predictive simulations from `_data/abc-ppc-params.csv`
+         need a job mode that reads a parameter file (`abc-sim.py --fix`
+         per simulation; not written yet);
+       - sensitivity variants (`power`, `widen`, `older`, `mu`) aren't in
+         the job list yet; decide their number of simulations once the
+         main run's cost is known.
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes
        exceed what genome-wide Ne implies. After 2–4.
 

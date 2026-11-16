@@ -108,8 +108,11 @@ are written by `_R/make-job-lists.R`.
     `length`) → `tany_dir("abc", "abc-inputs.tar.gz")` and
     `_data/abc-inputs.txt` → `_bash/04-diversity/01-abc-sims` (msprime
     simulations and the observed statistics, `_bash/bin/abc-sim.py`,
-    `_bash/bin/abc-stats.R`) → ABC by random forests (`abcrf`; script not
-    written yet).
+    `_bash/bin/abc-stats.R`) → `_R/abc-analysis.R` (ABC by random forests,
+    `abcrf` 2.0: prior-predictive check, model choice, parameters,
+    recovery on held-out simulations, posterior-predictive draws,
+    sensitivity → `_data/abc-results.txt`, `_data/abc-*.csv`,
+    `_plots/abc-prior-check.pdf`; tested on stand-in data only).
 
 ## `_R/`
 
@@ -122,6 +125,7 @@ are written by `_R/make-job-lists.R`.
 | `snape-helpers.cpp` | Rcpp parsers for SNAPE/count sync strings, distance thinning |
 | `crash-test.R` | Legacy: earlier binomial GLMM approach (lme4), superseded by BayPass |
 | `data-dir.R` | `tany_dir()`: path in the local data folder (`tany_time/` on lan_images4, else LAN_4TB_SSD; see `CLAUDE.md`) |
+| `abc-analysis.R` | ABC by random forests (`abcrf`) on the `04-diversity` simulations: model choice, parameters, recovery, sensitivity → `_data/abc-results.txt`, `_data/abc-*.csv`, `_plots/abc-prior-check.pdf` |
 | `abc-inputs.R` | ABC inputs: pools, trap counts, 2,000 windows, read depths, observed second-allele counts → `tany_dir("abc")`, checks in `_data/abc-inputs.txt` |
 | `abc-design.md` | Design of the ABC test of crashes vs. crashes plus immigration (models, priors, statistics, decision rule); approved by the owner 2026-11-12, before any diversity result was read |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |
