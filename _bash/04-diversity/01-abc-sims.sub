@@ -19,12 +19,13 @@ when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
 #' msprime and R are single-threaded. The pilot (2026-11-13) went over
-#' 12 GB (last measured 12-14.6 GB) and used up to 4.75 GB disk before
-#' `abc-stats.R` was changed to work one pool at a time and drop sites that
-#' can't segregate (local peak 4.4 GB at 14 million simulated sites,
-#' without poolfstat's F_ST); 20 GB leaves room for F_ST and python.
+#' 12 GB before `abc-stats.R` was changed to work one pool at a time and
+#' drop sites that can't segregate; with the changes, the 5 pilot batches
+#' (100 simulations each) peaked at 12.2-16.0 GB (HTCondor's measure,
+#' which may include file cache) and 5.0 GB disk. 24 GB leaves room for
+#' heavier draws.
 request_cpus = 1
-request_memory = 20GB
+request_memory = 24GB
 request_disk = 12GB
 
 #' `abc_info.txt` (variant,model,batch,seed,n_sims) is written by
