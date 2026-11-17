@@ -1,0 +1,59 @@
+Setting mp075 subsample 1: 318583 real SNPs, 18 pools
+Beta(a_pi, b_pi): 1.683, 1.813
+
+== Δ(variant) / Δ(source Ω), over pool pairs
+(mean_ratio: mean over pairs; pool_min/max: range of each pool's mean over its pairs; cor: correlation over pairs)
+                         variant mean_ratio pool_min pool_max   cor
+1              real reads (sub1)      0.970    0.317    1.108 0.996
+2 pod (M_P, truncated, filtered)      0.978    0.928    1.016 0.999
+3             pod before filters      0.974    0.925    1.004 0.999
+4          alpha, M_P, truncated      0.994    0.973    1.000 1.000
+5      alpha, M_P, not truncated      1.000    0.994    1.006 1.000
+6    pod with Beta pi (filtered)      0.969    0.931    0.993 0.999
+7      alpha, Beta pi, truncated      0.995    0.980    1.002 1.000
+
+Share of population frequencies truncated to [0, 1]: M_P pi 0.00268; Beta pi 0.00483
+Share of simulated SNPs passing filters: M_P pi 0.977; Beta pi 0.92
+pi spread, sd: real M_P 0.247; Beta 0.236
+
+== Per pool
+          pool median_depth haploid omega_diag real_delta_ratio pod_delta_ratio
+1  SN-1-02_S55           86      80    0.00897            1.000           0.976
+2  SN-1-07_S23           61      80    0.05120            1.030           0.967
+3  SN-1-08_S24          110      80    0.00792            0.998           0.981
+4  SN-1-09_S25           97      80    0.01600            1.020           0.974
+5  SN-1-10_S26           86      80    0.04350            1.060           0.972
+6  SN-1-13_S56           25      28    0.07050            1.110           0.928
+7  SN-1-14_S27           73      80    0.01080            1.020           0.975
+8  SN-1-95_S59           18      80    0.00841            0.317           1.020
+9  SN-1-97_S61          103      48    0.00819            1.020           0.973
+10 SN-1-99_S28           49      80    0.00853            0.996           0.981
+11 SN-2-00_S29           53      80    0.01150            1.010           0.978
+12 SN-2-02_S30           89      80    0.01000            1.010           0.978
+13 SN-2-07_S31           95      80    0.01280            0.797           0.987
+14 SN-2-08_S32           82      80    0.01830            1.040           0.982
+15 SN-2-15_S34           44      80    0.02230            1.070           0.974
+16 SN-2-92_S35           80      80    0.00946            1.010           0.985
+17 SN-2-97_S37           30      38    0.00880            0.982           0.975
+18 SN-2-99_S38           99      80    0.00638            0.972           0.993
+   baypass_pod_diag_ratio
+1                   0.905
+2                   1.040
+3                   0.841
+4                   0.921
+5                   1.040
+6                   1.040
+7                   0.906
+8                   1.010
+9                   0.901
+10                  0.885
+11                  0.897
+12                  0.881
+13                  0.898
+14                  0.929
+15                  1.010
+16                  0.914
+17                  0.936
+18                  0.855
+
+Spearman correlation, source Omega diagonal vs. BayPass re-estimated / source diagonal: 0.676

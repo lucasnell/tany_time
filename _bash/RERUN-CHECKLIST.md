@@ -475,6 +475,13 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          fit fails its criteria in 7 of 9 setting x covariate pairs, mostly
          from excess POD SNPs at the BF ceiling. Step 5 (q-values) not run:
          waiting for the owner's decisions on both.
+         Diagnosis (local, simulation only; `_R/baypass-pod-diagnose.R` →
+         `_data/baypass-pod-diagnose.txt`, mp075): the POD simulation keeps
+         the divergence Ω implies (moment Δ / Δ(Ω) 0.93-1.02 by pool; Beta
+         π no better), so the loss happens when BayPass re-estimates Ω:
+         its diagonal comes back low mainly for pools with little drift
+         (Spearman 0.68 with the source diagonal). Next step discussed
+         before any cluster run.
 
 ## J. After the rerun
 
