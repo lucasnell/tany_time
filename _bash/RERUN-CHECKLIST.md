@@ -490,6 +490,8 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          `05-baypass-pod-test` (6 jobs), then `./check-step.sh
          03-select-time/05-baypass-pod-test`, copy the `.tar` files to
          `tany_dir("baypass-pod")`, rerun the script for part 2.
+         Submitted 2026-11-17, with job priority 15 (`condor_prio`) so they
+         start ahead of the queued ABC jobs.
 
 ## J. After the rerun
 
