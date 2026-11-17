@@ -482,6 +482,14 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          its diagonal comes back low mainly for pools with little drift
          (Spearman 0.68 with the source diagonal). Next step discussed
          before any cluster run.
+      5. Correction test (owner, 2026-11-17; `_R/baypass-pod-correct.R` →
+         `_data/baypass-pod-correct.txt`): 100,000-SNP test PODs per
+         setting from the source Ω and from Ω rescaled per pool by
+         BayPass's shortfall; inputs uploaded (MD5
+         cd348dabe4f6639496b89afb4b4e431b). Submit
+         `05-baypass-pod-test` (6 jobs), then `./check-step.sh
+         03-select-time/05-baypass-pod-test`, copy the `.tar` files to
+         `tany_dir("baypass-pod")`, rerun the script for part 2.
 
 ## J. After the rerun
 

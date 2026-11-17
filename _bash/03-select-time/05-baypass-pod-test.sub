@@ -1,0 +1,28 @@
+# baypass-pod-test.sub
+
+# BayPass core model on test PODs (base vs. bias-corrected Omega)
+
+container_image = file:///staging/l/lnell/tany_time.sif
+
+log = logs/05-baypass-pod-test/$(MpTag)-$(Variant).log
+error = logs/05-baypass-pod-test/$(MpTag)-$(Variant).err
+output = logs/05-baypass-pod-test/$(MpTag)-$(Variant).out
+
+executable = 05-baypass-pod-test.sh
+arguments = $(MpTag) $(Variant) $(RNGSeed)
+
+batch_name = "baypass-pod-test"
+
+should_transfer_files = YES
+transfer_input_files = ../bin
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+#' The 400,000-SNP POD jobs used 1.5 GB memory and 3.9 GB disk.
+request_cpus = 8
+request_memory = 4GB
+request_disk = 8GB
+
+#' `baypass_pod_test_info.txt` (tag,variant,seed) is written by
+#' `_R/make-job-lists.R`.
+queue MpTag,Variant,RNGSeed from baypass_pod_test_info.txt

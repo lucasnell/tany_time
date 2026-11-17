@@ -18,6 +18,7 @@
 #'   _bash/03-select-time/baypass_init_info.txt    tag,subsample
 #'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample,covariate
 #'   _bash/03-select-time/baypass_pod_info.txt     run,seed,tag,covariate,covariate_file
+#'   _bash/03-select-time/baypass_pod_test_info.txt tag,variant,seed
 #'   _bash/04-diversity/abc_info.txt               variant,model,batch,seed0,n_sims
 #'
 
@@ -132,6 +133,15 @@ bind_rows(
     arrange(tag, covariate, run) |>
     select(run, seed, tag, covariate, cov_file) |>
     write_csv("_bash/03-select-time/baypass_pod_info.txt", col_names = FALSE)
+
+#' POD Omega correction test (`05-baypass-pod-test`; `_R/baypass-pod-correct.R`,
+#' 2026-11-17): core model on 100,000-SNP test PODs per setting, from the
+#' source Omega and from the bias-corrected Omega, with the seed of the
+#' POD core-model runs.
+crossing(tag = mp_df$tag, variant = c("base", "corrected")) |>
+    mutate(seed = 1141272491L) |>
+    write_csv("_bash/03-select-time/baypass_pod_test_info.txt",
+              col_names = FALSE)
 
 #' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`):
 #' 10,000 per model for the reference table and 1,000 per model held out
