@@ -466,6 +466,15 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       4. `./check-step.sh 03-select-time/04-baypass-pod`; copy the `.tar`
          files to `tany_dir("baypass-pod")`; `Rscript
          _R/baypass-pod-threshold.R`.
+         PASS 2026-11-17: 93 of 93 (longest 41.2 h); copied to both drives
+         (MD5s match staging). Threshold script steps 1-4 run
+         (`_data/baypass-pod-threshold.txt`): Ω re-estimated from the PODs
+         vs. the Ω they were simulated from has FMD 1.04-1.13 (> 0.5, the
+         usual "close"), though off-diagonals correlate at 0.997-0.998 and
+         the trace is 2-2.4% lower; diagonals are 0.83-1.05x. The GPD tail
+         fit fails its criteria in 7 of 9 setting x covariate pairs, mostly
+         from excess POD SNPs at the BF ceiling. Step 5 (q-values) not run:
+         waiting for the owner's decisions on both.
 
 ## J. After the rerun
 

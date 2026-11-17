@@ -76,17 +76,29 @@ read_omega <- function(fn) {
 # =============================================================================*
 
 
-cat("== 1. FMD: Omega re-estimated from POD vs. Omega simulated from\n")
+cat("== 1. Omega re-estimated from POD vs. Omega simulated from\n")
+#' FMD, plus where any difference lies: ratio of diagonals (pod / sim),
+#' correlation of off-diagonal elements, and their means.
 tibble(tag = mp_tags) |>
-    mutate(fmd = map_dbl(tag, \(t) {
+    mutate(x = map(tag, \(t) {
         nm <- sprintf("baypass-pod-%s-core-run1", t)
         om_pod <- read_omega(untar_one(nm, sprintf("tany-pod-%s-core-run1_mat_omega.out", t)))
         om_sim <- read_omega(untar_one(nm, sprintf("tany-init-%s-sub1_mat_omega.out", t)))
-        fmd.dist(om_pod, om_sim)
+        od <- upper.tri(om_pod)
+        r <- diag(om_pod) / diag(om_sim)
+        tibble(fmd = fmd.dist(om_pod, om_sim),
+               trace_ratio = sum(diag(om_pod)) / sum(diag(om_sim)),
+               diag_ratio_min = min(r), diag_ratio_max = max(r),
+               offdiag_cor = cor(om_pod[od], om_sim[od]),
+               offdiag_mean_pod = mean(om_pod[od]),
+               offdiag_mean_sim = mean(om_sim[od]))
     })) |>
+    unnest(x) |>
+    mutate(across(where(is.double), \(x) signif(x, 3))) |>
     as.data.frame() |>
     print()
-cat("(Real subsamples within a setting: FMD 0.22-0.33.)\n")
+cat("(Real subsamples within a setting: FMD 0.22-0.33; Gautier 2015 uses\n",
+    "FMD < 0.5 as close.)\n")
 
 
 

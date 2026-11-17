@@ -1,0 +1,228 @@
+== 1. Omega re-estimated from POD vs. Omega simulated from
+    tag  fmd trace_ratio diag_ratio_min diag_ratio_max offdiag_cor
+1 mp050 1.11       0.984          0.831           1.05       0.997
+2 mp075 1.13       0.981          0.841           1.04       0.998
+3 mp100 1.04       0.976          0.828           1.05       0.998
+  offdiag_mean_pod offdiag_mean_sim
+1        -0.000198         0.000420
+2        -0.000266         0.000317
+3        -0.000385         0.000237
+(Real subsamples within a setting: FMD 0.22-0.33; Gautier 2015 uses
+ FMD < 0.5 as close.)
+
+POD covariate-model outputs found: 90 of 90
+
+== 2. Null BF (dB) quantiles
+     tag covariate    statistic    snps   q99  q999 q9999   max at_ceiling
+1  mp050 hm_logN_6 median of 10  400000 10.97 19.43 33.81 59.96         11
+2  mp050 hm_logN_6   single run 4000000 12.35 21.08 49.95 59.96        275
+3  mp050      logN median of 10  400000  9.91 18.85 28.96 56.95          0
+4  mp050      logN   single run 4000000 10.78 19.72 31.48 59.96         64
+5  mp050 logN_lag1 median of 10  400000  6.16 15.48 24.68 38.01          0
+6  mp050 logN_lag1   single run 4000000  7.08 15.98 25.62 59.96          5
+7  mp075 hm_logN_6 median of 10  400000 11.62 20.41 38.87 59.96         11
+8  mp075 hm_logN_6   single run 4000000 12.96 21.95 52.17 59.96        301
+9  mp075      logN median of 10  400000  9.56 19.02 28.67 59.96          1
+10 mp075      logN   single run 4000000 10.35 19.56 30.84 59.96         29
+11 mp075 logN_lag1 median of 10  400000  5.82 15.00 23.86 58.45          0
+12 mp075 logN_lag1   single run 4000000  6.73 15.51 24.86 59.96         11
+13 mp100 hm_logN_6 median of 10  400000 11.32 20.51 31.08 59.96          7
+14 mp100 hm_logN_6   single run 4000000 12.57 21.70 43.50 59.96        179
+15 mp100      logN median of 10  400000  9.15 18.22 28.14 59.96          2
+16 mp100      logN   single run 4000000  9.87 18.73 29.13 59.96         33
+17 mp100 logN_lag1 median of 10  400000  5.79 14.86 24.11 53.93          0
+18 mp100 logN_lag1   single run 4000000  6.52 15.30 24.46 59.96          4
+
+== 3. Median BF >= cutoff: null proportion and expected false positives
+(SNPs tested: mp050 = 1023857, mp075 = 955748, mp100 = 528372)
+     tag covariate cutoff n_exceed   p_null expected_fp
+1  mp050 hm_logN_6  10.00     5254 1.31e-02     13448.4
+2  mp050 hm_logN_6  15.00     1317 3.29e-03      3371.0
+3  mp050 hm_logN_6  20.00      347 8.68e-04       888.2
+4  mp050 hm_logN_6  25.00      132 3.30e-04       337.9
+5  mp050 hm_logN_6  30.00       59 1.48e-04       151.0
+6  mp050 hm_logN_6  35.00       39 9.75e-05        99.8
+7  mp050 hm_logN_6  40.00       26 6.50e-05        66.6
+8  mp050 hm_logN_6  45.00       21 5.25e-05        53.8
+9  mp050 hm_logN_6  50.00       17 4.25e-05        43.5
+10 mp050 hm_logN_6  59.96       11 2.75e-05        28.2
+11 mp050      logN  10.00     3925 9.81e-03     10046.6
+12 mp050      logN  15.00     1120 2.80e-03      2866.8
+13 mp050      logN  20.00      295 7.38e-04       755.1
+14 mp050      logN  25.00       89 2.22e-04       227.8
+15 mp050      logN  30.00       36 9.00e-05        92.1
+16 mp050      logN  35.00       14 3.50e-05        35.8
+17 mp050      logN  40.00       12 3.00e-05        30.7
+18 mp050      logN  45.00        9 2.25e-05        23.0
+19 mp050      logN  50.00        7 1.75e-05        17.9
+20 mp050      logN  59.96        0 0.00e+00         0.0
+21 mp050 logN_lag1  10.00     1565 3.91e-03      4005.8
+22 mp050 logN_lag1  15.00      450 1.12e-03      1151.8
+23 mp050 logN_lag1  20.00      122 3.05e-04       312.3
+24 mp050 logN_lag1  25.00       38 9.50e-05        97.3
+25 mp050 logN_lag1  30.00       10 2.50e-05        25.6
+26 mp050 logN_lag1  35.00        2 5.00e-06         5.1
+27 mp050 logN_lag1  40.00        0 0.00e+00         0.0
+28 mp050 logN_lag1  45.00        0 0.00e+00         0.0
+29 mp050 logN_lag1  50.00        0 0.00e+00         0.0
+30 mp050 logN_lag1  59.96        0 0.00e+00         0.0
+31 mp075 hm_logN_6  10.00     6226 1.56e-02     14876.2
+32 mp075 hm_logN_6  15.00     1584 3.96e-03      3784.8
+33 mp075 hm_logN_6  20.00      445 1.11e-03      1063.3
+34 mp075 hm_logN_6  25.00      142 3.55e-04       339.3
+35 mp075 hm_logN_6  30.00       71 1.78e-04       169.6
+36 mp075 hm_logN_6  35.00       46 1.15e-04       109.9
+37 mp075 hm_logN_6  40.00       38 9.50e-05        90.8
+38 mp075 hm_logN_6  45.00       29 7.25e-05        69.3
+39 mp075 hm_logN_6  50.00       24 6.00e-05        57.3
+40 mp075 hm_logN_6  59.96       11 2.75e-05        26.3
+41 mp075      logN  10.00     3597 8.99e-03      8594.6
+42 mp075      logN  15.00     1034 2.58e-03      2470.6
+43 mp075      logN  20.00      304 7.60e-04       726.4
+44 mp075      logN  25.00       98 2.45e-04       234.2
+45 mp075      logN  30.00       33 8.25e-05        78.8
+46 mp075      logN  35.00       11 2.75e-05        26.3
+47 mp075      logN  40.00        6 1.50e-05        14.3
+48 mp075      logN  45.00        4 1.00e-05         9.6
+49 mp075      logN  50.00        3 7.50e-06         7.2
+50 mp075      logN  59.96        1 2.50e-06         2.4
+51 mp075 logN_lag1  10.00     1455 3.64e-03      3476.5
+52 mp075 logN_lag1  15.00      398 9.95e-04       951.0
+53 mp075 logN_lag1  20.00      120 3.00e-04       286.7
+54 mp075 logN_lag1  25.00       33 8.25e-05        78.8
+55 mp075 logN_lag1  30.00       10 2.50e-05        23.9
+56 mp075 logN_lag1  35.00        5 1.25e-05        11.9
+57 mp075 logN_lag1  40.00        2 5.00e-06         4.8
+58 mp075 logN_lag1  45.00        2 5.00e-06         4.8
+59 mp075 logN_lag1  50.00        1 2.50e-06         2.4
+60 mp075 logN_lag1  59.96        0 0.00e+00         0.0
+61 mp100 hm_logN_6  10.00     5698 1.42e-02      7526.7
+62 mp100 hm_logN_6  15.00     1488 3.72e-03      1965.5
+63 mp100 hm_logN_6  20.00      441 1.10e-03       582.5
+64 mp100 hm_logN_6  25.00      137 3.42e-04       181.0
+65 mp100 hm_logN_6  30.00       53 1.32e-04        70.0
+66 mp100 hm_logN_6  35.00       26 6.50e-05        34.3
+67 mp100 hm_logN_6  40.00       16 4.00e-05        21.1
+68 mp100 hm_logN_6  45.00       14 3.50e-05        18.5
+69 mp100 hm_logN_6  50.00       13 3.25e-05        17.2
+70 mp100 hm_logN_6  59.96        7 1.75e-05         9.2
+71 mp100      logN  10.00     3221 8.05e-03      4254.7
+72 mp100      logN  15.00      895 2.24e-03      1182.2
+73 mp100      logN  20.00      239 5.98e-04       315.7
+74 mp100      logN  25.00       70 1.75e-04        92.5
+75 mp100      logN  30.00       23 5.75e-05        30.4
+76 mp100      logN  35.00       15 3.75e-05        19.8
+77 mp100      logN  40.00        4 1.00e-05         5.3
+78 mp100      logN  45.00        3 7.50e-06         4.0
+79 mp100      logN  50.00        3 7.50e-06         4.0
+80 mp100      logN  59.96        2 5.00e-06         2.6
+81 mp100 logN_lag1  10.00     1410 3.52e-03      1862.5
+82 mp100 logN_lag1  15.00      389 9.72e-04       513.8
+83 mp100 logN_lag1  20.00      113 2.82e-04       149.3
+84 mp100 logN_lag1  25.00       35 8.75e-05        46.2
+85 mp100 logN_lag1  30.00        7 1.75e-05         9.2
+86 mp100 logN_lag1  35.00        3 7.50e-06         4.0
+87 mp100 logN_lag1  40.00        1 2.50e-06         1.3
+88 mp100 logN_lag1  45.00        1 2.50e-06         1.3
+89 mp100 logN_lag1  50.00        1 2.50e-06         1.3
+90 mp100 logN_lag1  59.96        0 0.00e+00         0.0
+
+== 4. GPD tail fit of POD median BFs (sensitivity)
+     tag covariate u_prob      u  n_u  n_pod sigma     xi se_xi converged
+1  mp050 hm_logN_6  0.990 10.969 4000 400000 3.281  0.153 0.016      TRUE
+2  mp050 hm_logN_6  0.995 13.470 2000 400000 3.265  0.216 0.025      TRUE
+3  mp050 hm_logN_6  0.999 19.425  400 400000 4.175  0.353 0.070      TRUE
+4  mp050      logN  0.990  9.912 4000 400000 3.835  0.045 0.015      TRUE
+5  mp050      logN  0.995 12.670 2000 400000 3.710  0.081 0.022      TRUE
+6  mp050      logN  0.999 18.854  400 400000 3.704  0.200 0.058      TRUE
+7  mp050 logN_lag1  0.990  6.164 4000 400000 4.098 -0.013 0.016      TRUE
+8  mp050 logN_lag1  0.995  8.996 2000 400000 4.040 -0.009 0.022      TRUE
+9  mp050 logN_lag1  0.999 15.480  400 400000 3.958 -0.006 0.055      TRUE
+10 mp075 hm_logN_6  0.990 11.623 4000 400000 3.309  0.167 0.017      TRUE
+11 mp075 hm_logN_6  0.995 14.121 2000 400000 3.387  0.221 0.025      TRUE
+12 mp075 hm_logN_6  0.999 20.407  400 400000 3.668  0.474 0.076      TRUE
+13 mp075      logN  0.990  9.563 4000 400000 3.870  0.049 0.016      TRUE
+14 mp075      logN  0.995 12.259 2000 400000 4.045  0.046 0.022      TRUE
+15 mp075      logN  0.999 19.024  400 400000 3.792  0.137 0.056      TRUE
+16 mp075 logN_lag1  0.990  5.820 4000 400000 4.183 -0.017 0.013      TRUE
+17 mp075 logN_lag1  0.995  8.745 2000 400000 3.866  0.021 0.021      TRUE
+18 mp075 logN_lag1  0.999 14.996  400 400000 3.622  0.095 0.053      TRUE
+19 mp100 hm_logN_6  0.990 11.319 4000 400000 3.466  0.121 0.017      TRUE
+20 mp100 hm_logN_6  0.995 13.854 2000 400000 3.664  0.138 0.024      TRUE
+21 mp100 hm_logN_6  0.999 20.513  400 400000 3.865  0.253 0.059      TRUE
+22 mp100      logN  0.990  9.154 4000 400000 3.801  0.039 0.015      TRUE
+23 mp100      logN  0.995 11.814 2000 400000 3.881  0.044 0.021      TRUE
+24 mp100      logN  0.999 18.219  400 400000 3.466  0.184 0.060      TRUE
+25 mp100 logN_lag1  0.990  5.789 4000 400000 4.060 -0.010 0.014      TRUE
+26 mp100 logN_lag1  0.995  8.609 2000 400000 3.855  0.018 0.022      TRUE
+27 mp100 logN_lag1  0.999 14.857  400 400000 3.824  0.049 0.050      TRUE
+   endpoint
+1       Inf
+2       Inf
+3       Inf
+4       Inf
+5       Inf
+6       Inf
+7   325.521
+8   448.829
+9   731.406
+10      Inf
+11      Inf
+12      Inf
+13      Inf
+14      Inf
+15      Inf
+16  255.293
+17      Inf
+18      Inf
+19      Inf
+20      Inf
+21      Inf
+22      Inf
+23      Inf
+24      Inf
+25  411.616
+26      Inf
+27      Inf
+
+Observed vs. predicted POD exceedances (threshold at quantile 0.99):
+     tag covariate  level bf_db observed predicted  lo  hi inside
+1  mp050 hm_logN_6  99.9% 19.43      400    455.79 414 498  FALSE
+2  mp050 hm_logN_6 99.99% 33.81       40     35.03  24  47   TRUE
+3  mp050 hm_logN_6    max 59.96       11      1.69   0   5  FALSE
+4  mp050      logN  99.9% 18.85      400    436.03 396 477   TRUE
+5  mp050      logN 99.99% 28.96       40     45.36  33  59   TRUE
+6  mp050      logN    max 56.95        2      0.23   0   1  FALSE
+7  mp050 logN_lag1  99.9% 15.48      400    398.28 360 438   TRUE
+8  mp050 logN_lag1 99.99% 24.68       40     38.09  26  51   TRUE
+9  mp050 logN_lag1    max 38.01        1      1.11   0   4   TRUE
+10 mp075 hm_logN_6  99.9% 20.41      400    444.33 403 486  FALSE
+11 mp075 hm_logN_6 99.99% 38.87       40     22.49  14  32  FALSE
+12 mp075 hm_logN_6    max 59.96       11      2.45   0   6  FALSE
+13 mp075      logN  99.9% 19.02      400    397.07 358 437   TRUE
+14 mp075      logN 99.99% 28.67       40     47.94  35  62   TRUE
+15 mp075      logN    max 59.96        1      0.17   0   1   TRUE
+16 mp075 logN_lag1  99.9% 15.00      400    427.93 388 469   TRUE
+17 mp075 logN_lag1 99.99% 23.86       40     45.50  33  59   TRUE
+18 mp075 logN_lag1    max 58.45        1      0.00   0   0  FALSE
+19 mp100 hm_logN_6  99.9% 20.51      400    400.84 362 441   TRUE
+20 mp100 hm_logN_6 99.99% 31.08       40     52.35  39  67   TRUE
+21 mp100 hm_logN_6    max 59.96        7      1.10   0   4  FALSE
+22 mp100      logN  99.9% 18.22      400    409.23 370 449   TRUE
+23 mp100      logN 99.99% 28.14       40     41.82  30  55   TRUE
+24 mp100      logN    max 59.96        2      0.09   0   1  FALSE
+25 mp100 logN_lag1  99.9% 14.86      400    418.00 378 459   TRUE
+26 mp100 logN_lag1 99.99% 24.11       40     39.56  28  52   TRUE
+27 mp100 logN_lag1    max 53.93        1      0.01   0   0  FALSE
+
+Does the fit work? (criteria in the script)
+    tag covariate xi_overlap converged gof_inside works
+1 mp050 hm_logN_6      FALSE      TRUE      FALSE FALSE
+2 mp050      logN      FALSE      TRUE      FALSE FALSE
+3 mp050 logN_lag1       TRUE      TRUE       TRUE  TRUE
+4 mp075 hm_logN_6      FALSE      TRUE      FALSE FALSE
+5 mp075      logN       TRUE      TRUE       TRUE  TRUE
+6 mp075 logN_lag1       TRUE      TRUE      FALSE FALSE
+7 mp100 hm_logN_6       TRUE      TRUE      FALSE FALSE
+8 mp100      logN       TRUE      TRUE      FALSE FALSE
+9 mp100 logN_lag1       TRUE      TRUE      FALSE FALSE
