@@ -1,7 +1,24 @@
-== Part 1: test PODs (100000 SNPs each)
-mp050: Omega* diagonal / Omega 0.949-1.203; smallest eigenvalue 0.00153
-mp075: Omega* diagonal / Omega 0.957-1.188; smallest eigenvalue 0.00145
-mp100: Omega* diagonal / Omega 0.956-1.207; smallest eigenvalue 0.00163
-Wrote /Volumes/lan_images4/tany_time/baypass-pod/baypass-pod-test-inputs.tar.gz
 
-Part 2: waiting for 6 of 6 test outputs
+== Part 2: Omega re-estimated from each test POD vs. the real-data Omega (subsample 1)
+    tag   variant  fmd diag_ratio_min diag_ratio_max trace_ratio offdiag_cor
+1 mp050      base 1.37          0.891           1.23        1.01       0.996
+2 mp050 corrected 1.55          0.968           1.21        1.02       0.995
+3 mp075      base 1.51          0.880           1.15        1.01       0.995
+4 mp075 corrected 1.49          0.978           1.14        1.03       0.995
+5 mp100      base 1.28          0.882           1.06        1.00       0.994
+6 mp100 corrected 1.28          0.976           1.11        1.03       0.996
+
+Correction passes (FMD < 0.5 and below base):
+    tag     base corrected passes
+1 mp050 1.368127  1.547243  FALSE
+2 mp075 1.506330  1.494108  FALSE
+3 mp100 1.283051  1.280225  FALSE
+
+Log generalized eigenvalues, re-estimate vs. real Omega:
+    tag   variant    min      q25 median   q75   max top3_share fmd_cor
+1 mp050      base -0.275 -0.00980 0.0352 0.106 1.100      0.946    1.27
+2 mp050 corrected -0.263  0.04340 0.1380 0.211 1.170      0.860    1.41
+3 mp075      base -0.373 -0.00879 0.0416 0.125 1.080      0.941    1.46
+4 mp075 corrected -0.227  0.05570 0.1260 0.202 1.080      0.864    1.37
+5 mp100      base -0.395 -0.01160 0.0241 0.104 0.891      0.937    1.29
+6 mp100 corrected -0.206  0.03370 0.1300 0.189 0.924      0.834    1.14

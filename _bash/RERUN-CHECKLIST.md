@@ -491,7 +491,15 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          03-select-time/05-baypass-pod-test`, copy the `.tar` files to
          `tany_dir("baypass-pod")`, rerun the script for part 2.
          Submitted 2026-11-17, with job priority 15 (`condor_prio`) so they
-         start ahead of the queued ABC jobs.
+         start ahead of the queued ABC jobs. PASS 2026-11-18 (6 of 6,
+         longest 9.0 h); archives copied to LAN_4TB_SSD (MD5s match; copy
+         to lan_images4 at the next sync). Result: the correction fails its
+         rule in all settings (FMD base 1.28-1.51, corrected 1.28-1.55). It
+         lifts the low diagonals (min ratio 0.88 → 0.97-0.98) but
+         overshoots the bulk (median log generalized eigenvalue +0.13 vs.
+         +0.02-0.04 for base); FMD comes mostly (83-95%) from 3 directions
+         where the re-estimate has up to ~3x the real Ω's variance, the same
+         with or without the correction.
 
 ## J. After the rerun
 

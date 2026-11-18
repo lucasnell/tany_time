@@ -159,6 +159,28 @@ if (all(have)) {
         mutate(passes = corrected < 0.5 & corrected < base)
     cat("\nCorrection passes (FMD < 0.5 and below base):\n")
     print(as.data.frame(pass))
+    #' What FMD is made of: log generalized eigenvalues of (re-estimate,
+    #' real Omega), sorted; FMD = sqrt(sum of their squares). Also the
+    #' share of FMD^2 from the 3 largest |log| values, and FMD between the
+    #' correlation matrices (scale removed).
+    cat("\nLog generalized eigenvalues, re-estimate vs. real Omega:\n")
+    crossing(tag = mp_tags, variant = variants) |>
+        mutate(x = map2(tag, variant, \(t, v) {
+            nm <- res_name(t, v)
+            om_re <- read_om(tany_dir("baypass-pod", paste0(nm, ".tar")),
+                             file.path(nm, sprintf("tany-podtest-%s-%s_mat_omega.out",
+                                                   t, v)))
+            om <- get_pod_src(t)$omega
+            l <- sort(log(geigen(om_re, om)$values))
+            tibble(min = min(l), q25 = quantile(l, 0.25), median = median(l),
+                   q75 = quantile(l, 0.75), max = max(l),
+                   top3_share = sum(sort(l^2, decreasing = TRUE)[1:3]) / sum(l^2),
+                   fmd_cor = fmd.dist(cov2cor(om_re), cov2cor(om)))
+        })) |>
+        unnest(x) |>
+        mutate(across(where(is.double), \(x) signif(x, 3))) |>
+        as.data.frame() |>
+        print()
 } else {
     cat("\nPart 2: waiting for", sum(!have), "of", length(have),
         "test outputs\n")
