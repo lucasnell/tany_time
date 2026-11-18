@@ -492,8 +492,7 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          `tany_dir("baypass-pod")`, rerun the script for part 2.
          Submitted 2026-11-17, with job priority 15 (`condor_prio`) so they
          start ahead of the queued ABC jobs. PASS 2026-11-18 (6 of 6,
-         longest 9.0 h); archives copied to LAN_4TB_SSD (MD5s match; copy
-         to lan_images4 at the next sync). Result: the correction fails its
+         longest 9.0 h); archives copied to both drives (MD5s match). Result: the correction fails its
          rule in all settings (FMD base 1.28-1.51, corrected 1.28-1.55). It
          lifts the low diagonals (min ratio 0.88 → 0.97-0.98) but
          overshoots the bulk (median log generalized eigenvalue +0.13 vs.
@@ -516,7 +515,8 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          same top null SNPs (top-100 overlap 0.98-1.00). Power test
          (`_R/baypass-pod-spike.R`): spiked mp075 POD uploaded (MD5
          59cd319e763537bcf86b60ec63336380); submit
-         `06-baypass-pod-spike` (10 jobs), then `./check-step.sh
+         `06-baypass-pod-spike` (10 jobs; submitted 2026-11-18), then
+         `./check-step.sh
          03-select-time/06-baypass-pod-spike`, copy the `.tar` files to
          `tany_dir("baypass-pod")`, rerun the script for part 2.
 
