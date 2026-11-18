@@ -500,6 +500,13 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          +0.02-0.04 for base); FMD comes mostly (83-95%) from 3 directions
          where the re-estimate has up to ~3x the real Ω's variance, the same
          with or without the correction.
+      6. Dispersion check (owner, 2026-11-18; `_R/baypass-pod-xtx.R` →
+         `_data/baypass-pod-xtx.txt`): XtX of POD vs. real SNPs, both
+         under the subsample-1 Ω (covariate runs, run 1; XtX only, no
+         BFs). POD / real ratio of the median 0.999-1.000 and of the 90th
+         percentile 1.002-1.004 in all 9 setting x covariate pairs: match
+         (criterion 0.95-1.05, fixed before reading). The current PODs
+         are kept; the correction route is dropped.
 
 ## J. After the rerun
 

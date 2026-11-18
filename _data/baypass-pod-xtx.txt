@@ -1,0 +1,43 @@
+== M_XtX quantiles, real (subsample 1) vs. POD, run 1, same Omega
+    tag covariate n_real  n_pod real_q50 pod_q50 real_q90 pod_q90 real_q99
+1 mp050 hm_logN_6 341286 400000    17.66   17.67    20.61   20.66    24.02
+2 mp050      logN 341286 400000    17.66   17.67    20.61   20.66    24.01
+3 mp050 logN_lag1 341286 400000    17.67   17.68    20.62   20.67    24.03
+4 mp075 hm_logN_6 318583 400000    17.66   17.66    20.64   20.68    24.03
+5 mp075      logN 318583 400000    17.67   17.66    20.64   20.69    24.04
+6 mp075 logN_lag1 318583 400000    17.67   17.67    20.65   20.70    24.06
+7 mp100 hm_logN_6 176124 400000    17.66   17.64    20.71   20.78    24.14
+8 mp100      logN 176124 400000    17.66   17.65    20.71   20.78    24.12
+9 mp100 logN_lag1 176124 400000    17.67   17.65    20.71   20.79    24.15
+  pod_q99
+1   24.20
+2   24.20
+3   24.20
+4   24.25
+5   24.26
+6   24.27
+7   24.38
+8   24.40
+9   24.41
+
+== Ratios (POD / real) and verdict (median and 90th percentile within 0.95-1.05)
+    tag covariate ratio_q50 ratio_q90 ratio_q99 xtxst_real_q50 xtxst_pod_q50
+1 mp050 hm_logN_6     1.000     1.003     1.008         16.781        16.688
+2 mp050      logN     1.000     1.002     1.008         16.788        16.692
+3 mp050 logN_lag1     1.000     1.003     1.007         16.794        16.694
+4 mp075 hm_logN_6     1.000     1.002     1.009         16.793        16.699
+5 mp075      logN     1.000     1.002     1.009         16.800        16.701
+6 mp075 logN_lag1     1.000     1.002     1.009         16.792        16.705
+7 mp100 hm_logN_6     0.999     1.003     1.010         16.861        16.748
+8 mp100      logN     0.999     1.003     1.011         16.856        16.749
+9 mp100 logN_lag1     0.999     1.004     1.011         16.865        16.750
+  verdict
+1   match
+2   match
+3   match
+4   match
+5   match
+6   match
+7   match
+8   match
+9   match
