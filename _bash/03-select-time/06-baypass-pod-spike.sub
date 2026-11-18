@@ -1,0 +1,28 @@
+# baypass-pod-spike.sub
+
+# Covariate model on a POD with spiked-in associations (power test)
+
+container_image = file:///staging/l/lnell/tany_time.sif
+
+log = logs/06-baypass-pod-spike/run$(RunNumber).log
+error = logs/06-baypass-pod-spike/run$(RunNumber).err
+output = logs/06-baypass-pod-spike/run$(RunNumber).out
+
+executable = 06-baypass-pod-spike.sh
+arguments = $(RunNumber) $(RNGSeed)
+
+batch_name = "baypass-pod-spike"
+
+should_transfer_files = YES
+transfer_input_files = ../bin, covariates/hm_logN_6.txt
+when_to_transfer_output = ON_EXIT
+requirements = (HasCHTCStaging == true)
+
+#' The 400,000-SNP POD jobs used 1.5 GB memory and 3.9 GB disk.
+request_cpus = 8
+request_memory = 4GB
+request_disk = 8GB
+
+#' `baypass_pod_spike_info.txt` (run,seed) is written by
+#' `_R/make-job-lists.R`.
+queue RunNumber,RNGSeed from baypass_pod_spike_info.txt

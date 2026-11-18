@@ -134,6 +134,8 @@ are written by `_R/make-job-lists.R`.
 | `baypass-omega-differences.R` | Why Ω differs among missing-data settings → `_data/baypass-omega-diffs.txt` |
 | `baypass-pod-diagnose.R` | Why the POD Ω re-estimate differs from its source: simulation-only divergence check → `_data/baypass-pod-diagnose.txt` |
 | `baypass-pod-correct.R` | Test of a bias-corrected POD Ω (100,000-SNP test PODs; inputs and results) → `_data/baypass-pod-correct.txt` |
+| `baypass-pod-stat-compare.R` | Null-only comparison of median BF vs. median abs(M_Beta)/SD_Beta on the PODs (resolution, run-to-run stability, agreement) → `_data/baypass-pod-stat-compare.txt` |
+| `baypass-pod-spike.R` | Power test of those statistics on a POD with spiked-in associations (inputs and results) → `_data/baypass-pod-spike.txt` |
 | `baypass-pod-xtx.R` | POD vs. real XtX under the same Ω (dispersion check of the POD null) → `_data/baypass-pod-xtx.txt` |
 | `baypass-pod-inputs.R` | Simulates PODs (null SNPs) per setting for BF cutoff calibration → `tany_dir("baypass-pod")`, checks in `_data/baypass-pod-inputs.txt` |
 | `baypass-pod-threshold.R` | From `04-baypass-pod`: null BF quantiles, expected false positives per cutoff, GPD tail fit (sensitivity), and, with `compare_real <- TRUE`, Storey's q-values for the real SNPs → `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-{null,gpd}.csv`, `_data/baypass-qvalues.rds`, `_plots/baypass-pod-gpd-qq.pdf` |

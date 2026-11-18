@@ -19,6 +19,7 @@
 #'   _bash/03-select-time/baypass_beta_info.txt    ising_beta,run,seed,tag,subsample,covariate
 #'   _bash/03-select-time/baypass_pod_info.txt     run,seed,tag,covariate,covariate_file
 #'   _bash/03-select-time/baypass_pod_test_info.txt tag,variant,seed
+#'   _bash/03-select-time/baypass_pod_spike_info.txt run,seed
 #'   _bash/04-diversity/abc_info.txt               variant,model,batch,seed0,n_sims
 #'
 
@@ -141,6 +142,15 @@ bind_rows(
 crossing(tag = mp_df$tag, variant = c("base", "corrected")) |>
     mutate(seed = 1141272491L) |>
     write_csv("_bash/03-select-time/baypass_pod_test_info.txt",
+              col_names = FALSE)
+
+#' Power test of candidate statistics (`06-baypass-pod-spike`;
+#' `_R/baypass-pod-spike.R`, 2026-11-18): the covariate model on a spiked
+#' mp075 POD, 10 runs with the beta-0 seeds of the real runs.
+as_tibble(x) |>
+    filter(beta == 0) |>
+    select(run, seed) |>
+    write_csv("_bash/03-select-time/baypass_pod_spike_info.txt",
               col_names = FALSE)
 
 #' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`):

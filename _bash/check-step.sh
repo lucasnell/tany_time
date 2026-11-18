@@ -360,6 +360,12 @@ case "${STEP_PATH}" in
             FILES+=(${S}/dna/baypass/pod/baypass-podtest-${t}-${v}.tar)
         done < ${ST}/baypass_pod_test_info.txt ;;
 
+    03-select-time/06-baypass-pod-spike)
+        while IFS=, read -r r seed; do
+            JOB_IDS+=(run${r})
+            FILES+=(${S}/dna/baypass/pod/baypass-podspike-run${r}.tar)
+        done < ${ST}/baypass_pod_spike_info.txt ;;
+
     04-diversity/01-abc-sims)
         while IFS=, read -r v m b s0 n; do
             JOB_IDS+=(${v}-${m}-b${b})

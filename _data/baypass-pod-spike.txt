@@ -1,0 +1,4 @@
+== Part 1: spiked POD (mp075, hm_logN_6): 99000 null + 1000 associated SNPs, |beta| log-uniform 0.01-0.2
+Wrote /Volumes/LAN_4TB_SSD/tany_time/baypass-pod/baypass-pod-spike-inputs.tar.gz
+
+Part 2: waiting for 10 of 10 outputs

@@ -507,6 +507,18 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          percentile 1.002-1.004 in all 9 setting x covariate pairs: match
          (criterion 0.95-1.05, fixed before reading). The current PODs
          are kept; the correction route is dropped.
+      7. Test statistic (owner, 2026-11-18): median BF vs. median
+         |M_Beta| / SD_Beta (z), or BF with ties at the ceiling broken by
+         z. Null checks (`_R/baypass-pod-stat-compare.R` →
+         `_data/baypass-pod-stat-compare.txt`): z has no ties at the top
+         (BF: 7-11 null SNPs at the ceiling for `hm_logN_6`), is steadier
+         across runs (ICC 0.67-0.84 vs. 0.45-0.54), and picks nearly the
+         same top null SNPs (top-100 overlap 0.98-1.00). Power test
+         (`_R/baypass-pod-spike.R`): spiked mp075 POD uploaded (MD5
+         59cd319e763537bcf86b60ec63336380); submit
+         `06-baypass-pod-spike` (10 jobs), then `./check-step.sh
+         03-select-time/06-baypass-pod-spike`, copy the `.tar` files to
+         `tany_dir("baypass-pod")`, rerun the script for part 2.
 
 ## J. After the rerun
 
