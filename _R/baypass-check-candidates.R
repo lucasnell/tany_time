@@ -44,6 +44,23 @@ q_df |>
     as.data.frame() |>
     print()
 
+#' The conventional 30 dB cutoff (Gautier et al. 2018; not used for
+#' candidates), with the number of null SNPs expected to pass it given the
+#' setting's SNP count (`_data/baypass-pod-null.csv`, from
+#' `_R/baypass-pod-threshold.R` step 3).
+cat("\n== Median BF >= 30 dB: real SNPs vs. expected under the POD null\n")
+pod_fp <- read_csv("_data/baypass-pod-null.csv", show_col_types = FALSE) |>
+    filter(cutoff == 30) |>
+    select(tag, covariate, expected_null = expected_fp)
+q_df |>
+    group_by(tag, covariate) |>
+    summarize(real_ge30 = sum(bf_db >= 30), .groups = "drop") |>
+    left_join(pod_fp, by = c("tag", "covariate")) |>
+    mutate(expected_null = round(expected_null, 1),
+           ratio = round(real_ge30 / expected_null, 2)) |>
+    as.data.frame() |>
+    print()
+
 cat("\n== SNPs beyond the null, by number of runs at the BF ceiling\n")
 q_df |>
     filter(beyond_null) |>

@@ -10,6 +10,18 @@
 8 mp100      logN  528372   1   0   0 0.980           0                 0
 9 mp100 logN_lag1  528372   1   0   0 0.660           1                 0
 
+== Median BF >= 30 dB: real SNPs vs. expected under the POD null
+    tag covariate real_ge30 expected_null ratio
+1 mp050 hm_logN_6       182         151.0  1.21
+2 mp050      logN       100          92.1  1.09
+3 mp050 logN_lag1        41          25.6  1.60
+4 mp075 hm_logN_6       166         169.6  0.98
+5 mp075      logN        79          78.8  1.00
+6 mp075 logN_lag1        29          23.9  1.21
+7 mp100 hm_logN_6        54          70.0  0.77
+8 mp100      logN        32          30.4  1.05
+9 mp100 logN_lag1        14           9.2  1.52
+
 == SNPs beyond the null, by number of runs at the BF ceiling
     tag covariate 1 2 3 4 5 6 7 8 9 10
 1 mp050 hm_logN_6 0 0 0 0 0 0 0 0 2 10
