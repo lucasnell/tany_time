@@ -226,3 +226,143 @@ Does the fit work? (criteria in the script)
 7 mp100 hm_logN_6       TRUE      TRUE      FALSE FALSE
 8 mp100      logN       TRUE      TRUE      FALSE FALSE
 9 mp100 logN_lag1       TRUE      TRUE      FALSE FALSE
+
+== 5. Candidates by Storey's q-value (empirical p; BF with z tie-break)
+    tag covariate    snps pi0   min_p q05 q10 beyond_null at_ceiling
+1 mp050 hm_logN_6 1023857   1 2.5e-06   0   0          12         56
+2 mp050      logN 1023857   1 2.5e-06   0   0          11         11
+3 mp050 logN_lag1 1023857   1 2.5e-06   0   0          15          5
+4 mp075 hm_logN_6  955748   1 2.5e-06   0   0          10         39
+5 mp075      logN  955748   1 2.5e-06   0   0           1          5
+6 mp075 logN_lag1  955748   1 2.5e-06   0   0           1          1
+7 mp100 hm_logN_6  528372   1 5.0e-06   0   0           0         11
+8 mp100      logN  528372   1 7.5e-06   0   0           0          0
+9 mp100 logN_lag1  528372   1 2.5e-06   0   0           1          0
+  min_bf_db_q05 min_bf_db_q10
+1           Inf           Inf
+2           Inf           Inf
+3           Inf           Inf
+4           Inf           Inf
+5           Inf           Inf
+6           Inf           Inf
+7           Inf           Inf
+8           Inf           Inf
+9           Inf           Inf
+
+Observed / expected share of p-values <= level:
+    tag covariate p_1e1 p_1e2 p_1e3 p_1e4
+1 mp050 hm_logN_6  0.92  0.89  1.01  1.34
+2 mp050      logN  0.98  0.97  1.03  1.10
+3 mp050 logN_lag1  0.98  0.99  0.98  1.00
+4 mp075 hm_logN_6  0.86  0.83  0.89  1.15
+5 mp075      logN  0.94  0.94  0.87  1.07
+6 mp075 logN_lag1  0.97  0.96  0.97  1.01
+7 mp100 hm_logN_6  0.82  0.76  0.68  0.91
+8 mp100      logN  0.92  0.90  0.92  0.83
+9 mp100 logN_lag1  0.94  0.92  1.00  0.87
+
+Real SNPs beyond the null (no POD SNP at least as extreme):
+     tag covariate   contig      pos    bf_db    z n_runs_ceiling        p_emp
+1  mp050 hm_logN_6 CONTIG18   373184 59.95592 6.85             10 2.499994e-06
+2  mp050 hm_logN_6 CONTIG18   373192 59.95592 6.46             10 2.499994e-06
+3  mp050 hm_logN_6 CONTIG18   373132 59.95592 6.35             10 2.499994e-06
+4  mp050 hm_logN_6 CONTIG18   373170 59.95592 6.24             10 2.499994e-06
+5  mp050 hm_logN_6 CONTIG18   373167 59.95592 6.07             10 2.499994e-06
+6  mp050 hm_logN_6 CONTIG18   373124 59.95592 6.03             10 2.499994e-06
+7  mp050 hm_logN_6 CONTIG18   373196 59.95592 5.97             10 2.499994e-06
+8  mp050 hm_logN_6 CONTIG18   373206 59.95592 5.84             10 2.499994e-06
+9  mp050 hm_logN_6 CONTIG18   373162 59.95592 5.84             10 2.499994e-06
+10 mp050 hm_logN_6 CONTIG36  3036448 59.95592 5.33              9 2.499994e-06
+11 mp050 hm_logN_6 CONTIG44  6121630 59.95592 5.32              9 2.499994e-06
+12 mp050 hm_logN_6 CONTIG18   579929 59.95592 5.15             10 2.499994e-06
+13 mp050      logN CONTIG39  4267464 59.95592 5.76             10 2.499994e-06
+14 mp050      logN CONTIG45  3163276 59.95592 5.36             10 2.499994e-06
+15 mp050      logN CONTIG45  3163277 59.95592 5.02             10 2.499994e-06
+16 mp050      logN CONTIG36  3026871 59.95592 4.99              6 2.499994e-06
+17 mp050      logN CONTIG41  4156567 59.95592 4.88              6 2.499994e-06
+18 mp050      logN CONTIG36  3026867 59.95592 4.87              7 2.499994e-06
+19 mp050      logN CONTIG38    84159 59.95592 3.85              9 2.499994e-06
+20 mp050      logN CONTIG42  1977929 59.95592 3.72              6 2.499994e-06
+21 mp050      logN CONTIG36  3036508 59.95592 3.54              6 2.499994e-06
+22 mp050      logN CONTIG39  1710737 59.95592 3.27              6 2.499994e-06
+23 mp050      logN CONTIG27   543144 59.95592 3.26              7 2.499994e-06
+24 mp050 logN_lag1 CONTIG30   537980 59.95592 6.27              8 2.499994e-06
+25 mp050 logN_lag1 CONTIG39  3621820 59.95592 5.04              7 2.499994e-06
+26 mp050 logN_lag1 CONTIG36  1639247 59.95592 4.29              8 2.499994e-06
+27 mp050 logN_lag1 CONTIG18   575394 59.95592 4.22              9 2.499994e-06
+28 mp050 logN_lag1 CONTIG42  4191300 59.95592 3.30              6 2.499994e-06
+29 mp050 logN_lag1 CONTIG41  4594922 58.45055 5.18              5 2.499994e-06
+30 mp050 logN_lag1 CONTIG39  3623088 56.94518 4.74              4 2.499994e-06
+31 mp050 logN_lag1 CONTIG39  3621862 56.94497 5.02              5 2.499994e-06
+32 mp050 logN_lag1 CONTIG17   164068 53.44664 3.72              5 2.499994e-06
+33 mp050 logN_lag1 CONTIG17   164070 53.44664 3.47              5 2.499994e-06
+34 mp050 logN_lag1 CONTIG38  4977395 51.06212 4.64              3 2.499994e-06
+35 mp050 logN_lag1 CONTIG33   297200 49.22050 4.59              3 2.499994e-06
+36 mp050 logN_lag1 CONTIG33   297196 45.46165 4.34              3 2.499994e-06
+37 mp050 logN_lag1 CONTIG44 12008330 40.15952 3.95              1 2.499994e-06
+38 mp050 logN_lag1 CONTIG18   580826 38.46646 4.03              2 2.499994e-06
+39 mp075 hm_logN_6 CONTIG18   373132 59.95592 6.63             10 2.499994e-06
+40 mp075 hm_logN_6 CONTIG18   373192 59.95592 6.51             10 2.499994e-06
+41 mp075 hm_logN_6 CONTIG18   373184 59.95592 6.37             10 2.499994e-06
+42 mp075 hm_logN_6 CONTIG18   373167 59.95592 6.29             10 2.499994e-06
+43 mp075 hm_logN_6 CONTIG18   373170 59.95592 6.06             10 2.499994e-06
+44 mp075 hm_logN_6 CONTIG18   373124 59.95592 5.95             10 2.499994e-06
+45 mp075 hm_logN_6 CONTIG18   373196 59.95592 5.94             10 2.499994e-06
+46 mp075 hm_logN_6 CONTIG18   373162 59.95592 5.89             10 2.499994e-06
+47 mp075 hm_logN_6 CONTIG18   373206 59.95592 5.80             10 2.499994e-06
+48 mp075 hm_logN_6 CONTIG44  6121630 59.95592 5.23             10 2.499994e-06
+49 mp075      logN CONTIG39  4267464 59.95592 5.76              9 2.499994e-06
+50 mp075 logN_lag1 CONTIG39  3621820 59.95592 4.90              7 2.499994e-06
+51 mp100 logN_lag1 CONTIG39  3621820 55.43960 4.72              4 2.499994e-06
+       q
+1  0.213
+2  0.213
+3  0.213
+4  0.213
+5  0.213
+6  0.213
+7  0.213
+8  0.213
+9  0.213
+10 0.213
+11 0.213
+12 0.213
+13 0.233
+14 0.233
+15 0.233
+16 0.233
+17 0.233
+18 0.233
+19 0.233
+20 0.233
+21 0.233
+22 0.233
+23 0.233
+24 0.171
+25 0.171
+26 0.171
+27 0.171
+28 0.171
+29 0.171
+30 0.171
+31 0.171
+32 0.171
+33 0.171
+34 0.171
+35 0.171
+36 0.171
+37 0.171
+38 0.171
+39 0.239
+40 0.239
+41 0.239
+42 0.239
+43 0.239
+44 0.239
+45 0.239
+46 0.239
+47 0.239
+48 0.239
+49 0.517
+50 0.597
+51 0.660

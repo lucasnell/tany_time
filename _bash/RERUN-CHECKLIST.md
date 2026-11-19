@@ -547,7 +547,11 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       cluster). To run: copy all 270 `.tar` to `tany_dir("baypass-beta")`,
       then `baypass-analysis.R` (up to the BLAST section) and
       `baypass-check-candidates.R`.
-- [ ] **J1b.** Run `baypass-analysis.R` (up to the BLAST section) and
+- [x] **J1b.** Run `baypass-analysis.R` (up to the BLAST section) and
       `baypass-check-candidates.R` only after the POD q-values exist
       (I5; owner, 2026-11-09), with the candidate rule switched to q.
+      Done 2026-11-19: `_R/baypass-read-bf.R` (reading split out of
+      `baypass-analysis.R`), step 5 of `_R/baypass-pod-threshold.R`,
+      `baypass-analysis.R` (q ≤ 0.10), `baypass-check-candidates.R`. No
+      candidates at q ≤ 0.10 in any setting x covariate; see `TODO.md`.
 - [ ] **J2.** Continue with the review steps in `TODO.md`.

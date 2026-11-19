@@ -83,19 +83,24 @@ are written by `_R/make-job-lists.R`.
    `_data/baypass-omega-diffs.txt`: why mp050 and mp100 Ωs differ (the
    read depth of the SNPs each keeps; SN-1-95_S59 contributes most),
    using BayPass inputs in `tany_dir("baypass-inputs")`.
-8. `_R/baypass-analysis.R`: reads the 270 rerun outputs from
-   `tany_dir("baypass-beta")`; median Bayes factor (dB) over 10 runs per
-   SNP, setting, and covariate (subsamples stacked) →
-   `_data/baypass-bf.rds`; candidates at ≥ 30 dB →
-   `_data/baypass-candidates.rds`; nearest gene within 5 kb →
-   `_data/baypass-candidate-genes.rds`. BLASTP against *D. melanogaster*
-   UniProt and GO over-representation (`clusterProfiler`) still use the
-   2025 candidates (`candi_funcs_df.rds`) until the owner picks which sets
-   go through them (decided 2026-11-06: after the results).
+8. `_R/baypass-read-bf.R`: reads the 270 rerun outputs from
+   `tany_dir("baypass-beta")`; per SNP, setting, and covariate (subsamples
+   stacked), median over 10 runs of the Bayes factor (dB) and of
+   |M_Beta| / SD_Beta → `_data/baypass-bf.rds`. Step 5 of
+   `_R/baypass-pod-threshold.R` (run with `compare_real <- TRUE`):
+   empirical p against the POD null (BF, ties at the ceiling broken by
+   z), Storey q, `beyond_null` → `_data/baypass-qvalues.rds`. (POD null
+   checks: `baypass-pod-diagnose.R`, `baypass-pod-correct.R`,
+   `baypass-pod-xtx.R`, `baypass-pod-stat-compare.R`,
+   `baypass-pod-spike.R`, `baypass-pdelta-check.R`.)
+   `_R/baypass-analysis.R`: candidates at q ≤ 0.10 (flag for q ≤ 0.05) →
+   `_data/baypass-candidates.rds` (none, 2026-11-19); nearest gene within
+   5 kb → `_data/baypass-candidate-genes.rds`. BLASTP against
+   *D. melanogaster* UniProt and GO over-representation (`clusterProfiler`)
+   still use the 2025 candidates (`candi_funcs_df.rds`).
    `_R/baypass-check-candidates.R` → `_data/baypass-check-candidates.txt`:
-   run consistency, BF ceiling, and overlap among settings and covariates.
-   BF cutoff calibration (not run yet): `_R/baypass-pod-inputs.R` →
-   `04-baypass-pod` → `_R/baypass-pod-threshold.R`.
+   q-value counts, SNPs beyond the null (by runs at the ceiling, grouped
+   into regions), and agreement among settings and covariates.
 9. `_R/make-time-series-data.R` → `_data/timeseries-data.csv` (candidate SNP
    frequencies × pools, with abundance).
 10. `_R/make-time-series-plot.R`: frequency-vs-abundance plots,
@@ -136,6 +141,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-pod-correct.R` | Test of a bias-corrected POD Ω (100,000-SNP test PODs; inputs and results) → `_data/baypass-pod-correct.txt` |
 | `baypass-pod-stat-compare.R` | Null-only comparison of median BF vs. median abs(M_Beta)/SD_Beta on the PODs (resolution, run-to-run stability, agreement) → `_data/baypass-pod-stat-compare.txt` |
 | `baypass-pod-spike.R` | Power test of those statistics on a POD with spiked-in associations (inputs and results) → `_data/baypass-pod-spike.txt` |
+| `baypass-read-bf.R` | Reads the 270 covariate runs: per-SNP median BF and abs(M_Beta)/SD_Beta → `_data/baypass-bf.rds` |
 | `baypass-pdelta-check.R` | Real vs. POD P(delta) (does the POD null hold for the real data?) → `_data/baypass-pdelta-check.txt` |
 | `baypass-pod-xtx.R` | POD vs. real XtX under the same Ω (dispersion check of the POD null) → `_data/baypass-pod-xtx.txt` |
 | `baypass-pod-inputs.R` | Simulates PODs (null SNPs) per setting for BF cutoff calibration → `tany_dir("baypass-pod")`, checks in `_data/baypass-pod-inputs.txt` |

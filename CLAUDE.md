@@ -23,6 +23,9 @@ not yet interpretable by a 2026-10 review (see `TODO.md`). The rerun
 (2026-11) uses the log harmonic mean of N over the previous 6 generations
 as the primary covariate, with log(1 + N) and its lag as sensitivity
 analyses, on 3 thinned SNP subsamples per missing-data setting.
+Candidates are called by Storey q-values from empirical p-values against
+pseudo-observed null data (PODs); as of 2026-11-19 there are none at
+q ≤ 0.10 in any setting or covariate (`TODO.md`).
 
 ## Study facts (from the owner)
 

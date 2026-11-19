@@ -1,13 +1,16 @@
 #'
-#' Check the 2026-11 BayPass candidates (`_data/baypass-bf.rds`, from
-#' `_R/baypass-analysis.R`): per missing-data setting x covariate, how
-#' consistently each candidate SNP passes the 30 dB threshold across the 10
-#' runs, how many sit at the BF ceiling, and how much candidate sets overlap
-#' among settings and among covariates.
+#' Check the 2026-11 BayPass results (`_data/baypass-qvalues.rds`, from step
+#' 5 of `_R/baypass-pod-threshold.R`): per missing-data setting x
+#' covariate, candidates at q <= 0.05 and q <= 0.10 (owner, 2026-11-07),
+#' SNPs beyond the null (no POD SNP at least as extreme; p only a bound),
+#' how consistently the strongest SNPs reach the BF ceiling across the 10
+#' runs, and how much the strongest SNPs agree among settings and among
+#' covariates.
 #'
-#' Overlap between two sets counts only SNPs tested in both (settings keep
-#' different SNPs, and a SNP can fall in different subsamples). Jaccard
-#' index = shared candidates / candidates in either.
+#' Agreement between two sets counts only SNPs tested in both (settings keep
+#' different SNPs, and a SNP can fall in different subsamples): overlap of
+#' the top 100 SNPs by empirical p (ties by BF, then z), and the Spearman
+#' correlation of median BF.
 #'
 #' Output saved to `_data/baypass-check-candidates.txt`.
 #'
@@ -17,7 +20,7 @@ library(tidyverse)
 out_file <- "_data/baypass-check-candidates.txt"
 sink(out_file, split = TRUE)
 
-bf_df <- read_rds("_data/baypass-bf.rds")
+q_df <- read_rds("_data/baypass-qvalues.rds")
 bf_ceiling <- 10 * log10((2 * 5000 - 1) * 0.99 / 0.01)
 
 
@@ -27,50 +30,64 @@ bf_ceiling <- 10 * log10((2 * 5000 - 1) * 0.99 / 0.01)
 # =============================================================================*
 
 
-cat("== Candidates (median bf_db >= 30) per setting x covariate\n")
-bf_df |>
+cat("== Per setting x covariate\n")
+q_df |>
     group_by(tag, covariate) |>
     summarize(snps = n(),
-              runs_min = min(n_runs),
-              runs_max = max(n_runs),
-              max_bf_db = max(bf_db),
-              candidates = sum(bf_db >= 30),
-              cand_all_runs_30 = sum(bf_db >= 30 & n_runs_30 == n_runs),
-              cand_median_at_ceiling = sum(bf_db >= bf_ceiling - 1e-3),
+              pi0 = round(pi0[[1]], 3),
+              q05 = sum(q <= 0.05),
+              q10 = sum(q <= 0.10),
+              min_q = signif(min(q), 3),
+              beyond_null = sum(beyond_null),
+              median_at_ceiling = sum(bf_db >= bf_ceiling - 1e-3),
               .groups = "drop") |>
     as.data.frame() |>
     print()
 
-cat("\n== Candidates by number of runs with bf_db >= 30\n")
-bf_df |>
-    filter(bf_db >= 30) |>
-    count(tag, covariate, n_runs_30) |>
-    pivot_wider(names_from = n_runs_30, values_from = n, values_fill = 0,
+cat("\n== SNPs beyond the null, by number of runs at the BF ceiling\n")
+q_df |>
+    filter(beyond_null) |>
+    count(tag, covariate, n_runs_ceiling) |>
+    pivot_wider(names_from = n_runs_ceiling, values_from = n, values_fill = 0,
                 names_sort = TRUE) |>
+    as.data.frame() |>
+    print()
+
+#' Neighboring SNPs share LD, so SNPs beyond the null are grouped into
+#' regions: SNPs on the same contig within 1 kb of the previous one.
+cat("\n== SNPs beyond the null, grouped into regions (SNPs within 1 kb)\n")
+q_df |>
+    filter(beyond_null) |>
+    arrange(tag, covariate, contig, pos) |>
+    group_by(tag, covariate, contig) |>
+    mutate(region = cumsum(c(TRUE, diff(pos) > 1000))) |>
+    group_by(tag, covariate, contig, region) |>
+    summarize(from = min(pos), to = max(pos), snps = n(),
+              max_z = round(max(z), 2), .groups = "drop") |>
+    select(-region) |>
     as.data.frame() |>
     print()
 
 
 
 # =============================================================================*
-# ---- overlap ----
+# ---- agreement ----
 # =============================================================================*
 
 
-overlap <- function(x, y) {
-    #' x, y: rows of `bf_df` for two sets
-    both <- inner_join(x |> select(contig, pos, a = bf_db),
-                       y |> select(contig, pos, b = bf_db),
+agree <- function(x, y, k = 100) {
+    #' x, y: rows of `q_df` for two sets
+    both <- inner_join(x |> select(contig, pos, pa = p_emp, ba = bf_db, za = z),
+                       y |> select(contig, pos, pb = p_emp, bb = bf_db, zb = z),
                        by = c("contig", "pos"))
+    top_a <- both |> arrange(pa, desc(ba), desc(za)) |> slice_head(n = k)
+    top_b <- both |> arrange(pb, desc(bb), desc(zb)) |> slice_head(n = k)
     tibble(tested_both = nrow(both),
-           cand_a = sum(both$a >= 30),
-           cand_b = sum(both$b >= 30),
-           shared = sum(both$a >= 30 & both$b >= 30),
-           jaccard = shared / sum(both$a >= 30 | both$b >= 30),
-           cor_bf = cor(both$a, both$b, method = "spearman"))
+           top100_shared = nrow(semi_join(top_a, top_b, by = c("contig", "pos"))),
+           cor_bf = cor(both$ba, both$bb, method = "spearman"))
 }
 
-sets <- bf_df |>
+sets <- q_df |>
     group_by(tag, covariate) |>
     group_split() |>
     (\(z) {
@@ -83,23 +100,22 @@ pairs_df <- combn(names(sets), 2) |>
     mutate(tag_a = word(a, 1), cov_a = word(a, 2),
            tag_b = word(b, 1), cov_b = word(b, 2)) |>
     filter(tag_a == tag_b | cov_a == cov_b) |>
-    mutate(ov = map2(a, b, \(i, j) overlap(sets[[i]], sets[[j]]))) |>
+    mutate(ov = map2(a, b, \(i, j) agree(sets[[i]], sets[[j]]))) |>
     unnest(ov)
 
-cat("\n== Overlap between settings (same covariate)\n")
-cat("(cor_bf: Spearman correlation of median bf_db over SNPs tested in both)\n")
+cat("\n== Agreement between settings (same covariate)\n")
 pairs_df |>
     filter(cov_a == cov_b) |>
     select(covariate = cov_a, a = tag_a, b = tag_b, tested_both:cor_bf) |>
-    mutate(across(c(jaccard, cor_bf), \(x) round(x, 3))) |>
+    mutate(cor_bf = round(cor_bf, 3)) |>
     as.data.frame() |>
     print()
 
-cat("\n== Overlap between covariates (same setting)\n")
+cat("\n== Agreement between covariates (same setting)\n")
 pairs_df |>
     filter(tag_a == tag_b) |>
     select(tag = tag_a, a = cov_a, b = cov_b, tested_both:cor_bf) |>
-    mutate(across(c(jaccard, cor_bf), \(x) round(x, 3))) |>
+    mutate(cor_bf = round(cor_bf, 3)) |>
     as.data.frame() |>
     print()
 

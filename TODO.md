@@ -515,7 +515,7 @@ Follow `_bash/RERUN-CHECKLIST.md`.
 
 ## Other analysis items
 
-- [ ] **Bayes factor cutoff for candidates.** `baypass-analysis.R` uses
+- [x] **Bayes factor cutoff for candidates.** `baypass-analysis.R` used
       median BF ≥ 30 dB over 10 runs, taken from Gautier et al. 2018 (a
       convention, "decisive" on Jeffreys' scale), not calibrated to these
       data. Related: review step 4 (POD-based null threshold via
@@ -563,6 +563,23 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         between SNPs and none of the depth-related structure in the real
         SNPs (`_R/baypass-omega-differences.R`); SNAPE ascertainment isn't
         mimicked.
+      - Done 2026-11-19 (details in `_bash/RERUN-CHECKLIST.md` I5,
+        items 4-8): the POD null was checked (Ω re-estimate,
+        `_data/baypass-pod-diagnose.txt`, `_data/baypass-pod-correct.txt`;
+        dispersion, `_data/baypass-pod-xtx.txt`; real vs. POD P(δ),
+        `_data/baypass-pdelta-check.txt`). Statistic: median BF with ties
+        at the ceiling broken by median |M_Beta| / SD_Beta (owner,
+        2026-11-19; same power as BF in `_data/baypass-pod-spike.txt`).
+        GPD dropped (fails from the ceiling pile-up); real SNPs at least
+        as extreme as every POD SNP are flagged `beyond_null`. Reading:
+        `_R/baypass-read-bf.R` → `_data/baypass-bf.rds`; q-values: step 5
+        of `_R/baypass-pod-threshold.R` → `_data/baypass-qvalues.rds`.
+        Result: no candidates at q ≤ 0.10 in any setting x covariate
+        (Storey π0 = 1 in all; smallest q 0.17-0.98). SNPs beyond the null:
+        0-15 per set; the strongest is a 9-SNP cluster on CONTIG18
+        (373,124-373,206) for `hm_logN_6` in mp050 and mp075, at the BF
+        ceiling in all 10 runs (q 0.21-0.24)
+        (`_data/baypass-check-candidates.txt`).
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass

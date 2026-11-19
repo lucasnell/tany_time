@@ -21,15 +21,20 @@
 #' and covariate (no pooling), Storey's q-values (`qvalue`), and candidates
 #' at q <= 0.05 and q <= 0.10, both reported.
 #'
-#' Step 4: generalized Pareto fit to the POD tail (sensitivity analysis for
-#' p-values below 1 / (n_pod + 1)); step 5 reports its q-values next to
-#' the empirical ones.
+#' Step 4: generalized Pareto fit to the POD tail (planned as a
+#' sensitivity analysis for p-values below 1 / (n_pod + 1)). It fails its
+#' criteria in 7 of 9 setting x covariate pairs, mainly from the pile-up of
+#' POD SNPs at the BF ceiling, so step 5 doesn't use it (owner,
+#' 2026-11-19); it flags real SNPs beyond the null instead.
 #'
-#' Reads `tany_dir("baypass-pod")` (and `_data/baypass-bf.rds` for step 5).
+#' Reads `tany_dir("baypass-pod")` (and, for step 5, `_data/baypass-bf.rds`
+#' from `_R/baypass-read-bf.R` and `pod-null-stats.rds` from
+#' `_R/baypass-pod-stat-compare.R`). Run step 5 with
+#' `Rscript -e 'compare_real <- TRUE; source("_R/baypass-pod-threshold.R")'`.
 #' Writes `_data/baypass-pod-threshold.txt`, `_data/baypass-pod-null.csv`
 #' (step 3 table), `_data/baypass-pod-gpd.csv` (step 4 fits),
 #' `_plots/baypass-pod-gpd-qq.pdf`, and `_data/baypass-qvalues.rds` (step
-#' 5: per real SNP, empirical and GPD p and q).
+#' 5: per real SNP, empirical p and q, and `beyond_null`).
 #'
 
 library(tidyverse)
@@ -318,42 +323,57 @@ ggsave("_plots/baypass-pod-gpd-qq.pdf", p_qq, width = 7, height = 6)
 # =============================================================================*
 
 
-#' Empirical p = (1 + POD SNPs with median BF >= the real SNP's) /
-#' (POD SNPs + 1), so the smallest possible p is 1 / (n_pod + 1). Storey's
-#' q-values with `qvalue` defaults (null proportion pi0 estimated by
-#' smoother over lambda). Also the same with the GPD tail p (section 4,
-#' primary threshold) for values above the threshold: `p_gpd`, `q_gpd`
-#' (sensitivity only). A value beyond the fitted endpoint gets p_gpd = 0;
-#' how many do is reported.
+#' Statistic (owner, 2026-11-19): median BF, with ties broken by median z
+#' (|M_Beta| / SD_Beta); a POD SNP is at least as extreme as a real SNP if
+#' its BF is larger, or equal and its z is at least as large.
+#' Empirical p = (1 + POD SNPs at least as extreme) / (POD SNPs + 1), so
+#' the smallest possible p is 1 / (n_pod + 1). Storey's q-values with
+#' `qvalue` defaults (null proportion pi0 estimated by smoother over
+#' lambda), per setting x covariate over all its real SNPs (3 subsamples).
+#' `beyond_null`: no POD SNP is at least as extreme, so p is only a bound
+#' (owner, 2026-11-19: flag these instead of GPD tail p-values, since the
+#' tail fit fails, section 4). POD medians of BF and z come from
+#' `_R/baypass-pod-stat-compare.R` (`pod-null-stats.rds`).
 if (compare_real) {
     bf_df <- read_rds("_data/baypass-bf.rds")
-    stopifnot(all(bf_df$n_runs == n_runs))
+    stopifnot(all(bf_df$n_runs == n_runs), "z" %in% names(bf_df))
+    pod_null <- read_rds(file.path(pod_dir, "pod-null-stats.rds"))
+    #' POD SNPs at least as extreme as each (bf, z): strictly larger BF,
+    #' plus equal BF with z at least as large.
+    count_ge <- function(bf, z, nbf, nz) {
+        sbf <- sort(nbf)
+        n <- length(nbf)
+        cnt <- n - findInterval(bf, sbf)
+        tied <- which(bf %in% nbf)
+        if (length(tied) > 0) {
+            for (v in unique(bf[tied])) {
+                i <- tied[bf[tied] == v]
+                zz <- sort(nz[nbf == v])
+                cnt[i] <- cnt[i] + length(zz) -
+                    findInterval(z[i], zz, left.open = TRUE)
+            }
+        }
+        cnt
+    }
     q_df <- bf_df |>
         group_by(tag, covariate) |>
         group_split() |>
         map(\(x) {
-            null <- sort(med_df$bf_db[med_df$tag == x$tag[[1]] &
-                                          med_df$covariate == x$covariate[[1]]])
-            n_ge <- length(null) - findInterval(x$bf_db - 1e-9, null)
-            p <- (1 + n_ge) / (length(null) + 1)
+            nl <- pod_null |>
+                filter(tag == x$tag[[1]], covariate == x$covariate[[1]])
+            cnt <- count_ge(x$bf_db, x$z, nl$bf, nl$z)
+            p <- (1 + cnt) / (nrow(nl) + 1)
             qv <- qvalue::qvalue(p)
-            g <- gpd_df |>
-                filter(tag == x$tag[[1]], covariate == x$covariate[[1]],
-                       u_prob == u_probs[1])
-            p_gpd <- ifelse(x$bf_db > g$u,
-                            g$n_u / g$n_pod * gpd_surv(x$bf_db - g$u, g$sigma, g$xi),
-                            p)
-            qg <- qvalue::qvalue(p_gpd)
             x |>
-                select(tag, covariate, sub, mrk, contig, pos, bf_db) |>
+                select(tag, covariate, sub, mrk, contig, pos, bf_db, z,
+                       n_runs_ceiling) |>
                 mutate(p_emp = p, q = qv$qvalues, pi0 = qv$pi0,
-                       p_gpd = p_gpd, q_gpd = qg$qvalues,
-                       beyond_endpoint = bf_db >= g$endpoint)
+                       beyond_null = cnt == 0)
         }) |>
         list_rbind()
     write_rds(q_df, "_data/baypass-qvalues.rds", compress = "gz")
 
-    cat("\n== 5. Candidates by Storey's q-value (q: empirical p; q_gpd: GPD tail p)\n")
+    cat("\n== 5. Candidates by Storey's q-value (empirical p; BF with z tie-break)\n")
     q_df |>
         group_by(tag, covariate) |>
         summarize(snps = n(),
@@ -361,14 +381,35 @@ if (compare_real) {
                   min_p = min(p_emp),
                   q05 = sum(q <= 0.05),
                   q10 = sum(q <= 0.10),
-                  q05_gpd = sum(q_gpd <= 0.05),
-                  q10_gpd = sum(q_gpd <= 0.10),
-                  beyond_endpoint = sum(beyond_endpoint),
+                  beyond_null = sum(beyond_null),
+                  at_ceiling = sum(bf_db >= bf_ceiling - 1e-3),
                   min_bf_db_q05 = suppressWarnings(min(bf_db[q <= 0.05])),
                   min_bf_db_q10 = suppressWarnings(min(bf_db[q <= 0.10])),
                   .groups = "drop") |>
         mutate(across(c(pi0, min_bf_db_q05, min_bf_db_q10), \(x) round(x, 3)),
                min_p = signif(min_p, 3)) |>
+        as.data.frame() |>
+        print()
+    #' Share of real SNPs with p at or below a level vs. the level itself
+    #' (what a null would give): above 1 means more small p-values than
+    #' the null.
+    cat("\nObserved / expected share of p-values <= level:\n")
+    q_df |>
+        group_by(tag, covariate) |>
+        summarize(p_1e1 = mean(p_emp <= 0.1) / 0.1,
+                  p_1e2 = mean(p_emp <= 0.01) / 0.01,
+                  p_1e3 = mean(p_emp <= 0.001) / 0.001,
+                  p_1e4 = mean(p_emp <= 1e-4) / 1e-4,
+                  .groups = "drop") |>
+        mutate(across(where(is.double), \(x) round(x, 2))) |>
+        as.data.frame() |>
+        print()
+    cat("\nReal SNPs beyond the null (no POD SNP at least as extreme):\n")
+    q_df |>
+        filter(beyond_null) |>
+        arrange(tag, covariate, desc(bf_db), desc(z)) |>
+        select(tag, covariate, contig, pos, bf_db, z, n_runs_ceiling, p_emp, q) |>
+        mutate(across(c(z, q), \(x) signif(x, 3))) |>
         as.data.frame() |>
         print()
 }

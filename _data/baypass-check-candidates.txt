@@ -1,8 +1,78 @@
-SNPs tested: 433360
-Max bf_db in any run: 52.96
-Candidates (median bf_db >= 30): 33
-Identical to _data/candi_df.rds: TRUE
-Number of runs (of 10) with bf_db >= 30, per candidate:
+== Per setting x covariate
+    tag covariate    snps pi0 q05 q10 min_q beyond_null median_at_ceiling
+1 mp050 hm_logN_6 1023857   1   0   0 0.213          12                56
+2 mp050      logN 1023857   1   0   0 0.233          11                11
+3 mp050 logN_lag1 1023857   1   0   0 0.171          15                 5
+4 mp075 hm_logN_6  955748   1   0   0 0.239          10                39
+5 mp075      logN  955748   1   0   0 0.517           1                 5
+6 mp075 logN_lag1  955748   1   0   0 0.597           1                 1
+7 mp100 hm_logN_6  528372   1   0   0 0.734           0                11
+8 mp100      logN  528372   1   0   0 0.980           0                 0
+9 mp100 logN_lag1  528372   1   0   0 0.660           1                 0
 
- 5  6  7
-12 15  6
+== SNPs beyond the null, by number of runs at the BF ceiling
+    tag covariate 1 2 3 4 5 6 7 8 9 10
+1 mp050 hm_logN_6 0 0 0 0 0 0 0 0 2 10
+2 mp050      logN 0 0 0 0 0 5 2 0 1  3
+3 mp050 logN_lag1 1 1 3 1 4 1 1 2 1  0
+4 mp075 hm_logN_6 0 0 0 0 0 0 0 0 0 10
+5 mp075      logN 0 0 0 0 0 0 0 0 1  0
+6 mp075 logN_lag1 0 0 0 0 0 0 1 0 0  0
+7 mp100 logN_lag1 0 0 0 1 0 0 0 0 0  0
+
+== SNPs beyond the null, grouped into regions (SNPs within 1 kb)
+     tag covariate   contig     from       to snps max_z
+1  mp050 hm_logN_6 CONTIG18   373124   373206    9  6.85
+2  mp050 hm_logN_6 CONTIG18   579929   579929    1  5.15
+3  mp050 hm_logN_6 CONTIG36  3036448  3036448    1  5.33
+4  mp050 hm_logN_6 CONTIG44  6121630  6121630    1  5.32
+5  mp050      logN CONTIG27   543144   543144    1  3.26
+6  mp050      logN CONTIG36  3026867  3026871    2  4.99
+7  mp050      logN CONTIG36  3036508  3036508    1  3.54
+8  mp050      logN CONTIG38    84159    84159    1  3.85
+9  mp050      logN CONTIG39  1710737  1710737    1  3.27
+10 mp050      logN CONTIG39  4267464  4267464    1  5.76
+11 mp050      logN CONTIG41  4156567  4156567    1  4.88
+12 mp050      logN CONTIG42  1977929  1977929    1  3.72
+13 mp050      logN CONTIG45  3163276  3163277    2  5.36
+14 mp050 logN_lag1 CONTIG17   164068   164070    2  3.72
+15 mp050 logN_lag1 CONTIG18   575394   575394    1  4.22
+16 mp050 logN_lag1 CONTIG18   580826   580826    1  4.03
+17 mp050 logN_lag1 CONTIG30   537980   537980    1  6.27
+18 mp050 logN_lag1 CONTIG33   297196   297200    2  4.59
+19 mp050 logN_lag1 CONTIG36  1639247  1639247    1  4.29
+20 mp050 logN_lag1 CONTIG38  4977395  4977395    1  4.64
+21 mp050 logN_lag1 CONTIG39  3621820  3621862    2  5.04
+22 mp050 logN_lag1 CONTIG39  3623088  3623088    1  4.74
+23 mp050 logN_lag1 CONTIG41  4594922  4594922    1  5.18
+24 mp050 logN_lag1 CONTIG42  4191300  4191300    1  3.30
+25 mp050 logN_lag1 CONTIG44 12008330 12008330    1  3.95
+26 mp075 hm_logN_6 CONTIG18   373124   373206    9  6.63
+27 mp075 hm_logN_6 CONTIG44  6121630  6121630    1  5.23
+28 mp075      logN CONTIG39  4267464  4267464    1  5.76
+29 mp075 logN_lag1 CONTIG39  3621820  3621820    1  4.90
+30 mp100 logN_lag1 CONTIG39  3621820  3621820    1  4.72
+
+== Agreement between settings (same covariate)
+  covariate     a     b tested_both top100_shared cor_bf
+1 hm_logN_6 mp050 mp075      955748            77  0.709
+2 hm_logN_6 mp050 mp100      528372            76  0.706
+3      logN mp050 mp075      955748            82  0.781
+4      logN mp050 mp100      528372            81  0.776
+5 logN_lag1 mp050 mp075      955748            89  0.737
+6 logN_lag1 mp050 mp100      528372            85  0.737
+7 hm_logN_6 mp075 mp100      528372            78  0.703
+8      logN mp075 mp100      528372            83  0.772
+9 logN_lag1 mp075 mp100      528372            87  0.731
+
+== Agreement between covariates (same setting)
+    tag         a         b tested_both top100_shared cor_bf
+1 mp050 hm_logN_6      logN     1023857             1  0.150
+2 mp050 hm_logN_6 logN_lag1     1023857             0  0.109
+3 mp050      logN logN_lag1     1023857             1  0.120
+4 mp075 hm_logN_6      logN      955748             2  0.137
+5 mp075 hm_logN_6 logN_lag1      955748             0  0.097
+6 mp075      logN logN_lag1      955748             0  0.105
+7 mp100 hm_logN_6      logN      528372             0  0.137
+8 mp100 hm_logN_6 logN_lag1      528372             0  0.096
+9 mp100      logN logN_lag1      528372             0  0.099
