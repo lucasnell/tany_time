@@ -501,9 +501,10 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          2026-11-16; ~17,000 CPU-hours), in batches of 25; then the rest
          (2,180 jobs; commands in `_bash/04-diversity/README.md`);
        - `_R/abc-analysis.R` written 2026-11-16 (`abcrf` 2.0 installed
-         locally), tested on stand-in data only. When the simulations
-         finish: copy `/staging/l/lnell/dna/abc/sims/` and
-         `abc-observed-stats.tsv` to `tany_dir("abc")`, then run it;
+         locally), tested on stand-in data. Simulations finished
+         2026-11-19 (2,186 jobs PASS; 11,000 per model incl. held-out;
+         mean 6-17 min per simulation); outputs and observed statistics
+         copied to both drives (MD5s match); analysis running;
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);
