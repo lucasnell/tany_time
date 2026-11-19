@@ -573,7 +573,8 @@ and `baypass-covariates.csv`). Scripts that analyse the first rerun set
 `ARCHIVE_18POOLS <- TRUE` (`_R/data-dir.R`). Committed text outputs of the
 first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
 
-- [ ] **K0.** On the submit server, move the first rerun's outputs aside:
+- [x] **K0.** On the submit server, move the first rerun's outputs aside
+      (done 2026-11-19; checked):
       ```
       S=/staging/l/lnell/dna
       mkdir -p $S/archive-18pools/snape
@@ -593,6 +594,7 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       _R/baypass-covariates.R` (17 pools); check `git diff`. Done
       2026-11-19 (covariate files now 17 values; job lists unchanged).
 - [ ] **K2.** `02-allele-freqs/04-combine-syncs` (time set; 17 pools).
+      Submitted 2026-11-19 (cluster 12597746); the first run took ~16 h.
 - [ ] **K3.** `03-select-time/00-baypass-inputs` → `01-baypass-init` →
       `02-check-omegas` → `03-baypass-beta` (270 jobs).
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
