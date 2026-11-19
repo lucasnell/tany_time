@@ -29,6 +29,8 @@
 
 library(tidyverse)
 
+#' Analyses the first 2026-11 rerun (18 pools; archived):
+ARCHIVE_18POOLS <- TRUE
 source("_R/data-dir.R")
 
 out_file <- "_data/contig18-locus.txt"
@@ -47,7 +49,7 @@ pools <- read_lines("_bash/samples/time-pools-18.txt")
 # =============================================================================*
 
 
-q_df <- read_rds("_data/baypass-qvalues.rds")
+q_df <- read_rds("_data/archive-18pools/baypass-qvalues.rds")
 near <- q_df |>
     filter(contig == ctg, pos >= lo - flank, pos <= hi + flank)
 cat("== 1. Tested SNPs within 10 kb of ", ctg, ":", lo, "-", hi, "\n", sep = "")
@@ -143,9 +145,9 @@ loc <- map(cnt, "loc") |>
            rel_depth = depth / pool_med[match(pool, pools)])
 
 cov_df <- tibble(pool = pools) |>
-    mutate(hm_logN_6 = scan("_bash/03-select-time/covariates/hm_logN_6.txt",
+    mutate(hm_logN_6 = scan("_data/archive-18pools/covariates/hm_logN_6.txt",
                             quiet = TRUE),
-           logN = scan("_bash/03-select-time/covariates/logN.txt", quiet = TRUE),
+           logN = scan("_data/archive-18pools/covariates/logN.txt", quiet = TRUE),
            yy = as.integer(str_match(pool, "^SN-[12]-(\\d{2})")[, 2]),
            year = ifelse(yy < 70, 2000L, 1900L) + yy,
            gen = as.integer(str_match(pool, "^SN-([12])-")[, 2]),

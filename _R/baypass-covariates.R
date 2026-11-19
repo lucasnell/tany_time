@@ -41,7 +41,8 @@ cov_df <- tibble(pool = read_lines("_bash/samples/time-pools.txt")) |>
            logN_lag1 = abund$logN[abund$g == g - 1]) |>
     ungroup() |>
     select(pool, year, gen, N, hm_logN_6, logN, logN_lag1)
-stopifnot(!anyNA(cov_df), nrow(cov_df) == 18)
+stopifnot(!anyNA(cov_df),
+          nrow(cov_df) == length(read_lines("_bash/samples/time-pools.txt")))
 
 dir.create("_bash/03-select-time/covariates", showWarnings = FALSE)
 for (v in c("hm_logN_6", "logN", "logN_lag1")) {

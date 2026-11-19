@@ -17,3 +17,19 @@ tany_dir <- function(...) {
     }
     file.path(roots[[1]], ...)
 }
+
+#' The first 2026-11 BayPass rerun (18 pools, with SN-1-95) was moved to
+#' `archive-18pools/` on both drives (owner, 2026-11-19). Scripts that
+#' analyse it set `ARCHIVE_18POOLS <- TRUE` before sourcing this file, so
+#' their `baypass-*` folders resolve there.
+if (exists("ARCHIVE_18POOLS") && isTRUE(ARCHIVE_18POOLS)) {
+    tany_dir_current <- tany_dir
+    tany_dir <- function(...) {
+        a <- c(...)
+        if (length(a) > 0 && grepl("^baypass-", a[[1]])) {
+            tany_dir_current("archive-18pools", ...)
+        } else {
+            tany_dir_current(...)
+        }
+    }
+}

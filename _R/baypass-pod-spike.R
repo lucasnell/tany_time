@@ -30,6 +30,8 @@
 
 library(tidyverse)
 
+#' Analyses the first 2026-11 rerun (18 pools; archived):
+ARCHIVE_18POOLS <- TRUE
 source("_R/data-dir.R")
 
 local({
@@ -64,7 +66,7 @@ set.seed(1880354617)
 if (!file.exists(spike_tar)) {
     src <- get_pod_src(tag)
     J <- length(src$hap)
-    cv <- scan(file.path("_bash/03-select-time/covariates",
+    cv <- scan(file.path("_data/archive-18pools/covariates",
                          paste0(cov_name, ".txt")), quiet = TRUE)
     stopifnot(length(cv) == J)
     cs <- (cv - mean(cv)) / sd(cv)

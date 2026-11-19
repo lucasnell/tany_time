@@ -30,6 +30,8 @@
 
 library(tidyverse)
 
+#' Analyses the first 2026-11 rerun (18 pools; archived):
+ARCHIVE_18POOLS <- TRUE
 source("_R/data-dir.R")
 
 #' Functions from `_R/baypass-pod-inputs.R` (only its function

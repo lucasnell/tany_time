@@ -36,6 +36,8 @@
 
 library(tidyverse)
 
+#' Analyses the first 2026-11 rerun (18 pools; archived):
+ARCHIVE_18POOLS <- TRUE
 source("_R/data-dir.R")
 
 #' GPD functions from `_R/baypass-pod-threshold.R` (only their definitions
@@ -141,7 +143,7 @@ ggsave("_plots/baypass-pod-gpd-z-qq.pdf", p_qq, width = 7, height = 6)
 # =============================================================================*
 
 
-bf_df <- read_rds("_data/baypass-bf.rds")
+bf_df <- read_rds("_data/archive-18pools/baypass-bf.rds")
 ok <- works_df |> filter(works)
 cat("\n== 2. q-values with GPD tail p (z), for the", nrow(ok),
     "setting x covariate pairs where the fit works\n")

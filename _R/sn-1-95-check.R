@@ -28,6 +28,8 @@
 
 library(tidyverse)
 
+#' Analyses the first 2026-11 rerun (18 pools; archived):
+ARCHIVE_18POOLS <- TRUE
 source("_R/data-dir.R")
 
 out_file <- "_data/sn-1-95-check.txt"

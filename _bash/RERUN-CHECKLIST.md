@@ -565,12 +565,26 @@ now writes 17 time pools to `_bash/samples/time-pools.txt` (the 18-pool
 list is `time-pools-18.txt`). Rules are unchanged: candidates by Storey
 q-values (q ≤ 0.05 and 0.10) from empirical p-values against PODs, median
 BF with ceiling ties broken by median z, `beyond_null` flags, no GPD for
-candidates. The first rerun's outputs stay as they are on staging and the
-drives; new outputs need new names or folders so they don't overwrite them
-(to set up before submitting).
+candidates. The first rerun's outputs are moved aside (owner,
+2026-11-19), so the new ones take the usual names. Drives: both
+`tany_time/archive-18pools/` (`baypass-{inputs,init,beta,pod}`). Local:
+`_data/archive-18pools/` (BayPass `.rds` files, the 18-pool covariate files
+and `baypass-covariates.csv`). Scripts that analyse the first rerun set
+`ARCHIVE_18POOLS <- TRUE` (`_R/data-dir.R`). Committed text outputs of the
+first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
 
-- [ ] **K1.** `Rscript _R/make-job-lists.R` and `Rscript
-      _R/baypass-covariates.R` (17 pools); check `git diff`.
+- [ ] **K0.** On the submit server, move the first rerun's outputs aside:
+      ```
+      S=/staging/l/lnell/dna
+      mkdir -p $S/archive-18pools/snape
+      mv $S/baypass $S/archive-18pools/baypass
+      mv $S/snape/{snape,count}_masked_{time,space,all}.tar $S/archive-18pools/snape/
+      mkdir -p $S/baypass/{init,beta,pod}
+      ```
+
+- [x] **K1.** `Rscript _R/make-job-lists.R` and `Rscript
+      _R/baypass-covariates.R` (17 pools); check `git diff`. Done
+      2026-11-19 (covariate files now 17 values; job lists unchanged).
 - [ ] **K2.** `02-allele-freqs/04-combine-syncs` (time set; 17 pools).
 - [ ] **K3.** `03-select-time/00-baypass-inputs` → `01-baypass-init` →
       `02-check-omegas` → `03-baypass-beta` (270 jobs).
