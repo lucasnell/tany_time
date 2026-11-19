@@ -1,4 +1,9 @@
 #'
+#' Superseded, not run to completion (2026-11-19): the flanking-read
+#' sequences (`_R/contig18-flank.R`) show the B haplotype differs from the
+#' assembly by small indels as well as substitutions, so the 25-mers built
+#' here by substituting the 9 SNP alleles don't match B reads.
+#'
 #' Haplotype frequencies at the CONTIG18 locus straight from the reads,
 #' without mapping (exploratory, owner, 2026-11-19; see
 #' `_R/contig18-locus.R` and `_R/contig18-haplotype.R`). Mapped depth there

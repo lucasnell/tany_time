@@ -4,8 +4,8 @@
 #' 82 bp of an 84% AT region could be a small indel misaligned as
 #' substitutions. Reads are anchored on a unique, non-variable 20-mer just
 #' right of the locus (CONTIG18:373,247-373,266; the left side is
-#' repetitive AT sequence) and the 130 bp before the anchor in each read
-#' (373,117-373,246 if no indel) are taken, on the reference strand.
+#' repetitive AT sequence) and the 90 bp before the anchor in each read
+#' (373,157-373,246 if no indel; 7 of the 9 SNPs) are taken, on the reference strand.
 #' Distinct sequences are counted per pool and compared with the assembly:
 #' length difference (indel) and mismatches.
 #'
@@ -25,7 +25,7 @@ sink(out_file, split = TRUE)
 ctg <- "CONTIG18"
 anc_start <- 373247
 anc_len <- 20L
-up_len <- 130L
+up_len <- 90L
 trim_dir <- "/Volumes/lan_images4/ill/dna/trimmed"
 pools <- c("SN-2-97_S37", "SN-2-02_S30", "SN-1-97_S61", "SN-1-99_S28",
            "SN-2-15_S34", "SN-2-08_S32")
@@ -47,26 +47,41 @@ rm(asm)
 cat("Anchor ", ctg, ":", anc_start, "-", anc_start + anc_len - 1, " ",
     anchor, "; occurrences in the assembly (both strands): ", n_occ, "\n",
     sep = "")
-cat("Assembly, 130 bp before the anchor:\n", ref_up, "\n", sep = "")
+cat("Assembly, ", up_len, " bp before the anchor:\n", ref_up, "\n", sep = "")
 stopifnot(n_occ == 1)
 
 #' Reads with the anchor (or its reverse complement), oriented to the
-#' reference strand; the 130 bp before the anchor (reads that don't reach
+#' reference strand; the up_len bp before the anchor (reads that don't reach
 #' that far are dropped).
 pat <- tempfile(fileext = ".txt")
 write_lines(c(anchor, revcomp(anchor)), pat)
+#' Anchored reads are cached (local only, `.rds` is git-ignored) so the
+#' window can change without scanning the reads again.
+cache <- "_data/contig18-flank-reads.rds"
+if (file.exists(cache)) {
+    raw <- read_rds(cache)
+} else {
+    raw <- map(pools, \(p) {
+        tar <- file.path(trim_dir, paste0("trimmed_", p, ".tar"))
+        members <- sprintf("trimmed_%s_L002_R%i_001.fastq.gz", p, 1:2)
+        cmd <- sprintf("tar -xOf '%s' %s | gzip -dc | awk 'NR %% 4 == 2' | grep -F -f '%s'",
+                       tar, paste(members, collapse = " "), pat)
+        r <- system(cmd, intern = TRUE)
+        tibble(pool = p,
+               read = ifelse(grepl(anchor, r, fixed = TRUE), r,
+                             map_chr(r, revcomp)))
+    }) |>
+        list_rbind()
+    write_rds(raw, cache, compress = "gz")
+}
 reads <- map(pools, \(p) {
-    tar <- file.path(trim_dir, paste0("trimmed_", p, ".tar"))
-    members <- sprintf("trimmed_%s_L002_R%i_001.fastq.gz", p, 1:2)
-    cmd <- sprintf("tar -xOf '%s' %s | gzip -dc | awk 'NR %% 4 == 2' | grep -F -f '%s'",
-                   tar, paste(members, collapse = " "), pat)
-    r <- system(cmd, intern = TRUE)
-    r <- ifelse(grepl(anchor, r, fixed = TRUE), r, map_chr(r, revcomp))
+    r <- raw$read[raw$pool == p]
     pos <- regexpr(anchor, r, fixed = TRUE)
     up <- ifelse(pos > up_len, substr(r, pos - up_len, pos - 1), NA_character_)
-    tibble(pool = p, n_anchor = length(r), up = up[!is.na(up)])
+    tibble(pool = rep(p, sum(!is.na(up))), up = up[!is.na(up)])
 }) |>
     list_rbind()
+n_anchor <- raw |> dplyr::count(pool, name = "n_anchor")
 
 #' Alignment of each distinct sequence to the assembly's (global, to see
 #' indels): length difference and edit distance.
@@ -82,7 +97,7 @@ top <- seqs |>
     mutate(id = paste0("s", row_number()),
            edit = map_int(up, \(u) as.integer(adist(u, ref_up))),
            is_assembly = up == ref_up)
-cat("\n== Most common sequences (all pools), 130 bp before the anchor\n")
+cat("\n== Most common sequences (all pools),", up_len, "bp before the anchor\n")
 for (i in seq_len(nrow(top))) {
     cat(top$id[i], " (", top$total[i], " reads; edit distance to assembly ",
         top$edit[i], if (top$is_assembly[i]) "; = assembly" else "", "):\n",
@@ -107,10 +122,30 @@ reads |>
     mutate(id = replace_na(id, "other")) |>
     dplyr::count(pool, id) |>
     pivot_wider(names_from = id, values_from = n, values_fill = 0) |>
-    left_join(reads |> distinct(pool, n_anchor), by = "pool") |>
+    right_join(n_anchor, by = "pool") |>
     arrange(match(pool, pools)) |>
     as.data.frame() |>
     print()
+
+#' Haplotype of every read: closer (edit distance) to the assembly (A) or
+#' to the most common non-assembly sequence (B, s2 above); reads more than
+#' 10 edits from both are "other". Raw B frequency per pool, next to the
+#' mapped B frequency (mean over the 9 SNPs, BayPass inputs;
+#' `_data/contig18-locus.txt`).
+b_seq <- top$up[!top$is_assembly][1]
+cls <- reads |>
+    mutate(dA = as.vector(adist(up, ref_up)), dB = as.vector(adist(up, b_seq)),
+           hap = case_when(pmin(dA, dB) > 10 ~ "other",
+                           dA <= dB ~ "A", TRUE ~ "B")) |>
+    dplyr::count(pool, hap) |>
+    pivot_wider(names_from = hap, values_from = n, values_fill = 0) |>
+    mutate(raw_B = round(B / (A + B), 2))
+mapped_b <- c(`SN-2-97_S37` = 0.74, `SN-2-02_S30` = 0.56, `SN-1-97_S61` = 0.55,
+              `SN-1-99_S28` = 0.04, `SN-2-15_S34` = 0.04, `SN-2-08_S32` = 0.06)
+cat("\n== Reads by haplotype (A = assembly, B = s2; other > 10 edits from",
+    "both)\n")
+print(as.data.frame(cls |> mutate(mapped_B = mapped_b[pool]) |>
+                        arrange(match(pool, pools))))
 
 sink()
 read_lines(out_file) |>

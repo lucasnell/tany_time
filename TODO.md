@@ -625,8 +625,15 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         before and 0.67 after 2003), but read depth there falls as it
         rises (r -0.75), so reads carrying it likely map poorly and its
         frequency is underestimated. Masked in SN-1-07 and SN-1-95, so
-        absent from mp100. Open: check mapping (MAPQ, soft-clipping) at
-        373.1 kb in a few pools before reading anything into it.
+        absent from mp100. Raw reads (2026-11-19): no other copy of the
+        haplotype in any assembly (`_data/contig18-haplotype.txt`); reads
+        anchored just right of the locus (`_R/contig18-flank.R` →
+        `_data/contig18-flank.txt`) show B differs from the assembly by
+        small indels and substitutions in ~40 bp of AT runs (the 9 "SNPs"
+        are how mapping represents it), and B's raw read frequency is
+        0.62-1.00 in pools where mapping gives 0.55-0.74 and 0.24-0.40
+        where mapping gives 0.04-0.06 (9-57 reads per pool). The
+        difference between pools is real but mapping exaggerates it.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
