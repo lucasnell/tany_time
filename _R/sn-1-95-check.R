@@ -34,7 +34,7 @@ out_file <- "_data/sn-1-95-check.txt"
 sink(out_file, split = TRUE)
 
 set.seed(1306524479)
-pools <- read_lines("_bash/samples/time-pools.txt")
+pools <- read_lines("_bash/samples/time-pools-18.txt")
 J <- length(pools)
 focal <- "SN-1-95_S59"
 deep <- "SN-1-97_S61"

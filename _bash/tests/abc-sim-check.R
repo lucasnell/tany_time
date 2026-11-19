@@ -34,7 +34,7 @@ set.seed(1263407051)
 suppressMessages(library(tidyverse))
 pool_df <- read_csv("_data/full-sample-info.csv", show_col_types = FALSE) |>
     distinct(biotech_id, n_adults) |>
-    filter(biotech_id %in% read_lines("_bash/samples/time-pools.txt")) |>
+    filter(biotech_id %in% read_lines("_bash/samples/time-pools-18.txt")) |>
     mutate(yy = as.integer(str_match(biotech_id, "^SN-[12]-(\\d{2})")[, 2]),
            year = ifelse(yy < 70, 2000L, 1900L) + yy,
            g12 = as.integer(str_match(biotech_id, "^SN-([12])-")[, 2]),

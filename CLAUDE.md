@@ -4,8 +4,10 @@ Pool-seq population genomics of the midge *Tanytarsus gracilentus* at Mývatn,
 Iceland. Two sample sets:
 
 - **Time series**: archived emergence-trap samples from site Syðri Neslönd
-  (SN), 30 pools sequenced, 18 kept after QC (`_bash/samples/time-pools.txt`;
-  2026-11-02), spanning 1992–2015, two generations per year (`a` = before
+  (SN), 30 pools sequenced, 17 kept after QC (`_bash/samples/time-pools.txt`;
+  2026-11-19: SN-1-95 dropped for likely contamination, `_data/sn-1-95-check.txt`;
+  the 18-pool list used before is `time-pools-18.txt`), spanning
+  1992–2015, two generations per year (`a` = before
   mid-July, `b` = after). The 14 time-series pools from other Mývatn
   sites (KS, H) are excluded from BayPass (owner, 2026-11-10; reasons in
   `TODO.md`).

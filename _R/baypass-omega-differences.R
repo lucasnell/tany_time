@@ -32,7 +32,7 @@ sink(out_file, split = TRUE)
 
 mp_tags <- c("mp050", "mp075", "mp100")
 #' Pool order of the BayPass inputs (see `_R/baypass-covariates.R`):
-pools <- read_lines("_bash/samples/time-pools.txt")
+pools <- read_lines("_bash/samples/time-pools-18.txt")
 n_pools <- length(pools)
 
 fmd.dist <- function(mat1, mat2) {

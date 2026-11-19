@@ -31,8 +31,8 @@
 #'      probable model, resampled from its reference table with the random
 #'      forest weights for the immigration parameter (or scale, under
 #'      models without immigration), to simulate with `abc-sim.py --fix`.
-#'   7. Sensitivity runs available so far: leaving out SN-1-95, SN-1-13,
-#'      and SN-2-97 (their statistics dropped); diversity statistics alone
+#'   7. Sensitivity runs available so far: leaving out SN-1-13 and SN-2-97
+#'      (their statistics dropped; SN-1-95 is left out of everything); diversity statistics alone
 #'      vs. temporal and among-pool statistics alone; and each simulated
 #'      variant (`power`, `widen`, `older`, `mu`) whose files exist.
 #'
@@ -111,6 +111,15 @@ ref <- syn(ref)
 if (!is.null(hold)) hold <- syn(hold)
 names(obs) <- make.names(names(obs))
 stat_names <- names(obs)
+
+#' SN-1-95 is dropped from all analyses (owner, 2026-11-19; likely
+#' contamination, `_data/sn-1-95-check.txt`). It's still a sampled pool in
+#' the simulations, which doesn't change any other pool's statistics, so
+#' only the statistics involving it are removed (235 of 258 remain).
+excluded_pools <- make.names("SN-1-95_S59")
+stat_names <- stat_names[!map_lgl(stat_names, \(s) any(str_detect(
+    s, fixed(excluded_pools))))]
+obs <- obs[stat_names]
 
 clean <- function(x, label) {
     bad <- !complete.cases(x[, stat_names]) |
@@ -362,14 +371,14 @@ write_csv(ppc, file.path(out_dir, "abc-ppc-params.csv"))
 
 
 say("\n== 7. Sensitivity")
-drop_pools <- make.names(c("SN-1-95_S59", "SN-1-13_S56", "SN-2-97_S37"))
+drop_pools <- make.names(c("SN-1-13_S56", "SN-2-97_S37"))
 st_keep <- stat_names[!map_lgl(stat_names, \(s) any(str_detect(
     s, fixed(drop_pools))))]
 div_stats <- stat_names[str_detect(stat_names, "^(pi|thw|tdr|rare)_")]
 tf_stats <- stat_names[str_detect(stat_names, "^(fc|fst)_")]
 mc <- bind_rows(
     mc,
-    model_choice(ref, st_keep, "without SN-1-95, SN-1-13, SN-2-97"),
+    model_choice(ref, st_keep, "without SN-1-13, SN-2-97"),
     model_choice(ref, div_stats, "diversity statistics only"),
     model_choice(ref, tf_stats, "temporal and among-pool statistics only"))
 for (v in c("power", "widen", "older", "mu")) {

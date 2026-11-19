@@ -179,7 +179,7 @@ cat("pi spread, sd: real M_P ", signif(sd(src$pi_hat), 3), "; Beta ",
 #' reads), next to the ratio of BayPass's Ω diagonal re-estimated from the
 #' full mp075 POD to the source Ω (step 1 of
 #' `_R/baypass-pod-threshold.R`). Pool order is that of
-#' `_bash/samples/time-pools.txt` (as in the BayPass inputs).
+#' `_bash/samples/time-pools-18.txt` (as in the BayPass inputs).
 pool_ratio <- function(d) {
     r <- d / d_om
     diag(r) <- NA
@@ -195,7 +195,7 @@ om_re <- as.matrix(read.table(file.path(tmp, nm, sprintf(
 dep_real <- src$dep
 dep_real[dep_real == 0] <- NA
 cat("\n== Per pool\n")
-pp <- tibble(pool = read_lines("_bash/samples/time-pools.txt"),
+pp <- tibble(pool = read_lines("_bash/samples/time-pools-18.txt"),
        median_depth = apply(dep_real, 2, median, na.rm = TRUE),
        haploid = src$hap,
        omega_diag = diag(src$omega),

@@ -38,7 +38,7 @@ ctg <- "CONTIG18"
 lo <- 373124
 hi <- 373206
 flank <- 10000
-pools <- read_lines("_bash/samples/time-pools.txt")
+pools <- read_lines("_bash/samples/time-pools-18.txt")
 
 
 

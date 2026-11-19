@@ -42,8 +42,15 @@
 #' 0.5). `_data/pool-qc-sensitivity.csv` gives the time pools kept by the
 #' first-run rule and by other missing-data limits.
 #'
-#' Override (owner, 2026-11-02): SN-1-95 is included although the rule
-#' excludes it. Only its `prop_missing` is off (0.237 vs. 0.163-0.175 in the
+#' Override revoked (owner, 2026-11-19): SN-1-95 is excluded, as the rule
+#' says. Its allele frequencies sit near the average of the other pools
+#' and almost match SN-2-07_S31's beyond sampling noise, a sign that much
+#' of its data comes from other samples (`_R/sn-1-95-check.R` →
+#' `_data/sn-1-95-check.txt`). The 18-pool list used until then is kept as
+#' `_bash/samples/time-pools-18.txt`.
+#'
+#' Former override (owner, 2026-11-02): SN-1-95 was included although the
+#' rule excludes it. Only its `prop_missing` is off (0.237 vs. 0.163-0.175 in the
 #' kept pools; its other metrics are within their range), and it passes the
 #' 0.5 limit; it scores high because `prop_missing` varies so little among
 #' good pools. No general rule change brought it back without also keeping
@@ -85,7 +92,7 @@ N_BOOT <- 2000         # simulated data sets for calibration
 RULE_SEED <- 1702635893 # MCD and bootstrap use random numbers
 MAX_MISSING <- 0.5     # step 0
 ALPHA <- 0.5           # share of pools ROBPCA fits its PCs to
-OVERRIDE_INCLUDE <- c("SN-1-95_S59")  # owner's override; see above
+OVERRIDE_INCLUDE <- character(0)  # none since 2026-11-19; see above
 
 
 

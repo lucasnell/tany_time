@@ -10,7 +10,8 @@ hand; edit the R script and re-run it.
 | `time-pools-candidates.txt` | All 30 time-series (SN) pools | `02-allele-freqs/03-pool-qc` |
 | `space-pools-candidates.txt` | All 18 spatial (2019) pools | `02-allele-freqs/03-pool-qc` |
 | `time-pools-cov30.txt`, `space-pools-cov30.txt` | Pools with median coverage ≥ 30 (the 2025 rule; 17 and 18) | sensitivity analyses |
-| `time-pools.txt`, `space-pools.txt` | Pools included after QC (18 time pools: the rule's 17, the same as `time-pools-cov30.txt`, plus SN-1-95 by the owner's override; all 18 spatial pools, which get no QC); **written by `_R/pool-qc.R`**, not by `make-job-lists.R` | `02-allele-freqs/04-combine-syncs` |
+| `time-pools.txt`, `space-pools.txt` | Pools included after QC (17 time pools, the rule's, the same as `time-pools-cov30.txt`; all 18 spatial pools, which get no QC); **written by `_R/pool-qc.R`**, not by `make-job-lists.R` | `02-allele-freqs/04-combine-syncs` |
+| `time-pools-18.txt` | The 18 time pools used until 2026-11-19 (the 17 plus SN-1-95, by an owner's override revoked for likely contamination); copied by hand from the old `time-pools.txt` | analyses of the first 2026-11 BayPass rerun and the ABC inputs (`_R/abc-inputs.R`) |
 
 SNAPE and npstat run on all 62 pools, so changing which pools are included
 only requires re-running `02-allele-freqs/04-combine-syncs` onward.

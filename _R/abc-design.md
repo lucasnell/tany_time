@@ -224,3 +224,9 @@ details.
     (msprime 79-91% of it), so 25,000 per model would cost ~40,000
     CPU-hours; 10,000 costs ~17,000. Held-out sets stay at 1,000 per
     model.
+11. SN-1-95 is dropped from all analyses, not only the sensitivity run
+    (owner, 2026-11-19): its allele frequencies point to contamination
+    with other samples (`_R/sn-1-95-check.R` → `_data/sn-1-95-check.txt`).
+    The simulations still sample it; the statistics involving it are
+    removed (235 of 258 remain). Sensitivity run 3 now leaves out SN-1-13
+    and SN-2-97.

@@ -555,3 +555,28 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
       `baypass-analysis.R` (q ≤ 0.10), `baypass-check-candidates.R`. No
       candidates at q ≤ 0.10 in any setting x covariate; see `TODO.md`.
 - [ ] **J2.** Continue with the review steps in `TODO.md`.
+
+## K. BayPass rerun without SN-1-95 (owner, 2026-11-19)
+
+SN-1-95's allele frequencies point to contamination with other samples
+(`_R/sn-1-95-check.R` → `_data/sn-1-95-check.txt`), so the owner's override
+that kept it is revoked and it's dropped from all analyses. `_R/pool-qc.R`
+now writes 17 time pools to `_bash/samples/time-pools.txt` (the 18-pool
+list is `time-pools-18.txt`). Rules are unchanged: candidates by Storey
+q-values (q ≤ 0.05 and 0.10) from empirical p-values against PODs, median
+BF with ceiling ties broken by median z, `beyond_null` flags, no GPD for
+candidates. The first rerun's outputs stay as they are on staging and the
+drives; new outputs need new names or folders so they don't overwrite them
+(to set up before submitting).
+
+- [ ] **K1.** `Rscript _R/make-job-lists.R` and `Rscript
+      _R/baypass-covariates.R` (17 pools); check `git diff`.
+- [ ] **K2.** `02-allele-freqs/04-combine-syncs` (time set; 17 pools).
+- [ ] **K3.** `03-select-time/00-baypass-inputs` → `01-baypass-init` →
+      `02-check-omegas` → `03-baypass-beta` (270 jobs).
+- [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
+- [ ] **K5.** Local checks and results, as in I5 and J1b:
+      `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
+      `_R/baypass-pod-stat-compare.R`, `_R/baypass-pdelta-check.R`,
+      `_R/baypass-read-bf.R`, step 5 of `_R/baypass-pod-threshold.R`,
+      `_R/baypass-analysis.R`, `_R/baypass-check-candidates.R`.

@@ -44,7 +44,7 @@ set.seed(1606617349)
 # =============================================================================*
 
 
-pools <- read_lines("_bash/samples/time-pools.txt")
+pools <- read_lines("_bash/samples/time-pools-18.txt")
 pool_df <- read_csv("_data/full-sample-info.csv", show_col_types = FALSE) |>
     distinct(biotech_id, n_adults) |>
     filter(biotech_id %in% pools) |>
