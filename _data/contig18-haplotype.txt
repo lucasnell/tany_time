@@ -1,0 +1,32 @@
+
+Assembly base at each SNP (A = the assembly's haplotype):
+    contig    pos ref alt b assembly b_is_assembly
+1 CONTIG18 373124   A   G A        G         FALSE
+2 CONTIG18 373132   A   T T        A         FALSE
+3 CONTIG18 373162   A   C C        A         FALSE
+4 CONTIG18 373167   A   G G        A         FALSE
+5 CONTIG18 373170   A   T T        A         FALSE
+6 CONTIG18 373184   A   G G        A         FALSE
+7 CONTIG18 373192   A   T T        A         FALSE
+8 CONTIG18 373196   T   G G        T         FALSE
+9 CONTIG18 373206   A   T T        A         FALSE
+
+Assembly sequence, CONTIG18:372974-373356:
+ATTGTAATTTTCAAAAAAATAATAATTTTTTTAAATTTATTGAATTATTTTATTTTATTAAAATTTTGATTTTTTGAAAATTTTGACTTTTGAAATTTTTTAAAATTTTGATTTTTTGAAATTTTTAAAATTTTGATTCATTTAATTTAAGAAATTATATGATTTTTTCAAAAATATTGAATTTAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACTCGCTTAATTTTAGTTGATTTTGAGCAGAATTTGATCCCTGAATTGGGTGCTGAAATTTTCCAACCCGTATCTGAAACTTTACTTTATCTTCTACTACAAAACAACCGACT
+AT content: 0.843
+
+Query: CONTIG18:372974-373356 (383 bp; A and B differ at 9 sites)
+
+== BLAST hits (e-value <= 1e-10), best 5 per query and assembly
+    assembly       query    subject  pident length mismatch gapopen qstart qend
+1 Ctenta2023 A_reference OY754305.1  90.741     54        5       0     81  134
+2 Ctenta2023 B_haplotype OY754305.1  90.741     54        5       0     81  134
+3     Tgraci A_reference   CONTIG18 100.000    383        0       0      1  383
+4     Tgraci B_haplotype   CONTIG18  97.650    383        9       0      1  383
+   sstart    send   evalue bitscore
+1 2869410 2869463 6.36e-12     73.1
+2 2869410 2869463 6.36e-12     73.1
+3  372974  373356 0.00e+00    708.0
+4  372974  373356 0.00e+00    658.0
+
+Assemblies searched: Aaegyp, Asteph, Bantar, Cmarin, Cquinq, Cripar, Csonor, Ctenta, Ctenta2023, Mdomes, Pakamu, Ppemba, Pstein, Pvande, Saterr, Tgraci
