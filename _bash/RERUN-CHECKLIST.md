@@ -518,6 +518,17 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          `06-baypass-pod-spike` (10 jobs; submitted 2026-11-18), then
          `./check-step.sh 03-select-time/06-baypass-pod-spike`, copy the `.tar` files to
          `tany_dir("baypass-pod")`, rerun the script for part 2.
+         PASS 2026-11-19 (10 of 10, longest 7.6 h); copied to LAN_4TB_SSD
+         (MD5s match). Result (`_data/baypass-pod-spike.txt`): the three
+         statistics have the same power (1,000 spiked: 318-320 found at
+         q <= 0.05, 345-347 at q <= 0.10; FDR 0.048 and 0.099; power 0-1%
+         for |beta| < 0.035, 99% for |beta| > 0.11). But the null depends on
+         the dataset: with 1% spiked, BayPass's estimated share of
+         associated SNPs, P(delta), is 0.021 vs. 0.0126 in the null POD,
+         and null SNPs' BF and z rise with it (BF median -3.8 vs. -6.4,
+         99th percentile 13.3 vs. 11.6), so the comparison uses the spiked
+         POD's own null SNPs. For the real analysis, the POD null holds
+         only if real P(delta) is about the null POD's.
 
 ## J. After the rerun
 

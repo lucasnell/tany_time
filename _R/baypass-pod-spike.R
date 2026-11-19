@@ -158,36 +158,71 @@ if (all(have)) {
     obs <- tibble(snp = truth$snp, beta = truth$beta,
                   bf = apply(sapply(runs, \(x) x[, "bf"]), 1, median),
                   z = apply(sapply(runs, \(x) x[, "z"]), 1, median))
-    nul <- read_rds(tany_dir("baypass-pod", "pod-null-stats.rds")) |>
+    pod_null <- read_rds(tany_dir("baypass-pod", "pod-null-stats.rds")) |>
         filter(tag == !!tag, covariate == cov_name)
-    n0 <- nrow(nul)
 
-    #' Empirical p: (1 + null SNPs at least as extreme) / (n0 + 1).
-    p_one <- function(x, null) {
-        (1 + n0 - findInterval(x, sort(null), left.open = TRUE)) / (n0 + 1)
-    }
-    #' BF with ties broken by z, for SNPs at or above the null's largest
-    #' BF (the ceiling, where the ties are): a null SNP is at least as
-    #' extreme if its BF is larger, or equal and its z >= the SNP's.
-    p_tie <- function(bf, z) {
-        p <- p_one(bf, nul$bf)
+    #' The null of a statistic depends on the dataset: BayPass's auxiliary
+    #' model estimates the share of associated SNPs (P(delta)) from all
+    #' SNPs, and null SNPs' BF and z rise with it. With 1% spiked, P(delta)
+    #' is higher than in the null POD, so the external null POD can't
+    #' calibrate this dataset (qvalue's pi0 estimate was <= 0 with it).
+    #' Shown here, then the comparison uses the spiked POD's own 99,000
+    #' null SNPs as the null (each null SNP compared with the others).
+    pdelta <- map_dbl(seq_len(n_runs), \(r) {
+        nm <- res_name(r)
+        member <- file.path(nm, sprintf("tany-podspike-run%i_summary_Pdelta.out", r))
+        tmp <- tempfile()
+        untar(tany_dir("baypass-pod", paste0(nm, ".tar")), files = member,
+              exdir = tmp)
+        read_table(file.path(tmp, member), col_types = cols())$M_P
+    })
+    pdelta_pod <- map_dbl(seq_len(n_runs), \(r) {
+        nm <- sprintf("baypass-pod-%s-%s-run%i", tag, cov_name, r)
+        member <- file.path(nm, sprintf("tany-pod-%s-%s-run%i_summary_Pdelta.out",
+                                        tag, cov_name, r))
+        tmp <- tempfile()
+        untar(tany_dir("baypass-pod", paste0(nm, ".tar")), files = member,
+              exdir = tmp)
+        read_table(file.path(tmp, member), col_types = cols())$M_P
+    })
+    cat("\n== Part 2\nP(delta), mean over runs: spiked POD",
+        signif(mean(pdelta), 3), "; null POD", signif(mean(pdelta_pod), 3), "\n")
+    q <- \(x) paste(signif(quantile(x, c(0.5, 0.9, 0.99)), 3), collapse = " / ")
+    cat("Null SNPs, median / 90th / 99th percentile: BF spiked POD", q(obs$bf[obs$beta == 0]),
+        "; null POD", q(pod_null$bf), "\n")
+    cat("  z spiked POD", q(obs$z[obs$beta == 0]), "; null POD", q(pod_null$z),
+        "\n")
+
+    nul <- obs |> filter(beta == 0)
+    n0 <- nrow(nul)
+    is_null <- obs$beta == 0
+    #' Empirical p against the internal null: (1 + null SNPs at least as
+    #' extreme) / (n0 + 1) for associated SNPs; for a null SNP, the other
+    #' null SNPs: (null SNPs at least as extreme, itself excluded, + 1) /
+    #' n0, i.e. count / n0.
+    p_from_count <- function(cnt) ifelse(is_null, cnt / n0, (1 + cnt) / (n0 + 1))
+    count_ge <- function(x, null) n0 - findInterval(x, sort(null), left.open = TRUE)
+    #' BF with ties broken by z (lexicographic: larger BF, or equal BF and
+    #' z at least as large), for SNPs at or above the null's largest BF
+    #' (where the ties are); others as BF alone.
+    count_tie <- function(bf, z) {
+        cnt <- count_ge(bf, nul$bf)
         top <- which(bf >= max(nul$bf))
         for (i in top) {
-            ge <- sum(nul$bf > bf[i] | (nul$bf == bf[i] & nul$z >= z[i]))
-            p[i] <- (1 + ge) / (n0 + 1)
+            cnt[i] <- sum(nul$bf > bf[i] | (nul$bf == bf[i] & nul$z >= z[i]))
         }
-        p
+        cnt
     }
     obs <- obs |>
-        mutate(p_bf = p_one(bf, nul$bf),
-               p_z = p_one(z, nul$z),
-               p_bf_z = p_tie(bf, z))
+        mutate(p_bf = p_from_count(count_ge(bf, nul$bf)),
+               p_z = p_from_count(count_ge(z, nul$z)),
+               p_bf_z = p_from_count(count_tie(bf, z)))
     obs <- obs |>
         mutate(q_bf = qvalue::qvalue(p_bf)$qvalues,
                q_z = qvalue::qvalue(p_z)$qvalues,
                q_bf_z = qvalue::qvalue(p_bf_z)$qvalues)
 
-    cat("\n== Part 2: calls at q <= 0.05 and q <= 0.10 (", n_spike,
+    cat("\nCalls at q <= 0.05 and q <= 0.10 (", n_spike,
         " associated, ", n_null, " null SNPs)\n", sep = "")
     calls <- crossing(stat = c("bf", "z", "bf_z"), q_max = c(0.05, 0.10)) |>
         mutate(x = map2(stat, q_max, \(s, qm) {

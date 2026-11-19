@@ -1,4 +1,24 @@
-== Part 1: spiked POD (mp075, hm_logN_6): 99000 null + 1000 associated SNPs, |beta| log-uniform 0.01-0.2
-Wrote /Volumes/LAN_4TB_SSD/tany_time/baypass-pod/baypass-pod-spike-inputs.tar.gz
 
-Part 2: waiting for 10 of 10 outputs
+== Part 2
+P(delta), mean over runs: spiked POD 0.0211 ; null POD 0.0126
+Null SNPs, median / 90th / 99th percentile: BF spiked POD -3.79 / 3.96 / 13.3 ; null POD -6.37 / 2.31 / 11.6
+  z spiked POD 0.0428 / 0.146 / 0.438 ; null POD 0.0323 / 0.122 / 0.362
+
+Calls at q <= 0.05 and q <= 0.10 (1000 associated, 99000 null SNPs)
+  stat q_max true_pos false_pos   fdr power
+1   bf  0.05      320        16 0.048 0.320
+2   bf  0.10      347        38 0.099 0.347
+3 bf_z  0.05      320        16 0.048 0.320
+4 bf_z  0.10      347        38 0.099 0.347
+5    z  0.05      318        16 0.048 0.318
+6    z  0.10      345        38 0.099 0.345
+
+Power at q <= 0.10 by |beta| (quintile bins of the spiked SNPs):
+              bin   n    bf     z  bf_z
+1 [0.0101,0.0193] 200 0.005 0.005 0.005
+2 (0.0193,0.0347] 200 0.010 0.010 0.010
+3 (0.0347,0.0638] 200 0.155 0.155 0.155
+4  (0.0638,0.112] 200 0.575 0.565 0.575
+5     (0.112,0.2] 200 0.990 0.990 0.990
+
+Spiked SNPs at the BF ceiling (median): 275 ; null SNPs: 1
