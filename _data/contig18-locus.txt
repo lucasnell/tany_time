@@ -1,0 +1,204 @@
+== 1. Tested SNPs within 10 kb of CONTIG18:373124-373206
+    tag covariate snps in_locus beyond_null locus_min_q flank_max_bf
+1 mp050 hm_logN_6  250        9           9       0.213         60.0
+2 mp050      logN  250        9           0       0.945         20.7
+3 mp050 logN_lag1  250        9           0       1.000         11.6
+4 mp075 hm_logN_6  244        9           9       0.239         60.0
+5 mp075      logN  244        9           0       1.000         20.9
+6 mp075 logN_lag1  244        9           0       1.000         11.3
+7 mp100 hm_logN_6  160        0           0         Inf         14.0
+8 mp100      logN  160        0           0         Inf         17.9
+9 mp100 logN_lag1  160        0           0         Inf         10.9
+  flank_max_z
+1        4.29
+2        1.01
+3        0.36
+4        3.94
+5        1.03
+6        0.35
+7        0.48
+8        0.74
+9        0.34
+
+SNPs in the locus, hm_logN_6:
+     tag sub    pos bf_db    z n_runs_ceiling   p_emp     q
+1  mp050   3 373124 59.96 6.03             10 2.5e-06 0.213
+2  mp050   1 373132 59.96 6.35             10 2.5e-06 0.213
+3  mp050   2 373162 59.96 5.84             10 2.5e-06 0.213
+4  mp050   3 373167 59.96 6.07             10 2.5e-06 0.213
+5  mp050   1 373170 59.96 6.24             10 2.5e-06 0.213
+6  mp050   2 373184 59.96 6.85             10 2.5e-06 0.213
+7  mp050   3 373192 59.96 6.46             10 2.5e-06 0.213
+8  mp050   1 373196 59.96 5.97             10 2.5e-06 0.213
+9  mp050   2 373206 59.96 5.84             10 2.5e-06 0.213
+10 mp075   2 373124 59.96 5.95             10 2.5e-06 0.239
+11 mp075   3 373132 59.96 6.63             10 2.5e-06 0.239
+12 mp075   1 373162 59.96 5.89             10 2.5e-06 0.239
+13 mp075   2 373167 59.96 6.29             10 2.5e-06 0.239
+14 mp075   3 373170 59.96 6.06             10 2.5e-06 0.239
+15 mp075   1 373184 59.96 6.37             10 2.5e-06 0.239
+16 mp075   2 373192 59.96 6.51             10 2.5e-06 0.239
+17 mp075   3 373196 59.96 5.94             10 2.5e-06 0.239
+18 mp075   1 373206 59.96 5.80             10 2.5e-06 0.239
+
+Top 10 SNPs within 10 kb by z, other covariates (mp050):
+   covariate    pos bf_db    z     q
+1       logN 376786 20.69 1.01 0.942
+2       logN 373192 19.98 0.93 0.945
+3       logN 373206 16.15 0.61 1.000
+4       logN 379424 14.88 0.53 1.000
+5       logN 373184 14.26 0.49 1.000
+6  logN_lag1 382405 11.59 0.36 0.989
+7  logN_lag1 365616 11.29 0.35 0.989
+8  logN_lag1 382367  8.22 0.25 0.989
+9  logN_lag1 378871  7.54 0.23 0.994
+10 logN_lag1 378787  7.54 0.23 0.994
+
+== 2. SNPs tested in mp050 per kb: genome mean 11.19; CONTIG18 1-kb windows: median 19, 99th percentile 63.33; window at 373 kb: 24
+1-kb windows 368-378 kb:
+    kb  n
+1  368  5
+2  369 15
+3  370 12
+4  371 19
+5  372 24
+6  373 24
+7  374 10
+8  375  9
+9  376  9
+10 377 30
+11 378 17
+
+== 3. Read counts at the 9 locus SNPs (mp050)
+Depth relative to each pool's median depth (1 = typical):
+          pool median_depth locus_depth rel_depth missing
+1  SN-1-02_S55     87.00000          50      0.57       0
+2  SN-1-07_S23     61.00000           0      0.00       9
+3  SN-1-08_S24    110.00000          88      0.80       0
+4  SN-1-09_S25     96.00000          35      0.36       0
+5  SN-1-10_S26     86.00000          35      0.41       0
+6  SN-1-13_S56     25.00000          25      1.00       0
+7  SN-1-14_S27     73.00000          82      1.12       0
+8  SN-1-95_S59     18.00000           0      0.00       9
+9  SN-1-97_S61    104.00000          49      0.47       0
+10 SN-1-99_S28     49.00000          50      1.02       1
+11 SN-2-00_S29     53.00000          39      0.74       0
+12 SN-2-02_S30     90.00000          42      0.47       0
+13 SN-2-07_S31     95.00000          48      0.51       0
+14 SN-2-08_S32     82.00000          96      1.17       0
+15 SN-2-15_S34     45.00000          52      1.16       1
+16 SN-2-92_S35     80.66667          53      0.66       0
+17 SN-2-97_S37     30.00000          12      0.40       0
+18 SN-2-99_S38     99.00000          61      0.62       0
+
+Reference-allele frequency by pool (rows) and SNP (columns):
+          pool 373132 373170 373196 373162 373184 373206 373124 373167 373192
+1  SN-1-07_S23     NA     NA     NA     NA     NA     NA     NA     NA     NA
+2  SN-2-07_S31   0.94   0.94   0.92   0.95   0.94   0.92   0.05   0.94   0.91
+3  SN-1-14_S27   0.90   0.92   0.90   0.92   0.92   0.89   0.10   0.92   0.91
+4  SN-1-13_S56   0.86   0.84   0.81   0.88   0.84   0.76   0.14   0.85   0.80
+5  SN-1-08_S24   0.90   0.88   0.83   0.88   0.85   0.79   0.12   0.88   0.81
+6  SN-2-99_S38   0.77   0.79   0.76   0.80   0.78   0.76   0.19   0.80   0.75
+7  SN-1-99_S28   0.96   0.96   0.96   0.96   0.96     NA   0.04   0.96   0.96
+8  SN-2-00_S29   0.86   0.85   0.81   0.87   0.83   0.76   0.13   0.85   0.79
+9  SN-2-08_S32   0.94   0.94   0.93   0.95   0.95   0.94   0.05   0.94   0.95
+10 SN-2-92_S35   0.79   0.79   0.79   0.79   0.80   0.79   0.21   0.80   0.80
+11 SN-2-15_S34   0.97   0.96   0.96   0.93   0.96   0.98   0.03   0.94     NA
+12 SN-1-09_S25   0.68   0.64   0.71   0.68   0.67   0.68   0.29   0.67   0.67
+13 SN-1-10_S26   0.59   0.54   0.53   0.62   0.53   0.54   0.37   0.59   0.52
+14 SN-2-97_S37   0.33   0.27   0.20   0.42   0.10   0.17   0.56   0.25   0.18
+15 SN-1-02_S55   0.69   0.71   0.69   0.76   0.68   0.66   0.29   0.73   0.67
+16 SN-2-02_S30   0.40   0.44   0.43   0.45   0.46   0.48   0.55   0.43   0.44
+17 SN-1-97_S61   0.47   0.47   0.40   0.49   0.42   0.39   0.50   0.48   0.40
+18 SN-1-95_S59     NA     NA     NA     NA     NA     NA     NA     NA     NA
+   hm_logN_6
+1       1.33
+2       1.72
+3       2.92
+4       2.93
+5       4.32
+6       4.72
+7       4.73
+8       4.74
+9       5.02
+10      6.19
+11      6.28
+12      7.28
+13      7.87
+14      8.31
+15      8.91
+16      9.29
+17      9.87
+18     10.81
+
+SNPs flipped to orient them with 373124 : 373132, 373162, 373167, 373170, 373184, 373192, 373196, 373206
+
+== 4. Mean locus frequency (oriented; the allele of SNP 373124 ) vs. hm_logN_6 across pools: Pearson r = 0.785
+Leaving out each pool:
+      left_out     r
+1  SN-1-97_S61 0.746
+2  SN-2-02_S30 0.751
+3  SN-1-10_S26 0.775
+4  SN-1-14_S27 0.776
+5  SN-1-08_S24 0.780
+6  SN-2-00_S29 0.782
+7  SN-2-07_S31 0.783
+8  SN-1-09_S25 0.784
+9  SN-1-07_S23 0.785
+10 SN-1-95_S59 0.785
+11 SN-1-99_S28 0.786
+12 SN-2-99_S38 0.787
+13 SN-2-08_S32 0.789
+14 SN-2-92_S35 0.789
+15 SN-1-13_S56 0.796
+16 SN-1-02_S55 0.812
+17 SN-2-97_S37 0.817
+18 SN-2-15_S34 0.826
+Pearson r with year: -0.421 ; mean frequency before 2003: 0.348 , after: 0.165
+Pearson r with hm_logN_6 within each era:
+  after_2003 n  r_hm
+1      FALSE 8 0.800
+2       TRUE 8 0.667
+Pearson r of mean locus frequency with relative depth (reference bias?): -0.749
+
+Mean locus frequency by pool, in time order:
+          pool hm_logN_6   time freq after_2003
+1  SN-2-92_S35      6.19 1992.5 0.21      FALSE
+2  SN-1-95_S59     10.81 1995.0  NaN      FALSE
+3  SN-1-97_S61      9.87 1997.0 0.55      FALSE
+4  SN-2-97_S37      8.31 1997.5 0.74      FALSE
+5  SN-1-99_S28      4.73 1999.0 0.04      FALSE
+6  SN-2-99_S38      4.72 1999.5 0.22      FALSE
+7  SN-2-00_S29      4.74 2000.5 0.17      FALSE
+8  SN-1-02_S55      8.91 2002.0 0.30      FALSE
+9  SN-2-02_S30      9.29 2002.5 0.56      FALSE
+10 SN-1-07_S23      1.33 2007.0  NaN       TRUE
+11 SN-2-07_S31      1.72 2007.5 0.07       TRUE
+12 SN-1-08_S24      4.32 2008.0 0.14       TRUE
+13 SN-2-08_S32      5.02 2008.5 0.06       TRUE
+14 SN-1-09_S25      7.28 2009.0 0.32       TRUE
+15 SN-1-10_S26      7.87 2010.0 0.43       TRUE
+16 SN-1-13_S56      2.93 2013.0 0.17       TRUE
+17 SN-1-14_S27      2.92 2014.0 0.09       TRUE
+18 SN-2-15_S34      6.28 2015.5 0.04       TRUE
+Correlation among the locus SNPs' frequencies across pools (min, median): -0.996 0.985
+
+== 5. Annotated transcripts within 10 kb
+                transcript  start    end strand contains_locus
+1 CONTIG18+_anno1.g4147.t1 363017 364497      +          FALSE
+2 CONTIG18-_anno1.g4148.t1 364710 366347      -          FALSE
+3 CONTIG18+_anno1.g4149.t1 366899 373879      +           TRUE
+4 CONTIG18-_anno1.g4150.t1 374469 376127      -          FALSE
+5 CONTIG18+_anno1.g4151.t1 376529 378064      +          FALSE
+6 CONTIG18+_anno1.g4152.t1 378446 380036      +          FALSE
+7 CONTIG18-_anno1.g4153.t1 380281 381340      -          FALSE
+8 CONTIG18+_anno1.g4154.t1 382491 384039      +          FALSE
+                                                                                        desc
+1                               Farnesoic acid 0-methyl transferase; platelet glycoprotein V
+2                                                                 serine protease persephone
+3 Leucine rich repeat; carboxypeptidase N regulatory subunit; chondroadherin; insulin-lik...
+4 Farnesoic acid 0-methyl transferase; leucine-rich repeat and immunoglobulin-like domain...
+5                                                      carboxypeptidase N regulatory subunit
+6                                                                               protein toll
+7                                                      carboxypeptidase N regulatory subunit
+8                 Farnesoic acid 0-methyl transferase; carboxypeptidase N regulatory subunit

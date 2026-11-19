@@ -142,6 +142,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-pod-stat-compare.R` | Null-only comparison of median BF vs. median abs(M_Beta)/SD_Beta on the PODs (resolution, run-to-run stability, agreement) → `_data/baypass-pod-stat-compare.txt` |
 | `baypass-pod-spike.R` | Power test of those statistics on a POD with spiked-in associations (inputs and results) → `_data/baypass-pod-spike.txt` |
 | `baypass-pod-gpd-z.R` | Sensitivity (added after the main results): GPD tail fit to the POD null of median z, q-values where it works → `_data/baypass-pod-gpd-z.txt`, `_data/baypass-pod-gpd-z.csv`, `_plots/baypass-pod-gpd-z-qq.pdf` |
+| `contig18-locus.R` | Exploratory look at the CONTIG18:373.1-kb locus (below threshold): nearby BayPass statistics, SNP density, read counts and depth, association, genes → `_data/contig18-locus.txt`, `_plots/contig18-locus.pdf` |
 | `baypass-read-bf.R` | Reads the 270 covariate runs: per-SNP median BF and abs(M_Beta)/SD_Beta → `_data/baypass-bf.rds` |
 | `baypass-pdelta-check.R` | Real vs. POD P(delta) (does the POD null hold for the real data?) → `_data/baypass-pdelta-check.txt` |
 | `baypass-pod-xtx.R` | POD vs. real XtX under the same Ω (dispersion check of the POD null) → `_data/baypass-pod-xtx.txt` |

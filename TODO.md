@@ -590,6 +590,18 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         works, the fitted null tail is heavy (shape 0.30-0.42), so the
         strongest real SNPs get p 3.5e-6 to 1.4e-5, not below the
         empirical floor; no SNP reaches q <= 0.10 (smallest q 0.62-0.95).
+      - Exploratory look at the CONTIG18 locus, below threshold and chosen
+        after the results (owner, 2026-11-19; `_R/contig18-locus.R` →
+        `_data/contig18-locus.txt`, `_plots/contig18-locus.pdf`): the 9
+        SNPs are one haplotype (frequencies correlate at median 0.985),
+        inside an LRR-protein transcript (g4149) in a cluster of LRR,
+        Toll, and serine-protease (persephone) genes. Its frequency rises
+        with hm_logN_6 (r 0.79; 0.75-0.83 leaving out any pool; 0.80
+        before and 0.67 after 2003), but read depth there falls as it
+        rises (r -0.75), so reads carrying it likely map poorly and its
+        frequency is underestimated. Masked in SN-1-07 and SN-1-95, so
+        absent from mp100. Open: check mapping (MAPQ, soft-clipping) at
+        373.1 kb in a few pools before reading anything into it.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
