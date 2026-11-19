@@ -580,6 +580,13 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       mv $S/baypass $S/archive-18pools/baypass
       mv $S/snape/{snape,count}_masked_{time,space,all}.tar $S/archive-18pools/snape/
       mkdir -p $S/baypass/{init,beta,pod}
+      # HTCondor logs of the first rerun, so check-step.sh sees only new jobs:
+      cd ~/tany_time/_bash
+      mv 02-allele-freqs/logs/04-combine-syncs 02-allele-freqs/logs/04-combine-syncs-18pools
+      for d in 00-baypass-inputs 01-baypass-init 02-check-omegas 03-baypass-beta \
+          04-baypass-pod 05-baypass-pod-test 06-baypass-pod-spike; do
+          [ -d 03-select-time/logs/$d ] && mv 03-select-time/logs/$d 03-select-time/logs/$d-18pools
+      done
       ```
 
 - [x] **K1.** `Rscript _R/make-job-lists.R` and `Rscript
