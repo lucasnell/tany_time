@@ -514,8 +514,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          nominal; highest in SN-1-13, SN-1-07, SN-1-10, SN-2-15. It tracks
          sample year (rho 0.65; later samples worse), lower mapping rate
          (-0.59), fewer SNPs and private SNPs, and lower depth; not trap
-         abundance, duplication rate, GC, or pool size. Next: decide how
-         to model it (owner).
+         abundance, duplication rate, GC, or pool size. Tests of its cause
+         (2026-11-19): not admixture from the owner's named lakes once time
+         is controlled (`_R/pool-admixture.R` → `_data/pool-admixture.txt`:
+         1 of 102 pool x lake f4 with |z| > 3), and not related
+         individuals (`_R/pool-relatedness.R` → `_data/pool-relatedness.txt`:
+         deviations in high-excess pools are no more correlated between
+         SNPs 10 kb-1 Mb apart than in other pools, R <= 0.044). It behaves
+         like extra sampling noise at each site, independent beyond
+         ~1 kb, as from few template DNA molecules per site. Next: decide
+         how to model it (owner).
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);
