@@ -529,6 +529,12 @@ sed 's|^queue MpTag,Subsample from .*|queue MpTag,Subsample from logs/01-baypass
          99th percentile 13.3 vs. 11.6), so the comparison uses the spiked
          POD's own null SNPs. For the real analysis, the POD null holds
          only if real P(delta) is about the null POD's.
+      8. Real P(delta) check (owner, 2026-11-19; AUX model only, no
+         standardization; `_R/baypass-pdelta-check.R` →
+         `_data/baypass-pdelta-check.txt`; P(delta) only read from the
+         real runs): mean real P(delta) at or below the highest POD run's
+         in 9 of 9 setting x covariate pairs, and below the POD mean in
+         all (by 1-15%): the POD null stands, slightly conservative.
 
 ## J. After the rerun
 

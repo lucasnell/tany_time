@@ -1,0 +1,35 @@
+== P(delta) (posterior mean), real (3 subsamples x 10 runs) vs. POD (10 runs)
+    tag covariate real_mean real_min real_max pod_mean pod_min pod_max
+1 mp050 hm_logN_6   0.01040  0.00997  0.01060  0.01110 0.01090 0.01120
+2 mp050      logN   0.00734  0.00713  0.00759  0.00748 0.00737 0.00755
+3 mp050 logN_lag1   0.00327  0.00310  0.00341  0.00331 0.00327 0.00338
+4 mp075 hm_logN_6   0.01120  0.01080  0.01160  0.01260 0.01250 0.01290
+5 mp075      logN   0.00655  0.00631  0.00677  0.00694 0.00682 0.00701
+6 mp075 logN_lag1   0.00293  0.00281  0.00301  0.00304 0.00300 0.00310
+7 mp100 hm_logN_6   0.00966  0.00916  0.01020  0.01140 0.01130 0.01150
+8 mp100      logN   0.00566  0.00538  0.00609  0.00611 0.00605 0.00617
+9 mp100 logN_lag1   0.00275  0.00248  0.00307  0.00290 0.00286 0.00296
+  pod_null_holds
+1           TRUE
+2           TRUE
+3           TRUE
+4           TRUE
+5           TRUE
+6           TRUE
+7           TRUE
+8           TRUE
+9           TRUE
+
+By subsample (real, mean over 10 runs):
+    tag covariate    sub1    sub2    sub3
+1 mp050 hm_logN_6 0.01010 0.01050 0.01050
+2 mp050      logN 0.00725 0.00728 0.00749
+3 mp050 logN_lag1 0.00326 0.00320 0.00335
+4 mp075 hm_logN_6 0.01140 0.01100 0.01130
+5 mp075      logN 0.00667 0.00641 0.00658
+6 mp075 logN_lag1 0.00288 0.00296 0.00296
+7 mp100 hm_logN_6 0.00961 0.00994 0.00944
+8 mp100      logN 0.00597 0.00545 0.00556
+9 mp100 logN_lag1 0.00300 0.00271 0.00254
+
+POD null holds (real mean <= POD max) in 9 of 9 setting x covariate pairs
