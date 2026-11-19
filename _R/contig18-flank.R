@@ -9,11 +9,9 @@
 #' Distinct sequences are counted per pool and compared with the assembly:
 #' length difference (indel) and mismatches.
 #'
-#' Pools: three where mapped B is common (SN-2-97, SN-2-02, SN-1-97) and
-#' three where it's rare (SN-1-99, SN-2-15, SN-2-08). Reads:
-#' `/Volumes/lan_images4/ill/dna/trimmed/`.
+#' Pools: all 17 time pools. Reads: `/Volumes/lan_images4/ill/dna/trimmed/`.
 #'
-#' Writes `_data/contig18-flank.txt`.
+#' Writes `_data/contig18-flank.txt` and `_data/contig18-flank-counts.csv`.
 #'
 
 library(tidyverse)
@@ -27,8 +25,10 @@ anc_start <- 373247
 anc_len <- 20L
 up_len <- 90L
 trim_dir <- "/Volumes/lan_images4/ill/dna/trimmed"
-pools <- c("SN-2-97_S37", "SN-2-02_S30", "SN-1-97_S61", "SN-1-99_S28",
-           "SN-2-15_S34", "SN-2-08_S32")
+#' All 17 time pools (2026-11-19; the first run had the 6 below):
+#' SN-2-97, SN-2-02, SN-1-97 (mapped B common) and SN-1-99, SN-2-15,
+#' SN-2-08 (mapped B rare).
+pools <- read_lines("_bash/samples/time-pools.txt")
 
 asm <- read.fasta("~/_data/midgenomes/assemblies/Tgraci_assembly.fasta.gz",
                   seqtype = "DNA", as.string = TRUE, forceDNAtolower = FALSE)
@@ -58,20 +58,21 @@ write_lines(c(anchor, revcomp(anchor)), pat)
 #' Anchored reads are cached (local only, `.rds` is git-ignored) so the
 #' window can change without scanning the reads again.
 cache <- "_data/contig18-flank-reads.rds"
-if (file.exists(cache)) {
-    raw <- read_rds(cache)
-} else {
-    raw <- map(pools, \(p) {
-        tar <- file.path(trim_dir, paste0("trimmed_", p, ".tar"))
-        members <- sprintf("trimmed_%s_L002_R%i_001.fastq.gz", p, 1:2)
-        cmd <- sprintf("tar -xOf '%s' %s | gzip -dc | awk 'NR %% 4 == 2' | grep -F -f '%s'",
-                       tar, paste(members, collapse = " "), pat)
-        r <- system(cmd, intern = TRUE)
-        tibble(pool = p,
-               read = ifelse(grepl(anchor, r, fixed = TRUE), r,
-                             map_chr(r, revcomp)))
-    }) |>
-        list_rbind()
+raw <- if (file.exists(cache)) read_rds(cache) else tibble(pool = character(),
+                                                           read = character())
+todo <- setdiff(pools, raw$pool)
+#' One pool at a time, saving the cache after each (so an interrupted run
+#' resumes where it stopped).
+for (p in todo) {
+    tar <- file.path(trim_dir, paste0("trimmed_", p, ".tar"))
+    members <- sprintf("trimmed_%s_L002_R%i_001.fastq.gz", p, 1:2)
+    cmd <- sprintf("tar -xOf '%s' %s | gzip -dc | awk 'NR %% 4 == 2' | grep -F -f '%s'",
+                   tar, paste(members, collapse = " "), pat)
+    r <- system(cmd, intern = TRUE)
+    stopifnot(is.null(attr(r, "status")))
+    raw <- bind_rows(raw, tibble(pool = p,
+                                 read = ifelse(grepl(anchor, r, fixed = TRUE), r,
+                                               map_chr(r, revcomp))))
     write_rds(raw, cache, compress = "gz")
 }
 reads <- map(pools, \(p) {
@@ -129,9 +130,8 @@ reads |>
 
 #' Haplotype of every read: closer (edit distance) to the assembly (A) or
 #' to the most common non-assembly sequence (B, s2 above); reads more than
-#' 10 edits from both are "other". Raw B frequency per pool, next to the
-#' mapped B frequency (mean over the 9 SNPs, BayPass inputs;
-#' `_data/contig18-locus.txt`).
+#' 10 edits from both are "other". Raw B frequency per pool (compared with
+#' the mapped frequency in `_R/contig18-raw-assoc.R`).
 b_seq <- top$up[!top$is_assembly][1]
 cls <- reads |>
     mutate(dA = as.vector(adist(up, ref_up)), dB = as.vector(adist(up, b_seq)),
@@ -140,12 +140,11 @@ cls <- reads |>
     dplyr::count(pool, hap) |>
     pivot_wider(names_from = hap, values_from = n, values_fill = 0) |>
     mutate(raw_B = round(B / (A + B), 2))
-mapped_b <- c(`SN-2-97_S37` = 0.74, `SN-2-02_S30` = 0.56, `SN-1-97_S61` = 0.55,
-              `SN-1-99_S28` = 0.04, `SN-2-15_S34` = 0.04, `SN-2-08_S32` = 0.06)
 cat("\n== Reads by haplotype (A = assembly, B = s2; other > 10 edits from",
     "both)\n")
-print(as.data.frame(cls |> mutate(mapped_B = mapped_b[pool]) |>
-                        arrange(match(pool, pools))))
+print(as.data.frame(cls |> arrange(match(pool, pools))))
+#' For `_R/contig18-raw-assoc.R`:
+write_csv(cls, "_data/contig18-flank-counts.csv")
 
 sink()
 read_lines(out_file) |>
