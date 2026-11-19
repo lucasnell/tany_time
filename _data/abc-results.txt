@@ -1,12 +1,12 @@
 == 1. Simulations
 Reference table: 50000 simulations; dropped (missing or infinite statistics): 0
 
-   M1    M2    M3    M4    M5 
-10000 10000 10000 10000 10000 
+   M1    M2    M3    M4    M5
+10000 10000 10000 10000 10000
 Held out: 5000 simulations; dropped (missing or infinite statistics): 0
 
-  M1   M2   M3   M4   M5 
-1000 1000 1000 1000 1000 
+  M1   M2   M3   M4   M5
+1000 1000 1000 1000 1000
 Time per simulation (min), reference table:
  model mean   max
     M1  8.3  73.9

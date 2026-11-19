@@ -226,6 +226,9 @@ ggsave(file.path(plot_dir, "abc-prior-check.pdf"), p, width = 6, height = 5)
 
 if (length(outside) > 0 && stop_if_outside) {
     sink()
+    read_lines(out_txt) |>
+        str_trim("right") |>
+        write_lines(out_txt)
     stop("Observed statistics outside every model's simulated range; ",
          "the design says to revise the model before inference.")
 }
