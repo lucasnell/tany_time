@@ -580,6 +580,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         (373,124-373,206) for `hm_logN_6` in mp050 and mp075, at the BF
         ceiling in all 10 runs (q 0.21-0.24)
         (`_data/baypass-check-candidates.txt`).
+      - Sensitivity added after these results (owner, 2026-11-19): GPD
+        tail fit to the POD null of median z (no ceiling), same criteria
+        as the BF fit (`_R/baypass-pod-gpd-z.R` →
+        `_data/baypass-pod-gpd-z.txt`). The fit works in 4 of 9 pairs
+        (`logN_lag1` in all settings, `logN` in mp100); it fails for all
+        `hm_logN_6` and for `logN` in mp050 and mp075, mostly by
+        predicting more null SNPs at the extreme than observed. Where it
+        works, the fitted null tail is heavy (shape 0.30-0.42), so the
+        strongest real SNPs get p 3.5e-6 to 1.4e-5, not below the
+        empirical floor; no SNP reaches q <= 0.10 (smallest q 0.62-0.95).
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass

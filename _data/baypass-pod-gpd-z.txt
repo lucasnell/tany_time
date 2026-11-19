@@ -1,0 +1,111 @@
+== 1. GPD fits to the POD null of median z
+     tag covariate u_prob     u  n_u  n_pod sigma    xi se_xi converged
+1  mp050 hm_logN_6  0.990 0.336 4000 400000 0.135 0.475 0.023      TRUE
+2  mp050 hm_logN_6  0.995 0.449 2000 400000 0.178 0.508 0.033      TRUE
+3  mp050 hm_logN_6  0.999 0.873  400 400000 0.517 0.337 0.080      TRUE
+4  mp050      logN  0.990 0.299 4000 400000 0.140 0.407 0.022      TRUE
+5  mp050      logN  0.995 0.409 2000 400000 0.189 0.393 0.031      TRUE
+6  mp050      logN  0.999 0.825  400 400000 0.387 0.342 0.073      TRUE
+7  mp050 logN_lag1  0.990 0.195 4000 400000 0.095 0.418 0.023      TRUE
+8  mp050 logN_lag1  0.995 0.270 2000 400000 0.128 0.410 0.032      TRUE
+9  mp050 logN_lag1  0.999 0.568  400 400000 0.262 0.348 0.073      TRUE
+10 mp075 hm_logN_6  0.990 0.362 4000 400000 0.147 0.477 0.023      TRUE
+11 mp075 hm_logN_6  0.995 0.483 2000 400000 0.204 0.479 0.033      TRUE
+12 mp075 hm_logN_6  0.999 0.979  400 400000 0.464 0.438 0.085      TRUE
+13 mp075      logN  0.990 0.287 4000 400000 0.131 0.460 0.024      TRUE
+14 mp075      logN  0.995 0.391 2000 400000 0.195 0.406 0.033      TRUE
+15 mp075      logN  0.999 0.840  400 400000 0.405 0.302 0.074      TRUE
+16 mp075 logN_lag1  0.990 0.188 4000 400000 0.096 0.384 0.022      TRUE
+17 mp075 logN_lag1  0.995 0.263 2000 400000 0.122 0.407 0.032      TRUE
+18 mp075 logN_lag1  0.999 0.537  400 400000 0.239 0.394 0.075      TRUE
+19 mp100 hm_logN_6  0.990 0.350 4000 400000 0.146 0.473 0.024      TRUE
+20 mp100 hm_logN_6  0.995 0.468 2000 400000 0.214 0.435 0.033      TRUE
+21 mp100 hm_logN_6  0.999 0.984  400 400000 0.513 0.240 0.068      TRUE
+22 mp100      logN  0.990 0.274 4000 400000 0.125 0.426 0.023      TRUE
+23 mp100      logN  0.995 0.372 2000 400000 0.178 0.387 0.031      TRUE
+24 mp100      logN  0.999 0.770  400 400000 0.320 0.424 0.078      TRUE
+25 mp100 logN_lag1  0.990 0.187 4000 400000 0.091 0.400 0.022      TRUE
+26 mp100 logN_lag1  0.995 0.259 2000 400000 0.117 0.424 0.032      TRUE
+27 mp100 logN_lag1  0.999 0.531  400 400000 0.244 0.369 0.073      TRUE
+   endpoint
+1       Inf
+2       Inf
+3       Inf
+4       Inf
+5       Inf
+6       Inf
+7       Inf
+8       Inf
+9       Inf
+10      Inf
+11      Inf
+12      Inf
+13      Inf
+14      Inf
+15      Inf
+16      Inf
+17      Inf
+18      Inf
+19      Inf
+20      Inf
+21      Inf
+22      Inf
+23      Inf
+24      Inf
+25      Inf
+26      Inf
+27      Inf
+
+Observed vs. predicted POD counts (threshold at quantile 0.99):
+     tag covariate  level    z observed predicted  lo  hi inside
+1  mp050 hm_logN_6  99.9% 0.87      400    428.00 388 469   TRUE
+2  mp050 hm_logN_6 99.99% 3.06       40     27.80  18  39  FALSE
+3  mp050 hm_logN_6    max 5.13        1      9.21   4  16  FALSE
+4  mp050      logN  99.9% 0.83      400    407.13 368 447   TRUE
+5  mp050      logN 99.99% 2.25       40     37.55  26  50   TRUE
+6  mp050      logN    max 4.58        1      6.69   2  12  FALSE
+7  mp050 logN_lag1  99.9% 0.57      400    389.63 351 429   TRUE
+8  mp050 logN_lag1 99.99% 1.55       40     38.31  27  51   TRUE
+9  mp050 logN_lag1    max 4.02        1      4.05   1   8   TRUE
+10 mp075 hm_logN_6  99.9% 0.98      400    399.57 361 439   TRUE
+11 mp075 hm_logN_6 99.99% 3.33       40     28.16  18  39  FALSE
+12 mp075 hm_logN_6    max 5.19        1     11.00   5  18  FALSE
+13 mp075      logN  99.9% 0.84      400    383.00 345 422   TRUE
+14 mp075      logN 99.99% 2.23       40     45.57  33  59   TRUE
+15 mp075      logN    max 5.28        1      7.00   2  13  FALSE
+16 mp075 logN_lag1  99.9% 0.54      400    408.83 370 449   TRUE
+17 mp075 logN_lag1 99.99% 1.43       40     37.84  26  50   TRUE
+18 mp075 logN_lag1    max 5.05        1      1.54   0   4   TRUE
+19 mp100 hm_logN_6  99.9% 0.98      400    377.81 340 416   TRUE
+20 mp100 hm_logN_6 99.99% 2.62       40     45.12  32  59   TRUE
+21 mp100 hm_logN_6    max 5.32        1      9.90   4  16  FALSE
+22 mp100      logN  99.9% 0.77      400    391.26 353 430   TRUE
+23 mp100      logN 99.99% 2.08       40     39.51  28  52   TRUE
+24 mp100      logN    max 6.10        1      3.21   0   7   TRUE
+25 mp100 logN_lag1  99.9% 0.53      400    401.28 362 441   TRUE
+26 mp100 logN_lag1 99.99% 1.45       40     36.37  25  49   TRUE
+27 mp100 logN_lag1    max 4.80        1      1.94   0   5   TRUE
+
+Does the fit work? (criteria in the script header)
+    tag covariate xi_overlap converged gof_inside works
+1 mp050 hm_logN_6       TRUE      TRUE      FALSE FALSE
+2 mp050      logN       TRUE      TRUE      FALSE FALSE
+3 mp050 logN_lag1       TRUE      TRUE       TRUE  TRUE
+4 mp075 hm_logN_6       TRUE      TRUE      FALSE FALSE
+5 mp075      logN       TRUE      TRUE      FALSE FALSE
+6 mp075 logN_lag1       TRUE      TRUE       TRUE  TRUE
+7 mp100 hm_logN_6      FALSE      TRUE      FALSE FALSE
+8 mp100      logN       TRUE      TRUE       TRUE  TRUE
+9 mp100 logN_lag1       TRUE      TRUE       TRUE  TRUE
+
+== 2. q-values with GPD tail p (z), for the 4 setting x covariate pairs where the fit works
+    tag covariate    snps pi0    min_p min_q q05 q10 beyond_endpoint
+1 mp050 logN_lag1 1023857   1 3.52e-06 0.696   0   0               0
+2 mp075 logN_lag1  955748   1 3.74e-06 0.617   0   0               0
+3 mp100      logN  528372   1 1.35e-05 0.950   0   0               0
+4 mp100 logN_lag1  528372   1 4.58e-06 0.694   0   0               0
+
+SNPs at q <= 0.10:
+[1] tag       covariate contig    pos       bf_db     z         p_gpd_z
+[8] q_gpd_z
+<0 rows> (or 0-length row.names)

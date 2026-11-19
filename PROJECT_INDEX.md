@@ -141,6 +141,7 @@ are written by `_R/make-job-lists.R`.
 | `baypass-pod-correct.R` | Test of a bias-corrected POD Ω (100,000-SNP test PODs; inputs and results) → `_data/baypass-pod-correct.txt` |
 | `baypass-pod-stat-compare.R` | Null-only comparison of median BF vs. median abs(M_Beta)/SD_Beta on the PODs (resolution, run-to-run stability, agreement) → `_data/baypass-pod-stat-compare.txt` |
 | `baypass-pod-spike.R` | Power test of those statistics on a POD with spiked-in associations (inputs and results) → `_data/baypass-pod-spike.txt` |
+| `baypass-pod-gpd-z.R` | Sensitivity (added after the main results): GPD tail fit to the POD null of median z, q-values where it works → `_data/baypass-pod-gpd-z.txt`, `_data/baypass-pod-gpd-z.csv`, `_plots/baypass-pod-gpd-z-qq.pdf` |
 | `baypass-read-bf.R` | Reads the 270 covariate runs: per-SNP median BF and abs(M_Beta)/SD_Beta → `_data/baypass-bf.rds` |
 | `baypass-pdelta-check.R` | Real vs. POD P(delta) (does the POD null hold for the real data?) → `_data/baypass-pdelta-check.txt` |
 | `baypass-pod-xtx.R` | POD vs. real XtX under the same Ω (dispersion check of the POD null) → `_data/baypass-pod-xtx.txt` |
