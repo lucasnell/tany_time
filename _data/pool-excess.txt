@@ -1,0 +1,41 @@
+== Pairwise divergence = e_j + e_k + b x generations apart
+b (per generation): 1.17e-05 ; R^2 0.9998 (time alone: 0.000106 ); residual SD 0.000537 vs. SD of the divergences 0.035
+Implied effective size from b alone: Ne ~ 1 / (2 b) = 42700
+
+          pool year haploid median_depth  excess n_eff omega_diag
+1  SN-1-13_S56 2013      28           25 0.09430   7.7    0.06950
+2  SN-1-07_S23 2007      80           61 0.06300  13.2    0.05070
+3  SN-1-10_S26 2010      80           86 0.05840  14.1    0.04300
+4  SN-2-15_S34 2015      80           45 0.02620  25.9    0.02220
+5  SN-2-08_S32 2008      80           82 0.01700  33.9    0.01830
+6  SN-1-09_S25 2009      80           96 0.01370  38.2    0.01590
+7  SN-2-07_S31 2007      80           95 0.00942  45.6    0.01300
+8  SN-2-00_S29 2000      80           53 0.00852  47.6    0.01160
+9  SN-1-14_S27 2014      80           73 0.00838  47.9    0.01110
+10 SN-2-02_S30 2002      80           90 0.00689  51.6    0.01010
+11 SN-2-92_S35 1992      80           81 0.00673  52.0    0.00949
+12 SN-2-97_S37 1997      38           30 0.00600  30.9    0.00853
+13 SN-1-02_S55 2002      80           87 0.00599  54.1    0.00909
+14 SN-1-99_S28 1999      80           49 0.00565  55.1    0.00852
+15 SN-1-97_S61 1997      48          104 0.00564  37.8    0.00821
+16 SN-1-08_S24 2008      80          110 0.00423  59.8    0.00802
+17 SN-2-99_S38 1999      80           99 0.00246  66.8    0.00635
+
+Spearman correlation of excess with the BayPass Omega diagonal: 0.998
+
+== Spearman correlation of the excess with pool variables (17 pools)
+        variable    rho      p
+1           year  0.650 0.0047
+2       map_rate -0.593 0.0140
+3      n_private -0.488 0.0490
+4   median_depth -0.488 0.0490
+5         n_snps -0.456 0.0680
+6   prop_missing -0.338 0.1800
+7    target_rate -0.301 0.2400
+8      hm_logN_6 -0.250 0.3300
+9     picard_dup -0.159 0.5400
+10     fastp_dup -0.086 0.7400
+11          logN  0.074 0.7800
+12      fastp_gc -0.056 0.8300
+13       haploid -0.020 0.9400
+14 mitolike_rate -0.005 0.9900

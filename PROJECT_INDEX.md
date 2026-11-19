@@ -131,6 +131,7 @@ are written by `_R/make-job-lists.R`.
 | `crash-test.R` | Legacy: earlier binomial GLMM approach (lme4), superseded by BayPass |
 | `data-dir.R` | `tany_dir()`: path in the local data folder (`tany_time/` on lan_images4, else LAN_4TB_SSD; see `CLAUDE.md`) |
 | `abc-analysis.R` | ABC by random forests (`abcrf`) on the `04-diversity` simulations: model choice, parameters, recovery, sensitivity → `_data/abc-results.txt`, `_data/abc-*.csv`, `_plots/abc-prior-check.pdf` |
+| `pool-excess.R` | Per-pool excess divergence (pool-specific deviation beyond sampling and time) and what it tracks → `_data/pool-excess.txt`, `_plots/pool-excess.pdf` |
 | `abc-inputs.R` | ABC inputs: pools, trap counts, 2,000 windows, read depths, observed second-allele counts → `tany_dir("abc")`, checks in `_data/abc-inputs.txt` |
 | `abc-design.md` | Design of the ABC test of crashes vs. crashes plus immigration (models, priors, statistics, decision rule); approved by the owner 2026-11-12, before any diversity result was read |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |

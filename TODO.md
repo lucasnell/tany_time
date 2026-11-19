@@ -505,6 +505,17 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          2026-11-19 (2,186 jobs PASS; 11,000 per model incl. held-out;
          mean 6-17 min per simulation); outputs and observed statistics
          copied to both drives (MD5s match); analysis running;
+       - Prior-predictive check failed 2026-11-19 (`_data/abc-results.txt`;
+         design note change 12). Diagnosis (`_R/pool-excess.R` →
+         `_data/pool-excess.txt`): pairwise divergence between pools is
+         almost entirely per-pool (e_j + e_k explains R^2 0.9998; time
+         adds ~1.2e-5 per generation, Ne ~ 4e4 if that were drift). Excess
+         per pool 0.002-0.094, i.e. ~8-67 effective genomes vs. 28-80
+         nominal; highest in SN-1-13, SN-1-07, SN-1-10, SN-2-15. It tracks
+         sample year (rho 0.65; later samples worse), lower mapping rate
+         (-0.59), fewer SNPs and private SNPs, and lower depth; not trap
+         abundance, duplication rate, GC, or pool size. Next: decide how
+         to model it (owner).
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);
