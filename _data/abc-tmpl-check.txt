@@ -1,0 +1,20 @@
+Observed F_ST, pairs <= 2 generations apart (13 pairs): median 0.0111, range 0.00397-0.0485
+Observed temporal F, pairs <= 2 generations apart (10 pairs, SN-1-95 pairs included): median 0.0193, range 0.00924-0.105
+
+Overall Analysis Time: 0 h 0 m 2 s
+
+Overall Analysis Time: 0 h 0 m 1 s
+
+Overall Analysis Time: 0 h 0 m 3 s
+
+Overall Analysis Time: 0 h 0 m 4 s
+
+Overall Analysis Time: 0 h 0 m 2 s
+
+Simulated temporal F and F_ST, same pairs (constant size 1e6, no immigration):
+  templates median_fc    min_fc  max_fc median_fst   min_fst max_fst
+1      none  0.000416 -0.000935 0.00168   7.86e-05 -0.000708 0.00063
+2        10  0.199000  0.196000 0.20200   9.96e-02  0.098000 0.10100
+3        30  0.067000  0.063500 0.06860   3.33e-02  0.031900 0.03390
+4       100  0.020900  0.019600 0.02170   1.03e-02  0.009610 0.01100
+5       300  0.007260  0.005940 0.00812   3.41e-03  0.002740 0.00413

@@ -522,8 +522,11 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          deviations in high-excess pools are no more correlated between
          SNPs 10 kb-1 Mb apart than in other pools, R <= 0.044). It behaves
          like extra sampling noise at each site, independent beyond
-         ~1 kb, as from few template DNA molecules per site. Next: decide
-         how to model it (owner).
+         ~1 kb, as from few template DNA molecules per site. Model
+         revised with a per-pool template-sampling step (design change 13,
+         2026-11-19; local check `_data/abc-tmpl-check.txt`); first run's
+         simulations moved to `tany_dir("abc", "archive-v1")`; pilot
+         (batches 1-4 per model) next, then the full rerun.
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);

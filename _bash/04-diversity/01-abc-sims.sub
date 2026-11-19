@@ -14,7 +14,7 @@ arguments = $(Variant) $(Model) $(Batch) $(Seed0) $(NSims)
 batch_name = "abc-sims"
 
 should_transfer_files = YES
-transfer_input_files = ../bin
+transfer_input_files = ../bin, abc-priors.csv, abc-priors-mu.csv
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 

@@ -89,7 +89,14 @@ abc_setup <- function(in_dir) {
     dens <- lapply(seq_len(P), \(j) theta_denoms(n_hap[j]))
     d_pi <- vapply(seq_len(P), \(j) sum(hist[, j] * dens[[j]]$pi), 0)
     d_w <- vapply(seq_len(P), \(j) sum(hist[, j] * dens[[j]]$w), 0)
+    pr <- read.csv(file.path(in_dir, "abc-priors.csv"))
+    tmpl_prior <- if ("tmpl" %in% pr$param) {
+        unlist(pr[pr$param == "tmpl", c("lo", "hi")])
+    } else {
+        NULL
+    }
     list(pools = pools, windows = windows, L = L, P = P, depth = depth,
+         tmpl_prior = tmpl_prior,
          n_hap = n_hap, hist = hist, d_pi = d_pi, d_w = d_w,
          pairs_t = temporal_pairs(P), pairs_f = utils::combn(P, 2))
 }
@@ -288,7 +295,13 @@ error_sites <- function(setup, e) {
 }
 
 #' Pool-seq reads for one simulation's output prefix.
-sim_reads <- function(prefix, setup, e) {
+#' `tmpl`: effective number of template molecules per site in each pool
+#' (NULL: no template step). At each site, a pool's template count of the
+#' derived allele ~ Binomial(tmpl_j, k / n) from its sample of n genomes
+#' with k derived, and reads are drawn from the template frequency. Each
+#' site gets its own draw, so the noise is independent between sites (as
+#' observed: `_data/pool-relatedness.txt`).
+sim_reads <- function(prefix, setup, e, tmpl = NULL) {
     P <- setup$P
     pos <- readBin(paste0(prefix, ".pos.bin"), "integer", n = 1e9, size = 4)
     cnt <- readBin(paste0(prefix, ".counts.bin"), "integer",
@@ -302,6 +315,7 @@ sim_reads <- function(prefix, setup, e) {
     alt <- matrix(0L, nrow(cnt), P)
     for (j in seq_len(P)) {
         p <- cnt[, j] / setup$n_hap[j]
+        if (!is.null(tmpl)) p <- rbinom(nrow(cnt), tmpl[j], p) / tmpl[j]
         alt[, j] <- rbinom(nrow(cnt), dep[, j], p * (1 - e) + (1 - p) * e / 3)
     }
     rm(cnt, p)
@@ -355,7 +369,18 @@ run_sims <- function(in_dir, setup, model, seed0, n_sims, out_file,
         if (st != 0) stop("abc-sim.py failed for seed ", seed)
         t_sim <- proc.time()[["elapsed"]] - t0
         pars <- read.delim(paste0(tmp, ".params.tsv"))
-        rd <- sim_reads(tmp, setup, e)
+        #' Template molecules per site, one value per pool, log-uniform on
+        #' the `tmpl` bounds of `abc-priors.csv` (design change 13); none
+        #' if the priors have no `tmpl` row.
+        tmpl <- NULL
+        if (!is.null(setup$tmpl_prior)) {
+            tmpl <- round(exp(runif(setup$P, log(setup$tmpl_prior[1]),
+                                    log(setup$tmpl_prior[2]))))
+            pars <- rbind(pars, data.frame(
+                param = paste0("tmpl_", setup$pools$pool),
+                value = as.character(tmpl)))
+        }
+        rd <- sim_reads(tmp, setup, e, tmpl)
         s <- compute_stats(rd$alt, rd$dep, setup)
         t_all <- proc.time()[["elapsed"]] - t0
         row <- c(model = model, seed = seed,

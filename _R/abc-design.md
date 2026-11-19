@@ -240,3 +240,23 @@ details.
     and it doesn't build up with time. That is pool-specific deviation,
     not drift or immigration as modelled. As the design requires, no
     inference until the model is revised (owner's decision pending).
+13. Template-sampling step added (owner, 2026-11-19), after the failed
+    prior-predictive check (change 12). The per-pool excess divergence is
+    independent between sites more than ~1 kb apart and doesn't track
+    relatedness or admixture from the named lakes (`_data/pool-excess.txt`,
+    `_data/pool-relatedness.txt`, `_data/pool-admixture.txt`), as from few
+    template DNA molecules per site. In simulations, each pool j gets a
+    number of templates per site, tmpl_j, log-uniform on 5-1,000 and
+    independent among pools (17 more nuisance parameters, not estimated);
+    at each site the template count of an allele ~ Binomial(tmpl_j, k / n)
+    from the pool's n sampled genomes with k carrying it, and reads are
+    drawn from the template frequency. Local check
+    (`_bash/tests/abc-tmpl-check.R` → `_data/abc-tmpl-check.txt`): with no
+    drift, 30-300 templates give F_ST 0.003-0.034 and temporal F
+    0.006-0.069 between pools 1-2 generations apart, spanning the observed
+    0.004-0.049 and 0.009-0.105 (10 templates: 0.10 and 0.20). Pilot on
+    the cluster before the full rerun: batches 1-4 of each model (100
+    simulations per model). The rerun goes ahead if every observed
+    statistic lies inside the pilot's simulated range for at least one
+    model; with 100 simulations per model the range is narrower than with
+    10,000, so passing the pilot is the stricter test.

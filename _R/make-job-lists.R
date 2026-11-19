@@ -155,23 +155,20 @@ as_tibble(x) |>
 
 #' ABC simulations (`04-diversity/01-abc-sims`; design `_R/abc-design.md`):
 #' 10,000 per model for the reference table and 1,000 per model held out
-#' for parameter recovery (owner, 2026-11-16: the pilot took 9-34 min per
-#' simulation by model, so 25,000 per model would cost ~40,000 CPU-hours;
-#' the design allows 10,000). Batches of 25 simulations (M5's 100-simulation
-#' pilot batch took 56.6 h, near CHTC's 72-h limit). The pilot batches
-#' (batch 1, 100 simulations, seeds 1-100 of each model) are kept as part
-#' of the reference table, so main batches 2-4 don't exist and main runs
-#' from batch 5. Simulation i of a batch uses seed seed0 + i, with seed0 =
-#' 1e8 x model + 1e7 x variant + 25 x (batch - 1) + 1 (so seeds are unique
-#' and continue the pilot's), plus one job for the observed statistics.
+#' for parameter recovery (owner, 2026-11-16; the design allows 10,000),
+#' in batches of 25 simulations (a 100-simulation M5 batch took 56.6 h,
+#' near CHTC's 72-h limit). Simulation i of a batch uses seed seed0 + i,
+#' with seed0 = 1e8 x model + 1e7 x variant + 25 x (batch - 1) + 1, so
+#' seeds are unique; plus one job for the observed statistics. Rerun with
+#' the template-sampling step (design change 13, 2026-11-19): the first
+#' run's outputs were moved aside, and every batch now has 25 simulations
+#' (main batches 1-400). Batches 1-4 of each model are the pilot.
 abc_variants <- c(main = 0L, holdout = 1L)
 bind_rows(
     tibble(variant = "main", model = "observed", batch = 0L),
-    crossing(variant = "main", model = paste0("M", 1:5), batch = c(1L, 5:400)),
+    crossing(variant = "main", model = paste0("M", 1:5), batch = 1:400),
     crossing(variant = "holdout", model = paste0("M", 1:5), batch = 1:40)) |>
-    mutate(n_sims = case_when(model == "observed" ~ 0L,
-                              variant == "main" & batch == 1L ~ 100L,
-                              TRUE ~ 25L),
+    mutate(n_sims = ifelse(model == "observed", 0L, 25L),
            m = suppressWarnings(as.integer(str_remove(model, "^M"))),
            seed0 = ifelse(model == "observed", 0L,
                           1e8 * m + 1e7 * abc_variants[variant] +

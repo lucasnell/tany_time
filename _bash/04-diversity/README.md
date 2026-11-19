@@ -9,7 +9,7 @@ statistics and the observed data use R (`baypass-env`, for poolfstat).
 
 | Step | Does | Jobs | Output (`/staging/l/lnell/dna/abc/`) |
 |---|---|---|---|
-| `01-abc-sims` | One batch of 25 simulations for one model (`../bin/abc-sim.py` → `../bin/abc-stats.R`: pool-seq reads at the observed depths, then the 258 statistics), or the observed statistics (model `observed`) | 2,186 (`abc_info.txt`): observed; per model (M1-M5), the 100-simulation pilot batch, 396 more reference batches (10,000 simulations), and 40 held-out batches (1,000) | `sims/abc-<variant>-<model>-b<batch>.tsv.gz`; `abc-observed-stats.tsv` |
+| `01-abc-sims` | One batch of 25 simulations for one model (`../bin/abc-sim.py` → `../bin/abc-stats.R`: per-pool template sampling, pool-seq reads at the observed depths, then the 258 statistics), or the observed statistics (model `observed`) | 2,201 (`abc_info.txt`): observed; per model (M1-M5), 400 reference batches (10,000 simulations; batches 1-4 are the pilot) and 40 held-out batches (1,000) | `sims/abc-<variant>-<model>-b<batch>.tsv.gz`; `abc-observed-stats.tsv` |
 
 ## Inputs
 

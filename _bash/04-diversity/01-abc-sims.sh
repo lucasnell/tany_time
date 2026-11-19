@@ -14,10 +14,10 @@
 #'   4. first seed (simulation i uses first seed + i)
 #'   5. number of simulations
 #'
-#' Run time per simulation (2,000 loci), measured in the pilot (2026-11-16;
-#' 100 per model): mean 9 (M1), 22 (M2), 15 (M3), 13 (M4), and 34 (M5) min,
-#' up to 7.7 h with a large source population; msprime takes 79-91% of it.
-#' Batches of 25 simulations: ~4-14 h each on average.
+#' Run time per simulation (2,000 loci), measured in the first full run
+#' (2026-11-19; 11,000 per model): mean 6-17 min by model, up to 11 h with
+#' a large source population; msprime takes ~80-90% of it. Batches of 25
+#' simulations: ~3-7 h each on average.
 #'
 
 
@@ -49,6 +49,10 @@ fi
 require_files ${INPUTS_TAR}
 tar -xzf ${INPUTS_TAR}
 check_exit_status "extract inputs" $?
+#' Priors come from the repo (transferred with the job), not the inputs
+#' archive, so they can change without rebuilding it (design change 13
+#' added the template prior, `tmpl`):
+cp abc-priors.csv abc-priors-mu.csv abc-inputs/
 
 #' Sensitivity runs (`_R/abc-design.md`):
 EXTRA=""
