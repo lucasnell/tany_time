@@ -230,3 +230,13 @@ details.
     The simulations still sample it; the statistics involving it are
     removed (235 of 258 remain). Sensitivity run 3 now leaves out SN-1-13
     and SN-2-97.
+12. Prior-predictive check failed (2026-11-19; `_R/abc-analysis.R` section
+    2 → `_data/abc-results.txt`): 56 of 235 observed statistics lie outside
+    every model's simulated range, all above it, all temporal F (15) or
+    F_ST (41). Every pair of pools at most 2 generations apart is outside
+    (23 of 23), but few pairs more than 10 generations apart are (5 of
+    96): differentiation between nearby pools is far larger than any
+    simulation gives (e.g., F_ST 0.036 for 2007a-2007b vs. at most 0.001),
+    and it doesn't build up with time. That is pool-specific deviation,
+    not drift or immigration as modelled. As the design requires, no
+    inference until the model is revised (owner's decision pending).

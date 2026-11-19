@@ -1,0 +1,100 @@
+== 1. Simulations
+Reference table: 50000 simulations; dropped (missing or infinite statistics): 0
+
+   M1    M2    M3    M4    M5 
+10000 10000 10000 10000 10000 
+Held out: 5000 simulations; dropped (missing or infinite statistics): 0
+
+  M1   M2   M3   M4   M5 
+1000 1000 1000 1000 1000 
+Time per simulation (min), reference table:
+ model mean   max
+    M1  8.3  73.9
+    M2 17.0 519.9
+    M3 10.2 213.4
+    M4  6.5  62.4
+    M5 17.4 662.4
+
+== 2. Prior-predictive check
+Observed statistics inside the simulated range, by model:
+ model inside  of in_central_98
+    M1    151 235            94
+    M2    178 235           123
+    M3     80 235            68
+    M4     53 235            40
+    M5    179 235            92
+Outside every model's range: 56 of 235
+Statistics outside every model's range:
+                        stat observed   sim_min sim_max  side gap
+ fst_SN.1.07_S23_SN.2.07_S31  0.03640 -0.000694 0.00106 above   1
+ fst_SN.1.07_S23_SN.1.08_S24  0.03210 -0.000788 0.00104 above   2
+ fst_SN.1.09_S25_SN.1.10_S26  0.03620 -0.000663 0.00150 above   2
+ fst_SN.2.08_S32_SN.1.10_S26  0.03830 -0.000624 0.00164 above   3
+ fst_SN.1.07_S23_SN.2.08_S32  0.03880 -0.000741 0.00187 above   3
+ fst_SN.1.08_S24_SN.1.10_S26  0.03160 -0.000659 0.00210 above   4
+ fst_SN.1.07_S23_SN.1.09_S25  0.03710 -0.000653 0.00248 above   4
+ fst_SN.1.13_S56_SN.1.14_S27  0.04850 -0.001400 0.00351 above   2
+ fst_SN.1.07_S23_SN.1.10_S26  0.05940 -0.000735 0.00488 above   6
+ fst_SN.1.13_S56_SN.2.15_S34  0.05880 -0.001350 0.00524 above   5
+  fc_SN.1.09_S25_SN.1.10_S26  0.07480 -0.001140 0.00668 above   2
+ fst_SN.2.07_S31_SN.1.10_S26  0.03460 -0.000731 0.00331 above   5
+  fc_SN.1.07_S23_SN.2.07_S31  0.07500 -0.001130 0.00731 above   1
+ fst_SN.2.08_S32_SN.1.09_S25  0.01490 -0.000593 0.00148 above   1
+ fst_SN.1.14_S27_SN.2.15_S34  0.01770 -0.000775 0.00198 above   3
+ fst_SN.2.07_S31_SN.2.08_S32  0.01340 -0.000646 0.00157 above   2
+ fst_SN.1.08_S24_SN.2.08_S32  0.01110 -0.000641 0.00133 above   1
+ fst_SN.2.07_S31_SN.1.09_S25  0.01200 -0.000625 0.00144 above   3
+ fst_SN.1.08_S24_SN.1.09_S25  0.00918 -0.000665 0.00122 above   2
+  fc_SN.1.13_S56_SN.1.14_S27  0.10500 -0.001900 0.01900 above   2
+ fst_SN.2.07_S31_SN.1.08_S24  0.00717 -0.000728 0.00130 above   1
+ fst_SN.2.00_S29_SN.2.02_S30  0.00793 -0.000818 0.00170 above   4
+ fst_SN.1.97_S61_SN.2.97_S37  0.00594 -0.001440 0.00128 above   1
+  fc_SN.2.08_S32_SN.1.09_S25  0.03130 -0.000970 0.00710 above   1
+ fst_SN.2.99_S38_SN.2.00_S29  0.00628 -0.000699 0.00143 above   2
+ fst_SN.1.02_S55_SN.2.02_S30  0.00680 -0.000656 0.00164 above   1
+ fst_SN.2.00_S29_SN.1.02_S55  0.00767 -0.000736 0.00192 above   3
+  fc_SN.1.08_S24_SN.2.08_S32  0.02340 -0.001120 0.00620 above   1
+ fst_SN.1.99_S28_SN.1.02_S55  0.00623 -0.000796 0.00185 above   6
+ fst_SN.1.99_S28_SN.2.99_S38  0.00397 -0.000720 0.00122 above   1
+ fst_SN.2.99_S38_SN.1.02_S55  0.00484 -0.000612 0.00154 above   5
+  fc_SN.1.14_S27_SN.2.15_S34  0.03840 -0.001550 0.01270 above   3
+ fst_SN.1.99_S28_SN.2.02_S30  0.00663 -0.000692 0.00222 above   7
+ fst_SN.2.99_S38_SN.2.02_S30  0.00520 -0.000680 0.00181 above   6
+  fc_SN.2.07_S31_SN.1.08_S24  0.01520 -0.001430 0.00541 above   1
+ fst_SN.1.99_S28_SN.2.00_S29  0.00759 -0.000708 0.00281 above   3
+  fc_SN.1.10_S26_SN.1.13_S56  0.16400 -0.001880 0.06540 above   6
+ fst_SN.1.10_S26_SN.1.13_S56  0.07540 -0.001240 0.03050 above   6
+ fst_SN.1.07_S23_SN.1.13_S56  0.07680 -0.001430 0.03170 above  12
+ fst_SN.2.92_S35_SN.2.97_S37  0.00679 -0.001320 0.00294 above  10
+ fst_SN.2.92_S35_SN.1.97_S61  0.00604 -0.000832 0.00271 above   9
+  fc_SN.2.92_S35_SN.1.97_S61  0.01340 -0.001420 0.00679 above   9
+  fc_SN.1.02_S55_SN.2.02_S30  0.01470 -0.001050 0.00745 above   1
+  fc_SN.1.97_S61_SN.2.97_S37  0.01470 -0.002270 0.00838 above   1
+ fst_SN.1.09_S25_SN.1.13_S56  0.05050 -0.001430 0.03070 above   8
+ fst_SN.2.08_S32_SN.1.13_S56  0.05340 -0.001380 0.03260 above   9
+  fc_SN.2.00_S29_SN.1.02_S55  0.01680 -0.001150 0.01060 above   3
+  fc_SN.2.99_S38_SN.2.00_S29  0.01400 -0.001040 0.00890 above   2
+ fst_SN.2.07_S31_SN.1.13_S56  0.04940 -0.001790 0.03240 above  11
+ fst_SN.1.08_S24_SN.1.13_S56  0.04630 -0.001380 0.03120 above  10
+ fst_SN.1.10_S26_SN.2.15_S34  0.04380 -0.000874 0.03010 above  11
+ fst_SN.1.07_S23_SN.2.15_S34  0.04500 -0.000879 0.03210 above  17
+ fst_SN.1.10_S26_SN.1.14_S27  0.03460 -0.000987 0.03140 above   8
+  fc_SN.2.92_S35_SN.2.97_S37  0.01620 -0.002140 0.01480 above  10
+ fst_SN.1.07_S23_SN.1.14_S27  0.03520 -0.000666 0.03260 above  14
+  fc_SN.1.99_S28_SN.2.99_S38  0.00924 -0.001090 0.00873 above   1
+By statistic type and side:
+ type  side  n
+   fc above 15
+  fst above 41
+Statistics of the same types inside some model's range, by gap (generations):
+ type gap_bin outside_TRUE outside_FALSE
+   fc   (0,2]           10             0
+   fc   (2,5]            2             1
+   fc  (5,10]            3             1
+   fc (10,20]            0             5
+   fc (20,50]            0             9
+  fst   (0,2]           13             0
+  fst   (2,5]           12             4
+  fst  (5,10]           11             9
+  fst (10,20]            5            41
+  fst (20,50]            0            41

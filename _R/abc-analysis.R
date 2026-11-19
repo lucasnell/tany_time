@@ -164,8 +164,49 @@ cover |>
               in_central_98 = sum(q >= 0.01 & q <= 0.99)) |>
     show_df()
 outside <- cov_any$stat[!cov_any$any_inside]
-say("Outside every model's range: ", length(outside),
-    if (length(outside) > 0) paste0(" (", paste(outside, collapse = ", "), ")"))
+say("Outside every model's range: ", length(outside), " of ",
+    length(stat_names))
+if (length(outside) > 0) {
+    #' Direction and size: observed vs. the smallest and largest value over
+    #' all simulations, and the time between the two pools (generations;
+    #' 1977a = 0) for temporal F and F_ST.
+    gen_of <- function(p) {
+        yy <- as.integer(str_match(p, "^SN\\.[12]\\.(\\d{2})")[, 2])
+        y <- ifelse(yy < 70, 2000L, 1900L) + yy
+        2L * (y - 1977L) + as.integer(str_match(p, "^SN\\.([12])\\.")[, 2]) - 1L
+    }
+    out_df <- tibble(stat = outside,
+                     observed = obs[outside],
+                     sim_min = map_dbl(outside, \(s) min(ref[[s]])),
+                     sim_max = map_dbl(outside, \(s) max(ref[[s]]))) |>
+        mutate(side = ifelse(observed > sim_max, "above", "below"),
+               pools = str_match(stat, "^(fc|fst)_(SN\\.\\d\\.\\d{2}_S\\d+)_(SN\\.\\d\\.\\d{2}_S\\d+)$"),
+               gap = abs(gen_of(pools[, 3]) - gen_of(pools[, 4]))) |>
+        select(-pools)
+    say("Statistics outside every model's range:")
+    out_df |>
+        mutate(across(c(observed, sim_min, sim_max), \(x) signif(x, 3))) |>
+        arrange(desc(observed / sim_max)) |>
+        show_df()
+    say("By statistic type and side:")
+    out_df |>
+        mutate(type = str_extract(stat, "^[a-z]+")) |>
+        count(type, side) |>
+        show_df()
+    say("Statistics of the same types inside some model's range, by gap ",
+        "(generations):")
+    tibble(stat = stat_names) |>
+        mutate(type = str_extract(stat, "^[a-z]+"),
+               pools = str_match(stat, "^(fc|fst)_(SN\\.\\d\\.\\d{2}_S\\d+)_(SN\\.\\d\\.\\d{2}_S\\d+)$"),
+               gap = abs(gen_of(pools[, 3]) - gen_of(pools[, 4])),
+               outside = stat %in% outside) |>
+        filter(type %in% c("fc", "fst")) |>
+        mutate(gap_bin = cut(gap, c(0, 2, 5, 10, 20, 50))) |>
+        count(type, gap_bin, outside) |>
+        pivot_wider(names_from = outside, values_from = n, values_fill = 0,
+                    names_prefix = "outside_") |>
+        show_df()
+}
 
 #' First two principal components of the statistics (scaled), with the
 #' observed data projected:
