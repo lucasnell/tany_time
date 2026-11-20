@@ -52,7 +52,7 @@ feat |>
     print()
 ex <- feat |> filter(type == "exon") |> arrange(start)
 intr <- tibble(start = head(ex$end, -1) + 1, end = tail(ex$start, -1) - 1)
-cat("\nIntron(s):\n")
+cat("\nIntron(s) within 1 kb (g4149 has 7 exons; these are exons 6 and 7):\n")
 print(as.data.frame(intr |> mutate(length = end - start + 1)))
 cat("Locus vs. the next exon's start (", ex$start[ex$start > hi][1],
     "): ", ex$start[ex$start > hi][1] - hi, " to ",

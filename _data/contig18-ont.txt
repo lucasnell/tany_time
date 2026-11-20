@@ -1,0 +1,134 @@
+Heterozygous SNP calls (QUAL >= 30): 654118 genome-wide; genome-wide density 7.15 per kb
+Calls per 250-bp window, genome-wide: mean 1.78; 99th percentile 14; 99.9th 39; max 177
+
+== Calls per 250 bp window, CONTIG18 355-395 kb (start: count)
+    start  n genome_percentile
+1  358500  2              65.4
+2  360250  1              47.0
+3  361750  1              47.0
+4  364000  1              47.0
+5  365000  1              47.0
+6  365250  1              47.0
+7  365500  1              47.0
+8  366250  1              47.0
+9  368500  1              47.0
+10 370750  1              47.0
+11 371000  6              92.2
+12 371500  5              89.0
+13 371750  6              92.2
+14 372000  2              65.4
+15 372250  2              65.4
+16 372500  6              92.2
+17 372750  3              76.8
+18 373000 17              99.2
+19 373250  2              65.4
+20 373500  5              89.0
+21 373750  4              84.2
+22 374000  1              47.0
+23 374250  2              65.4
+24 374500  4              84.2
+25 375000  5              89.0
+26 375750  1              47.0
+27 376250  2              65.4
+28 376500  1              47.0
+29 376750  2              65.4
+30 377750  9              96.7
+31 378000  1              47.0
+32 378250  2              65.4
+33 378500  1              47.0
+34 378750  7              94.3
+35 379000  2              65.4
+36 379500  2              65.4
+37 380500  2              65.4
+38 383250  1              47.0
+39 384250  2              65.4
+40 384500  7              94.3
+41 384750  1              47.0
+42 386750  7              94.3
+43 387500  1              47.0
+44 388000  4              84.2
+45 388250  2              65.4
+46 388500  4              84.2
+47 388750  4              84.2
+48 389250  1              47.0
+49 390250  4              84.2
+50 390500  1              47.0
+51 391000  1              47.0
+52 393000  1              47.0
+53 394750  6              92.2
+
+== Heterozygous calls within 2 kb of the locus
+(g4149 exons: 366899-367058, 367149-367933, 368270-369015, 369418-370295, 370621-371124, 371277-372836, 373242-373879 )
+      pos ref alt qual      ad         where in_locus_span
+1  371130   T   C  229 109,103    intron 5-6         FALSE
+2  371175   T   C  232 117,106    intron 5-6         FALSE
+3  371198   A   G  232 111,105    intron 5-6         FALSE
+4  371506   T   C  228  119,97        exon 6         FALSE
+5  371617   G   A  232 107,100        exon 6         FALSE
+6  371680   T   C  232 106,105        exon 6         FALSE
+7  371703   G   A  232  91,109        exon 6         FALSE
+8  371728   T   C  232 100,108        exon 6         FALSE
+9  371818   T   C  232 100,112        exon 6         FALSE
+10 371824   T   C  232  99,111        exon 6         FALSE
+11 371843   G   A  232  91,114        exon 6         FALSE
+12 371861   C   A  232  96,114        exon 6         FALSE
+13 371989   A   T  232  99,112        exon 6         FALSE
+14 371995   T   C  232  99,115        exon 6         FALSE
+15 372149   T   C  232 100,107        exon 6         FALSE
+16 372156   C   T  232 102,104        exon 6         FALSE
+17 372337   A   G  149  128,73        exon 6         FALSE
+18 372353   A   G  232 102,112        exon 6         FALSE
+19 372622   A   G  232 103,115        exon 6         FALSE
+20 372653   C   G  220  129,96        exon 6         FALSE
+21 372662   G   C  228  125,95        exon 6         FALSE
+22 372694   A   C  213  127,88        exon 6         FALSE
+23 372736   T   A  219  131,90        exon 6         FALSE
+24 372745   G   A  232 100,127        exon 6         FALSE
+25 372756   G   A  232 117,112        exon 6         FALSE
+26 372878   T   G  224  127,95    intron 6-7         FALSE
+27 372903   T   C  216  133,91    intron 6-7         FALSE
+28 373099   T   A   87  149,54    intron 6-7         FALSE
+29 373104   T   G  209  128,90    intron 6-7         FALSE
+30 373112   C   T  225  124,92    intron 6-7         FALSE
+31 373116   T   C  216  129,89    intron 6-7         FALSE
+32 373124   G   A  186  119,67    intron 6-7          TRUE
+33 373132   A   T  220  127,95    intron 6-7          TRUE
+34 373162   A   C  210  129,90    intron 6-7          TRUE
+35 373167   A   G  152  125,65    intron 6-7          TRUE
+36 373170   A   T  116  159,66    intron 6-7          TRUE
+37 373178   A   T  194  140,80    intron 6-7          TRUE
+38 373184   A   G  191  135,86    intron 6-7          TRUE
+39 373192   A   T  224  130,92    intron 6-7          TRUE
+40 373195   T   C  232   98,78    intron 6-7          TRUE
+41 373196   T   G  194  133,77    intron 6-7          TRUE
+42 373204   A   T  104  158,62    intron 6-7          TRUE
+43 373205   A   T  213  133,89    intron 6-7          TRUE
+44 373206   A   T  232 114,105    intron 6-7          TRUE
+45 373357   T   A  221  125,92        exon 7         FALSE
+46 373436   C   G  214  127,95        exon 7         FALSE
+47 373503   T   C  208  128,92        exon 7         FALSE
+48 373513   G   T  212  121,90        exon 7         FALSE
+49 373606   T   A  229  126,95        exon 7         FALSE
+50 373609   G   A  232 103,102        exon 7         FALSE
+51 373717   T   A  221 133,102        exon 7         FALSE
+52 373792   C   T  215 126,104        exon 7         FALSE
+53 373874   G   A  219 130,101        exon 7         FALSE
+54 373908   A   G  187  155,90 outside g4149         FALSE
+55 373969   G   T  232 106,127 outside g4149         FALSE
+56 374125   G   A  213 134,105 outside g4149         FALSE
+57 374291   A   T   79  129,40 outside g4149         FALSE
+58 374427   G   C  232 128,107 outside g4149         FALSE
+59 374503   A   G  188  146,98 outside g4149         FALSE
+60 374544   G   T  232   63,97 outside g4149         FALSE
+61 374593   A   C  201  67,103 outside g4149         FALSE
+62 374748   A   C  232  67,107 outside g4149         FALSE
+63 375147   G   A  123   74,30 outside g4149         FALSE
+64 375148   T   A  225   97,75 outside g4149         FALSE
+65 375177   A   G  232  73,109 outside g4149         FALSE
+
+== Heterozygous calls per kb by segment (genome-wide 7.15 per kb)
+                         segment  start    end  n length per_kb
+1                         exon 6 371277 372836 22   1560   14.1
+2 intron 6-7 (outside the locus) 372837 373241  6    322   18.6
+3                     locus span 373124 373206 13     83  156.6
+4                         exon 7 373242 373879  9    638   14.1

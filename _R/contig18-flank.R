@@ -11,13 +11,20 @@
 #'
 #' Pools: all 17 time pools. Reads: fastp-trimmed reads on either drive.
 #'
-#' Writes `_data/contig18-flank.txt` and `_data/contig18-flank-counts.csv`.
+#' Writes `_data/contig18-flank[-space].txt` and
+#' `_data/contig18-flank-counts[-space].csv`.
 #'
 
 library(tidyverse)
 library(seqinr)
 
-out_file <- "_data/contig18-flank.txt"
+#' Pool set: `time` (default; the 17 SN pools) or `space` (the 18 spatial
+#' pools of 2019): `Rscript _R/contig18-flank.R space`.
+pool_set <- commandArgs(TRUE)[1]
+if (is.na(pool_set)) pool_set <- "time"
+stopifnot(pool_set %in% c("time", "space"))
+sfx <- if (pool_set == "time") "" else "-space"
+out_file <- sprintf("_data/contig18-flank%s.txt", sfx)
 sink(out_file, split = TRUE)
 
 ctg <- "CONTIG18"
@@ -33,7 +40,7 @@ stopifnot(!is.na(trim_dir))
 #' All 17 time pools (2026-11-19; the first run had the 6 below):
 #' SN-2-97, SN-2-02, SN-1-97 (mapped B common) and SN-1-99, SN-2-15,
 #' SN-2-08 (mapped B rare).
-pools <- read_lines("_bash/samples/time-pools.txt")
+pools <- read_lines(sprintf("_bash/samples/%s-pools.txt", pool_set))
 
 asm <- read.fasta("~/_data/midgenomes/assemblies/Tgraci_assembly.fasta.gz",
                   seqtype = "DNA", as.string = TRUE, forceDNAtolower = FALSE)
@@ -62,7 +69,7 @@ pat <- tempfile(fileext = ".txt")
 write_lines(c(anchor, revcomp(anchor)), pat)
 #' Anchored reads are cached (local only, `.rds` is git-ignored) so the
 #' window can change without scanning the reads again.
-cache <- "_data/contig18-flank-reads.rds"
+cache <- sprintf("_data/contig18-flank-reads%s.rds", sfx)
 raw <- if (file.exists(cache)) read_rds(cache) else tibble(pool = character(),
                                                            read = character())
 todo <- setdiff(pools, raw$pool)
@@ -137,7 +144,10 @@ reads |>
 #' to the most common non-assembly sequence (B, s2 above); reads more than
 #' 10 edits from both are "other". Raw B frequency per pool (compared with
 #' the mapped frequency in `_R/contig18-raw-assoc.R`).
-b_seq <- top$up[!top$is_assembly][1]
+#' B is fixed as the most common non-assembly sequence of the time pools
+#' (s2 of the first run), so both pool sets use the same definition.
+b_seq <- "ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTTTAAATTAATTTTTTTATTTTTTAGACACT"
+stopifnot(nchar(b_seq) == up_len)
 cls <- reads |>
     mutate(dA = as.vector(adist(up, ref_up)), dB = as.vector(adist(up, b_seq)),
            hap = case_when(pmin(dA, dB) > 10 ~ "other",
@@ -149,7 +159,7 @@ cat("\n== Reads by haplotype (A = assembly, B = s2; other > 10 edits from",
     "both)\n")
 print(as.data.frame(cls |> arrange(match(pool, pools))))
 #' For `_R/contig18-raw-assoc.R`:
-write_csv(cls, "_data/contig18-flank-counts.csv")
+write_csv(cls, sprintf("_data/contig18-flank-counts%s.csv", sfx))
 
 sink()
 read_lines(out_file) |>

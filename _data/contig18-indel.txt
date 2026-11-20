@@ -12,7 +12,7 @@
 4                     Parent=CONTIG18+_anno1.g4149.t1
 5                     Parent=CONTIG18+_anno1.g4149.t1
 
-Intron(s):
+Intron(s) within 1 kb (g4149 has 7 exons; these are exons 6 and 7):
    start    end length
 1 372837 373241    405
 Locus vs. the next exon's start (373242): 36 to 118 bp upstream of it
