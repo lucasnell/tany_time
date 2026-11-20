@@ -665,7 +665,15 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         distant lakes alike (e.g., Tjörnin 0.76, Pernuvatn 0.70); B reads
         are within a median 1 edit of the same B sequence everywhere, so B
         is one allele, not repeated new mutations. Fits an old,
-        widespread polymorphism at intermediate frequency.
+        widespread polymorphism at intermediate frequency. Diversity
+        around it (`_R/contig18-diversity.R` →
+        `_data/contig18-diversity.txt`, 17 SN pools, npstat 10-kb
+        windows): the locus window's π is at the 81st percentile and
+        Tajima's D at the 66th (median 0.70 vs. 0.55 genome-wide);
+        neighbours range widely (5th-86th). No clear balancing-selection
+        signature at this scale (10-kb windows dilute an ~80-bp signal,
+        and mapping undercounts B). Spatial pools' npstat not yet copied
+        (needs the cluster connection).
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
