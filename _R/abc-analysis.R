@@ -46,8 +46,8 @@ library(abcrf)
 
 source("_R/data-dir.R")
 
-#' For a test on stand-in data (`ABC_TEST_DIR`, with the same layout as
-#' `tany_dir("abc")`), outputs go to that folder instead.
+#' For a test on stand-in data or a pilot (`ABC_TEST_DIR`, with the same
+#' layout as `tany_dir("abc")`), outputs go to that folder instead.
 abc_dir <- if (Sys.getenv("ABC_TEST_DIR") == "") tany_dir("abc") else
     Sys.getenv("ABC_TEST_DIR")
 out_dir <- if (Sys.getenv("ABC_TEST_DIR") == "") "_data" else abc_dir
@@ -224,6 +224,18 @@ p <- as_tibble(pca$x[, 1:2]) |>
     theme_classic()
 ggsave(file.path(plot_dir, "abc-prior-check.pdf"), p, width = 6, height = 5)
 
+#' `ABC_CHECK_ONLY=1`: stop here, after the prior-predictive check (for
+#' pilots; no inference).
+check_only <- Sys.getenv("ABC_CHECK_ONLY") == "1"
+if (check_only && length(outside) == 0) {
+    say("\nPrior-predictive check passed (ABC_CHECK_ONLY: stopping before ",
+        "inference).")
+    sink()
+    read_lines(out_txt) |>
+        str_trim("right") |>
+        write_lines(out_txt)
+    quit(save = "no")
+}
 if (length(outside) > 0 && stop_if_outside) {
     sink()
     read_lines(out_txt) |>

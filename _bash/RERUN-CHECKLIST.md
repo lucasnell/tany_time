@@ -593,8 +593,10 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
 - [x] **K1.** `Rscript _R/make-job-lists.R` and `Rscript
       _R/baypass-covariates.R` (17 pools); check `git diff`. Done
       2026-11-19 (covariate files now 17 values; job lists unchanged).
-- [ ] **K2.** `02-allele-freqs/04-combine-syncs` (time set; 17 pools).
+- [x] **K2.** `02-allele-freqs/04-combine-syncs` (time set; 17 pools).
       Submitted 2026-11-19 (cluster 12597746); the first run took ~16 h.
+      PASS 2026-11-20 (10.4 h): time set 7,869,842 sites, space 8,111,855,
+      all 12,940,196.
 - [ ] **K3.** `03-select-time/00-baypass-inputs` → `01-baypass-init` →
       `02-check-omegas` → `03-baypass-beta` (270 jobs).
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.

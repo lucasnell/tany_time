@@ -527,8 +527,8 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          2026-11-19; local check `_data/abc-tmpl-check.txt`); first run's
          simulations moved to `tany_dir("abc", "archive-v1")` and
          `/staging/l/lnell/dna/abc/archive-v1/`; pilot (batches 1-4 per
-         model, cluster 12602514) submitted 2026-11-19, then the full
-         rerun if it passes.
+         model, cluster 12602514) submitted 2026-11-19; passed
+         2026-11-20 (`_data/abc-pilot-check.txt`); full rerun next.
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);

@@ -1,0 +1,24 @@
+== 1. Simulations
+Reference table: 500 simulations; dropped (missing or infinite statistics): 0
+
+ M1  M2  M3  M4  M5
+100 100 100 100 100
+Time per simulation (min), reference table:
+ model mean   max
+    M1  6.6  36.3
+    M2 12.6 163.0
+    M3  7.8  89.9
+    M4  7.1  35.8
+    M5 22.8 279.6
+
+== 2. Prior-predictive check
+Observed statistics inside the simulated range, by model:
+ model inside  of in_central_98
+    M1    205 235           205
+    M2    235 235           235
+    M3    235 235           235
+    M4    205 235           205
+    M5    235 235           235
+Outside every model's range: 0 of 235
+
+Prior-predictive check passed (ABC_CHECK_ONLY: stopping before inference).

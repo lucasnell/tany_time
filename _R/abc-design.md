@@ -260,3 +260,9 @@ details.
     statistic lies inside the pilot's simulated range for at least one
     model; with 100 simulations per model the range is narrower than with
     10,000, so passing the pilot is the stricter test.
+14. Pilot passed (2026-11-20; batches 1-4 per model, 100 simulations per
+    model; `ABC_CHECK_ONLY=1 ABC_TEST_DIR=<pilot folder> Rscript
+    _R/abc-analysis.R`, copied to `_data/abc-pilot-check.txt`): all 235
+    observed statistics inside the simulated range of at least one model
+    (M2, M3, and M5 cover all 235; M1 and M4 cover 205). Full rerun
+    approved by the rule in change 13. No inference was run on the pilot.
