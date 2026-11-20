@@ -9,7 +9,7 @@
 #' Distinct sequences are counted per pool and compared with the assembly:
 #' length difference (indel) and mismatches.
 #'
-#' Pools: all 17 time pools. Reads: `/Volumes/lan_images4/ill/dna/trimmed/`.
+#' Pools: all 17 time pools. Reads: fastp-trimmed reads on either drive.
 #'
 #' Writes `_data/contig18-flank.txt` and `_data/contig18-flank-counts.csv`.
 #'
@@ -24,7 +24,12 @@ ctg <- "CONTIG18"
 anc_start <- 373247
 anc_len <- 20L
 up_len <- 90L
-trim_dir <- "/Volumes/lan_images4/ill/dna/trimmed"
+#' Trimmed reads are on lan_images4 (`ill/dna/trimmed/`) and LAN_4TB_SSD
+#' (`sequencing/ill/dna/trimmed/`); whichever is connected:
+trim_dir <- c("/Volumes/lan_images4/ill/dna/trimmed",
+              "/Volumes/LAN_4TB_SSD/sequencing/ill/dna/trimmed")
+trim_dir <- trim_dir[dir.exists(trim_dir)][1]
+stopifnot(!is.na(trim_dir))
 #' All 17 time pools (2026-11-19; the first run had the 6 below):
 #' SN-2-97, SN-2-02, SN-1-97 (mapped B common) and SN-1-99, SN-2-15,
 #' SN-2-08 (mapped B rare).
