@@ -672,8 +672,9 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         Tajima's D at the 66th (median 0.70 vs. 0.55 genome-wide);
         neighbours range widely (5th-86th). No clear balancing-selection
         signature at this scale (10-kb windows dilute an ~80-bp signal,
-        and mapping undercounts B). Spatial pools' npstat not yet copied
-        (needs the cluster connection).
+        and mapping undercounts B). Same in the 18 spatial pools of 2019
+        (npstat copied 2026-11-20): π at the 79th percentile, D at the
+        61st.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
