@@ -603,6 +603,7 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       964,052, mp100 596,437 (18 pools: 1,023,857; 955,748; 528,372);
       copied to both drives (`tany_dir("baypass-inputs")`, MD5s match).
       Update `n_real` in `_R/baypass-pod-threshold.R` before K5.
+      Init submitted 2026-11-20 (cluster 12630621, 9 jobs).
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
 - [ ] **K5.** Local checks and results, as in I5 and J1b:
       `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
