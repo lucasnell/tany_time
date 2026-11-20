@@ -643,6 +643,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         effect 0.024-0.025 vs. 0.027. Mapping inflated the evidence by
         ~11 dB (~13x in BF) and the effect by ~10-15%; the association
         itself remains (99% of background SNPs are below 1.9 dB).
+        What it is (`_R/contig18-indel.R` → `_data/contig18-indel.txt`):
+        in the 405-bp intron of g4149 (LRR protein; toll-like receptor
+        13 / chondroadherin hits), 36-118 bp before exon 2, no annotated
+        repeat, 95% AT. From 276 B reads, B is a divergent haplotype:
+        85% identical to A over 125 bp (15 substitutions, ~5 bp of
+        insertions; 130 bp in B), possibly extending beyond the reads'
+        reach. Too divergent for a recent neutral variant at this
+        population's diversity (~0.9%); could be a fast-mutating AT-rich
+        stretch, long-term balancing selection, or introgression; not
+        distinguishable here.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass

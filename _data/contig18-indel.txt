@@ -1,0 +1,55 @@
+== 1. Features within 1 kb of CONTIG18 373124 - 373206
+        type  start    end strand
+1 transcript 366899 373879      +
+2       exon 371277 372836      +
+3       exon 373242 373879      +
+4        CDS 371277 372836      +
+5        CDS 373242 373879      +
+                                                 attr
+1 ID=CONTIG18+_anno1.g4149.t1;geneID=CONTIG18+_g_4071
+2                     Parent=CONTIG18+_anno1.g4149.t1
+3                     Parent=CONTIG18+_anno1.g4149.t1
+4                     Parent=CONTIG18+_anno1.g4149.t1
+5                     Parent=CONTIG18+_anno1.g4149.t1
+
+Intron(s):
+   start    end length
+1 372837 373241    405
+Locus vs. the next exon's start (373242): 36 to 118 bp upstream of it
+
+Annotated repeats within 1 kb:
+   start    end strand                                 attr
+1 374037 374079      - Target "Motif:rnd-1_family-127" 1 43
+
+== 2. Assembly (A), CONTIG18:373060-373300 (lower case: the locus's 9 mapped SNPs span 373124-373206):
+CTTTTGAAATTTTTTAAAATTTTGATTTTTTGAAATTTTTAAAATTTTGATTCATTTAATTTAAgaaattatatgattttttcaaaaatattgaatttaataattttaaaatttttatatttaaaaatttatatatttttttaaaaaTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACTCGCTTAATTTTAGTTGATTTTGAGCAGAATTTGATCCCTGAATTGGGTGCTGAA
+AT content: locus 0.952; 241-bp window 0.855
+Homopolymer runs >= 5 bp within 20 bp of the locus: T6, A5, T5, A5, T7, A5, T5
+
+== 3. Reads anchored with >= 90 bp before the anchor: 666 (A 356 , B 276 , other 34 )
+A consensus (130 bp before the anchor) matches the assembly: TRUE
+B consensus (130 bp before the anchor):
+AAAAAATTATTTGATTTTTTCAAAATCATTTGAATTTAATACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTTTAAATTAATTTTTTTATTTTTTAGACACT
+
+== 4. B (query) vs. A (subject, CONTIG18:373097-373246); blastn
+ Score = 124 bits (67),  Expect = 5e-34
+ Identities = 110/130 (85%), Gaps = 5/130 (4%)
+ Strand=Plus/Plus
+
+Query  1    AAAAAATTATTTGATTTTTTCAAAATCATTTGAATTTAATACTTTTGAATTTTTTAAATT  60
+            || ||||||| ||||||||||||||  | |||||||||||| |||| || ||||||
+Sbjct  26   AAGAAATTATATGATTTTTTCAAAAATA-TTGAATTTAATAATTTTAAAATTTTTA----  80
+
+Query  61   TTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTTTAAATTAATTTTTTTATTT  120
+            | ||||| ||||||| ||  ||||||||  |||||||||| |||||||||||||||||||
+Sbjct  81   TATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTT  140
+
+Query  121  TTTAGACACT  130
+            ||||||||||
+Sbjct  141  TTTAGACACT  150
+
+
+
+Best hit (query start/end, subject start/end, length, mismatches, gaps, % identity):
+1	130	26	150	130	15	5	84.615
+B is 130 bp over the span that is 125 bp in A
