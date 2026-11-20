@@ -675,6 +675,12 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         and mapping undercounts B). Same in the 18 spatial pools of 2019
         (npstat copied 2026-11-20): π at the 79th percentile, D at the
         61st.
+        - [ ] Next (owner, 2026-11-20, when back): π, θ_W, and Tajima's D
+          in 1-kb windows within ~50 kb of the locus, from per-pool SNAPE
+          counts, in all 35 pools (17 SN, 18 spatial; copy the spatial
+          pools' `snape/<pool>_snape.tar` from staging, ~41 GB, first).
+          The locus window will read low (B maps poorly); flanking
+          windows are the test. ~2.5-3 h, cached per pool.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
