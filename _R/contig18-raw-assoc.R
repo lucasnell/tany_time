@@ -13,8 +13,9 @@
 #'
 #'   1. Pearson r and least-squares slope of B frequency on hm_logN_6
 #'      across pools, for each, over pools with data in both.
-#'   2. BayPass 3.1 (local), standard covariate model, on the two versions
-#'      of the locus embedded among 2,000 random SNPs of mp050 subsample 1
+#'   2. BayPass 3.1 (local), standard covariate model, on three versions
+#'      of the locus (raw, mapped, and raw frequencies at the mapped
+#'      depths) embedded among 2,000 random SNPs of mp050 subsample 1
 #'      (so the model's hyperparameters are estimated as usual), with the
 #'      subsample-1 Ω (SN-1-95 dropped) fixed: importance-sampling Bayes
 #'      factor (BF, dB) and effect estimate (Beta_is), and the MCMC effect
@@ -125,14 +126,22 @@ rbind(raw = fit_one(both$raw_f), mapped = fit_one(both$map_f)) |>
 
 
 #' Background: 2,000 random SNPs of subsample 1 (17 pools).
+#' Summary of IS results by version (mean over seeds) is printed too.
 g1 <- geno[[1]]$g
 bg <- sample.int(nrow(g1), 2000)
 cols17 <- as.vector(rbind(2 * k18 - 1, 2 * k18))
 bg_g <- g1[bg, cols17]
 #' The two versions of the locus: rows 1 (raw) and 2 (mapped); counts
 #' per pool as (B, A).
+#' Row 3 (raw_at_mapped_depth): raw B frequencies at the mapped depths,
+#' to separate the bias in frequencies from the difference in read counts
+#' (the raw counts are few, so their evidence is weaker regardless of
+#' bias). Pools without mapped data get 0 reads.
+md <- both$map_A + both$map_B
+rb <- ifelse(is.na(both$raw_f), 0, round(both$raw_f * md))
 loc_rows <- rbind(as.vector(rbind(both$raw_B, both$raw_A)),
-                  as.vector(rbind(both$map_B, both$map_A)))
+                  as.vector(rbind(both$map_B, both$map_A)),
+                  as.vector(rbind(rb, md - rb)))
 unlink(tmp, recursive = TRUE)
 
 untar(tany_dir("baypass-init", "baypass-init-mp050-sub1.tar.gz"),
@@ -163,8 +172,9 @@ bp <- function(seed, mcmc) {
     stopifnot(st == 0)
     f <- paste0(pre, if (mcmc) "_summary_betai.out" else "_summary_betai_reg.out")
     read_table(f, col_types = cols()) |>
-        filter(MRK %in% 1:2) |>
-        mutate(version = c("raw", "mapped")[MRK], seed = seed)
+        filter(MRK %in% 1:3) |>
+        mutate(version = c("raw", "mapped", "raw_at_mapped_depth")[MRK],
+               seed = seed)
 }
 is_res <- map(c(11, 22, 33), \(s) bp(s, FALSE)) |> list_rbind()
 mc_res <- map(c(11, 22, 33), \(s) bp(s, TRUE)) |> list_rbind()
@@ -173,6 +183,13 @@ cat("\n== 2. BayPass standard covariate model (3 seeds)\n")
 cat("Importance sampling:\n")
 is_res |>
     select(version, seed, any_of(c("BF(dB)", "Beta_is", "eBPis"))) |>
+    as.data.frame() |>
+    print()
+cat("Mean over seeds:\n")
+is_res |>
+    group_by(version) |>
+    summarize(across(any_of(c("BF(dB)", "Beta_is", "eBPis")), mean),
+              .groups = "drop") |>
     as.data.frame() |>
     print()
 cat("\nMCMC (-covmcmc):\n")
@@ -184,7 +201,7 @@ mc_res |>
 cat("\nBackground SNPs (2,000), for scale: importance-sampling BF (dB)",
     "quantiles 50/90/99%, first seed:\n")
 f0 <- file.path(run_dir, "ris_11_summary_betai_reg.out")
-bgbf <- read_table(f0, col_types = cols()) |> filter(MRK > 2)
+bgbf <- read_table(f0, col_types = cols()) |> filter(MRK > 3)
 print(round(quantile(bgbf[["BF(dB)"]], c(0.5, 0.9, 0.99)), 2))
 
 unlink(tmp, recursive = TRUE)

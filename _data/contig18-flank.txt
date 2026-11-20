@@ -3,41 +3,63 @@ Assembly, 90 bp before the anchor:
 TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
 
 == Most common sequences (all pools), 90 bp before the anchor
-s1 (64 reads; edit distance to assembly 0; = assembly):
+s1 (291 reads; edit distance to assembly 0; = assembly):
 TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
-s2 (35 reads; edit distance to assembly 18):
+s2 (125 reads; edit distance to assembly 18):
 ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTTTAAATTAATTTTTTTATTTTTTAGACACT
-s3 (10 reads; edit distance to assembly 15):
-CTTTTGAATTTTTTAAATTTTTTATAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
-s4 (7 reads; edit distance to assembly 17):
-ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
-s5 (7 reads; edit distance to assembly 18):
+s3 (69 reads; edit distance to assembly 18):
 ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAATTTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
-s6 (6 reads; edit distance to assembly 1):
+s4 (22 reads; edit distance to assembly 15):
+CTTTTGAATTTTTTAAATTTTTTATAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s5 (10 reads; edit distance to assembly 17):
+ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s6 (7 reads; edit distance to assembly 1):
 TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGAAACT
-s7 (3 reads; edit distance to assembly 15):
+s7 (5 reads; edit distance to assembly 15):
 ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
-s8 (3 reads; edit distance to assembly 16):
-AAATATATAAATTTTTAAATATAAAAATTTTAAAATTATTAAATTCAATATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s8 (4 reads; edit distance to assembly 13):
+TTTTAAATATAAAAATTTTAAAATTATTAAATTCAATATTTTTGAAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
 
 Most common non-assembly sequence vs. assembly: insertions 4, deletions 4, substitutions 10
 Edit path (M match, S substitution, I insertion, D deletion):
 DDMSSMDMMMMMMSDMMMIIMMMIMIMMMMMSMMMMMMMSMMSSMMMMMMMMSSMMMMMMMMMMSMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 == Reads per pool by sequence (s1-s8 as above; other = rest)
-         pool other s1 s2 s4 s5 s3 s6 s7 s8 n_anchor
-1 SN-2-97_S37     5  0  1  0  1  2  0  0  0       45
-2 SN-2-02_S30     5  6  8  3  2  3  6  1  0       97
-3 SN-1-97_S61     6  7 15  3  1  0  0  0  0      107
-4 SN-1-99_S28     6 16  3  1  0  3  0  0  0       97
-5 SN-2-15_S34    14 13  2  0  0  0  0  2  0      100
-6 SN-2-08_S32    21 22  6  0  3  2  0  0  3      153
+          pool other  s1 s2 s3 s8 s6 s4 s5 s7 n_anchor
+1  SN-1-02_S55     4   5  7  6  1  0  0  0  0      118
+2  SN-1-07_S23    13 100 15 25  0  1  0  0  0      340
+3  SN-1-08_S24     5  21  9  5  0  0  2  1  2      147
+4  SN-1-09_S25     6   6  5  4  1  0  0  0  0      110
+5  SN-1-10_S26     7   6 16  5  0  0  1  1  0       99
+6  SN-1-13_S56     3   5  6  1  0  0  0  0  0       38
+7  SN-1-14_S27     4  32  6  1  0  0  1  0  0      121
+8  SN-1-97_S61     6   7 15  1  0  0  0  3  0      107
+9  SN-1-99_S28     6  16  3  0  0  0  3  1  0       97
+10 SN-2-00_S29     7   4  2  4  0  0  1  0  0       68
+11 SN-2-02_S30     5   6  8  2  0  6  3  3  1       97
+12 SN-2-07_S31    12  14  8  4  0  0  1  1  0       89
+13 SN-2-08_S32    23  22  6  3  1  0  2  0  0      153
+14 SN-2-15_S34    14  13  2  0  0  0  0  0  2      100
+15 SN-2-92_S35     7  18 11  3  0  0  4  0  0      118
+16 SN-2-97_S37     5   0  1  1  0  0  2  0  0       45
+17 SN-2-99_S38     6  16  5  4  1  0  2  0  0       99
 
 == Reads by haplotype (A = assembly, B = s2; other > 10 edits from both)
-         pool  A  B other raw_B mapped_B
-1 SN-2-97_S37  0  9     0  1.00     0.74
-2 SN-2-02_S30 12 20     2  0.62     0.56
-3 SN-1-97_S61  9 21     2  0.70     0.55
-4 SN-1-99_S28 22  7     0  0.24     0.04
-5 SN-2-15_S34 17  9     5  0.35     0.04
-6 SN-2-08_S32 29 19     9  0.40     0.06
+          pool   A  B other raw_B
+1  SN-1-02_S55   7 14     2  0.67
+2  SN-1-07_S23 111 42     1  0.27
+3  SN-1-08_S24  23 22     0  0.49
+4  SN-1-09_S25   6 12     4  0.67
+5  SN-1-10_S26   9 26     1  0.74
+6  SN-1-13_S56   6  7     2  0.54
+7  SN-1-14_S27  35  8     1  0.19
+8  SN-1-97_S61   9 21     2  0.70
+9  SN-1-99_S28  22  7     0  0.24
+10 SN-2-00_S29   7  9     2  0.56
+11 SN-2-02_S30  12 20     2  0.62
+12 SN-2-07_S31  21 18     1  0.46
+13 SN-2-08_S32  29 19     9  0.40
+14 SN-2-15_S34  17  9     5  0.35
+15 SN-2-92_S35  22 21     0  0.49
+16 SN-2-97_S37   0  9     0  1.00
+17 SN-2-99_S38  20 12     2  0.38

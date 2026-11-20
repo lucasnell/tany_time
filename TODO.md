@@ -634,6 +634,15 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         0.62-1.00 in pools where mapping gives 0.55-0.74 and 0.24-0.40
         where mapping gives 0.04-0.06 (9-57 reads per pool). The
         difference between pools is real but mapping exaggerates it.
+        All 17 pools (`_R/contig18-raw-assoc.R` →
+        `_data/contig18-raw-assoc.txt`): raw B frequency is above the
+        mapped one in every pool; across 16 pools vs. hm_logN_6, r 0.67
+        raw vs. 0.78 mapped, slope 0.055 vs. 0.067. BayPass standard
+        covariate model (Ω fixed, 3 seeds): importance-sampling BF 9.1 dB
+        raw, 9.6 dB raw frequencies at mapped depths, 20.5 dB mapped;
+        effect 0.024-0.025 vs. 0.027. Mapping inflated the evidence by
+        ~11 dB (~13x in BF) and the effect by ~10-15%; the association
+        itself remains (99% of background SNPs are below 1.9 dB).
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
