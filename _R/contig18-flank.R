@@ -152,6 +152,15 @@ cls <- reads |>
     mutate(dA = as.vector(adist(up, ref_up)), dB = as.vector(adist(up, b_seq)),
            hap = case_when(pmin(dA, dB) > 10 ~ "other",
                            dA <= dB ~ "A", TRUE ~ "B")) |>
+    (\(x) {
+        #' How close are B reads to the B sequence (are they one allele)?
+        bb <- x$dB[x$hap == "B"]
+        cat("\nB reads: edits from the B sequence, median ", median(bb),
+            ", 90th percentile ", quantile(bb, 0.9), ", max ", max(bb),
+            " (A reads from the assembly: median ",
+            median(x$dA[x$hap == "A"]), ")\n", sep = "")
+        x
+    })() |>
     dplyr::count(pool, hap) |>
     pivot_wider(names_from = hap, values_from = n, values_fill = 0) |>
     mutate(raw_B = round(B / (A + B), 2))

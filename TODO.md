@@ -658,7 +658,14 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         heterozygous-call density is 157 per kb in the locus span vs.
         14 per kb in exons 6 and 7, 19 in the rest of the intron, and 7.2
         genome-wide. The extreme divergence is local (~80 bp) within a
-        gene region about twice as variable as the genome.
+        gene region about twice as variable as the genome. B in the 18
+        spatial pools of 2019 (`_R/contig18-flank.R space` →
+        `_data/contig18-flank-space.txt`): present in every one, at raw
+        read frequency 0.30-0.76 (most 0.40-0.62), in Mývatn and in
+        distant lakes alike (e.g., Tjörnin 0.76, Pernuvatn 0.70); B reads
+        are within a median 1 edit of the same B sequence everywhere, so B
+        is one allele, not repeated new mutations. Fits an old,
+        widespread polymorphism at intermediate frequency.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass

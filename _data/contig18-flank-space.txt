@@ -1,0 +1,69 @@
+Anchor CONTIG18:373247-373266 CGCTTAATTTTAGTTGATTT; occurrences in the assembly (both strands): 1
+Assembly, 90 bp before the anchor:
+TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+
+== Most common sequences (all pools), 90 bp before the anchor
+s1 (177 reads; edit distance to assembly 0; = assembly):
+TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s2 (84 reads; edit distance to assembly 18):
+ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTTTAAATTAATTTTTTTATTTTTTAGACACT
+s3 (69 reads; edit distance to assembly 18):
+ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAATTTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s4 (27 reads; edit distance to assembly 17):
+ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s5 (6 reads; edit distance to assembly 15):
+CTTTTGAATTTTTTAAATTTTTTATAAGAATTTATTTACGTTTTTAAATTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s6 (3 reads; edit distance to assembly 1):
+TAATAATGTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+s7 (2 reads; edit distance to assembly 1):
+TAATAATTTTAAAATTTTTATATTTAAAAATTTATATATTTTTTTAAAAATTTTTGAATTATAAATTAATTTTTTTATTTTTTAGACACT
+s8 (2 reads; edit distance to assembly 19):
+ACTTTTGAATTTTTTAAATTTTTTTAAGAATTTATTGACGTTTTTAATTTTTTTTGAATTCTAAATTAATTTTTTTATTTTTTAGACACT
+
+Most common non-assembly sequence vs. assembly: insertions 4, deletions 4, substitutions 10
+Edit path (M match, S substitution, I insertion, D deletion):
+DDMSSMDMMMMMMSDMMMIIMMMIMIMMMMMSMMMMMMMSMMSSMMMMMMMMSSMMMMMMMMMMSMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+
+== Reads per pool by sequence (s1-s8 as above; other = rest)
+             pool other s1 s2 s3 s4 s5 s7 s8 s6 n_anchor
+1       Ash-19_S5    10 12  7  1  0  0  0  0  0      110
+2      Blik-19_S6     4 16  6 10  2  1  1  0  0      143
+3       Blo-19_S7     0  7  5  1  2  0  0  0  0       82
+4     Ellid-19_S8     8  8  0  3  0  1  0  0  0       85
+5  Hrisatjorn_S11     2  9  6  0  0  0  0  0  0       62
+6      Lei-19_S13     5  9  9  2  3  0  0  0  0      121
+7      Lys-19_S14    11 12  2  4  0  0  0  1  0      123
+8      Mik-19_S15     6  9  2  3  0  0  0  0  0       74
+9     MikW-19_S16     0 13  2  2  1  0  1  1  0       84
+10    MyBR-19_S17     7 11  2 10  1  1  0  0  0      118
+11  MyKS-19-B_S18     4  8  6  2  1  0  0  0  0       80
+12    MySN-19_S19     5 16  7  5  0  1  0  0  0       78
+13     Ola-19_S20     4 14  7  3  5  0  0  0  0       89
+14  Pernuvatn_S21     4  3  4  7  2  0  0  0  0       62
+15     Skj-19_S22     6  7  6  3  4  0  0  0  3       99
+16     Sva-19_S39     4  9  4  2  1  1  0  0  0       79
+17    Tjornin_S40     4  6  6  7  3  0  0  0  0       85
+18     Vik-19_S41     3  8  3  4  2  1  0  0  0       59
+
+B reads: edits from the B sequence, median 1, 90th percentile 3, max 8 (A reads from the assembly: median 0)
+
+== Reads by haplotype (A = assembly, B = s2; other > 10 edits from both)
+             pool  A  B other raw_B
+1       Ash-19_S5 18 12     0  0.40
+2      Blik-19_S6 20 20     0  0.50
+3       Blo-19_S7  7  8     0  0.53
+4     Ellid-19_S8 11  8     1  0.42
+5  Hrisatjorn_S11 10  7     0  0.41
+6      Lei-19_S13 12 14     2  0.54
+7      Lys-19_S14 14 14     2  0.50
+8      Mik-19_S15 10  8     2  0.44
+9     MikW-19_S16 14  6     0  0.30
+10    MyBR-19_S17 17 15     0  0.47
+11  MyKS-19-B_S18 11 10     0  0.48
+12    MySN-19_S19 18 16     0  0.47
+13     Ola-19_S20 17 16     0  0.48
+14  Pernuvatn_S21  6 14     0  0.70
+15     Skj-19_S22 11 18     0  0.62
+16     Sva-19_S39  9 12     0  0.57
+17    Tjornin_S40  6 19     1  0.76
+18     Vik-19_S41 11 10     0  0.48

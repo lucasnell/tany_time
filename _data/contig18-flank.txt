@@ -44,6 +44,8 @@ DDMSSMDMMMMMMSDMMMIIMMMIMIMMMMMSMMMMMMMSMMSSMMMMMMMMSSMMMMMMMMMMSMMMMMMMMMMMMMMM
 16 SN-2-97_S37     5   0  1  1  0  0  2  0  0       45
 17 SN-2-99_S38     6  16  5  4  1  0  2  0  0       99
 
+B reads: edits from the B sequence, median 1, 90th percentile 3, max 8 (A reads from the assembly: median 0)
+
 == Reads by haplotype (A = assembly, B = s2; other > 10 edits from both)
           pool   A  B other raw_B
 1  SN-1-02_S55   7 14     2  0.67
