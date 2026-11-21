@@ -675,12 +675,16 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         and mapping undercounts B). Same in the 18 spatial pools of 2019
         (npstat copied 2026-11-20): π at the 79th percentile, D at the
         61st.
-        - [ ] Next (owner, 2026-11-20, when back): π, θ_W, and Tajima's D
-          in 1-kb windows within ~50 kb of the locus, from per-pool SNAPE
-          counts, in all 35 pools (17 SN, 18 spatial; copy the spatial
-          pools' `snape/<pool>_snape.tar` from staging, ~41 GB, first).
-          The locus window will read low (B maps poorly); flanking
-          windows are the test. ~2.5-3 h, cached per pool.
+        Fine scale (`_R/contig18-finescale.R` →
+        `_data/contig18-finescale.txt`, `_plots/contig18-finescale.pdf`;
+        1-kb windows, CONTIG18:323-423 kb; spatial pools' SNAPE archives
+        copied to LAN_4TB_SSD 2026-11-21, MD5s match): the locus window
+        ranks 9th of 95 for θ_π in both SN and spatial pools; θ_π rises
+        toward it over ~3 kb on the left, is below the median for 1-3 kb
+        on the right, and peaks again 4 kb away (377 kb, 2nd and 4th of
+        95, highest Tajima-like ratio). Higher windows lie 17-45 kb away.
+        Same pattern in both pool sets; weak, asymmetric, not a clear
+        balancing-selection signature.
 - [x] **Install `seqinr` (CRAN) and `clusterProfiler` (Bioconductor) for
       R 4.6.** Installed 2026-11-07 (seqinr 4.2.44, clusterProfiler
       4.20.3, org.Dm.eg.db 3.22.0; `enrichplot` needed a second pass
