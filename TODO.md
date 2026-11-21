@@ -615,6 +615,17 @@ Follow `_bash/RERUN-CHECKLIST.md`.
         works, the fitted null tail is heavy (shape 0.30-0.42), so the
         strongest real SNPs get p 3.5e-6 to 1.4e-5, not below the
         empirical floor; no SNP reaches q <= 0.10 (smallest q 0.62-0.95).
+      - **Closed 2026-11-21 (owner): CONTIG18 recorded as an exploratory
+        finding, no further work.** Summary: a single old allele (B),
+        ~15% divergent from the assembly over ~80 bp of AT runs in the
+        last intron of g4149 (LRR protein), 36-118 bp before exon 7; at
+        intermediate frequency in every pool (SN and 18 lakes of 2019) and
+        carried by the nanopore individual; read mapping undercounts it
+        and inflated its BayPass evidence ~13x (raw-read association with
+        hm_logN_6 weaker but present, r 0.67); diversity around it only
+        modestly and unevenly raised. Consistent with balancing selection
+        but not evidence of it; also a case of mapping distorting allele
+        frequencies at an indel-rich site. Details below.
       - Exploratory look at the CONTIG18 locus, below threshold and chosen
         after the results (owner, 2026-11-19; `_R/contig18-locus.R` →
         `_data/contig18-locus.txt`, `_plots/contig18-locus.pdf`): the 9

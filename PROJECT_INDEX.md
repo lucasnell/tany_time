@@ -194,6 +194,12 @@ still read by the BLAST section and the time-series scripts),
 
 ## Current numbers
 
+Exploratory finding (closed 2026-11-21; not a candidate): CONTIG18
+~373.1 kb holds an old, ~15%-divergent intronic allele of an LRR gene at
+intermediate frequency in every pool across Iceland; mapping undercounts
+it and inflated its BayPass evidence ~13x (`_R/contig18-*.R` →
+`_data/contig18-*.txt`; summary in `TODO.md`).
+
 2025 runs, from the 2025 version of `_R/baypass-check-candidates.R`
 (`_data/baypass-check-candidates.txt`, run 2026-10-09; overwritten when the
 2026 version runs):
