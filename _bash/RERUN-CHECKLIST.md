@@ -615,7 +615,8 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       SNPs per setting, ~98% of simulated pass the filters; missing data
       and depth match the real SNPs) and uploaded (MD5
       40005f6a71d571c66cf8f5a16daa9b72). `n_real` in
-      `_R/baypass-pod-threshold.R` updated to the 17-pool counts.
+      `_R/baypass-pod-threshold.R` updated to the 17-pool counts. POD
+      jobs (93) submitted 2026-11-22.
 - [ ] **K5.** Local checks and results, as in I5 and J1b:
       `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
       `_R/baypass-pod-stat-compare.R`, `_R/baypass-pdelta-check.R`,
