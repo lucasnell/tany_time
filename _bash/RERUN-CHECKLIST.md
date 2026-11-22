@@ -608,6 +608,7 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       to `tany_dir("baypass-init")` when a drive is connected.
       Check-omegas PASS 2026-11-22: FMD within settings mp050 0.17-0.20,
       mp075 0.20-0.22, mp100 0.28-0.31 (18 pools: 0.22-0.33).
+      Beta (270 jobs; 4 GB memory, 10 GB disk) submitted 2026-11-22.
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
 - [ ] **K5.** Local checks and results, as in I5 and J1b:
       `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
