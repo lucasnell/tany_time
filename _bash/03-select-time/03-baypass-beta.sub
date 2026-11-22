@@ -18,9 +18,12 @@ transfer_input_files = ../bin, covariates/$(Covariate).txt
 when_to_transfer_output = ON_EXIT
 requirements = (HasCHTCStaging == true)
 
+#' The same covariate model on 400,000-SNP PODs used 1.5 GB memory and
+#' 3.9 GB disk (`04-baypass-pod`); these jobs keep the larger pij/yij
+#' summaries (~200 MB archives).
 request_cpus = 8
-request_memory = 20GB
-request_disk = 50GB
+request_memory = 4GB
+request_disk = 10GB
 
 #' `baypass_beta_info.txt` (ising_beta,run,seed,tag) is written by
 #' `_R/make-job-lists.R`.
