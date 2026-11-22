@@ -606,6 +606,8 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       Init submitted 2026-11-20 (cluster 12630621, 9 jobs); PASS
       2026-11-22 (longest 29.3 h, mp075-sub1). Copy the outputs (1.8 GB)
       to `tany_dir("baypass-init")` when a drive is connected.
+      Check-omegas PASS 2026-11-22: FMD within settings mp050 0.17-0.20,
+      mp075 0.20-0.22, mp100 0.28-0.31 (18 pools: 0.22-0.33).
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
 - [ ] **K5.** Local checks and results, as in I5 and J1b:
       `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
