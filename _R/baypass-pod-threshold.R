@@ -53,8 +53,8 @@ covariates <- c("hm_logN_6", "logN", "logN_lag1")
 n_runs <- 10
 bf_ceiling <- 10 * log10((2 * 5000 - 1) * 0.99 / 0.01)
 #' SNPs tested in the real analysis (all 3 subsamples; `00-baypass-inputs`
-#' output, `_bash/RERUN-CHECKLIST.md` I1):
-n_real <- c(mp050 = 1023857, mp075 = 955748, mp100 = 528372)
+#' output; 17 pools, `_bash/RERUN-CHECKLIST.md` K3):
+n_real <- c(mp050 = 1019795, mp075 = 964052, mp100 = 596437)
 cutoffs <- c(10, 15, 20, 25, 30, 35, 40, 45, 50, bf_ceiling)
 
 fmd.dist <- function(mat1, mat2) {

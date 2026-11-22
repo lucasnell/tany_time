@@ -610,6 +610,12 @@ first rerun are in git history (last at commit `02b6f83`). Staging: see K0.
       mp075 0.20-0.22, mp100 0.28-0.31 (18 pools: 0.22-0.33).
       Beta (270 jobs; 4 GB memory, 10 GB disk) submitted 2026-11-22.
 - [ ] **K4.** PODs: `_R/baypass-pod-inputs.R` (new Ω) → `04-baypass-pod`.
+      Init outputs copied to LAN_4TB_SSD (MD5s match) 2026-11-22. POD
+      inputs built 2026-11-22 (`_data/baypass-pod-inputs.txt`: 400,000
+      SNPs per setting, ~98% of simulated pass the filters; missing data
+      and depth match the real SNPs) and uploaded (MD5
+      40005f6a71d571c66cf8f5a16daa9b72). `n_real` in
+      `_R/baypass-pod-threshold.R` updated to the 17-pool counts.
 - [ ] **K5.** Local checks and results, as in I5 and J1b:
       `_R/baypass-pod-threshold.R`, `_R/baypass-pod-xtx.R`,
       `_R/baypass-pod-stat-compare.R`, `_R/baypass-pdelta-check.R`,
