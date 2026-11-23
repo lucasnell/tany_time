@@ -1,0 +1,21 @@
+[1] TRUE
+
+Overall Analysis Time: 0 h 0 m 2 s
+
+Overall Analysis Time: 0 h 0 m 0 s
+
+Overall Analysis Time: 0 h 0 m 15 s
+
+Overall Analysis Time: 0 h 0 m 1 s
+Parameters recorded with --older: TRUE
+
+                                                        run       pi     thw
+                                         1. no older change 0.008100 0.00774
+                       2. expansion (Ne_old 1e5, T_old 1e4) 0.000858 0.00087
+                     3. contraction (Ne_old 1e7, T_old 1e4) 0.070400 0.06470
+ 4. expansion at the prior's oldest (Ne_old 1e5, T_old 1e5) 0.001140 0.00151
+    tdr  rare t_all_s
+  0.054 0.137     9.0
+ -0.006 0.182     2.8
+  0.094 0.120    95.5
+ -0.225 0.289     5.1

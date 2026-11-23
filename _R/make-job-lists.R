@@ -163,16 +163,36 @@ as_tibble(x) |>
 #' the template-sampling step (design change 13, 2026-11-19): the first
 #' run's outputs were moved aside, and every batch now has 25 simulations
 #' (main batches 1-400). Batches 1-4 of each model are the pilot.
-abc_variants <- c(main = 0L, holdout = 1L)
-bind_rows(
-    tibble(variant = "main", model = "observed", batch = 0L),
-    crossing(variant = "main", model = paste0("M", 1:5), batch = 1:400),
-    crossing(variant = "holdout", model = paste0("M", 1:5), batch = 1:40)) |>
+#' The main run finished 2026-11-23. Sensitivity variants get the same
+#' 10,000 simulations per model (400 batches), so their model-choice
+#' forests are comparable with the main run's, and no held-out sets.
+#' `abc_info.txt` holds only the batches to submit next (`abc_submit`);
+#' every list is also written as `abc_info_<name>.txt`, for the record.
+abc_variants <- c(main = 0L, holdout = 1L, power = 2L, widen = 3L,
+                  older = 4L, mu = 5L)
+abc_lists <- list(
+    main = bind_rows(
+        tibble(variant = "main", model = "observed", batch = 0L),
+        crossing(variant = "main", model = paste0("M", 1:5), batch = 1:400),
+        crossing(variant = "holdout", model = paste0("M", 1:5),
+                 batch = 1:40)),
+    #' Sensitivity item 5 first (owner, 2026-11-23): the main run's
+    #' support for immigration rests on an excess of rare alleles
+    #' (`_data/abc-misfit.txt`), which a pre-1977 expansion could also give.
+    older = crossing(variant = "older", model = paste0("M", 1:5),
+                     batch = 1:400))
+abc_submit <- "older"
+abc_rows <- function(x) x |>
     mutate(n_sims = ifelse(model == "observed", 0L, 25L),
            m = suppressWarnings(as.integer(str_remove(model, "^M"))),
            seed0 = ifelse(model == "observed", 0L,
                           1e8 * m + 1e7 * abc_variants[variant] +
                               25L * (batch - 1L) + 1L),
            seed0 = as.integer(seed0)) |>
-    select(variant, model, batch, seed0, n_sims) |>
-    write_csv("_bash/04-diversity/abc_info.txt", col_names = FALSE)
+    select(variant, model, batch, seed0, n_sims)
+iwalk(abc_lists, \(x, nm) {
+    write_csv(abc_rows(x), sprintf("_bash/04-diversity/abc_info_%s.txt", nm),
+              col_names = FALSE)
+})
+write_csv(abc_rows(abc_lists[[abc_submit]]), "_bash/04-diversity/abc_info.txt",
+          col_names = FALSE)

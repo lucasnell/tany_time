@@ -545,13 +545,18 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          `_data/abc-misfit.txt`); no F_ST or temporal F statistic is outside
          them. A pre-1977 expansion would also give that, and M1/M4 hold
          size constant before 1977; the design's `older` sensitivity
-         variant (item 5) tests it and hasn't been simulated.
+         variant (item 5) tests it. Owner chose to run it first, alone
+         (2026-11-23): 10,000 per model, no held-out sets
+         (`abc_info.txt` = `abc_info_older.txt`; main list kept as
+         `abc_info_main.txt`); local check `_bash/tests/abc-older-check.R`
+         → `_data/abc-older-check.txt` (an expansion 1e5 generations
+         before 1977 gives π / θ_W − 1 = −0.23 and rare share 0.29, vs.
+         0.05 and 0.14 without it). Not submitted yet.
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);
-       - sensitivity variants (`power`, `widen`, `older`, `mu`) aren't in
-         the job list yet; decide their number of simulations once the
-         main run's cost is known.
+       - sensitivity variants `power`, `widen`, and `mu` aren't in the job
+         list yet (after `older`).
 6. [ ] **Drift vs. selection:** test whether candidate frequency changes
        exceed what genome-wide Ne implies. After 2–4.
 

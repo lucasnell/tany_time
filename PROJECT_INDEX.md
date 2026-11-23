@@ -244,7 +244,8 @@ pools with known diversity: π and θ_W recover θ; temporal F with no drift
 by site rule → `_data/abc-stats-check.txt`) and `abc-sim-check.R`
 (simulator and statistics with fixed parameters: constant size, a size
 drop, immigration, sequencing error → `_data/abc-sim-check.txt`; needs a
-python with msprime in `ABC_PYTHON`).
+python with msprime in `ABC_PYTHON`); `abc-older-check.R` (the `older`
+variant: pre-1977 expansion and contraction → `_data/abc-older-check.txt`).
 Local checks of pipeline behavior: `npstat-maxcov.sh` (lowering npstat's
 `-maxcov` to the observed maximum leaves output unchanged; →
 `_data/npstat-maxcov-check.txt`) and `v2-tool-check.sh` (every tool call
