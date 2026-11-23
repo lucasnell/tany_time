@@ -232,6 +232,7 @@ if (check_only && length(outside) == 0) {
         "inference).")
     sink()
     read_lines(out_txt) |>
+        str_subset("^Growing trees", negate = TRUE) |>
         str_trim("right") |>
         write_lines(out_txt)
     quit(save = "no")
@@ -239,6 +240,7 @@ if (check_only && length(outside) == 0) {
 if (length(outside) > 0 && stop_if_outside) {
     sink()
     read_lines(out_txt) |>
+        str_subset("^Growing trees", negate = TRUE) |>
         str_trim("right") |>
         write_lines(out_txt)
     stop("Observed statistics outside every model's simulated range; ",
@@ -453,5 +455,6 @@ write_csv(recov, file.path(out_dir, "abc-recovery.csv"))
 
 sink()
 read_lines(out_txt) |>
+    str_subset("^Growing trees", negate = TRUE) |>
     str_trim("right") |>
     write_lines(out_txt)

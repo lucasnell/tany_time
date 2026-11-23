@@ -106,7 +106,7 @@ are written by `_R/make-job-lists.R`.
 10. `_R/make-time-series-plot.R`: frequency-vs-abundance plots,
     focal genes sox21b and SNF4Aγ → `_plots/focal-freqs.pdf`.
 11. Crashes vs. immigration (ABC; design `_R/abc-design.md`, approved
-    2026-11-12; not run yet): `_R/abc-inputs.R` (2,000 random 10-kb
+    2026-11-12; main run 2026-11-23): `_R/abc-inputs.R` (2,000 random 10-kb
     windows with ≥ 5,000 unmasked sites in all 18 SN pools; read depths and
     second-allele counts from the per-pool `01-snape` partially masked
     syncs in `tany_dir("snape")`; window choice uses only npstat's
@@ -117,7 +117,8 @@ are written by `_R/make-job-lists.R`.
     `abcrf` 2.0: prior-predictive check, model choice, parameters,
     recovery on held-out simulations, posterior-predictive draws,
     sensitivity → `_data/abc-results.txt`, `_data/abc-*.csv`,
-    `_plots/abc-prior-check.pdf`; tested on stand-in data only).
+    `_plots/abc-prior-check.pdf`); `_R/abc-misfit.R` (which statistics
+    the no-immigration models miss → `_data/abc-misfit.txt`).
 
 ## `_R/`
 
@@ -134,6 +135,7 @@ are written by `_R/make-job-lists.R`.
 | `pool-excess.R` | Per-pool excess divergence (pool-specific deviation beyond sampling and time) and what it tracks → `_data/pool-excess.txt`, `_plots/pool-excess.pdf` |
 | `pool-admixture.R` | f4 tests: are SN pools pulled toward the owner's named lakes (and Mývatn sites in 2019)? → `_data/pool-admixture.txt` |
 | `pool-relatedness.R` | Do high-excess pools carry related individuals? Correlation of per-SNP deviations by distance → `_data/pool-relatedness.txt`, `_plots/pool-relatedness.pdf` |
+| `abc-misfit.R` | Observed statistics outside the central 98% of the no-immigration models (M1, M4), with each model's quantile → `_data/abc-misfit.txt` |
 | `abc-inputs.R` | ABC inputs: pools, trap counts, 2,000 windows, read depths, observed second-allele counts → `tany_dir("abc")`, checks in `_data/abc-inputs.txt` |
 | `abc-design.md` | Design of the ABC test of crashes vs. crashes plus immigration (models, priors, statistics, decision rule); approved by the owner 2026-11-12, before any diversity result was read |
 | `baypass-format.R` | Local precursor to `00-baypass-inputs.sh` |

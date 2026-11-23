@@ -1,0 +1,44 @@
+== Statistics with the observed value outside the central 98% of both M1 and M4 (on the same side)
+Count: 30 of 235 ; of these, inside the central 98% of all of M2, M3, and M5: 30
+
+By type (all statistics vs. outside M1 and M4):
+ type   n outside_none
+   fc  31            0
+  fst 136            0
+   pi  17            0
+ rare  17           16
+  tdr  17           14
+  thw  17            0
+
+Those statistics (observed quantile among each model's simulations; side = whether the observed value is above or below M1 and M4):
+             stat type gap  side    M1    M2    M3    M4    M5
+ rare_SN.2.92_S35 rare  NA above 1.000 0.895 0.898 1.000 0.902
+ rare_SN.1.97_S61 rare  NA above 1.000 0.918 0.918 1.000 0.921
+ rare_SN.2.97_S37 rare  NA above 1.000 0.894 0.889 1.000 0.903
+ rare_SN.1.99_S28 rare  NA above 1.000 0.873 0.867 1.000 0.877
+ rare_SN.2.99_S38 rare  NA above 1.000 0.905 0.905 1.000 0.914
+ rare_SN.2.00_S29 rare  NA above 1.000 0.912 0.911 1.000 0.916
+ rare_SN.1.02_S55 rare  NA above 1.000 0.889 0.889 1.000 0.901
+ rare_SN.2.02_S30 rare  NA above 1.000 0.894 0.900 1.000 0.908
+ rare_SN.2.07_S31 rare  NA above 1.000 0.899 0.899 1.000 0.905
+ rare_SN.1.08_S24 rare  NA above 1.000 0.900 0.900 1.000 0.904
+ rare_SN.2.08_S32 rare  NA above 1.000 0.903 0.897 1.000 0.907
+ rare_SN.1.09_S25 rare  NA above 1.000 0.909 0.908 1.000 0.917
+ rare_SN.1.10_S26 rare  NA above 0.996 0.784 0.784 0.997 0.788
+ rare_SN.1.13_S56 rare  NA above 1.000 0.893 0.893 1.000 0.903
+ rare_SN.1.14_S27 rare  NA above 1.000 0.907 0.908 1.000 0.913
+ rare_SN.2.15_S34 rare  NA above 1.000 0.896 0.893 1.000 0.900
+  tdr_SN.2.92_S35  tdr  NA below 0.000 0.175 0.173 0.000 0.170
+  tdr_SN.1.97_S61  tdr  NA below 0.000 0.139 0.142 0.000 0.136
+  tdr_SN.2.97_S37  tdr  NA below 0.000 0.252 0.249 0.000 0.241
+  tdr_SN.1.99_S28  tdr  NA below 0.000 0.243 0.246 0.000 0.241
+  tdr_SN.2.99_S38  tdr  NA below 0.000 0.155 0.155 0.000 0.148
+  tdr_SN.2.00_S29  tdr  NA below 0.000 0.178 0.177 0.000 0.172
+  tdr_SN.1.02_S55  tdr  NA below 0.000 0.184 0.176 0.000 0.176
+  tdr_SN.2.02_S30  tdr  NA below 0.000 0.168 0.165 0.000 0.158
+  tdr_SN.2.07_S31  tdr  NA below 0.000 0.162 0.157 0.000 0.157
+  tdr_SN.1.08_S24  tdr  NA below 0.000 0.158 0.158 0.000 0.158
+  tdr_SN.2.08_S32  tdr  NA below 0.000 0.160 0.164 0.000 0.160
+  tdr_SN.1.09_S25  tdr  NA below 0.000 0.138 0.141 0.000 0.133
+  tdr_SN.1.14_S27  tdr  NA below 0.000 0.163 0.160 0.000 0.159
+  tdr_SN.2.15_S34  tdr  NA below 0.000 0.221 0.225 0.000 0.223

@@ -528,7 +528,24 @@ Follow `_bash/RERUN-CHECKLIST.md`.
          simulations moved to `tany_dir("abc", "archive-v1")` and
          `/staging/l/lnell/dna/abc/archive-v1/`; pilot (batches 1-4 per
          model, cluster 12602514) submitted 2026-11-19; passed
-         2026-11-20 (`_data/abc-pilot-check.txt`); full rerun next.
+         2026-11-20 (`_data/abc-pilot-check.txt`).
+       - Main run done 2026-11-23 (2,200 batches of 25;
+         copied to LAN_4TB_SSD, MD5s match; `_data/abc-results.txt`):
+         all 235 observed statistics inside M2, M3, and M5's ranges;
+         immigration (M2+M3+M5) chosen with posterior 1 (out-of-bag prior
+         error 0.263), so "supported" by the design's rule, in all three
+         sensitivity runs too (0.97 with temporal/F_ST statistics only).
+         Crash-driven vs. constant size not resolved (M2 0.24, M3 0.35,
+         M5 0.28; five-model prior error 0.65); scale and floor posteriors
+         nearly as wide as their priors; m identifiable by the rule but
+         barely (90% width 4.2 vs. prior 4.7). The support comes from 30
+         statistics M1 and M4 can't reach: rare-allele share (16 of 17
+         pools, above) and π / θ_W − 1 (14 of 17, below), i.e. an excess of
+         rare alleles in every pool (`_R/abc-misfit.R` →
+         `_data/abc-misfit.txt`); no F_ST or temporal F statistic is outside
+         them. A pre-1977 expansion would also give that, and M1/M4 hold
+         size constant before 1977; the design's `older` sensitivity
+         variant (item 5) tests it and hasn't been simulated.
        - posterior-predictive simulations from `_data/abc-ppc-params.csv`
          need a job mode that reads a parameter file (`abc-sim.py --fix`
          per simulation; not written yet);
