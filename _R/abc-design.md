@@ -266,3 +266,13 @@ details.
     observed statistics inside the simulated range of at least one model
     (M2, M3, and M5 cover all 235; M1 and M4 cover 205). Full rerun
     approved by the rule in change 13. No inference was run on the pilot.
+15. Main run done (2026-11-23; `_data/abc-results.txt`). Sensitivity
+    variants were then given 10,000 simulations per model (as the main
+    reference table, so their model-choice results are comparable) and
+    no held-out sets (those serve parameter recovery only). This was
+    set after the main result was read. The owner chose to run `older`
+    (item 5) first and alone, because the main run's support for
+    immigration rests on an excess of rare alleles that M1 and M4 can't
+    produce (`_R/abc-misfit.R` → `_data/abc-misfit.txt`) and a pre-1977
+    expansion could; `power`, `widen`, and `mu` follow. The decision rule
+    and the variants' definitions are unchanged.
