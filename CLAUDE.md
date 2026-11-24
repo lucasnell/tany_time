@@ -27,7 +27,8 @@ as the primary covariate, with log(1 + N) and its lag as sensitivity
 analyses, on 3 thinned SNP subsamples per missing-data setting.
 Candidates are called by Storey q-values from empirical p-values against
 pseudo-observed null data (PODs); as of 2026-11-19 there are none at
-q ≤ 0.10 in any setting or covariate (`TODO.md`). The ABC test of crashes vs. immigration (`_R/abc-design.md`; main run
+q ≤ 0.10 in any setting or covariate (`TODO.md`).
+The ABC test of crashes vs. immigration (`_R/abc-design.md`; main run
 2026-11-23) supports immigration by the design's rule, but only through an
 excess of rare alleles that a pre-1977 expansion could also explain; the
 `older` sensitivity variant tests that (`TODO.md`). It can't separate
